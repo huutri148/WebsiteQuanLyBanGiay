@@ -1,7 +1,22 @@
-const NguoiDung = require("../models/NguoiDung.model");
+const { NguoiDung } = require("../models/NguoiDung.model");
 
-const getNguoiDung = async (req, res) => {
-  const users = await NguoiDung.findAll({});
+// @desc Fetch all Users
+// @route Get/api/users
+// @access Public
+const getList = async (req, res) => {
+  const users = await NguoiDung.findAll();
   res.json(users);
 };
-module.exports = { getNguoiDung };
+
+// @desc Fetch all User by id
+// @route Get/api/users/id
+// @access Public
+const getUserByID = async (req, res) => {
+  const userID = req.params.id;
+  const user = await NguoiDung.findOne({
+    where: { MaNguoiDung: userID },
+  });
+  res.json(user);
+};
+
+module.exports = { getList, getUserByID };
