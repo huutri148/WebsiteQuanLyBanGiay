@@ -1,6 +1,5 @@
 const dbConfig = require("../config/db.config");
 const { Sequelize } = require("sequelize");
-
 const sequelize = new Sequelize(
   dbConfig.DATABASE,
   dbConfig.USER,
@@ -20,6 +19,7 @@ const sequelize = new Sequelize(
 
 const db = {
   sequelize: sequelize,
+  Sequelize: Sequelize,
 };
 db.testConnection = async () => {
   try {
@@ -30,6 +30,16 @@ db.testConnection = async () => {
       `Unable to connect to the database: ${error}`.red.underline.bold
     );
   }
+};
+db.syncConnection = () => {
+  sequelize
+    .sync({ force: true })
+    .then(() => {
+      console.log("Database synced".cyan.underline);
+    })
+    .catch(() => {
+      console.log("Error syncing database".red.underline.bold);
+    });
 };
 
 module.exports = db;

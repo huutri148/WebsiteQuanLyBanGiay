@@ -26,8 +26,8 @@ CREATE TABLE  MAU
 CREATE TABLE GIAY
 (
     MaGiay INT auto_increment UNIQUE,
-    MaHangSanXuat INT NOT NULL,
-    MaMau INT NOT NULL,
+    MaHangSanXuat INT ,
+    MaMau INT ,
     GioiTinh varchar(100),
     TenGiay NVARCHAR(100) NOT NULL, 
     MoTa NVARCHAR(1000),
@@ -50,8 +50,8 @@ foreign key(MaMau) references MAU(MaMau);
 CREATE TABLE CHITIETGIAY 
 (
     MaChiTietGiay INT auto_increment UNIQUE,
-    MaSize INT NOT NULL,
-    MaGiay INT NOT NULL,
+    MaSize INT ,
+    MaGiay INT ,
     SoLuong INT NOT NULL,
     CONSTRAINT PK_CHITIETGIAY PRIMARY KEY (MaSize, MaGiay)
 );
@@ -78,7 +78,7 @@ CREATE TABLE NHACUNGCAP
 CREATE TABLE NGUOIDUNG
 (
     MaNguoiDung int auto_increment PRIMARY KEY,
-    MaChucVu int NOT NULL,
+    MaChucVu int ,
     TenNguoiDung NVARCHAR(1000) NOT NULL,
     TenDangNhap NVARCHAR(100) NOT NULL,
     MatKhau NVARCHAR(100) NOT NULL,
