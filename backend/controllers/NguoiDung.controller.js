@@ -47,7 +47,7 @@ const registerUser = async (req, res) => {
 
   const userExists = await NguoiDung.findOne({
     where: {
-      SDT: userData.SDT,
+      TenDangNhap: req.body.TenDangNhap,
     },
   });
 
@@ -75,7 +75,12 @@ const authenUser = async (req, res) => {
     MatKhau: req.body.MatKhau,
   };
 
-  const user = await NguoiDung.findOne({ TenNguoiDung: userData.TenDangNhap });
+  const user = await NguoiDung.findOne({
+    TenNguoiDung: userData.TenDangNhap,
+  }).then((userRes) => {
+    if (userRes.validPassword(userData.MatKhau)) res.status(200).json(userRes);
+    else res.status(401).json("Invalid username or password");
+  });
 };
 
-module.exports = { getList, getUserByID, registerUser };
+module.exports = { getList, getUserByID, registerUser, authenUser };

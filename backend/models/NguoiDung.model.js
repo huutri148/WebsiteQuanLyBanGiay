@@ -67,17 +67,20 @@ const NguoiDung = db.sequelize.define(
   {
     tableName: "NGUOIDUNG",
     timestamps: false,
-    instanceMethods: {
-      validPassword: function (enteredPasobjectsword) {
-        return bcrypt.compareSync(password, this.password);
-      },
-    },
+    // instanceMethods: {
+    //   validPassword: function (enteredPassword) {
+    //     return bcrypt.compareSync(enteredPassword, this.MatKhau);
+    //   },
+    // },
   }
 );
 NguoiDung.beforeCreate(async function (user) {
   const salt = await bcrypt.genSalt(10);
   user.MatKhau = await bcrypt.hash(user.MatKhau, salt);
 });
+NguoiDung.prototype.validPassword = function (password) {
+  return bcrypt.compareSync(password, this.MatKhau);
+};
 
 NguoiDung.hasOne(ChucVu, { foreignKey: "MaChucVu" });
 module.exports = { NguoiDung, ChucVu };
