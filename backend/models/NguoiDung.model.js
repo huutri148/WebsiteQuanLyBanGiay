@@ -1,5 +1,5 @@
 const db = require("./DataBaseAccessHelper");
-
+const bcrypt = require("bcrypt");
 const ChucVu = db.sequelize.define(
   "ChucVu",
   {
@@ -67,8 +67,17 @@ const NguoiDung = db.sequelize.define(
   {
     tableName: "NGUOIDUNG",
     timestamps: false,
+    instanceMethods: {
+      validPassword: function (enteredPasobjectsword) {
+        return bcrypt.compareSync(password, this.password);
+      },
+    },
   }
 );
+NguoiDung.beforeCreate(async function (user) {
+  const salt = await bcrypt.genSalt(10);
+  user.MatKhau = await bcrypt.hash(user.MatKhau, salt);
+});
 
 NguoiDung.hasOne(ChucVu, { foreignKey: "MaChucVu" });
 module.exports = { NguoiDung, ChucVu };

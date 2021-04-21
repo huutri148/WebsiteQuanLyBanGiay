@@ -7,6 +7,8 @@ var app = express();
 
 db.testConnection();
 
+app.use(express.json());
+
 app.get("/", function (req, res) {
   res.send("API is running...");
 });
