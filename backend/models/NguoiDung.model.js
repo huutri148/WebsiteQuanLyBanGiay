@@ -58,6 +58,11 @@ const NguoiDung = db.sequelize.define(
     },
     MaChucVu: {
       type: db.Sequelize.INTEGER,
+      allownull: false,
+      references: {
+        model: "CHUCVU",
+        key: "MaChucVu",
+      },
     },
     IsDeleted: {
       type: db.Sequelize.BOOLEAN,
@@ -67,11 +72,6 @@ const NguoiDung = db.sequelize.define(
   {
     tableName: "NGUOIDUNG",
     timestamps: false,
-    // instanceMethods: {
-    //   validPassword: function (enteredPassword) {
-    //     return bcrypt.compareSync(enteredPassword, this.MatKhau);
-    //   },
-    // },
   }
 );
 NguoiDung.beforeCreate(async function (user) {
@@ -82,5 +82,5 @@ NguoiDung.prototype.validPassword = function (password) {
   return bcrypt.compareSync(password, this.MatKhau);
 };
 
-NguoiDung.hasOne(ChucVu, { foreignKey: "MaChucVu" });
+NguoiDung.belongsTo(ChucVu, { foreignKey: "MaChucVu", targetKey: "MaChucVu" });
 module.exports = { NguoiDung, ChucVu };

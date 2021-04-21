@@ -9,10 +9,10 @@ db.testConnection();
 
 const importData = async () => {
   try {
-    await NguoiDung.destroy({ where: {} });
-    await ChucVu.destroy({ where: {} });
+    //await NguoiDung.destroy({ where: {} });
+    //await ChucVu.destroy({ where: {} });
 
-    const createdChucVu = await ChucVu.bulkCreate(dataChucVu);
+    //const createdChucVu = await ChucVu.bulkCreate(dataChucVu);
     const createUsers = await NguoiDung.bulkCreate(users);
     console.log("Data Imported".green.inverse);
     process.exit();
