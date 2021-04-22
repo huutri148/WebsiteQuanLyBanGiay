@@ -1,14 +1,14 @@
 const db = require("./DataBaseAccessHelper");
 
-const HangSanXuat = db.sequelize.define(
-  "HangSanXuat",
+const Size = db.sequelize.define(
+  "Size",
   {
-    MaHangSanXuat: {
+    MaSize: {
       type: db.Sequelize.INTEGER,
       primaryKey: true,
       autoIncrement: true,
     },
-    TenHangSanXuat: {
+    TenSize: {
       type: db.Sequelize.STRING,
       allownull: false,
     },
@@ -18,9 +18,9 @@ const HangSanXuat = db.sequelize.define(
     },
   },
   {
-    tableName: "HANGSANXUAT",
+    tableName: "SIZE",
     timestamps: false,
   }
 );
 
-module.exports = HangSanXuat;
+module.exports = Size;

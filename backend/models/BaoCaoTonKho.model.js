@@ -1,36 +1,39 @@
 const db = require("./DataBaseAccessHelper");
 
-const NhaCungCap = db.sequelize.define(
-  "NhaCungCap",
+const BaoCaoTonKho = db.sequelize.define(
+  "BaoCaoTonKho",
   {
-    MaNhaCungCap: {
+    MaBaoCaoTonKho: {
       type: db.Sequelize.INTEGER,
       primaryKey: true,
       autoIncrement: true,
     },
-    TenNhaCungCap: {
+    GhiChu: {
       type: db.Sequelize.STRING,
       allownull: false,
     },
-    DiaChi: {
-      type: db.Sequelize.STRING,
-    },
-    Email: {
-      type: db.Sequelize.STRING,
-    },
-    SDT: {
-      type: db.Sequelize.STRING,
+    MaNguoiDung: {
+      type: db.Sequelize.INTEGER,
       allownull: false,
     },
+    NgayLap: {
+      type: db.Sequelize.DATE(6),
+      allownull: false,
+    },
+    TongSoHangHoa: {
+      type: db.Sequelize.INTEGER,
+      allownull: false,
+    },
+
     IsDeleted: {
       type: db.Sequelize.BOOLEAN,
       allownull: false,
     },
   },
   {
-    tableName: "NHACUNGCAP",
+    tableName: "BAOCAOHANGHOA",
     timestamps: false,
   }
 );
 
-module.exports = NhaCungCap;
+module.exports = BaoCaoTonKho;

@@ -26,10 +26,10 @@ CREATE TABLE  MAU
 CREATE TABLE GIAY
 (
     MaGiay INT auto_increment UNIQUE,
+    TenGiay NVARCHAR(100) NOT NULL, 
     MaHangSanXuat INT ,
     MaMau INT ,
     GioiTinh varchar(100),
-    TenGiay NVARCHAR(100) NOT NULL, 
     MoTa NVARCHAR(1000),
     TyLeLoiNhuan FLOAT NOT NULL,
     DonGiaNhap DECIMAL(17,2),
@@ -289,7 +289,37 @@ foreign key(SoPhieuDatHang) references PHIEUDATHANG(SoPhieuDatHang);
 
 
 alter table CHITIETPHIEUDATHANG
-add constraint CHITIETPHIEUDATHANG_CHITIETGIA_FK
+add constraint CHITIETPHIEUDATHANG_CHITIETGIAY_FK
 foreign key(SoPhieuDatHang) references CHITIETGIAY(MaChiTietGiay);
+
+CREATE TABLE BAOCAOLOINHUAN 
+(
+    MaBaoCaoLoiNhuan int auto_increment PRIMARY KEY,
+    MaNguoiDung int not null,
+    NgayBatDau DATETIME DEFAULT CURRENT_TIMESTAMP,
+    NgayKetThuc DATETIME DEFAULT CURRENT_TIMESTAMP,
+    TongChi DECIMAL(17,2) not null,
+    TongDoanhThu DECIMAL(17,2) not null,
+    TongLoiNhuan DECIMAL(17,2) not null,
+    IsDeleted boolean not null,
+);
+alter table BAOCAOLOINHUAN 
+add constraint BAOCAOLOINHUAN_NGUOIDUNG_FK
+foreign key(MaNguoiDung) references NGUOIDUNG(MaNguoiDung);
+
+
+CREATE TABLE CHITIETBAOCAOLOINHUAN
+(
+    MaBaoCaoLoiNhuan int NOT NULL,
+    Chi DECIMAL(17,2) not null,
+    DoanhThu DECIMAL(17,2) not null,
+    LoiNhuan DECIMAL(17,2) not null,
+    TyLeLoiNhuan FLOAT not null,
+    Ngay DATETIME DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT PK_CHITIETPHIEUDATHANG PRIMARY KEY (MaBaoCaoLoiNhuan, Ngay)
+);
+alter table CHITIETBAOCAOLOINHUAN 
+add constraint CHITIETBAOCAOLOINHUAN_BAOCAOLOINHUAN_FK
+foreign key(MaBaoCaoLoiNhuan) references BAOCAOLOINHUAN(MaBaoCaoLoiNhuan);
 
 

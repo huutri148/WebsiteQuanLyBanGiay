@@ -30,7 +30,7 @@ const users = [
     Email: "123@example.com",
     SDT: "0987654567",
     DiaChi: "Thanh Hoa",
-    MaChucVu: "3",
+    MaChucVu: "2",
     Avatar: "Nguyen Huu Tri",
     IsDeleted: false,
   },

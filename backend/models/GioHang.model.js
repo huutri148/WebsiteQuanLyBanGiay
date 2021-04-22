@@ -1,15 +1,19 @@
 const db = require("./DataBaseAccessHelper");
 
-const HangSanXuat = db.sequelize.define(
-  "HangSanXuat",
+const GioHang = db.sequelize.define(
+  "GioHang",
   {
-    MaHangSanXuat: {
+    MaGioHang: {
       type: db.Sequelize.INTEGER,
       primaryKey: true,
       autoIncrement: true,
     },
-    TenHangSanXuat: {
-      type: db.Sequelize.STRING,
+    MaNguoiDung: {
+      type: db.Sequelize.INTEGER,
+      allownull: false,
+    },
+    NgayLap: {
+      type: db.Sequelize.DATE(6),
       allownull: false,
     },
     IsDeleted: {
@@ -18,9 +22,9 @@ const HangSanXuat = db.sequelize.define(
     },
   },
   {
-    tableName: "HANGSANXUAT",
+    tableName: "GIOHANG",
     timestamps: false,
   }
 );
 
-module.exports = HangSanXuat;
+module.exports = GioHang;
