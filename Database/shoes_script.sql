@@ -30,6 +30,7 @@ CREATE TABLE GIAY
     MaHangSanXuat INT ,
     MaMau INT ,
     GioiTinh varchar(100),
+    Anh varchar(100),
     MoTa NVARCHAR(1000),
     TyLeLoiNhuan FLOAT NOT NULL,
     DonGiaNhap DECIMAL(17,2),
@@ -298,10 +299,10 @@ CREATE TABLE BAOCAOLOINHUAN
     MaNguoiDung int not null,
     NgayBatDau DATETIME DEFAULT CURRENT_TIMESTAMP,
     NgayKetThuc DATETIME DEFAULT CURRENT_TIMESTAMP,
-    TongChi DECIMAL(17,2) not null,
-    TongDoanhThu DECIMAL(17,2) not null,
-    TongLoiNhuan DECIMAL(17,2) not null,
-    IsDeleted boolean not null,
+    TongChi DECIMAL(17,2) ,
+    TongDoanhThu DECIMAL(17,2) ,
+    TongLoiNhuan DECIMAL(17,2) ,
+    IsDeleted boolean 
 );
 alter table BAOCAOLOINHUAN 
 add constraint BAOCAOLOINHUAN_NGUOIDUNG_FK

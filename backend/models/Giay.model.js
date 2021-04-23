@@ -20,10 +20,9 @@ const Giay = db.sequelize.define(
       type: db.Sequelize.STRING,
       allownull: false,
     },
-    // Anh: {
-    //   type: db.Sequelize.STRING,
-    //   allownull: false,
-    // },
+    Anh: {
+      type: db.Sequelize.STRING,
+    },
     MaMau: {
       type: db.Sequelize.INTEGER,
       allownull: false,
