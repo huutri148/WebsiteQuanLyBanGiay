@@ -1,31 +1,21 @@
 require("dotenv").config();
 const colors = require("colors");
-const dataChucVu = require("./data/ChucVu");
-const users = require("./data/NguoiDung");
-const { NguoiDung, ChucVu } = require("./models/NguoiDung.model");
 const db = require("./models/DataBaseAccessHelper");
+const NguoiDung = require("./models/NguoiDung.model");
 
-db.testConnection();
+const users = require("./data/NguoiDung");
+
+db.connect();
 
 const importData = async () => {
-  try {
-    //await NguoiDung.destroy({ where: {} });
-    //await ChucVu.destroy({ where: {} });
-
-    //const createdChucVu = await ChucVu.bulkCreate(dataChucVu);
-    const createUsers = await NguoiDung.bulkCreate(users);
-    console.log("Data Imported".green.inverse);
-    process.exit();
-  } catch (error) {
-    console.error(`${error}`.red.inverse);
-    process.exit(1);
-  }
+  await users.map(async (user) => {
+    await NguoiDung.create(user, (result) => {});
+  });
+  console.log("Data Imported".green.inverse);
 };
 
 const destroyData = async () => {
   try {
-    await NguoiDung.destroy({ where: {} });
-    await ChucVu.destroy({ where: {} });
     console.log("Data Destroyed!".green.inverse);
     process.exit();
   } catch (error) {

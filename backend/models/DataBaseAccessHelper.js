@@ -1,45 +1,41 @@
-const dbConfig = require("../config/db.config");
-const { Sequelize } = require("sequelize");
-const sequelize = new Sequelize(
-  dbConfig.DATABASE,
-  dbConfig.USER,
-  dbConfig.PASSWORD,
-  {
-    host: dbConfig.HOST,
-    dialect: dbConfig.dialect,
-    operatorsAliases: false,
-    pool: {
-      max: dbConfig.pool.max,
-      min: dbConfig.pool.min,
-      acquire: dbConfig.pool.acquire,
-      idle: dbConfig.pool.idle,
-    },
-  }
-);
+//this is an area for database connection
+var mysql = require("mysql2");
+var config = require("../config/db.config");
 
-const db = {
-  sequelize: sequelize,
-  Sequelize: Sequelize,
-};
-db.testConnection = async () => {
-  try {
-    await sequelize.authenticate();
-    console.log("Connection has been established successfully".cyan.underline);
-  } catch (error) {
-    console.error(
-      `Unable to connect to the database: ${error}`.red.underline.bold
-    );
+//variable to check if db is connected or not
+var connected = 0;
+
+//config
+var connection = mysql.createConnection({
+  host: config.HOST,
+  user: config.USER,
+  password: config.PASSWORD,
+  database: config.DATABASE,
+});
+
+//method of db
+exports.connect = function () {
+  if (connected == 1) {
+    return;
   }
-};
-db.syncConnection = () => {
-  sequelize
-    .sync({ force: true })
-    .then(() => {
-      console.log("Database synced".cyan.underline);
-    })
-    .catch(() => {
-      console.log("Error syncing database".red.underline.bold);
-    });
+  connected = 1;
+  connection.connect(function (err) {
+    if (!err) {
+      console.log("DB connected".cyan.underline);
+    } else {
+      console.log(`${err}`.red.underline);
+    }
+  });
 };
 
-module.exports = db;
+exports.close = function () {
+  connection.end(function (err) {
+    if (!err) {
+      console.log("DB close");
+    }
+  });
+};
+
+exports.getConnection = function () {
+  return connection;
+};

@@ -84,17 +84,18 @@ CREATE TABLE NGUOIDUNG
     TenDangNhap NVARCHAR(100) NOT NULL,
     MatKhau NVARCHAR(100) NOT NULL,
     SDT NVARCHAR(20) NOT NULL,
-    DiaChi NVARCHAR(1000) NOT NULL,
-    Email NVARCHAR(1000) NOT NULL,
+    DiaChi NVARCHAR(1000) ,
+    Email NVARCHAR(1000) ,
     Avatar NVARCHAR(1000),
     IsDeleted BOOLEAN 
+
 );
 
 CREATE TABLE CHUCVU
 ( 
     MaChucVu int auto_increment PRIMARY KEY,
     TenChucVu NVARCHAR(100) NOT NULL,
-    IsDeleted BOOLEAN NOT NULL
+    IsDeleted BOOLEAN DEFAULT false 
 );
 
 alter table NGUOIDUNG
@@ -322,5 +323,51 @@ CREATE TABLE CHITIETBAOCAOLOINHUAN
 alter table CHITIETBAOCAOLOINHUAN 
 add constraint CHITIETBAOCAOLOINHUAN_BAOCAOLOINHUAN_FK
 foreign key(MaBaoCaoLoiNhuan) references BAOCAOLOINHUAN(MaBaoCaoLoiNhuan);
+
+DELIMITER $$
+create procedure USP_DangNhap(p_userName VARCHAR(255),p_passWord VARCHAR(255))
+BEGIN
+select * from ShoesStoreManagement.NGUOIDUNG where TenDangNhap=p_userName and MatKhau=p_passWord;
+END; $$
+DELIMITER ;
+
+DELIMITER $$
+create procedure USP_GetListNguoiDung()
+BEGIN
+select * from ShoesStoreManagement.NGUOIDUNG ;
+END; $$
+DELIMITER ;
+
+DELIMITER $$
+create procedure USP_GetNguoiDung(p_MaNguoiDung int )
+BEGIN
+select * from ShoesStoreManagement.NGUOIDUNG where NGUOIDUNG.MaNguoiDung = p_MaNguoiDung;
+END; $$
+DELIMITER ;
+
+DELIMITER $$
+create procedure USP_ThemNguoiDung(p_TenNguoiDung NVARCHAR(1000),p_TenDangNhap NVARCHAR(1000),
+    p_MatKhau NVARCHAR(1000),p_MaChucVu int,p_SDT NVARCHAR(1000),p_DiaChi NVARCHAR(1000),p_Email NVARCHAR(1000),p_Avatar NVARCHAR(1000)
+, p_isDeleted boolean )
+BEGIN
+INSERT INTO ShoesStoreManagement.NGUOIDUNG (TenNguoiDung ,TenDangNhap ,
+    MatKhau ,MaChucVu ,SDT ,DiaChi ,Email ,Avatar , IsDeleted )
+VALUES (p_TenNguoiDung ,p_TenDangNhap ,
+    p_MatKhau ,p_MaChucVu ,p_SDT ,p_DiaChi ,p_Email ,p_Avatar , p_isDeleted );
+END; $$
+DELIMITER ;
+
+
+insert into CHUCVU(TenChucVu, IsDeleted)values ("Admin", false);
+insert into CHUCVU (TenChucVu, IsDeleted)values ("NhanVienBanHang", false );
+insert into CHUCVU (TenChucVu, IsDeleted)values ("NhanVienKeToan", false);
+insert into CHUCVU (TenChucVu, IsDeleted)values ("NhanVienKho", false);
+insert into CHUCVU (TenChucVu, IsDeleted)values ("KhachHang", false);
+
+
+
+
+insert into NGUOIDUNG(TenNguoiDung ,TenDangNhap ,MatKhau ,MaChucVu ,SDT ,DiaChi ,Email ,Avatar , IsDeleted )
+values ("Nguyen Huu Tri","huutri148","123456","2","123456" ,"123456" ,"123456" ,"123456" , false);
 
 
