@@ -1,86 +1,83 @@
 const db = require("./DataBaseAccessHelper");
+const sqlString = require("sqlstring");
 const bcrypt = require("bcrypt");
-const ChucVu = db.sequelize.define(
-  "ChucVu",
-  {
-    MaChucVu: {
-      type: db.Sequelize.INTEGER,
-      primaryKey: true,
-      autoIncrement: true,
-    },
-    TenChucVu: {
-      type: db.Sequelize.STRING,
-      allownull: false,
-    },
-    IsDeleted: {
-      type: db.Sequelize.BOOLEAN,
-      allownull: false,
-    },
-  },
-  {
-    tableName: "CHUCVU",
-    timestamps: false,
-  }
-);
-const NguoiDung = db.sequelize.define(
-  "NguoiDung",
-  {
-    MaNguoiDung: {
-      type: db.Sequelize.INTEGER,
-      primaryKey: true,
-      autoIncrement: true,
-    },
-    TenNguoiDung: {
-      type: db.Sequelize.STRING,
-      allownull: false,
-    },
-    TenDangNhap: {
-      type: db.Sequelize.STRING,
-      allownull: false,
-    },
-    MatKhau: {
-      type: db.Sequelize.STRING,
-      allownull: false,
-    },
-    Email: {
-      type: db.Sequelize.STRING,
-    },
-    SDT: {
-      type: db.Sequelize.STRING,
-      allownull: false,
-    },
-    DiaChi: {
-      type: db.Sequelize.STRING,
-      allowNull: false,
-    },
-    Avatar: {
-      type: db.Sequelize.STRING,
-    },
-    MaChucVu: {
-      type: db.Sequelize.INTEGER,
-      allownull: false,
-      references: {
-        model: "CHUCVU",
-        key: "MaChucVu",
-      },
-    },
-    IsDeleted: {
-      type: db.Sequelize.BOOLEAN,
-      allownull: false,
-    },
-  },
-  {
-    tableName: "NGUOIDUNG",
-    timestamps: false,
-  }
-);
-NguoiDung.beforeCreate(async function (user) {
+const NguoiDung = {};
+
+NguoiDung.create = async function (data, result) {
+  var conn = db.getConnection();
   const salt = await bcrypt.genSalt(10);
-  user.MatKhau = await bcrypt.hash(user.MatKhau, salt);
-});
-NguoiDung.prototype.validPassword = function (password) {
-  return bcrypt.compareSync(password, this.MatKhau);
+  const password = await bcrypt.hash(data.MatKhau, salt);
+  var dataNguoiDung = [
+    data.TenNguoiDung,
+    data.TenDangNhap,
+    password,
+    data.MaChucVu,
+    data.SDT,
+    data.DiaChi,
+    data.Email,
+    data.Avatar,
+    data.IsDeleted,
+  ];
+
+  var queryString = sqlString.format(
+    "CALL USP_ThemNguoiDung(?,?,?,?,?,?,?,?,?);",
+    dataNguoiDung
+  );
+  conn.query(queryString, (err, res) => {
+    if (err) {
+      //Todo: Handle error
+      throw err;
+    } else {
+      console.log(`Created user ${data.TenDangNhap} successfully`);
+      result(res[0]);
+    }
+  });
 };
 
-NguoiDung.belongsTo(ChucVu, { foreignKey: "MaChucVu", targetKey: "MaChucVu" });
-module.exports = { NguoiDung, ChucVu };
+NguoiDung.findById = (maNguoiDung, callBack) => {
+  var conn = db.getConnection();
+  var queryString = sqlString.format(`CALL USP_GetNguoiDung(${maNguoiDung})`);
+  conn.query(queryString, (err, res) => {
+    if (err) {
+      throw err;
+    }
+    if (res[0].length) {
+      console.log("Found user:".yellow.bold, res[0][0]);
+      callBack(res[0][0]);
+      return;
+    }
+  });
+};
+
+// Fetch all user in DataBase
+NguoiDung.getAll = function (callBack) {
+  var conn = db.getConnection();
+  var queryString = sqlString.format("CALL USP_GetListNguoiDung();");
+
+  conn.query(queryString, (err, results, fields) => {
+    if (err) {
+      throw err;
+    }
+
+    callBack(results[0]);
+  });
+};
+
+NguoiDung.login = async function (data, callBack) {
+  var conn = db.getConnection();
+
+  // Hash password
+  const salt = await bcrypt.genSalt(10);
+  const password = await bcrypt.hash(data.MatKhau, salt);
+
+  const login = [data.TenDangNhap, password];
+  var queryString = sqlString.format("CALL USP_DangNhap(?,?);", login);
+
+  conn.query(queryString, (err, results, fields) => {
+    if (err) {
+      throw err;
+    }
+    callBack(results[0]);
+  });
+};
+module.exports = NguoiDung;
