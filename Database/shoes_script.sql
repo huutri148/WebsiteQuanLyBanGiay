@@ -5,14 +5,14 @@ create Table SIZE
 (
     MaSize INT auto_increment PRIMARY KEY,
     TenSize NVARCHAR(100) NOT NULL,
-    IsDeleted BOOLEAN
+    IsDeleted BOOLEAN DEFAULT false
 );
 
 CREATE TABLE HANGSANXUAT
 (
     MaHangSanXuat INT auto_increment PRIMARY KEY,
     TenHangSanXuat NVARCHAR(100) NOT NULL,
-    IsDeleted BOOLEAN
+    IsDeleted BOOLEAN DEFAULT false
 );
 
 
@@ -20,21 +20,21 @@ CREATE TABLE  MAU
 (
     MaMau INT auto_increment PRIMARY KEY,
     TenMau NVARCHAR(100) NOT NULL,
-    IsDeleted BOOLEAN
+    IsDeleted BOOLEAN DEFAULT false
 );
 
 CREATE TABLE GIAY
 (
-    MaGiay INT auto_increment UNIQUE,
+    MaGiay INT auto_increment UNIQUE NOT NULL,
     TenGiay NVARCHAR(100) NOT NULL, 
-    MaHangSanXuat INT ,
-    MaMau INT ,
-    GioiTinh varchar(100),
+    MaHangSanXuat INT NOT NULL,
+    MaMau INT NOT NULL,
+    GioiTinh varchar(100) DEFAULT "Unisex",
     Anh varchar(100),
     MoTa NVARCHAR(1000),
-    TyLeLoiNhuan FLOAT NOT NULL,
-    DonGiaNhap DECIMAL(17,2),
-    CONSTRAINT PK_GIAY PRIMARY KEY (GioiTinh,MaMau)
+    TyLeLoiNhuan FLOAT DEFAULT 0 ,
+    DonGiaNhap DECIMAL(17,2) DEFAULT 0,
+    CONSTRAINT PK_GIAY PRIMARY KEY (GioiTinh,MaMau, MaHangSanXuat)
 );
 
 alter table GIAY
@@ -51,9 +51,9 @@ foreign key(MaMau) references MAU(MaMau);
 CREATE TABLE CHITIETGIAY 
 (
     MaChiTietGiay INT auto_increment UNIQUE,
-    MaSize INT ,
-    MaGiay INT ,
-    SoLuong INT NOT NULL,
+    MaSize INT NOT NULL,
+    MaGiay INT NOT NULL,
+    SoLuong INT DEFAULT 0,
     CONSTRAINT PK_CHITIETGIAY PRIMARY KEY (MaSize, MaGiay)
 );
 
@@ -81,7 +81,7 @@ CREATE TABLE NGUOIDUNG
     MaNguoiDung int auto_increment PRIMARY KEY,
     MaChucVu int ,
     TenNguoiDung NVARCHAR(1000) NOT NULL,
-    TenDangNhap NVARCHAR(100) NOT NULL,
+    TenDangNhap NVARCHAR(100) NOT NULL UNIQUE,
     MatKhau NVARCHAR(100) NOT NULL,
     SDT NVARCHAR(20) NOT NULL,
     DiaChi NVARCHAR(1000) ,
@@ -357,6 +357,36 @@ VALUES (p_TenNguoiDung ,p_TenDangNhap ,
 END; $$
 DELIMITER ;
 
+DELIMITER $$
+create procedure USP_XoaNguoiDung(p_userName VARCHAR(255))
+BEGIN
+DELETE  from NGUOIDUNG where NGUOIDUNG.TenDangNhap=p_username;
+END; $$
+DELIMITER ;
+
+
+DELIMITER $$
+create procedure USP_CapNhatThongTinNguoiDung(p_TenNguoiDung NVARCHAR(1000),p_TenDangNhap NVARCHAR(1000),
+    p_MatKhau NVARCHAR(1000),p_MaChucVu int,p_SDT NVARCHAR(1000),p_DiaChi NVARCHAR(1000),p_Email NVARCHAR(1000),p_Avatar NVARCHAR(1000)
+, p_isDeleted boolean )
+BEGIN
+ UPDATE NGUOIDUNG 
+ SET NGUOIDUNG.MatKhau=p_password,NGUOIDUNG.MaChucVu=p_MaChucVu,NGUOIDUNG.DiaChi=p_DiaChi,NGUOIDUNG.Email=p_Email,  
+NGUOIDUNG.SDT=p_SDT,NGUOIDUNG.IsDeleted=p_isDeleted,NGUOIDUNG.TenNguoiDung=p_TenNguoiDung,
+
+ WHERE NGUOIDUNG.TenDangNhap=p_TenDangNhap;
+end; $$
+DELIMITER ;
+
+DELIMITER $$
+CREATE PROCEDURE USP_ThemGiay()
+BEGIN
+	insert GIAY()
+    values();
+END; $$
+DELIMITER ;
+
+DELIMITER $$
 
 insert into CHUCVU(TenChucVu, IsDeleted)values ("Admin", false);
 insert into CHUCVU (TenChucVu, IsDeleted)values ("NhanVienBanHang", false );
@@ -366,8 +396,115 @@ insert into CHUCVU (TenChucVu, IsDeleted)values ("KhachHang", false);
 
 
 
+insert into HANGSANXUAT(TenHangSanXuat)values ("Nike");
+insert into HANGSANXUAT(TenHangSanXuat)values ("Puma");
+insert into HANGSANXUAT(TenHangSanXuat)values ("Sneaker");
+insert into HANGSANXUAT(TenHangSanXuat)values ("Adidas");
+insert into HANGSANXUAT(TenHangSanXuat)values ("Converse");
+insert into HANGSANXUAT(TenHangSanXuat)values ("Vans");
+insert into HANGSANXUAT(TenHangSanXuat)values ("Fila");
 
-insert into NGUOIDUNG(TenNguoiDung ,TenDangNhap ,MatKhau ,MaChucVu ,SDT ,DiaChi ,Email ,Avatar , IsDeleted )
-values ("Nguyen Huu Tri","huutri148","123456","2","123456" ,"123456" ,"123456" ,"123456" , false);
 
+insert into MAU(TenMau)values ("Purple");
+insert into MAU(TenMau)values ("White");
+insert into MAU(TenMau)values ("Pink");
+insert into MAU(TenMau)values ("Blue");
+
+insert into GIAY(    
+    TenGiay , 
+    MaHangSanXuat ,
+    MaMau ,
+    GioiTinh ,
+    Anh ,
+    MoTa,
+    TyLeLoiNhuan , 
+    DonGiaNhap 
+    )values (
+    "Van Old Skool Violet", 
+    6,
+    1,
+    "Nu",
+    "abcxyz",
+    "abcxyz",
+    0, 
+    "1200000" 
+);
+insert into GIAY(    
+    TenGiay , 
+    MaHangSanXuat ,
+    MaMau ,
+    GioiTinh ,
+    Anh ,
+    MoTa,
+    TyLeLoiNhuan , 
+    DonGiaNhap 
+    )values (
+    "Fila Wave Neo", 
+    7,
+    2,
+    "Nu",
+    "abcxyz",
+    "abcxyz",
+    0, 
+    "1250000" 
+);
+
+insert into GIAY(    
+    TenGiay , 
+    MaHangSanXuat ,
+    MaMau ,
+    GioiTinh ,
+    Anh ,
+    MoTa,
+    TyLeLoiNhuan , 
+    DonGiaNhap 
+    )values (
+    "Converse 70s Hightop ", 
+    5,
+    4,
+    "Unisex",
+    "abcxyz",
+    "abcxyz",
+    0, 
+    "1000000" 
+);
+
+
+
+insert into SIZE(TenSize)values ("38");
+insert into SIZE(TenSize)values ("39");
+insert into SIZE(TenSize)values ("40");
+insert into SIZE(TenSize)values ("41");
+insert into SIZE(TenSize)values ("42");
+insert into SIZE(TenSize)values ("43");
+
+
+insert into CHITIETGIAY(    
+    MaSize,
+    MaGiay,
+    SoLuong 
+    )values (
+    1,
+    1,
+    100
+);
+
+insert into CHITIETGIAY(    
+    MaSize,
+    MaGiay,
+    SoLuong 
+    )values (
+    2,
+    1,
+    100
+);
+insert into CHITIETGIAY(    
+    MaSize,
+    MaGiay,
+    SoLuong 
+    )values (
+    3,
+    1,
+    200
+);
 
