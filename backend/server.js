@@ -4,6 +4,7 @@ const colors = require("colors");
 const db = require("./models/DataBaseAccessHelper");
 const bodyParser = require("body-parser");
 const userRoutes = require("./routes/NguoiDung.routes");
+const productRoutes = require("./routes/SanPham.routes")
 
 var app = express();
 
@@ -21,6 +22,7 @@ app.get("/", function (req, res) {
 });
 
 app.use("/api/users", userRoutes);
+app.use("/api/products", productRoutes);
 
 const PORT = process.env.PORT || 5000;
 
