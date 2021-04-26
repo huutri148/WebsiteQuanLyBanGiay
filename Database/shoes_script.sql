@@ -34,6 +34,7 @@ CREATE TABLE GIAY
     MoTa NVARCHAR(1000),
     TyLeLoiNhuan FLOAT DEFAULT 0 ,
     DonGiaNhap DECIMAL(17,2) DEFAULT 0,
+    IsDeleted BOOLEAN DEFAULT false,
     CONSTRAINT PK_GIAY PRIMARY KEY (GioiTinh,MaMau, MaHangSanXuat)
 );
 
@@ -372,21 +373,83 @@ create procedure USP_CapNhatThongTinNguoiDung(p_TenNguoiDung NVARCHAR(1000),p_Te
 BEGIN
  UPDATE NGUOIDUNG 
  SET NGUOIDUNG.MatKhau=p_password,NGUOIDUNG.MaChucVu=p_MaChucVu,NGUOIDUNG.DiaChi=p_DiaChi,NGUOIDUNG.Email=p_Email,  
-NGUOIDUNG.SDT=p_SDT,NGUOIDUNG.IsDeleted=p_isDeleted,NGUOIDUNG.TenNguoiDung=p_TenNguoiDung,
-
- WHERE NGUOIDUNG.TenDangNhap=p_TenDangNhap;
+ NGUOIDUNG.SDT=p_SDT,NGUOIDUNG.IsDeleted=p_isDeleted,NGUOIDUNG.TenNguoiDung=p_TenNguoiDung
+WHERE NGUOIDUNG.TenDangNhap=p_TenDangNhap;
 end; $$
 DELIMITER ;
 
+
 DELIMITER $$
-CREATE PROCEDURE USP_ThemGiay()
+create procedure USP_GetListGiay()
 BEGIN
-	insert GIAY()
-    values();
+Select E.TenGiay, F.TenHangSanXuat, E.TenMau, E.GioiTinh, E.SoLuong from (
+Select C.TenGiay, C.MaHangSanXuat, C.GioiTinh, C.SoLuong, D.TenMau from (
+Select A.TenGiay, A.MaMau, A.MaHangSanXuat, A.GioiTinh, B.SoLuong
+from (Select MaGiay, Sum(SoLuong) as SoLuong from ShoesStoreManagement.CHITIETGIAY GROUP BY MaGiay) B
+LEFT JOIN ShoesStoreManagement.GIAY A USING (MaGiay)) C left join ShoesStoreManagement.MAU D using (MaMau)) E 
+LEFT JOIN ShoesStoreManagement.HANGSANXUAT F using (MaHangSanXuat);
 END; $$
 DELIMITER ;
 
 DELIMITER $$
+create procedure USP_GetGiayByID(p_MaGiay int )
+BEGIN
+select * from ShoesStoreManagement.GIAY where GIAY.MaGiay= p_MaGiay;
+END; $$
+DELIMITER ;
+
+DELIMITER $$
+create procedure USP_ThemSanPham(p_TenGiay NVARCHAR(1000),
+    p_MaHangSanXuat int,p_MaMau int ,p_GioiTinh NVARCHAR(1000),
+    p_Anh NVARCHAR(1000),p_MoTa NVARCHAR(1000),
+    p_TyLeLoiNhuan FLOAT, p_DonGiaNhap DECIMAL(17,2))
+BEGIN
+INSERT INTO ShoesStoreManagement.GIAY(TenGiay,
+    MaHangSanXuat,MaMau,GioiTinh,Anh,MoTa,TyLeLoiNhuan, 
+    DonGiaNhap)
+VALUES (
+    p_TenGiay ,
+    p_MaHangSanXuat ,p_MaMau ,p_GioiTinh,p_Anh ,p_MoTa ,
+    p_TyLeLoiNhuan , p_DonGiaNhap);
+END; $$
+DELIMITER ;
+
+DELIMITER $$
+create procedure USP_ThemChiTietSanPham(p_MaSize int)
+BEGIN
+    declare giayID int;
+    set giayID = (select max(MaGiay) from ShoesStoreManagement.GIAY);
+    INSERT INTO ShoesStoreManagement.CHITIETGIAY( MaSize,MaGiay)
+    VALUES ( p_MaSize,giayID);
+END; $$
+DELIMITER ;
+
+
+DELIMITER $$
+create procedure USP_XoaSanPham(p_MaGiay int)
+BEGIN
+ UPDATE GIAY  
+ SET GIAY.IsDeleted = true 
+ WHERE GIAY.MaGiay =p_MaGiay;
+END; $$
+DELIMITER ;
+
+DELIMITER $$
+create procedure USP_CapNhatThongTinGiay(p_MaGiay int,
+    p_TenGiay NVARCHAR(1000),
+    p_MaHangSanXuat int,p_MaMau int ,p_GioiTinh NVARCHAR(1000),
+    p_Anh NVARCHAR(1000),p_MoTa NVARCHAR(1000),
+    p_TyLeLoiNhuan FLOAT, p_DonGiaNhap DECIMAL(17,2))
+BEGIN
+ UPDATE GIAY  
+ SET GIAY.TenGiay = p_TenGiay, GIAY.MaHangSanXuat = p_MaHangSanXuat,
+    GIAY.MaMau= p_MaMau,GIAY.GioiTinh= p_GioiTinh,GIAY.Anh= p_Anh,
+    GIAY.MoTa= p_MoTa,GIAY.TyLeLoiNhuan= p_TyLeLoiNhuan, 
+    GIAY.DonGiaNhap =  p_DonGiaNhap
+WHERE GIAY.MaGiay =p_MaGiay;
+END; $$
+DELIMITER ;
+
 
 insert into CHUCVU(TenChucVu, IsDeleted)values ("Admin", false);
 insert into CHUCVU (TenChucVu, IsDeleted)values ("NhanVienBanHang", false );
@@ -403,6 +466,7 @@ insert into HANGSANXUAT(TenHangSanXuat)values ("Adidas");
 insert into HANGSANXUAT(TenHangSanXuat)values ("Converse");
 insert into HANGSANXUAT(TenHangSanXuat)values ("Vans");
 insert into HANGSANXUAT(TenHangSanXuat)values ("Fila");
+insert into HANGSANXUAT(TenHangSanXuat)values ("Bitis");
 
 
 insert into MAU(TenMau)values ("Purple");
