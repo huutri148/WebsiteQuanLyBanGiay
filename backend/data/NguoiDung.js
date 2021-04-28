@@ -3,7 +3,7 @@ const NguoiDung = require("../models/NguoiDung.model");
 const users = [
   {
     TenNguoiDung: "Nguyen Huu Tri",
-    TenDangNhap: "huutri148",
+    TenDangNhap: "huutri1480",
     MatKhau: "123456",
     MaChucVu: "1",
     Email: "123@example.com",

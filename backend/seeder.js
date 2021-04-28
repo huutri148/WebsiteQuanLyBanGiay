@@ -2,8 +2,10 @@ require("dotenv").config();
 const colors = require("colors");
 const db = require("./models/DataBaseAccessHelper");
 const NguoiDung = require("./models/NguoiDung.model");
+const PhieuBanHang = require("./models/PhieuBanHang.model");
 
 const users = require("./data/NguoiDung");
+const bills = require("./data/PhieuBanHang");
 
 db.connect();
 
@@ -11,6 +13,9 @@ const importData = async () => {
   await users.map(async (user) => {
     await NguoiDung.create(user, (result) => {});
   });
+  //   await bills.map(async (bill) => {
+  //    await PhieuBanHang.Create(bill, (result) => {});
+  //  });
   console.log("Data Imported".green.inverse);
 };
 
