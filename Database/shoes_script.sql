@@ -228,7 +228,7 @@ CREATE TABLE GIOHANG
     MaGioHang int not null,
     MaNguoiDung int not null,
     NgayLap DATETIME ,
-    IsDeleted BOOLEAN,
+    IsDeleted BOOLEAN DEFAULT false,
     CONSTRAINT PK_GIOHANG PRIMARY KEY (MaGioHang)
 );
 
@@ -451,6 +451,160 @@ END; $$
 DELIMITER ;
 
 
+
+
+
+
+
+DELIMITER $$
+create procedure USP_GetListPhieuBanHang()
+BEGIN
+Select C.SoPhieuBanHang,C.TenNguoiDung, C.NgayBan, C.TongTien, D.TenNguoiDung as TenKhachHang, D.SDT from (
+Select A.SoPhieuBanHang, A.TongTien, A.NgayBan, B.TenNguoiDung, A.MaKhachHang
+from (Select *  from ShoesStoreManagement.PHIEUBANHANG ) A 
+left join  ShoesStoreManagement.NGUOIDUNG B USING (MaNguoiDung)) C
+left join ShoesStoreManagement.NGUOIDUNG D on 
+D.MaNguoiDung = C.MaKhachHang;
+END; $$
+DELIMITER ;
+
+DELIMITER $$
+create procedure USP_GetPhieuBanHangByID(p_SoPhieuBanHang int )
+BEGIN
+Select C.SoPhieuBanHang,C.TenNguoiDung, C.NgayBan, C.TongTien, D.TenNguoiDung as TenKhachHang, D.SDT from (
+Select A.SoPhieuBanHang, A.NgayBan, A.TongTien,  B.TenNguoiDung, A.MaKhachHang
+from (Select *  from ShoesStoreManagement.PHIEUBANHANG ) A
+LEFT JOIN   ShoesStoreManagement.NGUOIDUNG B USING (MaNguoiDung) where A.SoPhieuBanHang = p_SoPhieuBanHang) C
+left join ShoesStoreManagement.NGUOIDUNG D on 
+D.MaNguoiDung = C.MaKhachHang;
+END; $$
+DELIMITER ;
+
+DELIMITER $$
+create procedure USP_GetPhieuBanHangByMaKhachHang(p_MaKhachHang int )
+BEGIN
+Select C.SoPhieuBanHang,C.TenNguoiDung, C.NgayBan, C.TongTien, D.TenNguoiDung as TenKhachHang, D.SDT from (
+Select A.SoPhieuBanHang,  A.TongTien, A.NgayBan, B.TenNguoiDung, A.MaKhachHang
+from (Select *  from ShoesStoreManagement.NGUOIDUNG) B
+LEFT JOIN ShoesStoreManagement.PHIEUBANHANG A  USING (MaNguoiDung) where A.MaKhachHang = p_MaKhachHang) C
+left join ShoesStoreManagement.NGUOIDUNG D on 
+D.MaNguoiDung = C.MaKhachHang;
+END; $$
+DELIMITER ;
+
+
+DELIMITER $$
+create procedure USP_ThemPhieuBanHang(
+    p_MaKhachHang int,p_MaNguoiDung int ,
+    p_NgayBan DATETIME ,p_PhuongThucThanhToan NVARCHAR(1000),
+    p_TongTien DECIMAL(17,2), p_GhiChu NVARCHAR(100))
+BEGIN
+INSERT INTO ShoesStoreManagement.PHIEUBANHANG(MaKhachHang ,MaNguoiDung ,
+    NgayBan ,PhuongThucThanhToan ,
+    TongTien , GhiChu )
+VALUES (
+    p_MaKhachHang ,p_MaNguoiDung ,
+    p_NgayBan ,p_PhuongThucThanhToan ,
+    p_TongTien , p_GhiChu );
+END; $$
+DELIMITER ;
+
+
+DELIMITER $$
+create procedure USP_CapNhatThongTinPhieuBanHang(
+    p_SoPhieuBanHang int,
+    p_MaKhachHang int,p_MaNguoiDung int ,
+    p_NgayBan DATETIME ,p_PhuongThucThanhToan NVARCHAR(1000),
+    p_TongTien DECIMAL(17,2), p_GhiChu NVARCHAR(100))
+BEGIN
+UPDATE PHIEUBANHANG
+SET PHIEUBANHANG.MaKhachHang= p_MaKhachHang, PHIEUBANHANG.MaNguoiDung= p_MaNguoiDung,
+    PHIEUBANHANG.NgayBan= p_NgayBan,PHIEUBANHANG.PhuongThucThanhToan= p_PhuongThucThanhToan,
+    PHIEUBANHANG.TongTien= p_TongTien,PHIEUBANHANG.TongTien= p_TongTien
+WHERE PHIEUBANHANG.SoPhieuBanHang=p_SoPhieuBanHang;
+END; $$
+DELIMITER ;
+
+DELIMITER $$
+create procedure USP_ThemChiTietPhieuBanHang(p_MaChiTietGiay int,
+        p_SoLuongMua int, p_GiaBan Decimal(17,2), p_ThanhTien Decimal(17,2))
+BEGIN
+    declare phieuBanHangID int;
+    set phieuBanHangID = (select max(SoPhieuBanHang) from ShoesStoreManagement.PHIEUBANHANG);
+    INSERT INTO ShoesStoreManagement.CHITIETPHIEUBANHANG(MaChiTietGiay ,SoPhieuBanHang, 
+        SoLuongMua , GiaBan , ThanhTien)
+    VALUES ( p_MaChiTietGiay ,phieuBanHangID,
+        p_SoLuongMua , p_GiaBan , p_ThanhTien);
+    Update ShoesStoreManagement.CHITIETGIAY 
+    set CHITIETGIAY.SoLuong = CHITIETGIAY.SoLuong - p_SoLuongMua 
+    where CHITIETGIAY.MaChiTietGiay = p_MaChiTietGiay;
+END; $$
+DELIMITER ;
+
+
+
+
+
+
+
+
+
+DELIMITER $$
+create procedure USP_GetListGioHang()
+BEGIN
+    Select * from ShoesStoreManagement.GIOHANG;
+END; $$
+DELIMITER ;
+
+DELIMITER $$
+create procedure USP_GetGioHangByID(p_MaGioHang int )
+BEGIN
+    Select * from ShoesStoreManagement.GIOHANG 
+    WHERE GIOHANG.MaGioHang = p_MaGioHang;
+END; $$
+DELIMITER ;
+
+DELIMITER $$
+create procedure USP_GetGioHangByMaKhachHang(p_MaKhachHang int )
+BEGIN
+    Select * from ShoesStoreManagement.GIOHANG
+    WHERE GIOHANG.MaNguoiDung= p_MaKhachHang;
+END; $$
+DELIMITER ;
+
+DELIMITER $$
+create procedure USP_ThemGioHang(
+    p_MaKhachHang int,
+    p_NgayLap DATETIME)
+BEGIN
+INSERT INTO ShoesStoreManagement.PHIEUBANHANG(MaNguoiDung ,
+    NgayLap)
+VALUES (
+    p_MaKhachHang ,p_NgayLap);
+END; $$
+DELIMITER ;
+
+DELIMITER $$
+create procedure USP_ThemChiTietGioHang(p_MaChiTietGiay int,
+        p_SoLuongMua int)
+BEGIN
+    declare gioHangID int;
+    set gioHangID= (select max(MaGioHang) from ShoesStoreManagement.GIOHANG);
+    INSERT INTO ShoesStoreManagement.CHITIETGIOHANG(MaGioHang,MaChiTietGiay ,
+        SoLuongMua )
+    VALUES ( p_MaChiTietGiay ,gioHangID,
+        p_SoLuongMua );
+END; $$
+DELIMITER ;
+
+
+
+
+
+
+
+
+
 insert into CHUCVU(TenChucVu, IsDeleted)values ("Admin", false);
 insert into CHUCVU (TenChucVu, IsDeleted)values ("NhanVienBanHang", false );
 insert into CHUCVU (TenChucVu, IsDeleted)values ("NhanVienKeToan", false);
@@ -571,4 +725,7 @@ insert into CHITIETGIAY(
     1,
     200
 );
+
+
+
 
