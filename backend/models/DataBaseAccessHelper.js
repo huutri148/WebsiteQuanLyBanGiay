@@ -11,6 +11,7 @@ var connection = mysql.createConnection({
   user: config.USER,
   password: config.PASSWORD,
   database: config.DATABASE,
+  multipleStatements: true,
 });
 
 //method of db

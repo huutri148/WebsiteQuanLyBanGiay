@@ -1,8 +1,13 @@
 const express = require("express");
 const router = express.Router();
 const {
-} = require("../controllers/.controller");
+    getList,
+    createCart,
+    removeCart,
+    updateCart,
+    getByID,
+} = require("../controllers/GioHang.controller");
 
-router.route("/");
-router.route("/:id");
+router.route("/").get(getList).post(createCart).delete(removeCart);
+router.route("/:id").get(getByID).patch(updateCart);
 module.exports = router;

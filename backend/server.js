@@ -6,6 +6,7 @@ const bodyParser = require("body-parser");
 const userRoutes = require("./routes/NguoiDung.routes");
 const productRoutes = require("./routes/SanPham.routes");
 const billRoutes = require("./routes/PhieuBanHang.routes");
+const cartRoutes = require("./routes/GioHang.routes");
 
 var app = express();
 
@@ -25,6 +26,7 @@ app.get("/", function (req, res) {
 app.use("/api/users", userRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/bills", billRoutes);
+app.use("/api/carts", cartRoutes);
 
 const PORT = process.env.PORT || 5000;
 

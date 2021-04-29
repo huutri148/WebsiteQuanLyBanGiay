@@ -2,11 +2,12 @@ const express = require("express");
 const router = express.Router();
 const {
     getList,
-    createBill,
-    updateBill,
-    getByID
-} = require("../controllers/PhieuBanHang.controller");
+    createProduct,
+    removeProduct,
+    updateProduct,
+    getByID,
+} = require("../controllers/SanPham.controller");
 
-router.route("/").get(getList).post(createBill);
-router.route("/:id").get(getByID).patch(updateBill);
+router.route("/").get(getList).post(createProduct).delete(removeProduct);
+router.route("/:id").get(getByID).patch(updateProduct);
 module.exports = router;

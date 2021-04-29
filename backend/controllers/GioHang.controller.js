@@ -1,7 +1,7 @@
-const GioHang = require("../models/PhieuBanHang.model");
+const GioHang = require("../models/GioHang.model");
 
-// @desc Fetch all GioHang 
-// @route Get/api/bills
+// @desc Fetch all carts
+// @route Get/api/carts
 // @access Public
 const getList = async (req, res) => {
   await GioHang.Get((result) => {
@@ -9,17 +9,17 @@ const getList = async (req, res) => {
       res.send(JSON.stringify(result));
     } else {
       res.status(404);
-      throw new Error("Product not found ");
+      throw new Error("Cart not found ");
     }
   });
 };
 
 // @desc Fetch all GioHang by id
-// @route Get/api/bills/id
+// @route Get/api/carts/id
 // @access Public
 const getByID = async (req, res) => {
-  const sanPhamID = req.params.id;
-  await GioHang.GetByID(sanPhamID, (result) => {
+  const gioHangID = req.params.id;
+  await GioHang.GetByID(gioHangID, (result) => {
     if (result) {
       res.status(200).send(JSON.stringify(result));
     } else {
@@ -28,54 +28,57 @@ const getByID = async (req, res) => {
   });
 };
 
-// @desc    Add a  bills 
-// @route   Post /api/bills
+// @desc    Add a new gioHang
+// @route   Post /api/carts
 // @access  Public
-const createBill= async (req, res) => {
+const createCart = async (req, res) => {
   if (!req.body) {
     res.status(400).send({
       message: "Content can not be empty",
     });
   }
 
-  const bill= {
+  const cart = {
     MaNguoiDung: req.body.MaNguoiDung,
-    MaKhachHang: req.body.MaKhachHang,
-    NgayBan: req.body.NgayBan,
-    PhuongThucThanhToan: req.body.PhuongThucThanhToan,
-    TongTien: req.body.TongTien,
-    GhiChu: req.body.GhiChu,
-    ChiTietGioHang: req.body.ChiTietPhieuBanHang
+    ChiTietGioHang: req.body.ChiTietGioHang,
   };
 
-  await GioHang.Create(bill, (result) => {
+  await GioHang.Create(cart, (result) => {
     res.status(200).send({ message: "Created successfully" });
   });
 };
 
-// @desc    Update information of a bill 
-// @route   Patch /api/bills/id
+// @desc    Update information of a cart
+// @route   Patch /api/carts/id
 // @access  Public
-const updateBill= async (req, res) => {
+const updateCart = async (req, res) => {
   if (!req.body) {
     res.status(400).send({
       message: "Content can not be empty",
     });
   }
-  const bill = {
-    SoGioHang: req.body.SoPhieuBanHang,
-    MaNguoiDung: req.body.MaNguoiDung,
-    MaKhachHang: req.body.MaKhachHang,
-    NgayBan: req.body.NgayBan,
-    PhuongThucThanhToan: req.body.PhuongThucThanhToan,
-    TongTien: req.body.TongTien,
-    GhiChu: req.body.GhiChu,
-    ChiTietGioHang: req.body.ChiTietPhieuBanHang
+  const cart = {
+    MaGioHang: req.body.MaGioHang,
+    ChiTietGioHang: req.body.ChiTietGioHang,
   };
 
-  await GioHang.Edit( bill, (result) => {
+  await GioHang.Edit(cart, (result) => {
     res.status(200).send({ message: "Edited successfully" });
   });
 };
 
-module.exports = {getList, createBill, updateBill,getByID};
+// @desc    Remove a cart
+// @route   Delete /api/carts
+// @access  Public
+const removeCart = async (req, res) => {
+  const cartID = req.body.MaGioHang;
+  await GioHang.Delete(cartID, (result) => {
+    if (result) {
+      res.status(200).send(JSON.stringify(result));
+    } else {
+      res.status(404);
+    }
+  });
+};
+
+module.exports = { getList, createCart, removeCart, updateCart, getByID };
