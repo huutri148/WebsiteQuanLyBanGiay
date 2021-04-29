@@ -225,11 +225,10 @@ foreign key(MaBaoCaoBanHang) references BAOCAOBANHANG(MaBaoCaoBanHang);
 
 CREATE TABLE GIOHANG 
 (
-    MaGioHang int not null,
+    MaGioHang int auto_increment PRIMARY KEY,
     MaNguoiDung int not null,
-    NgayLap DATETIME ,
-    IsDeleted BOOLEAN DEFAULT false,
-    CONSTRAINT PK_GIOHANG PRIMARY KEY (MaGioHang)
+    NgayLap DATETIME default CURRENT_TIMESTAMP,
+    IsDeleted BOOLEAN DEFAULT false
 );
 
 
@@ -242,7 +241,7 @@ CREATE TABLE CHITIETGIOHANG
 (
     MaGioHang int not null,
     MaChiTietGiay int not null,
-    SoLuongMua int not null, 
+    SoLuongMua int DEFAULT 1, 
     CONSTRAINT PK_CHITIETGIOHANG PRIMARY KEY (MaGioHang, MaChiTietGiay)
 );
 
@@ -574,13 +573,12 @@ DELIMITER ;
 
 DELIMITER $$
 create procedure USP_ThemGioHang(
-    p_MaKhachHang int,
-    p_NgayLap DATETIME)
+    p_MaKhachHang int)
 BEGIN
-INSERT INTO ShoesStoreManagement.PHIEUBANHANG(MaNguoiDung ,
-    NgayLap)
+INSERT INTO ShoesStoreManagement.GIOHANG(MaNguoiDung 
+    )
 VALUES (
-    p_MaKhachHang ,p_NgayLap);
+    p_MaKhachHang );
 END; $$
 DELIMITER ;
 
@@ -591,14 +589,37 @@ BEGIN
     declare gioHangID int;
     set gioHangID= (select max(MaGioHang) from ShoesStoreManagement.GIOHANG);
     INSERT INTO ShoesStoreManagement.CHITIETGIOHANG(MaGioHang,MaChiTietGiay ,
-        SoLuongMua )
-    VALUES ( p_MaChiTietGiay ,gioHangID,
+        SoLuongMua)
+    VALUES ( gioHangID,p_MaChiTietGiay ,
         p_SoLuongMua );
 END; $$
 DELIMITER ;
 
+DELIMITER $$
+create procedure USP_XoaTrangGioHang(p_MaGioHang int)
+BEGIN
+    DELETE FROM CHITIETGIOHANG WHERE MaGioHang= p_MaGioHang;
+END; $$
+DELIMITER ;
 
 
+DELIMITER $$
+create procedure USP_XoaGioHang(p_MaGioHang int)
+BEGIN
+    DELETE FROM GIOHANG WHERE MaGioHang= p_MaGioHang;
+END; $$
+DELIMITER ;
+
+
+DELIMITER $$
+create procedure USP_CapNhatChiTietGioHang(p_MaGioHang int,p_MaChiTietGiay int,
+        p_SoLuongMua int)
+BEGIN
+    INSERT INTO ShoesStoreManagement.CHITIETGIOHANG(MaGioHang,MaChiTietGiay ,
+        SoLuongMua )
+    VALUES (p_MaGioHang, p_MaChiTietGiay , p_SoLuongMua );
+END; $$
+DELIMITER ;
 
 
 
