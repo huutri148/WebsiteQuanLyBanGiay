@@ -7,6 +7,7 @@ const userRoutes = require("./routes/NguoiDung.routes");
 const productRoutes = require("./routes/SanPham.routes");
 const billRoutes = require("./routes/PhieuBanHang.routes");
 const cartRoutes = require("./routes/GioHang.routes");
+const baoCaoBanHangRoutes= require("./routes/BaoCaoBanHang.routes");
 
 var app = express();
 
@@ -27,6 +28,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/bills", billRoutes);
 app.use("/api/carts", cartRoutes);
+app.use("/api/baocaobanhangs", baoCaoBanHangRoutes);
 
 const PORT = process.env.PORT || 5000;
 

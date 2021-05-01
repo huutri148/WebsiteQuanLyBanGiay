@@ -202,7 +202,8 @@ CREATE TABLE BAOCAOBANHANG
     NgayBatDau DATETIME DEFAULT CURRENT_TIMESTAMP,
     NgayKetThuc DATETIME DEFAULT CURRENT_TIMESTAMP,
     SoLuongPhieuBanHang int DEFAULT 0,
-    IsDeleted boolean 
+    TongDoanhThu int DEFAULT 0,
+    IsDeleted boolean default false 
 );
 
 alter table BAOCAOBANHANG
@@ -213,9 +214,9 @@ foreign key(MaNguoiDung) references NGUOIDUNG(MaNguoiDung);
 CREATE TABLE CHITIETBAOCAOBANHANG
 (
     MaBaoCaoBanHang int not null,
-    Ngay DATETIME,
-    SoLuongPhieuBan int not null,
-    DoanhThu DECIMAL(17,2) not null,
+    Ngay DATETIME not null,
+    SoLuongPhieuBan int default 0,
+    DoanhThu DECIMAL(17,2) default 0,
     CONSTRAINT PK_CHITIETPHIEUBANHANG PRIMARY KEY (MaBaoCaoBanHang, Ngay)
 );
 
@@ -300,10 +301,10 @@ CREATE TABLE BAOCAOLOINHUAN
     MaNguoiDung int not null,
     NgayBatDau DATETIME DEFAULT CURRENT_TIMESTAMP,
     NgayKetThuc DATETIME DEFAULT CURRENT_TIMESTAMP,
-    TongChi DECIMAL(17,2) ,
-    TongDoanhThu DECIMAL(17,2) ,
-    TongLoiNhuan DECIMAL(17,2) ,
-    IsDeleted boolean 
+    TongChi DECIMAL(17,2) default 0 , 
+    TongDoanhThu DECIMAL(17,2) default 0,
+    TongLoiNhuan DECIMAL(17,2) default 0,
+    IsDeleted boolean  default false
 );
 alter table BAOCAOLOINHUAN 
 add constraint BAOCAOLOINHUAN_NGUOIDUNG_FK
@@ -622,6 +623,51 @@ END; $$
 DELIMITER ;
 
 
+
+
+
+DELIMITER $$
+create procedure USP_ThemBaoCaoBanHang(p_MaNguoiDung int,p_NgayBatDau datetime, p_NgayKetThuc datetime)
+BEGIN
+INSERT INTO ShoesStoreManagement.BAOCAOBANHANG(MaNguoiDung, NgayBatDau, NgayKetThuc)
+VALUES (p_MaNguoiDung, p_NgayBatDau, p_NgayKetThuc);
+END; $$
+DELIMITER ;
+
+DELIMITER $$
+create procedure USP_ThemChiTietBaoCaoBanHang(p_Ngay DATETIME)
+BEGIN
+    declare baoCaoID int;
+    declare soPhieu, doanhThu int;
+
+    set baoCaoID= (select max(MaBaoCaoBanHang) from ShoesStoreManagement.BAOCAOBANHANG);
+    if((select count(*) from PHIEUBANHANG  A where 
+        DAY(p_Ngay) = Day(A.NgayBan) and 
+        MONTH(p_Ngay) = MONTH(A.NgayBan) and    
+        YEAR(p_Ngay) = YEAR(A.NgayBan) )>0)
+    then
+        set soPhieu = (select count(*) from PHIEUBANHANG  A where 
+        DAY(p_Ngay) = Day(A.NgayBan) and 
+        MONTH(p_Ngay) = MONTH(A.NgayBan) and    
+        YEAR(p_Ngay) = YEAR(A.NgayBan) );
+        set  doanhThu = (select sum(A.ThanhTien) from PHIEUBANHANG  A where 
+        DAY(p_Ngay) = Day(A.NgayBan) and 
+        MONTH(p_Ngay) = MONTH(A.NgayBan) and    
+        YEAR(p_Ngay) = YEAR(A.NgayBan) );
+    else 
+        set soPhieu = 0;
+        set doanhThu = 0;
+    end if;
+
+    UPDATE BAOCAOBANHANG  B
+    SET  B.TongDoanhThu = B.TongDoanhThu + doanhThu,
+         B.SoLuongPhieuBanHang = B.SoLuongPhieuBan + soPhieu        
+    WHERE B.MaBaoCaoBanHang = baoCaoID;
+    INSERT INTO ShoesStoreManagement.CHITIETBAOCAOBANHANG(MaBaoCaoBanHang,Ngay,
+    SoLuongPhieuBan, DoanhThu)
+    VALUES (baoCaoID, p_Ngay, soPhieu, doanhThu);
+END; $$
+DELIMITER ;
 
 
 
