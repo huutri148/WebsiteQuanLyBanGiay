@@ -37,7 +37,9 @@ export default function useTable(records, headCells, filterFn) {
   const [orderBy, setOrderBy] = useState();
 
   const TblContainer = (props) => (
-    <Table stickyHeader className={classes.table}>{props.children}</Table>
+    <Table stickyHeader className={classes.table}>
+      {props.children}
+    </Table>
   );
 
   const TblHead = (props) => {
@@ -53,6 +55,7 @@ export default function useTable(records, headCells, filterFn) {
           {headCells.map((headCell) => (
             <TableCell
               key={headCell.id}
+              align={headCell.align}
               sortDirection={orderBy === headCell.id ? order : false}
             >
               {headCell.disableSorting ? (
