@@ -13,7 +13,7 @@ import AssignmentIcon from "@material-ui/icons/Assignment";
 import { Link } from "react-router-dom";
 export const mainListItems = (
   <div>
-    <ListSubheader inset>Quản lý</ListSubheader>
+    <ListSubheader style = { {marginRight: 60}}  inset>Quản lý</ListSubheader>
 
     <ListItem button component={Link} to="/products">
       <ListItemIcon>
@@ -45,7 +45,7 @@ export const mainListItems = (
 
 export const secondaryListItems = (
   <div>
-    <ListSubheader inset>Báo cáo</ListSubheader>
+    <ListSubheader style = { {marginRight: 60}}  inset>Báo cáo</ListSubheader>
     <ListItem button component={Link} to="/products">
       <ListItemIcon>
         <BarChartIcon />
