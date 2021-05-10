@@ -6,6 +6,7 @@ import ListSubheader from "@material-ui/core/ListSubheader";
 import HomeIcon from "@material-ui/icons/Home";
 import DashboardIcon from "@material-ui/icons/Dashboard";
 import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
+import ReceiptIcon from '@material-ui/icons/Receipt';
 import PeopleIcon from "@material-ui/icons/People";
 import BarChartIcon from "@material-ui/icons/BarChart";
 import MoneyIcon from "@material-ui/icons/Money";
@@ -19,26 +20,31 @@ export const mainListItems = (
       <ListItemIcon>
         <DashboardIcon />
       </ListItemIcon>
-      <ListItemText primary="Sản phẩm" />
+      <ListItemText primary="Sản Phẩm" />
     </ListItem>
-
+    <ListItem button component={Link} to="/bills">
+      <ListItemIcon>
+        <ReceiptIcon />
+      </ListItemIcon>
+      <ListItemText primary="Bán Hàng" />
+    </ListItem>
     <ListItem button component={Link} to="/users">
       <ListItemIcon>
         <PeopleIcon />
       </ListItemIcon>
-      <ListItemText primary="Người dùng" />
+      <ListItemText primary="Người Dùng" />
     </ListItem>
     <ListItem button component={Link} to="/users">
       <ListItemIcon>
         <HomeIcon />
       </ListItemIcon>
-      <ListItemText primary="Nhập kho" />
+      <ListItemText primary="Nhập Kho" />
     </ListItem>
     <ListItem button component={Link} to="/carts">
       <ListItemIcon>
         <ShoppingCartIcon />
       </ListItemIcon>
-      <ListItemText primary="Giỏ hàng" />
+      <ListItemText primary="Giỏ Hàng" />
     </ListItem>
   </div>
 );

@@ -6,7 +6,7 @@ import "../components/App/App.css";
 import QuanLySanPham from "./QuanLySanPham";
 import QuanLyGioHang from "./QuanLyGioHang";
 import QuanLyNguoiDung from "./QuanLyNguoiDung";
-import { render } from 'react-dom';
+import QuanLyBanHang from "./QuanLyBanHang";
 
 
 export default function Manager(){
@@ -25,6 +25,9 @@ export default function Manager(){
             </Route>
             <Route exact path="/carts">
               <QuanLyGioHang />
+            </Route>
+            <Route exact path="/bills">
+              <QuanLyBanHang />
             </Route>
           </Switch>
         </Layout>

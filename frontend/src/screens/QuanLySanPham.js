@@ -41,14 +41,12 @@ const useStyles = makeStyles((theme) => ({
     height: "80vh",
   },
   tab: {
-    margin: theme.spacing(0, 2),
+    margin: theme.spacing(2, 2),
     display: "block",
     float: "left",
     width: "100%",
   },
   tabPaper: {
-    margin: theme.spacing(0, 6),
-    padding: theme.spacing(0, 6),
     display: "inline-block",
     float: "left",
   },
@@ -63,7 +61,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const getStripedStyle = (index) => {
-  return { backgrround: index % 2 ? "#fafafa" : "white" };
+  return { background: index % 2 ? "#fafafa" : "white" };
 };
 const products = [
   {
@@ -116,7 +114,7 @@ const headCells = [
   { id: "actions", label: "Actions" },
 ];
 const QuanLySanPham = () => {
-  const [value, setValue] = useState();
+  const [value, setValue] = useState(0);
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -150,8 +148,8 @@ const QuanLySanPham = () => {
   return (
     <div className={classes.root}>
       <CssBaseline />
-      <Paper className={classes.tabPaper}>
-        <Tabs
+      <div>
+      <Tabs
           indicatorColor="primary"
           textColor="primary"
           value={value}
@@ -160,12 +158,14 @@ const QuanLySanPham = () => {
           <Tab label="Quản lý" />
           <Tab label="Thêm" />
         </Tabs>
-      </Paper>
+      </div>
+      <Typography
+          style = {{fontSize: 32, color: "#2e3b44"}}
+          component="h1" variant="h5">
+            {value == 0 ? 'Quản Lý Sản Phẩm' : 'Thêm Sản Phẩm'} 
+      </Typography>
       <TabPanel value={value} index={0}>
         <Paper className={classes.paper}>
-          <Typography component="h1" variant="h5">
-            Quản lý sản phẩm
-          </Typography>
           <Toolbar>
             <Input
               label="Search"
