@@ -74,7 +74,7 @@ CREATE TABLE NHACUNGCAP
     SDT NVARCHAR(20) NOT NULL,
     DiaChi NVARCHAR(1000) NOT NULL,
     Email NVARCHAR(1000) NOT NULL,
-    IsDeleted BOOLEAN 
+    IsDeleted BOOLEAN default false 
 );
 
 CREATE TABLE NGUOIDUNG
@@ -167,8 +167,8 @@ CREATE TABLE BAOCAOTONKHO
     MaBaoCaoTonKho int auto_increment PRIMARY KEY,
     MaNguoiDung int not null,
     NgayLap DATETIME DEFAULT CURRENT_TIMESTAMP,
-    TongSoHangHoa int not null,
-    IsDeleted boolean not null,
+    TongSoHangHoa int default 0,
+    IsDeleted boolean default false,
     GhiChu nvarchar(1000)
 );
 
@@ -181,7 +181,7 @@ CREATE TABLE CHITIETBAOCAOTONKHO
 (
     MaChiTietGiay int not null,
     MaBaoCaoTonKho int not null,
-    SoLuongTon int not null,
+    SoLuongTon int default 0,
     TrangThaiHangHoa nvarchar(1000) not null,
     CONSTRAINT PK_CHITIETBAOCAOTONKKHO PRIMARY KEY (MaBaoCaoTonKho, MaChiTietGiay)
 );
@@ -263,7 +263,7 @@ CREATE TABLE PHIEUDATHANG
     MaNguoiDung int not null,
     MaNhaCungCap int not null,
     NgayLap datetime DEFAULT CURRENT_TIMESTAMP,
-    IsDeleted BOOLEAN
+    IsDeleted BOOLEAN default false
 );
 
 alter table PHIEUDATHANG
@@ -324,6 +324,71 @@ CREATE TABLE CHITIETBAOCAOLOINHUAN
 alter table CHITIETBAOCAOLOINHUAN 
 add constraint CHITIETBAOCAOLOINHUAN_BAOCAOLOINHUAN_FK
 foreign key(MaBaoCaoLoiNhuan) references BAOCAOLOINHUAN(MaBaoCaoLoiNhuan);
+
+
+
+
+
+CREATE TABLE PHIEUNHAPKHO 
+(
+    SoPhieuNhapKho int auto_increment PRIMARY KEY,
+    MaNguoiDung int not null,
+    MaNhaCungCap int not null,
+    NgayNhapKho DATETIME DEFAULT CURRENT_TIMESTAMP,
+    GhiChu nvarchar(1000) not null,
+    TongTien Decimal(17,2) default 0,
+    IsDeleted boolean  default false
+);
+alter table PHIEUNHAPKHO 
+add constraint PHIEUNHAPKHO_NGUOIDUNG_FK
+foreign key(MaNguoiDung) references NGUOIDUNG(MaNguoiDung);
+
+
+alter table PHIEUNHAPKHO 
+add constraint PHIEUNHAPKHO_NHACUNGCAP_FK
+foreign key(MaNhaCungCap) references NHACUNGCAP(MaNhaCungCap);
+
+
+
+CREATE TABLE CHITIETPHIEUNHAPKHO
+(
+    MaChiTietGiay int not null, 
+    SoPhieuNhapKho int not null,
+    SoLuongNhap int default 0,
+    GiaNhap DECIMAL(17,2) default 0,
+    ThanhTien Decimal(17,2) default 0,
+    CONSTRAINT PK_CHITIETPHIEUDATHANG PRIMARY KEY (SoPhieuNhapKho, MaChiTietGiay)
+);
+
+alter table CHITIETPHIEUNHAPKHO 
+add constraint CHITIETPHIEUNHAPKHO_CHITIETGIAY_FK
+foreign key(MaChiTietGiay) references CHITIETGIAY(MaChiTietGiay);
+
+
+
+
+CREATE TABLE PHIEUCHI
+(
+    SoPhieuChi int auto_increment PRIMARY KEY,
+    MaNguoiDung int not null,
+    SoPhieuNhapKho int not null,
+    NgayLap DATETIME DEFAULT CURRENT_TIMESTAMP,
+    GhiChu nvarchar(1000) ,
+    TongTien Decimal(17,2) default 0,
+    IsDeleted boolean  default false
+);
+alter table PHIEUCHI
+add constraint PHIEUCHI_NGUOIDUNG_FK
+foreign key(MaNguoiDung) references NGUOIDUNG(MaNguoiDung);
+
+alter table PHIEUCHI
+add constraint PHIEUCHI_PHIEUNHAPKHO_FK
+foreign key(SoPhieuNhapKho) references PHIEUNHAPKHO(SoPhieuNhapKho);
+
+
+
+
+
 
 DELIMITER $$
 create procedure USP_DangNhap(p_userName VARCHAR(255),p_passWord VARCHAR(255))
@@ -447,6 +512,283 @@ BEGIN
     GIAY.MoTa= p_MoTa,GIAY.TyLeLoiNhuan= p_TyLeLoiNhuan, 
     GIAY.DonGiaNhap =  p_DonGiaNhap
 WHERE GIAY.MaGiay =p_MaGiay;
+END; $$
+DELIMITER ;
+
+
+
+
+
+
+DELIMITER $$
+create procedure USP_GetListPhieuNhapKho()
+BEGIN
+Select C.SoPhieuNhapKho,C.TenNguoiDung, C.NgayNhapKho, C.TongTien, D.TenNhaCungCap from (
+Select A.SoPhieuNhapKho, A.TongTien, A.NgayNhapKho, B.TenNguoiDung, A.MaNhaCungCap
+from (Select *  from ShoesStoreManagement.PHIEUNHAPKHO) A 
+left join  ShoesStoreManagement.NGUOIDUNG B USING (MaNguoiDung)) C
+left join ShoesStoreManagement.NHACUNGCAP D on 
+D.MaNhaCungCap= C.MaNhaCungCap;
+END; $$
+DELIMITER ;
+
+
+
+DELIMITER $$
+create procedure USP_GetPhieuNhapKhoByID(p_SoPhieuNhapKho int)
+BEGIN
+Select C.SoPhieuNhapKho,C.TenNguoiDung, C.NgayNhapKho, C.TongTien, D.TenNhaCungCap from (
+Select A.SoPhieuNhapKho, A.TongTien, A.NgayNhapKho, B.TenNguoiDung, A.MaNhaCungCap
+from (Select *  from ShoesStoreManagement.PHIEUNHAPKHO where PHIEUNHAPKHO.SoPhieuNhapKho = p_SoPhieuNhapKho) A 
+left join  ShoesStoreManagement.NGUOIDUNG B USING (MaNguoiDung)) C
+left join ShoesStoreManagement.NHACUNGCAP D on 
+D.MaNhaCungCap= C.MaNhaCungCap;
+END; $$
+DELIMITER ;
+
+
+DELIMITER $$
+create procedure USP_ThemPhieuNhapKho(
+    p_MaNhaCungCap int,p_MaNguoiDung int ,
+    p_NgayNhapKho DATETIME, 
+    p_TongTien DECIMAL(17,2), p_GhiChu NVARCHAR(100))
+BEGIN
+INSERT INTO ShoesStoreManagement.PHIEUNHAPKHO(MaNhaCungCap,MaNguoiDung ,
+    NgayNhapKho,
+    TongTien , GhiChu )
+VALUES (
+    p_MaNhaCungCap,p_MaNguoiDung ,
+    p_NgayNhapKho,
+    p_TongTien , p_GhiChu );
+END; $$
+DELIMITER ;
+
+
+
+DELIMITER $$
+create procedure USP_ThemChiTietPhieuNhapKho(p_MaChiTietGiay int,
+        p_SoLuongNhap int, p_GiaNhap Decimal(17,2), p_ThanhTien Decimal(17,2))
+BEGIN
+    declare phieuNhapKhoID int;
+    set phieuNhapKhoID = (select max(SoPhieuNhapKho) from ShoesStoreManagement.PHIEUNHAPKHO);
+    INSERT INTO ShoesStoreManagement.CHITIETPHIEUNHAPKHO(MaChiTietGiay ,SoPhieuNhapKho, 
+        SoLuongNhap, GiaNhap, ThanhTien)
+    VALUES ( p_MaChiTietGiay ,phieuNhapKhoID,
+        p_SoLuongNhap, p_GiaNhap, p_ThanhTien);
+    Update ShoesStoreManagement.CHITIETGIAY 
+    set CHITIETGIAY.SoLuong = CHITIETGIAY.SoLuong +  p_SoLuongNhap
+    where CHITIETGIAY.MaChiTietGiay = p_MaChiTietGiay;
+END; $$
+DELIMITER ;
+
+
+DELIMITER $$
+create procedure USP_CapNhatThongTinPhieuNhapKho(
+    p_SoPhieuNhapKho int, 
+    p_MaNhaCungCap int,p_MaNguoiDung int ,
+    p_NgayNhapKho DATETIME, 
+    p_TongTien DECIMAL(17,2), p_GhiChu NVARCHAR(100))
+BEGIN
+UPDATE PHIEUNHAPKHO
+SET PHIEUNHAPKHO.MaNhaCungCap= p_MaNhaCungCap, PHIEUNHAPKHO.MaNguoiDung= p_MaNguoiDung,
+    PHIEUNHAPKHO.NgayNhapKho= p_NgayNhapKho,
+    PHIEUNHAPKHO.TongTien= p_TongTien,PHIEUNHAPKHO.GhiChu= p_GhiChu
+WHERE PHIEUNHAPKHO.SoPhieuNhapKho=p_SoPhieuNhapKho;
+END; $$
+DELIMITER ;
+
+
+
+DELIMITER $$
+create procedure USP_XoaTrangPhieuNhapKho(p_SoPhieuNhapKho int)
+BEGIN
+    DELETE FROM CHITIETPHIEUNHAPKHO WHERE SoPhieuNhapKho= p_SoPhieuNhapKho;
+END; $$
+DELIMITER ;
+
+
+
+DELIMITER $$
+create procedure USP_CapNhatChiTietPhieuNhapKho(
+        p_SoPhieuNhapKho int,p_MaChiTietGiay int,
+        p_SoLuongNhap int, p_GiaNhap Decimal(17,2), p_ThanhTien Decimal(17,2)
+)
+BEGIN
+    INSERT INTO ShoesStoreManagement.CHITIETPHIEUNHAPKHO(
+        SoPhieuNhapKho ,MaChiTietGiay ,
+        SoLuongNhap , GiaNhap , ThanhTien 
+    )
+    VALUES (
+        p_SoPhieuNhapKho ,p_MaChiTietGiay ,
+        p_SoLuongNhap , p_GiaNhap , p_ThanhTien 
+    );
+END; $$
+DELIMITER ;
+
+
+DELIMITER $$
+create procedure USP_XoaPhieuNhapKho(
+        p_SoPhieuNhapKho int)
+BEGIN
+    Update ShoesStoreManagement.PHIEUNHAPKHO
+    set PHIEUNHAPKHO.IsDeleted = true 
+    where PHIEUNHAPKHO.SoPhieuNhapKho= p_SoPhieuNhapKho;
+END; $$
+DELIMITER ;
+
+
+DELIMITER $$
+create procedure USP_GetListPhieuChi()
+BEGIN
+Select C.SoPhieuNhapKho,C.TenNguoiDung, C.NgayLap,C.SoPhieuChi, C.TongTien, D.TenNhaCungCap from (
+Select A.SoPhieuChi, A.TongTien, A.NgayNhapKho, B.TenNguoiDung, A.MaNhaCungCap, A.SoPhieuNhapKho
+from (Select *  from ShoesStoreManagement.PHIEUCHI) A 
+left join  ShoesStoreManagement.NGUOIDUNG B USING (MaNguoiDung)) C
+left join ShoesStoreManagement.NHACUNGCAP on 
+D.MaNhaCungCap= C.MaNhaCungCap;
+END; $$
+DELIMITER ;
+
+
+DELIMITER $$
+create procedure USP_GetPhieuChiByID(p_SoPhieuChi int)
+BEGIN
+Select C.SoPhieuNhapKho,C.TenNguoiDung, C.NgayLap,C.SoPhieuChi, C.TongTien, D.TenNhaCungCap from (
+Select A.SoPhieuChi, A.TongTien, A.NgayNhapKho, B.TenNguoiDung, A.MaNhaCungCap, A.SoPhieuNhapKho
+from (Select *  from ShoesStoreManagement.PHIEUCHI where SoPhieuChi = p_SoPhieuChi) A 
+left join  ShoesStoreManagement.NGUOIDUNG B USING (MaNguoiDung)) C
+left join ShoesStoreManagement.NHACUNGCAP on 
+D.MaNhaCungCap= C.MaNhaCungCap;
+END; $$
+DELIMITER ;
+
+DELIMITER $$
+create procedure USP_ThemPhieuChi(
+    p_SoPhieuNhapKho int,p_MaNguoiDung int ,
+    p_NgayLap DATETIME, 
+    p_TongTien DECIMAL(17,2), p_GhiChu NVARCHAR(100))
+BEGIN
+    INSERT INTO ShoesStoreManagement.PHIEUNHAPKHO(
+    SoPhieuNhapKho,MaNguoiDung ,
+    NgayLap , 
+    TongTien , GhiChu )
+VALUES (
+    p_SoPhieuNhapKho,
+    p_MaNguoiDung ,
+    p_NgayLap , 
+    p_TongTien , 
+    p_GhiChu 
+);
+END; $$
+DELIMITER ;
+
+
+DELIMITER $$
+create procedure USP_GetListNhaCungCap()
+BEGIN
+    Select * from ShoesStoreManagement.NHACUNGCAP
+    where NHACUNGCAP.IsDeleted = false;
+END; $$
+DELIMITER ;
+
+DELIMITER $$
+create procedure USP_GetNhaCungCapByID(p_MaNhaCungCap int )
+BEGIN
+    Select * from ShoesStoreManagement.NHACUNGCAP
+    WHERE NHACUNGCAP.MaNhaCungCap = p_MaNhaCungCap and  NHACUNGCAP.IsDeleted = false;
+END; $$
+DELIMITER ;
+
+
+DELIMITER $$
+create procedure USP_ThemNhaCungCap(
+    p_TenNhaCungCap nvarchar(1000), p_SDT NVARCHAR(20), p_DIACHI nvarchar(1000),
+    p_Email nvarchar(1000))
+BEGIN
+INSERT INTO ShoesStoreManagement.NHACUNGCAP(
+    TenNhaCungCap , SDT, DiaChi ,
+    Email  )
+VALUES (
+    p_TenNhaCungCap ,
+    p_SDT ,
+    p_DIACHI ,
+    p_Email );
+END; $$
+DELIMITER ;
+
+DELIMITER $$
+create procedure USP_CapNhatThongTinNhaCungCap(p_MaNhaCungCap int,
+    p_TenNhaCungCap nvarchar(1000), p_SDT NVARCHAR(20), p_DIACHI nvarchar(1000),
+    p_Email nvarchar(1000))
+BEGIN
+UPDATE NHACUNGCAP
+SET  
+    NHACUNGCAP.TenNhaCungCap= p_TenNhaCungCap,
+    NHACUNGCAP.SDT= p_SDT,
+    NHACUNGCAP.DiaChi= p_DiaChi,NHACUNGCAP.Email= p_Email
+WHERE NHACUNGCAP.MaNhaCungCap= p_MaNhaCungCap;
+END; $$
+DELIMITER ;
+
+
+DELIMITER $$
+create procedure USP_XoaNhaCungCap(p_MaNhaCungCap int)
+BEGIN
+    Update ShoesStoreManagement.NHACUNGCAP
+    set NHACUNGCAP.IsDeleted = true 
+    where NHACUNGCAP.MaNhaCungCap= p_MaNhaCungCap;
+END; $$
+DELIMITER ;
+
+
+
+
+
+
+DELIMITER $$
+create procedure USP_GetListHangSanXuat()
+BEGIN
+    Select * from ShoesStoreManagement.HANGSANXUAT
+    where HANGSANXUAT.IsDeleted = false;
+END; $$
+DELIMITER ;
+
+DELIMITER $$
+create procedure USP_GetHangSanXuatByID(p_MaHangSanXuat int )
+BEGIN
+    Select * from ShoesStoreManagement.HANGSANXUAT
+    WHERE HANGSANXUAT.MaHangSanXuat = p_MaHangSanXuat and  HANGSANXUAT.IsDeleted = false;
+END; $$
+DELIMITER ;
+
+
+DELIMITER $$
+create procedure USP_ThemHangSanXuat(
+    p_TenHangSanXuat  nvarchar(1000))
+BEGIN
+INSERT INTO ShoesStoreManagement.HANGSANXUAT(TenHangSanXuat)
+VALUES (p_TenHangSanXuat);
+END; $$
+DELIMITER ;
+
+DELIMITER $$
+create procedure USP_CapNhatThongTinHangSanXuat(p_MaHangSanXuat int,
+    p_TenHangSanXuat nvarchar(1000))
+BEGIN
+UPDATE HANGSANXUAT
+SET  
+    HANGSANXUAT.TenHangSanXuat= p_TenHangSanXuat
+WHERE HANGSANXUAT.MaHangSanXuat = p_MaHangSanXuat;
+END; $$
+DELIMITER ;
+
+
+DELIMITER $$
+create procedure USP_XoaHangSanXuat(p_MaHangSanXuat int)
+BEGIN
+    Update ShoesStoreManagement.HANGSANXUAT
+    set HANGSANXUAT.IsDeleted = true 
+    where HANGSANXUAT.MaHangSanXuat= p_MaHangSanXuat;
 END; $$
 DELIMITER ;
 
@@ -623,6 +965,15 @@ END; $$
 DELIMITER ;
 
 
+
+
+DELIMITER $$
+create procedure USP_ThemBaoCaoTonKho(p_MaNguoiDung int,p_NgayLap datetime, p_GhiChu nvarchar(1000))
+BEGIN
+INSERT INTO ShoesStoreManagement.BAOCAOTONKHO(MaNguoiDung, NgayLap, GhiChu)
+VALUES (p_MaNguoiDung, p_NgayLap, p_GhiChu);
+END; $$
+DELIMITER ;
 
 
 
