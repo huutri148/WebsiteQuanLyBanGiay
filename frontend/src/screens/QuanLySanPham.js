@@ -6,6 +6,11 @@ import {
   Tab,
   Tabs,
   Toolbar,
+  TableBody,
+  TableContainer,
+  TableRow,
+  TableCell,
+  Button,
   Typography,
 } from "@material-ui/core";
 import { React, useState } from "react";
@@ -43,6 +48,7 @@ const useStyles = makeStyles((theme) => ({
   },
   tabPaper: {
     margin: theme.spacing(0, 6),
+    padding: theme.spacing(0, 6),
     display: "inline-block",
     float: "left",
   },
@@ -52,15 +58,62 @@ const useStyles = makeStyles((theme) => ({
   },
   table: {
     width: "80%",
+    margin: theme.spacing(4, 6),
   },
 }));
 
+const getStripedStyle = (index) => {
+  return { backgrround: index % 2 ? "#fafafa" : "white" };
+};
+const products = [
+  {
+    MaGiay: 1,
+    TenGiay: "Van Old Skool Violet",
+    TenHangSanXuat: "Nike",
+    TenMau: "Violet",
+    GioiTinh: "Unisex",
+    SoLuong: 20,
+  },
+  {
+    MaGiay: 3,
+    TenGiay: "Fila Wave Neo",
+    TenHangSanXuat: "Fila",
+    TenMau: "Violet",
+    GioiTinh: "Unisex",
+    SoLuong: 20,
+  },
+  {
+    MaGiay: 2,
+    TenGiay: "Fila Wave Neo",
+    TenHangSanXuat: "Fila",
+    TenMau: "Violet",
+    GioiTinh: "Unisex",
+    SoLuong: 20,
+  },
+  {
+    MaGiay: 4,
+    TenGiay: "Fila Wave Neo",
+    TenHangSanXuat: "Fila",
+    TenMau: "Violet",
+    GioiTinh: "Unisex",
+    SoLuong: 20,
+  },
+  {
+    MaGiay: 5,
+    TenGiay: "Fila Wave Neo",
+    TenHangSanXuat: "Fila",
+    TenMau: "Violet",
+    GioiTinh: "Unisex",
+    SoLuong: 20,
+  },
+];
 const headCells = [
   { id: "TenGiay", label: "Tên sản phẩm" },
   { id: "TenHangSanXuat", label: "Tên hãng sản xuất", disableSorting: true },
   { id: "TenMau", label: "Tên màu", disableSorting: true },
   { id: "GioiTinh", label: "Giới tính", disableSorting: true },
   { id: "SoLuong", label: "Số lượng" },
+  { id: "actions", label: "Actions" },
 ];
 const QuanLySanPham = () => {
   const [value, setValue] = useState();
@@ -68,7 +121,7 @@ const QuanLySanPham = () => {
     setValue(newValue);
   };
   const classes = useStyles();
-  const [records, setRecords] = useState();
+  const [records, setRecords] = useState(products);
   const [filterFn, setFilterFn] = useState({
     fn: (items) => {
       return items;
@@ -127,9 +180,26 @@ const QuanLySanPham = () => {
               onChange={handleSearch}
             />
           </Toolbar>
-          <TblContainer className={classes.table}>
-            <TblHead />
-          </TblContainer>
+          <TableContainer className={classes.table}>
+            <TblContainer >
+              <TblHead />
+              <TableBody>
+                {recordsAfterPagingAndSorting().map((item) => (
+                  <TableRow key={item.MaGiay}>
+                    <TableCell component="th"  scope="row">{item.TenGiay}</TableCell>
+                    <TableCell component="th"  scope="row">{item.TenHangSanXuat}</TableCell>
+                    <TableCell component="th"  scope="row">{item.TenMau}</TableCell>
+                    <TableCell component="th"  scope="row">{item.GioiTinh}</TableCell>
+                    <TableCell >{item.SoLuong}</TableCell>
+                    <TableCell>
+                      <Button aria-label="edit">Edit</Button>                      
+                      <Button aria-label="detail">Detail</Button>                      
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </TblContainer>
+          </TableContainer>
         </Paper>
       </TabPanel>
       <TabPanel value={value} index={1}>

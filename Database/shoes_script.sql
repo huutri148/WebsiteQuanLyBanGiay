@@ -74,7 +74,7 @@ CREATE TABLE NHACUNGCAP
     SDT NVARCHAR(20) NOT NULL,
     DiaChi NVARCHAR(1000) NOT NULL,
     Email NVARCHAR(1000) NOT NULL,
-    IsDeleted BOOLEAN 
+    IsDeleted BOOLEAN default false 
 );
 
 CREATE TABLE NGUOIDUNG
@@ -263,7 +263,7 @@ CREATE TABLE PHIEUDATHANG
     MaNguoiDung int not null,
     MaNhaCungCap int not null,
     NgayLap datetime DEFAULT CURRENT_TIMESTAMP,
-    IsDeleted BOOLEAN
+    IsDeleted BOOLEAN default false
 );
 
 alter table PHIEUDATHANG
@@ -535,7 +535,7 @@ DELIMITER ;
 
 
 DELIMITER $$
-create procedure USP_GetListPhieuNhapKhoByID(p_SoPhieuNhapKho int)
+create procedure USP_GetPhieuNhapKhoByID(p_SoPhieuNhapKho int)
 BEGIN
 Select C.SoPhieuNhapKho,C.TenNguoiDung, C.NgayNhapKho, C.TongTien, D.TenNhaCungCap from (
 Select A.SoPhieuNhapKho, A.TongTien, A.NgayNhapKho, B.TenNguoiDung, A.MaNhaCungCap
@@ -626,6 +626,16 @@ END; $$
 DELIMITER ;
 
 
+DELIMITER $$
+create procedure USP_XoaPhieuNhapKho(
+        p_SoPhieuNhapKho int)
+BEGIN
+    Update ShoesStoreManagement.PHIEUNHAPKHO
+    set PHIEUNHAPKHO.IsDeleted = true 
+    where PHIEUNHAPKHO.SoPhieuNhapKho= p_SoPhieuNhapKho;
+END; $$
+DELIMITER ;
+
 
 DELIMITER $$
 create procedure USP_GetListPhieuChi()
@@ -641,7 +651,7 @@ DELIMITER ;
 
 
 DELIMITER $$
-create procedure USP_GetListPhieuChiByID(p_SoPhieuChi int)
+create procedure USP_GetPhieuChiByID(p_SoPhieuChi int)
 BEGIN
 Select C.SoPhieuNhapKho,C.TenNguoiDung, C.NgayLap,C.SoPhieuChi, C.TongTien, D.TenNhaCungCap from (
 Select A.SoPhieuChi, A.TongTien, A.NgayNhapKho, B.TenNguoiDung, A.MaNhaCungCap, A.SoPhieuNhapKho
@@ -676,7 +686,8 @@ DELIMITER ;
 DELIMITER $$
 create procedure USP_GetListNhaCungCap()
 BEGIN
-    Select * from ShoesStoreManagement.NHACUNGCAP;
+    Select * from ShoesStoreManagement.NHACUNGCAP
+    where NHACUNGCAP.IsDeleted = false;
 END; $$
 DELIMITER ;
 
@@ -684,7 +695,7 @@ DELIMITER $$
 create procedure USP_GetNhaCungCapByID(p_MaNhaCungCap int )
 BEGIN
     Select * from ShoesStoreManagement.NHACUNGCAP
-    WHERE NHACUNGCAP.MaNhaCungCap = p_MaNhaCungCap;
+    WHERE NHACUNGCAP.MaNhaCungCap = p_MaNhaCungCap and  NHACUNGCAP.IsDeleted = false;
 END; $$
 DELIMITER ;
 
@@ -705,6 +716,7 @@ VALUES (
 END; $$
 DELIMITER ;
 
+DELIMITER $$
 create procedure USP_CapNhatThongTinNhaCungCap(p_MaNhaCungCap int,
     p_TenNhaCungCap nvarchar(1000), p_SDT NVARCHAR(20), p_DIACHI nvarchar(1000),
     p_Email nvarchar(1000))
@@ -713,7 +725,7 @@ UPDATE NHACUNGCAP
 SET  
     NHACUNGCAP.TenNhaCungCap= p_TenNhaCungCap,
     NHACUNGCAP.SDT= p_SDT,
-    NHACUNGCAP.DiaChi= p_DiaChi,PHIEUNHAPKHO.Email= p_Email
+    NHACUNGCAP.DiaChi= p_DiaChi,NHACUNGCAP.Email= p_Email
 WHERE NHACUNGCAP.MaNhaCungCap= p_MaNhaCungCap;
 END; $$
 DELIMITER ;
@@ -722,7 +734,9 @@ DELIMITER ;
 DELIMITER $$
 create procedure USP_XoaNhaCungCap(p_MaNhaCungCap int)
 BEGIN
-    DELETE FROM NHACUNGCAP WHERE MaNhaCungCap= p_MaNhaCungCap;
+    Update ShoesStoreManagement.NHACUNGCAP
+    set NHACUNGCAP.IsDeleted = true 
+    where NHACUNGCAP.MaNhaCungCap= p_MaNhaCungCap;
 END; $$
 DELIMITER ;
 
@@ -734,7 +748,8 @@ DELIMITER ;
 DELIMITER $$
 create procedure USP_GetListHangSanXuat()
 BEGIN
-    Select * from ShoesStoreManagement.HANGSANXUAT;
+    Select * from ShoesStoreManagement.HANGSANXUAT
+    where HANGSANXUAT.IsDeleted = false;
 END; $$
 DELIMITER ;
 
@@ -742,7 +757,7 @@ DELIMITER $$
 create procedure USP_GetHangSanXuatByID(p_MaHangSanXuat int )
 BEGIN
     Select * from ShoesStoreManagement.HANGSANXUAT
-    WHERE HANGSANXUAT.MaHangSanXuat = p_MaHangSanXuat;
+    WHERE HANGSANXUAT.MaHangSanXuat = p_MaHangSanXuat and  HANGSANXUAT.IsDeleted = false;
 END; $$
 DELIMITER ;
 
@@ -756,13 +771,14 @@ VALUES (p_TenHangSanXuat);
 END; $$
 DELIMITER ;
 
+DELIMITER $$
 create procedure USP_CapNhatThongTinHangSanXuat(p_MaHangSanXuat int,
     p_TenHangSanXuat nvarchar(1000))
 BEGIN
 UPDATE HANGSANXUAT
 SET  
     HANGSANXUAT.TenHangSanXuat= p_TenHangSanXuat
-WHERE HANGSANXUAT.MaHangSanXuat= p_MaHangSanXuat;
+WHERE HANGSANXUAT.MaHangSanXuat = p_MaHangSanXuat;
 END; $$
 DELIMITER ;
 
@@ -770,7 +786,9 @@ DELIMITER ;
 DELIMITER $$
 create procedure USP_XoaHangSanXuat(p_MaHangSanXuat int)
 BEGIN
-    DELETE FROM HANGSANXUAT WHERE MaHangSanXuat= p_MaHangSanXuat;
+    Update ShoesStoreManagement.HANGSANXUAT
+    set HANGSANXUAT.IsDeleted = true 
+    where HANGSANXUAT.MaHangSanXuat= p_MaHangSanXuat;
 END; $$
 DELIMITER ;
 
@@ -947,30 +965,6 @@ END; $$
 DELIMITER ;
 
 
-
-CREATE TABLE BAOCAOTONKHO
-(
-    MaBaoCaoTonKho int auto_increment PRIMARY KEY,
-    MaNguoiDung int not null,
-    NgayLap DATETIME DEFAULT CURRENT_TIMESTAMP,
-    TongSoHangHoa int default 0,
-    IsDeleted boolean default false,
-    GhiChu nvarchar(1000)
-);
-
-
-alter table BAOCAOTONKHO
-add constraint BAOCAOTONKHO_NGUOIDUNG_FK
-foreign key(MaNguoiDung) references NGUOIDUNG(MaNguoiDung);
-
-CREATE TABLE CHITIETBAOCAOTONKHO
-(
-    MaChiTietGiay int not null,
-    MaBaoCaoTonKho int not null,
-    SoLuongTon int default 0,
-    TrangThaiHangHoa nvarchar(1000) not null,
-    CONSTRAINT PK_CHITIETBAOCAOTONKKHO PRIMARY KEY (MaBaoCaoTonKho, MaChiTietGiay)
-);
 
 
 DELIMITER $$
