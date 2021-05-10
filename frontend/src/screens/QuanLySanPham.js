@@ -24,14 +24,12 @@ const useStyles = makeStyles((theme) => ({
     height: "80vh",
   },
   tab: {
-    margin: theme.spacing(0, 2),
+    margin: theme.spacing(2, 2),
     display: "block",
     float: "left",
     width: "100%",
   },
   tabPaper: {
-    margin: theme.spacing(0, 6),
-    padding: theme.spacing(0, 6),
     display: "inline-block",
     float: "left",
   },
