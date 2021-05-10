@@ -65,9 +65,6 @@ const QuanLySanPham = () => {
       <TabPanel value={value} index={1}>
         Thêm sản phẩm mới
       </TabPanel>
-      <TabPanel value={value} index={2}>
-        Sửa sản phẩm
-      </TabPanel>
     </div>
   );
 };
