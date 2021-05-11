@@ -1,34 +1,68 @@
 import React, {useState} from "react";
+import Select from "react-select";
 import './Selector.css';
 import ShopLogo from '../../../images/logo.png'
+import { Height } from "@material-ui/icons";
 export default function Selector (props) {
-    const [value, setValue] = useState(0);
-    const handleChange = e =>{
-        setValue(e.value);
+    const [selectedValue, setSelectedValue] = useState(0);
+    const handleChange = e => {
+        setSelectedValue(e.value);
+      }
+    const options = props.products.map(item => {
+      let newObj = {}
+      newObj.value = item.MaGiay;
+      newObj.label = item.TenGiay + "-" +  item.TenMau + "-" + item.GioiTinh + "-" + item.DonGia + "-" + item.SoLuong;
+      newObj.Anh = item.Anh;
+      return newObj;
+    })
+    console.log(options);
+    const formatOptionLabel = ({ value, label,Anh}) => {
+      const record = label.split("-");
+      return (<div style={{display: "flex"}}>
+      <img width="30" height="30" src = {Anh} style={{ marginRight: 10, objectFit: "scale-down"}}/>
+      <label style={{ marginRight: 10 , fontWeight: 'bold'}}>Mã: {value}</label>
+      <label style={{ marginRight: 10 , fontWeight: 'bold'}}>-</label>
+      <label style={{ marginRight: 10 , fontWeight: 'bold'}}>Tên: {record[0]}</label>
+      <label style={{ marginRight: 10 , fontWeight: 'bold'}}>-</label>
+      <label style={{ marginRight: 10 , fontWeight: 'bold'}}>Màu: {record[1]}</label>
+      <label style={{ marginRight: 10 , fontWeight: 'bold'}}>-</label>
+      <label style={{ marginRight: 10 , fontWeight: 'bold'}}>Giới Tính: {record[2]}</label>
+      <label style={{ marginRight: 10 , fontWeight: 'bold'}}>-</label>
+      <label style={{ marginRight: 10 , fontWeight: 'bold'}}>Giá: {record[3]}</label>
+      <label style={{ marginRight: 10 , fontWeight: 'bold'}}>-</label>
+      <label style={{ marginRight: 10 , fontWeight: 'bold'}}>Số Lượng: {record[4]}</label>
+      </div>);
     }
-    const options = [
-        { value: "Abe", label: "Abe", imgSrc: ShopLogo },
-        { value: "John", label: "John", imgSrc: ShopLogo },
-        { value: "Dustin", label: "Dustin", imgSrc: ShopLogo }
-      ];
-    const formatOptionLabel = ({ value, label, imgSrc }) => (
-    <div style={{ display: "flex", height: 80, }}>
-        <div>{label}</div>
-        <img style={{ width: 80, height: 80, }} src={ShopLogo} alt="logo"/>
-    </div>
-    );
+    const styles = {
+        control: base => ({
+          ...base,
+          fontSize: 14,
+          fontWeight: 'bold',
+          marginTop: 10,
+        })
+      };
+      const filterOptions = (candidate, input) => {
+        console.log(input);
+        if (input) {
+          return candidate.value === options[0].value;
+        }
+        return true;
+      };
     return(
-        <>
+        <div style={{padding: "0px 10px", display: "block"}}>
             <label style={{
                 fontSize: 16,
-                fontWeight: 600,
-                marginBottom: 5}}>
-                    {props.title}
+                fontWeight: 600,}}>
+                {props.title}
             </label>
-            <select value = {value} onChange={handleChange}
-                defaultValue={options[0]}
+            <Select
+                value={options.find(obj => obj.value === selectedValue)}
+                onChange={handleChange}
                 formatOptionLabel={formatOptionLabel}
-                options={options}/>
-        </>
+                defaultValue={options[0]}
+                options={options}
+                getOptionLabel={option => `${option.value} : ${option.label}`}
+                styles={styles}/>
+        </div>
     );
 }

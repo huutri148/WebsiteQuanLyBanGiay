@@ -12,7 +12,7 @@ import QuanLySanPham from "./QuanLySanPham";
 import QuanLyGioHang from "./QuanLyGioHang";
 import QuanLyNguoiDung from "./QuanLyNguoiDung";
 import { render } from "react-dom";
-import QuanLyBanHang from "./QuanLyBanHang";
+import QuanLyBanHang from "./QuanLyBanHang/QuanLyBanHang";
 
 export default function Manager() {
   return (
