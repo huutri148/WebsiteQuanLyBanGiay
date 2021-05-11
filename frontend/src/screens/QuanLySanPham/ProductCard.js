@@ -12,6 +12,10 @@ const useStyles = makeStyles({
     height: "80px",
     objectFit: "scale-down",
     marginRight: "10px",
+    "&:hover": {
+      transform: "scale(5,5) translate(50px,0)",
+      zindex: 2000,
+    },
   },
   title: {
     maxWidth: "50%",

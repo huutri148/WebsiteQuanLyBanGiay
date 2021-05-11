@@ -15,7 +15,8 @@ import useTable from "../../components/useTable";
 import Input from "../../components/controls/Input";
 import { Search, Assignment, Edit, FiberPin } from "@material-ui/icons";
 import ProductCard from "./ProductCard";
-
+import Popup from "../../components/controls/Popup";
+import ProductDetail from "./ProductDetail";
 const useStyles = makeStyles((theme) => ({
   title: {
     padding: theme.spacing(4, 0),
@@ -105,19 +106,22 @@ const headCells = [
 const DanhSachSanPham = () => {
   const classes = useStyles();
   const [records, setRecords] = useState(products);
+  const [product, setProduct] = useState(products[0]);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [openPopup, setOpenPopup] = useState(false);
   const [filterFn, setFilterFn] = useState({
     fn: (items) => {
       return items;
     },
   });
 
-  const {
-    TblContainer,
-    TblHead,
-    TblPagination,
-    recordsAfterPagingAndSorting,
-  } = useTable(records, headCells, filterFn);
-
+  const { TblContainer, TblHead, TblPagination, recordsAfterPagingAndSorting } =
+    useTable(records, headCells, filterFn);
+  const handleDetail = (index, data) => {
+    setCurrentIndex(index);
+    setProduct(data);
+    setOpenPopup(true);
+  };
   const handleSearch = (e) => {
     let target = e.target;
     setFilterFn({
@@ -179,7 +183,7 @@ const DanhSachSanPham = () => {
                       <Edit />
                     </IconButton>
                     <IconButton color="primary">
-                      <Assignment />
+                      <Assignment onClick={() => handleDetail(index, item)} />
                     </IconButton>
                   </TableCell>
                 </TableRow>
@@ -189,6 +193,13 @@ const DanhSachSanPham = () => {
           <TblPagination />
         </TableContainer>
       </Paper>
+      <Popup
+        title="Thông tin sản phẩm"
+        openPopup={openPopup}
+        setOpenPopup={setOpenPopup}
+      >
+        <ProductDetail item={product} />
+      </Popup>
     </div>
   );
 };
