@@ -13,12 +13,16 @@ import {
     TableCell,
     Button,
     Typography,
+    Table,
+    IconButton,
   } from "@material-ui/core";
   import { React, useState } from "react";
-  import useTable from "../components/useTable";
-  import GroupBox from "../components/controls/GroupBox/GroupBox";
-  import Selector from "../components/controls/Selector/Selector";
-  
+  import useTable from "../../components/useTable";
+  import GroupBox from "../../components/controls/GroupBox/GroupBox";
+  import Selector from "../../components/controls/Selector/Selector";
+  import "./QuanLyBanHang.css";
+import { AddCircle } from "@material-ui/icons";
+
   function TabPanel(props) {
     const classes = useStyles();
     const { children, value, index, ...other } = props;
@@ -77,6 +81,9 @@ import {
       fontSize: 32, 
       color: "darkslateblue",
       fontWeight: 'Bold'
+    },
+    td: {
+      padding: "0px 10px",
     }
   }));
   
@@ -90,7 +97,9 @@ import {
       TenHangSanXuat: "Nike",
       TenMau: "Violet",
       GioiTinh: "Unisex",
+      Anh: "/images/2.jpg",
       SoLuong: 20,
+      DonGia: "2000000",
     },
     {
       MaGiay: 3,
@@ -98,7 +107,9 @@ import {
       TenHangSanXuat: "Fila",
       TenMau: "Violet",
       GioiTinh: "Unisex",
+      Anh: "/images/1.png",
       SoLuong: 20,
+      DonGia: "2000000",
     },
     {
       MaGiay: 2,
@@ -106,7 +117,9 @@ import {
       TenHangSanXuat: "Fila",
       TenMau: "Violet",
       GioiTinh: "Unisex",
+      Anh: "/images/1.png",
       SoLuong: 20,
+      DonGia: "2000000",
     },
     {
       MaGiay: 4,
@@ -114,15 +127,39 @@ import {
       TenHangSanXuat: "Fila",
       TenMau: "Violet",
       GioiTinh: "Unisex",
+      Anh: "/images/1.png",
       SoLuong: 20,
+      DonGia: "2000000",
     },
     {
       MaGiay: 5,
       TenGiay: "Fila Wave Neo",
       TenHangSanXuat: "Fila",
       TenMau: "Violet",
+      Anh: "/images/1.png",
       GioiTinh: "Unisex",
       SoLuong: 20,
+      DonGia: "2000000",
+    },
+    {
+      MaGiay: 6,
+      TenGiay: "Fila Wave Neo",
+      TenHangSanXuat: "Fila",
+      TenMau: "Violet",
+      Anh: "/images/1.png",
+      GioiTinh: "Unisex",
+      SoLuong: 20,
+      DonGia: "2000000",
+    },
+    {
+      MaGiay: 7,
+      TenGiay: "Fila Wave Neo",
+      TenHangSanXuat: "Fila",
+      TenMau: "Violet",
+      Anh: "/images/1.png",
+      GioiTinh: "Unisex",
+      SoLuong: 20,
+      DonGia: "2000000",
     },
   ];
   const headCells = [
@@ -209,7 +246,32 @@ import {
                     Chi Tiết Phiếu 
                 </label>   
                 <hr className={classes.hr}/>
-                <Selector title = "Hàng Hoá" />
+                <Selector title = "Hàng Hoá" products = {products}/>
+                <hr className={classes.hr} style={{marginTop: 15}}/>
+                <Table striped bordered hover>
+                  <thead>
+                    <tr>
+                      <th>Tên Giày</th>
+                      <th>Giới Tính</th>
+                      <th>Size</th>
+                      <th>Đơn Giá</th>
+                      <th>Số Lượng</th>
+                      <th>Thành Tiền</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td width="25%"><input disabled='disabled'/></td>
+                      <td width="15%"><input disabled='disabled'/></td>
+                      <td width="10%"><input disabled='disabled'/></td>
+                      <td width="15%"><input disabled='disabled'/></td>
+                      <td width="15%"><input /></td>
+                      <td width="15%"><input disabled='disabled'/></td>
+                      <td width="15%"><IconButton style={{marginBottom: 15}} aria-label="Add" size="small"><AddCircle /></IconButton></td>
+                    </tr>
+                  </tbody>
+                </Table>
+                <hr className={classes.hr}/>
               </Paper>
             </Grid>
           </div>
