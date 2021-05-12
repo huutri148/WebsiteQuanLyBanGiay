@@ -1,6 +1,6 @@
-import { CssBaseline, makeStyles, Paper, Tab, Tabs } from "@material-ui/core";
+import { CssBaseline, makeStyles, Tab, Tabs } from "@material-ui/core";
 import { React, useState } from "react";
-import DanhSachSanPham from "./QuanLySanPham/DanhSachSanPham";
+import DanhSachSanPham from "./QuanLySanPham/DanhSachSanPham/DanhSachSanPham";
 function TabPanel(props) {
   const classes = useStyles();
   const { children, value, index, ...other } = props;
@@ -15,23 +15,12 @@ const useStyles = makeStyles((theme) => ({
     height: "90vh",
     flexGrow: "1",
   },
-  paper: {
-    margin: theme.spacing(0, 4),
-    padding: theme.spacing(5),
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    height: "80vh",
-  },
-  tab: {
-    margin: theme.spacing(2, 2),
-    display: "block",
-    float: "left",
-    width: "100%",
-  },
   tabPaper: {
     display: "inline-block",
     float: "left",
+  },
+  tabHeader: {
+    textTransform: "none",
   },
 }));
 
@@ -53,8 +42,8 @@ const QuanLySanPham = () => {
           value={value}
           onChange={handleChange}
         >
-          <Tab label="Quản lý" />
-          <Tab label="Thêm" />
+          <Tab className={classes.tabHeader} label="Quản lý" />
+          <Tab className={classes.tabHeader} label="Thêm" />
         </Tabs>
       </div>
 

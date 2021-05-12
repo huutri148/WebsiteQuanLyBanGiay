@@ -4,31 +4,20 @@ import {
   Paper,
   Toolbar,
   TableBody,
-  makeStyles,
+  withStyles,
   TableContainer,
   TableRow,
   TableCell,
   IconButton,
   Typography,
 } from "@material-ui/core";
-import useTable from "../../components/useTable";
-import Input from "../../components/controls/Input";
-import { Search, Assignment, Edit, FiberPin } from "@material-ui/icons";
-import ProductCard from "./ProductCard";
-import Popup from "../../components/controls/Popup";
-import ProductDetail from "./ProductDetail";
-const useStyles = makeStyles((theme) => ({
-  title: {
-    padding: theme.spacing(4, 0),
-  },
-  searchInput: {
-    display: "flex",
-    justifyContent: "center",
-  },
-  table: {
-    padding: theme.spacing(0, 8),
-  },
-}));
+import styles from "./styles";
+import useTable from "../../../components/useTable";
+import Input from "../../../components/controls/Input";
+import { Search, Assignment, Edit } from "@material-ui/icons";
+import ProductCard from "../ProductCard";
+import Popup from "../../../components/controls/Popup";
+import ProductDetail from "../ProductDetail";
 
 const products = [
   {
@@ -39,6 +28,7 @@ const products = [
     GioiTinh: "Unisex",
     Anh: "/images/2.jpg",
     SoLuong: 20,
+    GiaNhap: 100,
   },
   {
     MaGiay: 3,
@@ -48,6 +38,7 @@ const products = [
     GioiTinh: "Unisex",
     Anh: "/images/1.png",
     SoLuong: 20,
+    GiaNhap: 100,
   },
   {
     MaGiay: 2,
@@ -57,6 +48,7 @@ const products = [
     GioiTinh: "Unisex",
     Anh: "/images/1.png",
     SoLuong: 20,
+    GiaNhap: 100000,
   },
   {
     MaGiay: 4,
@@ -66,6 +58,7 @@ const products = [
     GioiTinh: "Unisex",
     Anh: "/images/1.png",
     SoLuong: 20,
+    GiaNhap: 100000,
   },
   {
     MaGiay: 5,
@@ -75,6 +68,7 @@ const products = [
     Anh: "/images/1.png",
     GioiTinh: "Unisex",
     SoLuong: 20,
+    GiaNhap: 100000,
   },
   {
     MaGiay: 6,
@@ -84,6 +78,7 @@ const products = [
     Anh: "/images/1.png",
     GioiTinh: "Unisex",
     SoLuong: 20,
+    GiaNhap: 100000,
   },
   {
     MaGiay: 7,
@@ -93,6 +88,7 @@ const products = [
     Anh: "/images/1.png",
     GioiTinh: "Unisex",
     SoLuong: 20,
+    GiaNhap: 100,
   },
 ];
 const headCells = [
@@ -103,8 +99,8 @@ const headCells = [
   { id: "SoLuong", label: "Số lượng" },
   { id: "actions" },
 ];
-const DanhSachSanPham = () => {
-  const classes = useStyles();
+const DanhSachSanPham = (props) => {
+  const { classes } = props;
   const [records, setRecords] = useState(products);
   const [product, setProduct] = useState(products[0]);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -204,4 +200,4 @@ const DanhSachSanPham = () => {
   );
 };
 
-export default DanhSachSanPham;
+export default withStyles(styles)(DanhSachSanPham);
