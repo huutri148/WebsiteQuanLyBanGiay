@@ -1,4 +1,4 @@
-import { React, useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   InputAdornment,
   Paper,
@@ -18,6 +18,8 @@ import { Search, Assignment, Edit } from "@material-ui/icons";
 import ProductCard from "../ProductCard";
 import Popup from "../../../components/controls/Popup";
 import ProductDetail from "../ProductDetail";
+import { useDispatch } from "react-redux";
+import { fetchListGiay } from "./../../../actions/giayAction";
 
 const products = [
   {
@@ -101,20 +103,21 @@ const headCells = [
 ];
 const DanhSachSanPham = (props) => {
   const { classes } = props;
+  const dispatch = useDispatch();
   const [records, setRecords] = useState(products);
   const [product, setProduct] = useState(products[0]);
-  const [currentIndex, setCurrentIndex] = useState(0);
   const [openPopup, setOpenPopup] = useState(false);
   const [filterFn, setFilterFn] = useState({
     fn: (items) => {
       return items;
     },
   });
-
+  useEffect(() => {
+    dispatch(fetchListGiay());
+  }, [dispatch]);
   const { TblContainer, TblHead, TblPagination, recordsAfterPagingAndSorting } =
     useTable(records, headCells, filterFn);
   const handleDetail = (index, data) => {
-    setCurrentIndex(index);
     setProduct(data);
     setOpenPopup(true);
   };

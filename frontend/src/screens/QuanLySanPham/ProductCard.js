@@ -26,7 +26,11 @@ const ProductCard = (props) => {
   const classes = useStyles();
   return (
     <div className={classes.root}>
-      <img src={props.imgUrl} className={classes.image} />
+      <img
+        src={props.imgUrl}
+        className={classes.image}
+        alt={props.productName}
+      />
       <Typography component="h4" variant="h6" className={classes.title}>
         {props.productName}
       </Typography>

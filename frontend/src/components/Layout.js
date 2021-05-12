@@ -17,7 +17,6 @@ import MenuIcon from "@material-ui/icons/Menu";
 import clsx from "clsx";
 import { mainListItems, secondaryListItems } from "./Sidebar/listMenu";
 import { ChevronLeft } from "@material-ui/icons";
-import ShopLogo from "../images/logo.png";
 const drawerWidth = 260;
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -147,7 +146,7 @@ export const Layout = (props) => {
         open={open}
       >
         <div className={classes.toolbarIcon}>
-          <img src={ShopLogo} className={classes.ShopLogo} alt="logo" />
+          <img src="/images/logo.png" className={classes.ShopLogo} alt="logo" />
           <IconButton onClick={handleDrawerClose}>
             <ChevronLeft />
           </IconButton>
