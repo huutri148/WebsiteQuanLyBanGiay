@@ -16,7 +16,8 @@ import {
   } from "@material-ui/core";
   import { React, useState } from "react";
   import useTable from "../components/useTable";
-  import GroupBox from "../components/controls/GroupBox";
+  import GroupBox from "../components/controls/GroupBox/GroupBox";
+  import Selector from "../components/controls/Selector/Selector";
   
   function TabPanel(props) {
     const classes = useStyles();
@@ -64,6 +65,7 @@ import {
       color: "darkslateblue"
     },
     hr: {
+      border: 0,
       borderTop: "1px solid #eee", 
       width: "100%"
     },
@@ -187,18 +189,27 @@ import {
                     Thông Tin Phiếu 
                 </label>   
                 <hr className={classes.hr}/>
-                <GroupBox type = 'TextBox' title = "Tên Khách Hàng" readOnly = {false} required = {true}/>
-                <GroupBox type = 'TextBox' title = "Số Điện Thoại" readOnly = {false} required = {true}/>
-                <GroupBox type = 'TextBox' title = "Tổng Tiền" readOnly = {true} required = {true}/>
-                <GroupBox type = 'TextBox' title = "Người Lập" readOnly = {true} required = {true}/>
-                <GroupBox type = 'Picker' title = "Ngày Lập" readOnly = {false} required = {true}/>
-                <GroupBox type = 'TextBox' title = "Ghi Chú" readOnly = {false} required = {false}/>
+                <GroupBox type = 'TextBox' title = "Tên Khách Hàng"  required = {true}/>
+                <GroupBox type = 'TextBox' title = "Số Điện Thoại"  required = {true}/>
+                <GroupBox type = 'TextBox' title = "Tổng Tiền" disabled = "disabled" required = {true}/>
+                <GroupBox type = 'TextBox' title = "Người Lập" disabled = "disabled" required = {true}/>
+                <GroupBox type = 'Picker' title = "Ngày Lập"  required = {true}/>
+                <GroupBox type = 'TextBox' title = "Ghi Chú" required = {false}/>
+                <Button
+                  size="large"
+                  variant="contained"
+                  color="primary">
+                  Lập Phiếu
+                </Button>
+                <hr className={classes.hr}/>
+                <label style={{color: "red",fontWeight:"bold", textAlign: "center"}}>Lưu ý: Tiền được tính theo VNĐ</label>
               </Paper>
               <Paper className={classes.paper} style = {{width: "72%", margin: 0, }}> 
                 <label className={classes.cardHeader}>
                     Chi Tiết Phiếu 
                 </label>   
                 <hr className={classes.hr}/>
+                <Selector title = "Hàng Hoá" />
               </Paper>
             </Grid>
           </div>
