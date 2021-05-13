@@ -1,17 +1,12 @@
 import React from "react";
-import {
-  Route,
-  BrowserRouter as Router,
-  Switch,
-  Redirect,
-} from "react-router-dom";
+import { Route, BrowserRouter as Router, Switch } from "react-router-dom";
 import { Layout } from "../components/Layout";
 import Home from "./Home";
 import "../components/App/App.css";
 import QuanLySanPham from "./QuanLySanPham";
 import QuanLyGioHang from "./QuanLyGioHang";
 import QuanLyNguoiDung from "./QuanLyNguoiDung";
-import { render } from "react-dom";
+
 import QuanLyBanHang from "./QuanLyBanHang/QuanLyBanHang";
 
 export default function Manager() {
