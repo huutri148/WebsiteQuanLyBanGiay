@@ -5,7 +5,11 @@ export default function Selector(props) {
   const [selectedValue, setSelectedValue] = useState(0);
   const handleChange = (e) => {
     setSelectedValue(e.value);
+    sendData(e);
   };
+  const sendData = (e)=> {
+    props.setSelectedId(e.value);
+  }
   const options = props.products.map((item) => {
     let newObj = {};
     newObj.value = item.MaGiay;
@@ -22,7 +26,6 @@ export default function Selector(props) {
     newObj.Anh = item.Anh;
     return newObj;
   });
-  console.log(options);
   const formatOptionLabel = ({ value, label, Anh }) => {
     const record = label.split("-");
     return (
@@ -69,7 +72,6 @@ export default function Selector(props) {
     }),
   };
   const filterOptions = (candidate, input) => {
-    console.log(input);
     if (input) {
       return candidate.value === options[0].value;
     }
@@ -89,7 +91,6 @@ export default function Selector(props) {
         value={options.find((obj) => obj.value === selectedValue)}
         onChange={handleChange}
         formatOptionLabel={formatOptionLabel}
-        defaultValue={options[0]}
         options={options}
         getOptionLabel={(option) => `${option.value} : ${option.label}`}
         styles={styles}

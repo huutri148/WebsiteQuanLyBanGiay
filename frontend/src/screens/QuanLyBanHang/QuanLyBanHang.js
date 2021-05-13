@@ -6,6 +6,11 @@ import {
   Tabs,
   Grid,
   Button,
+  TableBody,
+  withStyles,
+  TableContainer,
+  TableRow,
+  TableCell,
   Table,
   IconButton,
 } from "@material-ui/core";
@@ -13,8 +18,11 @@ import { React, useState } from "react";
 import GroupBox from "../../components/controls/GroupBox/GroupBox";
 import Selector from "../../components/controls/Selector/Selector";
 import "./QuanLyBanHang.css";
-import { AddCircle } from "@material-ui/icons";
-
+import { AddCircle, Edit, HighlightOff } from "@material-ui/icons";
+import useTable from "../../components/useTable";
+import ProductCard from "../QuanLySanPham/ProductCard";
+import Popup from "../../components/controls/Popup";
+import ProductDetail from "../QuanLySanPham/ProductDetail";
 function TabPanel(props) {
   const classes = useStyles();
   const { children, value, index, ...other } = props;
@@ -58,6 +66,9 @@ const useStyles = makeStyles((theme) => ({
   },
   td: {
     padding: "0px 10px",
+  },
+  table: {
+    padding: theme.spacing(0, 1),
   },
 }));
 
@@ -133,13 +144,83 @@ const products = [
     DonGia: "2000000",
   },
 ];
-
+const headCells = [
+  { id: "TenGiay", label: "Tên Giày" },
+  { id: "GioiTinh", label: "Giới Tính"},
+  { id: "Size", label: "Size"},
+  { id: "DonGia", label: "Đơn Giá"},
+  { id: "SoLuong", label: "Số Lượng" },
+  { id: "ThanhTien", label: "Thành Tiền" },
+  { id: "HanhDong" },
+];
+const selectedProducts = [];
 const QuanLyBanHang = () => {
+  const [ignored,forceUpdate] = useState(false);
   const [value, setValue] = useState(0);
-  const handleChange = (event, newValue) => {
+  const [amount, setAmount] = useState(0);
+  const classes = useStyles();
+  const [selectedId, setSelectedId] = useState();
+  const [record, setRecord] = useState(null);
+  const [total, setTotal] = useState(0);
+  const [sumTotal, setSumTotal] = useState(0);
+  const [selectedLength,setSelectedLength] = useState(0);
+  const [filterFn, setFilterFn] = useState({
+    fn: (items) => {
+      return items;
+    },
+  });
+  const { TblContainer, TblHead, TblPagination, recordsAfterPagingAndSorting } =
+    useTable(selectedProducts, headCells, filterFn);
+  const setSelectedProduct = (val) =>{
+    setSelectedId(val);
+    let tmp = products.find((obj) => obj.MaGiay === val);
+    setRecord(tmp);
+    setAmount(0);
+    setTotal(0);
+  }
+  const handleAddClick = () => 
+  {
+    if(record === null)
+    {
+      //set arlet
+    }
+    else if(selectedProducts.find(item => item.MaGiay === record.MaGiay) == undefined)
+    {
+      let tmp = record;
+      tmp.total = total;
+      tmp.amount = amount;
+      selectedProducts.push(tmp);
+      setSelectedLength(selectedProducts.length);
+      setSumTotal(sumTotal + total);
+    }
+    else{
+      let tmp = selectedProducts[selectedProducts.indexOf(record)];
+      tmp.total = total;
+      tmp.amount = amount;
+      setSelectedLength(selectedProducts.length);
+      setSumTotal(sumTotal + total - record.total);
+    }
+    forceUpdate(!ignored);
+  };
+  const handleRemoveClick = (item) => {
+    selectedProducts.splice(selectedProducts.indexOf(item),1);
+    forceUpdate(!ignored);
+    setSumTotal(sumTotal - item.total);
+  };
+  const handleEditClick = (item) => {
+    setRecord(item);
+    forceUpdate(!ignored);
+  };
+  const handleTabChange = (event, newValue) => {
     setValue(newValue);
   };
-  const classes = useStyles();
+  const onAmountChange = (e) => {
+    if(record != null)
+    {
+      setAmount(Number(e.target.value));
+      setTotal(e.target.value * record.DonGia);   
+    }
+  };
 
   return (
     <div className={classes.root}>
@@ -149,7 +230,7 @@ const QuanLyBanHang = () => {
           indicatorColor="primary"
           textColor="primary"
           value={value}
-          onChange={handleChange}
+          onChange={handleTabChange}
         >
           <Tab className={classes.tabHeader} label="Lập Phiếu Bán Hàng" />
           <Tab className={classes.tabHeader} label="Danh Sách Phiếu Bán Hàng" />
@@ -175,6 +256,7 @@ const QuanLyBanHang = () => {
                 type="TextBox"
                 title="Tổng Tiền"
                 disabled="disabled"
+                value = {Number(sumTotal).toLocaleString('it-IT')}
                 required={true}
               />
               <GroupBox
@@ -203,47 +285,47 @@ const QuanLyBanHang = () => {
               className={classes.paper}
               style={{ width: "72%", margin: 0 }}
             >
-              <label className={classes.cardHeader}>Chi Tiết Phiếu</label>
+              <label className={classes.cardHeader}>Thông Tin Giày</label>
               <hr className={classes.hr} />
-              <Selector title="Hàng Hoá" products={products} />
+              <Selector title="Hàng Hoá" products={products} setSelectedId = {setSelectedProduct} />
               <hr className={classes.hr} style={{ marginTop: 15 }} />
               <Table striped bordered hover>
                 <thead>
                   <tr>
-                    <th>Tên Giày</th>
-                    <th>Giới Tính</th>
-                    <th>Size</th>
-                    <th>Đơn Giá</th>
-                    <th>Số Lượng</th>
-                    <th>Thành Tiền</th>
+                    <th>{headCells[0].label}</th>
+                    <th>{headCells[1].label}</th>
+                    <th>{headCells[2].label}</th>
+                    <th>{headCells[3].label}</th>
+                    <th>{headCells[4].label}</th>
+                    <th></th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
                     <td width="25%">
-                      <input disabled="disabled" />
+                      <input value = {record === null ? "" : record.TenGiay} disabled="disabled"/>
                     </td>
                     <td width="15%">
-                      <input disabled="disabled" />
+                      <input value = {record === null ? "" : record.GioiTinh} disabled="disabled" />
                     </td>
                     <td width="10%">
-                      <input disabled="disabled" />
+                      <input value = {record === null ? "" : record.Size} disabled="disabled" />
                     </td>
                     <td width="15%">
-                      <input disabled="disabled" />
+                      <input value = {record === null ? "" : Number(record.DonGia).toLocaleString('it-IT')} disabled="disabled" />
                     </td>
                     <td width="15%">
-                      <input />
+                      <input value = {amount} onChange = {onAmountChange} />
                     </td>
                     <td width="15%">
-                      <input disabled="disabled" />
+                      <input value = {record === null ? "" : total.toLocaleString('it-IT')} disabled="disabled" />
                     </td>
                     <td width="15%">
                       <IconButton
                         style={{ marginBottom: 15 }}
                         aria-label="Add"
                         size="small"
-                      >
+                        onClick = {handleAddClick}>
                         <AddCircle />
                       </IconButton>
                     </td>
@@ -251,6 +333,48 @@ const QuanLyBanHang = () => {
                 </tbody>
               </Table>
               <hr className={classes.hr} />
+              <TableContainer style = {{display: selectedLength === 0 ? "none" : "table"}} className={classes.table}>
+                <TblContainer>
+                  <TblHead />
+                  <TableBody>
+                    {recordsAfterPagingAndSorting().map((item, index) => (
+                      <TableRow
+                        key={item.MaGiay}
+                        style={
+                          index % 2 ? { background: "#eee" } : { background: "white" }
+                        }>
+                        <TableCell component="td" width="40%" scope="row">
+                        <ProductCard imgUrl={item.Anh} productName={item.TenGiay} />
+                        </TableCell>
+                        <TableCell component="td" scope="row">
+                        {item.GioiTinh}
+                        </TableCell>
+                        <TableCell component="td" scope="row">
+                        {item.Size}
+                        </TableCell>
+                        <TableCell component="td" scope="row">
+                        {item.DonGia}
+                        </TableCell>
+                        <TableCell component="td" scope="row">
+                        {item.amount}
+                        </TableCell>
+                        <TableCell component="td"scope="row">
+                        {item.total}
+                        </TableCell>
+                        <TableCell component="td" width="15%" scope="row">
+                          <IconButton size="small" color="primary">
+                            <Edit onClick={()=>handleEditClick(item)}/>
+                          </IconButton>
+                          <IconButton size="small" color="secondary" onClick={()=>handleRemoveClick(item)}>
+                            <HighlightOff />
+                          </IconButton>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </TblContainer>
+                <TblPagination />
+              </TableContainer>
             </Paper>
           </Grid>
         </div>
