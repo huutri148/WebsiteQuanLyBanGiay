@@ -17,12 +17,14 @@ export default function GroupBox (props) {
                 <input required = {props.required}
                     disabled = {props.disabled}   
                     type="date"
+                    value = {props.value}
                     defaultValue={(new Date().getMonth()+1 > 9) ? (new Date().getFullYear()+"-" +(new Date().getMonth()+1)+"-"+new Date().getDate()):
                                                                 (new Date().getFullYear()+"-0" +(new Date().getMonth()+1)+"-"+new Date().getDate())}>
                 </input>
             }
             {props.type === 'TextBox' && 
                 <input   
+                    value = {props.value}
                     disabled = {props.disabled}        
                     required = {props.required}>
                 </input>
