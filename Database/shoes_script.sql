@@ -25,7 +25,7 @@ CREATE TABLE  MAU
 
 CREATE TABLE GIAY
 (
-    MaGiay INT auto_increment UNIQUE NOT NULL,
+    MaGiay INT auto_increment PRIMARY KEY,
     TenGiay NVARCHAR(100) NOT NULL, 
     MaHangSanXuat INT NOT NULL,
     MaMau INT NOT NULL,
@@ -34,9 +34,10 @@ CREATE TABLE GIAY
     MoTa NVARCHAR(1000),
     TyLeLoiNhuan FLOAT DEFAULT 0 ,
     DonGiaNhap DECIMAL(17,2) DEFAULT 0,
-    IsDeleted BOOLEAN DEFAULT false,
-    CONSTRAINT PK_GIAY PRIMARY KEY (GioiTinh,MaMau, MaHangSanXuat)
+    IsDeleted BOOLEAN DEFAULT false
 );
+
+
 
 alter table GIAY
 add constraint GIAY_HANGSANXUAT_FK
@@ -444,17 +445,28 @@ end; $$
 DELIMITER ;
 
 
+-- DELIMITER $$
+-- create procedure USP_GetListGiay()
+-- BEGIN
+-- Select E.TenGiay, F.TenHangSanXuat, E.TenMau, E.GioiTinh, E.SoLuong from (
+-- Select C.TenGiay, C.MaHangSanXuat, C.GioiTinh, C.SoLuong, D.TenMau from (
+-- Select A.TenGiay, A.MaMau, A.MaHangSanXuat, A.GioiTinh, B.SoLuong
+-- from (Select MaGiay, Sum(SoLuong) as SoLuong from ShoesStoreManagement.CHITIETGIAY GROUP BY MaGiay) B
+-- LEFT JOIN ShoesStoreManagement.GIAY A USING (MaGiay)) C left join ShoesStoreManagement.MAU D using (MaMau)) E 
+-- LEFT JOIN ShoesStoreManagement.HANGSANXUAT F using (MaHangSanXuat);
+-- END; $$
+-- DELIMITER ;
+
+
+
 DELIMITER $$
-create procedure USP_GetListGiay()
+create procedure USP_GetListGiay( )
 BEGIN
-Select E.TenGiay, F.TenHangSanXuat, E.TenMau, E.GioiTinh, E.SoLuong from (
-Select C.TenGiay, C.MaHangSanXuat, C.GioiTinh, C.SoLuong, D.TenMau from (
-Select A.TenGiay, A.MaMau, A.MaHangSanXuat, A.GioiTinh, B.SoLuong
-from (Select MaGiay, Sum(SoLuong) as SoLuong from ShoesStoreManagement.CHITIETGIAY GROUP BY MaGiay) B
-LEFT JOIN ShoesStoreManagement.GIAY A USING (MaGiay)) C left join ShoesStoreManagement.MAU D using (MaMau)) E 
-LEFT JOIN ShoesStoreManagement.HANGSANXUAT F using (MaHangSanXuat);
+select * from ShoesStoreManagement.GIAY ;
 END; $$
 DELIMITER ;
+
+
 
 DELIMITER $$
 create procedure USP_GetGiayByID(p_MaGiay int )
@@ -1039,71 +1051,19 @@ insert into HANGSANXUAT(TenHangSanXuat)values ("Converse");
 insert into HANGSANXUAT(TenHangSanXuat)values ("Vans");
 insert into HANGSANXUAT(TenHangSanXuat)values ("Fila");
 insert into HANGSANXUAT(TenHangSanXuat)values ("Bitis");
+insert into HANGSANXUAT(TenHangSanXuat)values ("Yeezy");
+insert into HANGSANXUAT(TenHangSanXuat)values ("Air Jordan");
+
 
 
 insert into MAU(TenMau)values ("Purple");
 insert into MAU(TenMau)values ("White");
 insert into MAU(TenMau)values ("Pink");
 insert into MAU(TenMau)values ("Blue");
+insert into MAU(TenMau)values ("Red");
+insert into MAU(TenMau)values ("Black");
+insert into MAU(TenMau)values ("Grey");
 
-insert into GIAY(    
-    TenGiay , 
-    MaHangSanXuat ,
-    MaMau ,
-    GioiTinh ,
-    Anh ,
-    MoTa,
-    TyLeLoiNhuan , 
-    DonGiaNhap 
-    )values (
-    "Van Old Skool Violet", 
-    6,
-    1,
-    "Nu",
-    "abcxyz",
-    "abcxyz",
-    0, 
-    "1200000" 
-);
-insert into GIAY(    
-    TenGiay , 
-    MaHangSanXuat ,
-    MaMau ,
-    GioiTinh ,
-    Anh ,
-    MoTa,
-    TyLeLoiNhuan , 
-    DonGiaNhap 
-    )values (
-    "Fila Wave Neo", 
-    7,
-    2,
-    "Nu",
-    "abcxyz",
-    "abcxyz",
-    0, 
-    "1250000" 
-);
-
-insert into GIAY(    
-    TenGiay , 
-    MaHangSanXuat ,
-    MaMau ,
-    GioiTinh ,
-    Anh ,
-    MoTa,
-    TyLeLoiNhuan , 
-    DonGiaNhap 
-    )values (
-    "Converse 70s Hightop ", 
-    5,
-    4,
-    "Unisex",
-    "abcxyz",
-    "abcxyz",
-    0, 
-    "1000000" 
-);
 
 
 
@@ -1115,34 +1075,227 @@ insert into SIZE(TenSize)values ("42");
 insert into SIZE(TenSize)values ("43");
 
 
-insert into CHITIETGIAY(    
-    MaSize,
-    MaGiay,
-    SoLuong 
-    )values (
-    1,
-    1,
-    100
+insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa, TyLeLoiNhuan , DonGiaNhap) values (
+    "Air Jordan 1 KO 'Chicago' 2021", 
+    10,
+    4,
+    "Unisex",
+    "AirJordan1KO'Chicago'2021.jpg",
+    "white/black/university red",
+    0.1, 
+    6375000
 );
 
-insert into CHITIETGIAY(    
-    MaSize,
-    MaGiay,
-    SoLuong 
-    )values (
-    2,
-    1,
-    100
+
+insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa, TyLeLoiNhuan , DonGiaNhap) values (
+    "Air Jordan 1 Mid 'Banned'", 
+    10,
+    4,
+    "Unisex",
+    "AirJordan1Mid'Banned'.jpg",
+    "black/university red",
+    0.1, 
+    6375000
 );
-insert into CHITIETGIAY(    
-    MaSize,
-    MaGiay,
-    SoLuong 
-    )values (
+insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa, TyLeLoiNhuan , DonGiaNhap) values (
+    "Air Jordan 1 Mid 'Hyper Royal'", 
+    10,
+    4,
+    "Unisex",
+    "AirJordan1Mid'HyperRoyal'.jpg",
+    "white/black/university red",
+    0.5, 
+    6005000 
+);
+insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa, TyLeLoiNhuan , DonGiaNhap) values (
+    "Air Jordan 1 Retro High OG 'Hyper Royal''", 
+    10,
     3,
-    1,
-    200
+    "Unisex",
+    "AirJordan1RetroHighOG'HyperRoyal'.jpg",
+    "white/black/university red",
+    0.1, 
+    6375000
 );
+insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa, TyLeLoiNhuan , DonGiaNhap) values (
+    "Air Jordan 1 Retro High OG 'Shadow 2.0'", 
+    10,
+    5,
+    "Unisex",
+    "AirJordan1RetroHighOG'Shadow2.0'.jpg",
+    "white/black/university red",
+    0.2, 
+    6375000
+);
+insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa, TyLeLoiNhuan , DonGiaNhap) values (
+    "Air Jordan 5 Retro GS 'Raging Bull' 2021", 
+    10,
+    4,
+    "Unisex",
+    "AirJordan5RetroGS'RagingBull'2021.jpg",
+    "white/black/university red",
+    0.4, 
+    6555000
+);
+insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa, TyLeLoiNhuan , DonGiaNhap) values (
+    "Air Jordan 5 Retro 'Raging Bull' 2021", 
+    10,
+    4,
+    "Unisex",
+    "AirJordan5Retro'RagingBull'2021.jpg",
+    "black/university red",
+    0.3, 
+    6375000 
+);
+insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa, TyLeLoiNhuan , DonGiaNhap) values (
+    "Air Jordan 6 Retro OG 'Carmine' 2021", 
+    10,
+    5,
+    "Unisex",
+    "AirJordan6RetroOG'Carmine'2021.jpg",
+    "white/black/university red",
+    0.2, 
+    6375000
+);
+insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa, TyLeLoiNhuan , DonGiaNhap) values (
+    "Air Jordan 7 Retro 'Flint' 2021", 
+    10,
+    1,
+    "Unisex",
+    "AirJordan7Retro'Flint'2021.jpg",
+    "white/black/university red",
+    0.1, 
+    6375000
+);
+insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa, TyLeLoiNhuan , DonGiaNhap) values (
+    "Air Jordan 11 Retro Low GS 'Legend Blue'", 
+    10,
+    1,
+    "Unisex",
+    "AirJordan11RetroLowGS'LegendBlue'.jpg",
+    "white/black/university red",
+    0.1, 
+    5005000
+);
+insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa, TyLeLoiNhuan , DonGiaNhap) values (
+    "Air Jordan 11 Retro Low 'Legend Blue'", 
+    10,
+    1,
+    "Unisex",
+    "AirJordan11RetroLow'LegendBlue'.jpg",
+    "white/black/university red",
+    0, 
+    6375000
+);
+insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa, TyLeLoiNhuan , DonGiaNhap) values (
+    "Stingwater x Dunk Low SB 'Magic Mushroom'", 
+    10,
+    4,
+    "Unisex",
+    "StingwaterxDunkLowSB'MagicMushroom'.jpg",
+    "white/black/university red",
+    0.2, 
+    6375000
+);
+insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa, TyLeLoiNhuan , DonGiaNhap) values (
+    "Travis Scott x Air Jordan 6 Retro 'British Khaki'", 
+    10,
+    6,
+    "Unisex",
+    "TravisScottxAirJordan6Retro'BritishKhaki'.jpg",
+    "white/black/university red",
+    0.2, 
+    6375000
+);
+
+insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa, TyLeLoiNhuan , DonGiaNhap) values (
+    "Yeezy 500 'Enflame'", 
+    9,
+    6,
+    "Unisex",
+    "Yeezy500'Enflame'.jpg",
+    "white/black/university red",
+    0.2, 
+    6375000
+);
+
+insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa, TyLeLoiNhuan , DonGiaNhap) values (
+    "Yeezy 700 V3 'Kyanite'", 
+    9,
+    3,
+    "Unisex",
+    "Yeezy700V3'Kyanite'.jpg",
+    "white/black/university red",
+    0.2, 
+    6375000
+);
+
+insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa, TyLeLoiNhuan , DonGiaNhap) values (
+    "Yeezy Boost 700 'Bright Blue'", 
+    9,
+    3,
+    "Unisex",
+    "YeezyBoost700'BrightBlue'.jpg",
+    "white/black/university red",
+    0.2, 
+    6375000
+);
+
+insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa, TyLeLoiNhuan , DonGiaNhap) values (
+    "Yeezy Boost 700 V2 'Cream'", 
+    9,
+    1,
+    "Unisex",
+    "YeezyBoost700V2'Cream'.jpg",
+    "white/black/university red",
+    0.2, 
+    6375000
+);
+
+insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa, TyLeLoiNhuan , DonGiaNhap) values (
+    "Yeezy Boost 700 V2 'Cream'", 
+    9,
+    1,
+    "Female",
+    "YeezyBoost700V2'Cream'.jpg",
+    "white/black/university red",
+    0.2, 
+    6375000
+);
+
+insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa, TyLeLoiNhuan , DonGiaNhap) values (
+    "Yeezy Slides 'Core' 2021", 
+    9,
+    6,
+    "Unisex",
+    "YeezySlides'Core'2021.jpg",
+    "white/black/university red",
+    0.2, 
+    6375000
+);
+
+insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa, TyLeLoiNhuan , DonGiaNhap) values (
+    "Yeezy Slides 'Pure'", 
+    9,
+    6,
+    "Unisex",
+    "YeezySlides'Pure'.jpg",
+    "white/black/university red",
+    0.2, 
+    6375000
+);
+
+insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa, TyLeLoiNhuan , DonGiaNhap) values (
+    "Yeezy Slides 'Resin' 2021", 
+    9,
+    6,
+    "Unisex",
+    "YeezySlides'Resin'2021.jpg",
+    "white/black/university red",
+    0.2, 
+    6375000
+);
+
 
 
 

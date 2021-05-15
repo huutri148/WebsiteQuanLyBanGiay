@@ -90,7 +90,11 @@ const ProductDetail = (props) => {
     <div className={classes.root}>
       <Grid container spacing={4}>
         <Grid item xs={6}>
-          <img src={item.Anh} alt={item.TenGiay} className={classes.image} />
+          <img
+            src={`/images/${item.Anh}`}
+            alt={item.TenGiay}
+            className={classes.image}
+          />
         </Grid>
         <Grid item xs={6}>
           <GroupBox

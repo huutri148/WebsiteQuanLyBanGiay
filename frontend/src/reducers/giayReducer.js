@@ -1,27 +1,29 @@
 import * as giayConstant from "../constants/giayConstant";
+import * as _ from "lodash";
 
 const initalState = {
-  listGiay: [],
+  listGiay: {},
 };
 
 const reducer = (state = initalState, action) => {
   switch (action.type) {
-    case giayConstant.FETCH_LIST_GIAY: {
+    case giayConstant.GIAY_LIST_REQUEST: {
       return {
         //note: add loading
-        ...state,
-        listGiay: [],
+        loading: true,
+        listGiay: {},
       };
     }
-    case giayConstant.FETCH_LIST_GIAY_SUCCESS: {
+    case giayConstant.GIAY_LIST_SUCCESS: {
+      const list = _.mapKeys(action.payload, "MaGiay");
       return {
-        ...state,
-        listGiay: action.payload,
+        loading: false,
+        listGiay: { ...list },
       };
     }
-    case giayConstant.FETCH_LIST_GIAY_FAIL: {
+    case giayConstant.GIAY_LIST_FAIL: {
       return {
-        ...state,
+        loading: false,
         error: action.payload,
       };
     }

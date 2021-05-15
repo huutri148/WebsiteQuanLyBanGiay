@@ -18,81 +18,10 @@ import { Search, Assignment, Edit } from "@material-ui/icons";
 import ProductCard from "../ProductCard";
 import Popup from "../../../components/controls/Popup";
 import ProductDetail from "../ProductDetail";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { fetchListGiay } from "./../../../actions/giayAction";
+import { fetchListHangSanXuat } from "./../../../actions/hangSanXuatAction";
 
-const products = [
-  {
-    MaGiay: 1,
-    TenGiay: "Van Old Skool Violet",
-    TenHangSanXuat: "Nike",
-    TenMau: "Violet",
-    GioiTinh: "Unisex",
-    Anh: "/images/2.jpg",
-    SoLuong: 20,
-    GiaNhap: 100,
-  },
-  {
-    MaGiay: 3,
-    TenGiay: "Fila Wave Neo",
-    TenHangSanXuat: "Fila",
-    TenMau: "Violet",
-    GioiTinh: "Unisex",
-    Anh: "/images/1.png",
-    SoLuong: 20,
-    GiaNhap: 100,
-  },
-  {
-    MaGiay: 2,
-    TenGiay: "Fila Wave Neo",
-    TenHangSanXuat: "Fila",
-    TenMau: "Violet",
-    GioiTinh: "Unisex",
-    Anh: "/images/1.png",
-    SoLuong: 20,
-    GiaNhap: 100000,
-  },
-  {
-    MaGiay: 4,
-    TenGiay: "Fila Wave Neo",
-    TenHangSanXuat: "Fila",
-    TenMau: "Violet",
-    GioiTinh: "Unisex",
-    Anh: "/images/1.png",
-    SoLuong: 20,
-    GiaNhap: 100000,
-  },
-  {
-    MaGiay: 5,
-    TenGiay: "Fila Wave Neo",
-    TenHangSanXuat: "Fila",
-    TenMau: "Violet",
-    Anh: "/images/1.png",
-    GioiTinh: "Unisex",
-    SoLuong: 20,
-    GiaNhap: 100000,
-  },
-  {
-    MaGiay: 6,
-    TenGiay: "Fila Wave Neo",
-    TenHangSanXuat: "Fila",
-    TenMau: "Violet",
-    Anh: "/images/1.png",
-    GioiTinh: "Unisex",
-    SoLuong: 20,
-    GiaNhap: 100000,
-  },
-  {
-    MaGiay: 7,
-    TenGiay: "Fila Wave Neo",
-    TenHangSanXuat: "Fila",
-    TenMau: "Violet",
-    Anh: "/images/1.png",
-    GioiTinh: "Unisex",
-    SoLuong: 20,
-    GiaNhap: 100,
-  },
-];
 const headCells = [
   { id: "TenGiay", label: "Tên sản phẩm" },
   { id: "TenHangSanXuat", label: "Tên hãng sản xuất", disableSorting: true },
@@ -102,23 +31,59 @@ const headCells = [
   { id: "actions" },
 ];
 const DanhSachSanPham = (props) => {
+  // CSS class
   const { classes } = props;
+
+  //Fetched data
   const dispatch = useDispatch();
-  const [records, setRecords] = useState(products);
-  const [product, setProduct] = useState(products[0]);
+  const productList = useSelector((state) => state.Giay);
+  const brandList = useSelector((state) => state.HangSanXuat);
+  const { error: hangSanXuatError, listHangSanXuat } = brandList;
+  const { error: giayError, listGiay } = productList;
+
+  // Props in Screens
+  const [tableData, setTableData] = useState([]);
+  const [loading, setLoading] = useState();
+  const [selectedItem, setSelectedItem] = useState(tableData[0]);
   const [openPopup, setOpenPopup] = useState(false);
   const [filterFn, setFilterFn] = useState({
     fn: (items) => {
       return items;
     },
   });
-  useEffect(() => {
-    dispatch(fetchListGiay());
-  }, [dispatch]);
   const { TblContainer, TblHead, TblPagination, recordsAfterPagingAndSorting } =
-    useTable(records, headCells, filterFn);
+    useTable(tableData, headCells, filterFn);
+
+  // setTableData when done fetching
+  useEffect(() => {
+    const data = Object.values(listGiay).reduce((result, value) => {
+      let maHSX = value.MaHangSanXuat;
+      if (typeof listHangSanXuat[maHSX] === "undefined") return [];
+      let { TenHangSanXuat } = listHangSanXuat[maHSX];
+      result.push({
+        TenHangSanXuat,
+        ...value,
+      });
+      return result;
+    }, []);
+    setTableData(data);
+  }, [loading]);
+
+  // Fetch data from API
+  useEffect(() => {
+    const fetchData = async () => {
+      await dispatch(fetchListGiay());
+      await dispatch(fetchListHangSanXuat());
+      //set Flag to combine TableData
+      // Note: Find a way to select lastest data
+      // Done have to use Flag
+      setLoading(false);
+    };
+    fetchData();
+  }, [dispatch]);
+
   const handleDetail = (index, data) => {
-    setProduct(data);
+    setSelectedItem(data);
     setOpenPopup(true);
   };
   const handleSearch = (e) => {
@@ -133,6 +98,7 @@ const DanhSachSanPham = (props) => {
       },
     });
   };
+
   return (
     <div>
       <Typography component="h1" variant="h5" className={classes.title}>
@@ -165,13 +131,16 @@ const DanhSachSanPham = (props) => {
                   }
                 >
                   <TableCell component="th" scope="row">
-                    <ProductCard imgUrl={item.Anh} productName={item.TenGiay} />
+                    <ProductCard
+                      imgUrl={`/images/${item.Anh}`}
+                      productName={item.TenGiay}
+                    />
                   </TableCell>
                   <TableCell component="th" scope="row">
                     {item.TenHangSanXuat}
                   </TableCell>
                   <TableCell component="th" scope="row">
-                    {item.TenMau}
+                    {item.MaMau}
                   </TableCell>
                   <TableCell component="th" scope="row">
                     {item.GioiTinh}
@@ -197,7 +166,7 @@ const DanhSachSanPham = (props) => {
         openPopup={openPopup}
         setOpenPopup={setOpenPopup}
       >
-        <ProductDetail item={product} />
+        <ProductDetail item={selectedItem} />
       </Popup>
     </div>
   );
