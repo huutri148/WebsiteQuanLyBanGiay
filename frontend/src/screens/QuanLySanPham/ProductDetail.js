@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
-import GroupBox from "../../components/controls/GroupBox";
 import Chip from "@material-ui/core/Chip";
+import GroupBox from "../../components/controls/GroupBox/GroupBox";
 const listSize = [
   {
     MaSize: 1,
@@ -98,28 +98,24 @@ const ProductDetail = (props) => {
             title="Tên Giày"
             value={item.TenGiay}
             readOnly={true}
-            required={true}
           />
           <GroupBox
             type="TextBox"
             title="Hãng Sản Xuất"
             value={item.TenHangSanXuat}
             readOnly={true}
-            required={true}
           />
           <GroupBox
             type="TextBox"
             title="Giới Tính"
             value={item.GioiTinh}
             readOnly={true}
-            required={true}
           />
           <GroupBox
             type="TextBox"
             title={flag < 0 ? "Tổng số lượng" : "Số lượng"}
             value={flag < 0 ? item.SoLuong : chosenSize.SoLuong}
             readOnly={true}
-            required={true}
           />
           <div className={classes.sizeChips}>
             <label>Size:</label>

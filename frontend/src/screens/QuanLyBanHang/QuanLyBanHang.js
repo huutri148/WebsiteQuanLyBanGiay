@@ -5,24 +5,22 @@ import {
   Tab,
   Tabs,
   Grid,
-  Button,
   TableBody,
-  withStyles,
   TableContainer,
   TableRow,
   TableCell,
   Table,
   IconButton,
 } from "@material-ui/core";
-import { React, useState } from "react";
+import { React, useState, } from "react";
 import GroupBox from "../../components/controls/GroupBox/GroupBox";
 import Selector from "../../components/controls/Selector/Selector";
 import "./QuanLyBanHang.css";
 import { AddCircle, Edit, HighlightOff } from "@material-ui/icons";
 import useTable from "../../components/useTable";
 import ProductCard from "../QuanLySanPham/ProductCard";
-import Popup from "../../components/controls/Popup";
-import ProductDetail from "../QuanLySanPham/ProductDetail";
+import 'react-toastify/dist/ReactToastify.css';
+import InfoField from "../../components/controls/InfoField";
 function TabPanel(props) {
   const classes = useStyles();
   const { children, value, index, ...other } = props;
@@ -71,7 +69,6 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(0, 1),
   },
 }));
-
 const products = [
   {
     MaGiay: 1,
@@ -160,33 +157,39 @@ const QuanLyBanHang = () => {
   const [amount, setAmount] = useState(0);
   const classes = useStyles();
   const [selectedId, setSelectedId] = useState();
-  const [record, setRecord] = useState(null);
+  
+  const [product, setProduct] = useState(null);
   const [total, setTotal] = useState(0);
   const [sumTotal, setSumTotal] = useState(0);
+  const [phoneNumber, setPhoneNumber] = useState('');
   const [selectedLength,setSelectedLength] = useState(0);
   const [filterFn, setFilterFn] = useState({
     fn: (items) => {
       return items;
     },
   });
+  //regex
+  const phoneRegex = /^[0-9\b]+$/;
+  //table
   const { TblContainer, TblHead, TblPagination, recordsAfterPagingAndSorting } =
     useTable(selectedProducts, headCells, filterFn);
   const setSelectedProduct = (val) =>{
     setSelectedId(val);
     let tmp = products.find((obj) => obj.MaGiay === val);
-    setRecord(tmp);
+    setProduct(tmp);
     setAmount(0);
     setTotal(0);
   }
+  //handle Button click
   const handleAddClick = () => 
   {
-    if(record === null)
+    if(product === null)
     {
       //set arlet
     }
-    else if(selectedProducts.find(item => item.MaGiay === record.MaGiay) == undefined)
+    else if(selectedProducts.find(item => item.MaGiay === product.MaGiay) === undefined)
     {
-      let tmp = record;
+      let tmp = product;
       tmp.total = total;
       tmp.amount = amount;
       selectedProducts.push(tmp);
@@ -194,11 +197,10 @@ const QuanLyBanHang = () => {
       setSumTotal(sumTotal + total);
     }
     else{
-      let tmp = selectedProducts[selectedProducts.indexOf(record)];
+      setSumTotal(sumTotal + total - product.total);
+      let tmp = selectedProducts[selectedProducts.indexOf(product)];
       tmp.total = total;
       tmp.amount = amount;
-      setSelectedLength(selectedProducts.length);
-      setSumTotal(sumTotal + total - record.total);
     }
     forceUpdate(!ignored);
   };
@@ -208,20 +210,74 @@ const QuanLyBanHang = () => {
     setSumTotal(sumTotal - item.total);
   };
   const handleEditClick = (item) => {
-    setRecord(item);
+    setProduct(item);
     forceUpdate(!ignored);
   };
+  //handle Change
   const handleTabChange = (event, newValue) => {
     setValue(newValue);
   };
   const onAmountChange = (e) => {
-    if(record != null)
+    if(product != null)
     {
       setAmount(Number(e.target.value));
-      setTotal(e.target.value * record.DonGia);   
+      setTotal(e.target.value * product.DonGia);   
     }
   };
-
+  const handleOnPhoneNumberChange = e => {
+    let telephone = e.target.value;
+    if (telephone === '' || phoneRegex.test(telephone)) 
+    {
+      setPhoneNumber(telephone);
+      console.log(phoneNumber);
+    }
+  };
+  //Field titles
+  const groupBoxes = [
+    {
+      type: "TextBox",
+      title:"Tên Khách Hàng",
+      required: true,
+      validationTip: "Tên Khách Hàng không được trống",
+    },
+    {
+      type: "Number",
+      title:"Số Điện Thoại",
+      required: true,
+      value: phoneNumber,
+      validationTip: "Số Điện Thoại không được trống",
+      onInput: e => handleOnPhoneNumberChange(e),
+    },
+    {
+      type: "TextBox",
+      title:"Tổng Tiền",
+      required: true,
+      disabled: "disabled",
+      value: sumTotal.toLocaleString('it-IT'),
+    },
+    {
+      type: "TextBox",
+      title:"Người Lập",
+      required: true,
+      disabled: "disabled",
+    },
+    {
+      type: "Picker",
+      title:"Ngày Lập",
+      required: true,
+    },
+    {
+      type: "TextBox",
+      title:"Ghi Chú",
+      required: false,
+    },
+  ];
+  const [records, setRecords] = useState(groupBoxes);
+  const handleSubmitClick = () => {
+    groupBoxes.forEach(element => {element.error = true;});
+    setRecords(groupBoxes);
+    forceUpdate(!ignored);
+  };
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -237,49 +293,18 @@ const QuanLyBanHang = () => {
         </Tabs>
       </div>
       <label className={classes.titleHeader}>
-        {value == 0 ? "Lập Phiếu Bán Hàng" : "Danh Sách Phiếu Bán Hàng"}
+        {value === 0 ? "Lập Phiếu Bán Hàng" : "Danh Sách Phiếu Bán Hàng"}
       </label>
       <TabPanel value={value} index={0}>
         <div>
           <Grid container spacing={0}>
             <Paper className={classes.paper} style={{ width: "20%" }}>
-              <label
-                className={classes.cardHeader}
-                style={{ textAlign: "center" }}
-              >
-                Thông Tin Phiếu
-              </label>
-              <hr className={classes.hr} />
-              <GroupBox type="TextBox" title="Tên Khách Hàng" required={true} />
-              <GroupBox type="TextBox" title="Số Điện Thoại" required={true} />
-              <GroupBox
-                type="TextBox"
-                title="Tổng Tiền"
-                disabled="disabled"
-                value = {Number(sumTotal).toLocaleString('it-IT')}
-                required={true}
+              <InfoField 
+                GroupBoxes = {records} 
+                cardHeader = "Thông Tin Phiếu"
+                buttonContent = "Lập Phiếu"
+                onClick = {handleSubmitClick}
               />
-              <GroupBox
-                type="TextBox"
-                title="Người Lập"
-                disabled="disabled"
-                required={true}
-              />
-              <GroupBox type="Picker" title="Ngày Lập" required={true} />
-              <GroupBox type="TextBox" title="Ghi Chú" required={false} />
-              <Button size="large" variant="contained" color="primary">
-                Lập Phiếu
-              </Button>
-              <hr className={classes.hr} />
-              <label
-                style={{
-                  color: "red",
-                  fontWeight: "bold",
-                  textAlign: "center",
-                }}
-              >
-                Lưu ý: Tiền được tính theo VNĐ
-              </label>
             </Paper>
             <Paper
               className={classes.paper}
@@ -292,38 +317,39 @@ const QuanLyBanHang = () => {
               <Table striped bordered hover>
                 <thead>
                   <tr>
-                    <th>{headCells[0].label}</th>
-                    <th>{headCells[1].label}</th>
-                    <th>{headCells[2].label}</th>
-                    <th>{headCells[3].label}</th>
-                    <th>{headCells[4].label}</th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
                     <th></th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
                     <td width="25%">
-                      <input value = {record === null ? "" : record.TenGiay} disabled="disabled"/>
+                      <GroupBox value = {product === null ? "" : product.TenGiay} type="TextBox" title={headCells[0].label} disabled="disabled"/>
                     </td>
                     <td width="15%">
-                      <input value = {record === null ? "" : record.GioiTinh} disabled="disabled" />
+                      <GroupBox value = {product === null ? "" : product.GioiTinh} type="TextBox" title={headCells[1].label} disabled="disabled"/>
                     </td>
                     <td width="10%">
-                      <input value = {record === null ? "" : record.Size} disabled="disabled" />
+                      <GroupBox value = {product === null ? "" : product.Size} type="TextBox" title={headCells[2].label} disabled="disabled"/>
                     </td>
                     <td width="15%">
-                      <input value = {record === null ? "" : Number(record.DonGia).toLocaleString('it-IT')} disabled="disabled" />
+                      <GroupBox value = {product === null ? "" : product.DonGia} type="TextBox" title={headCells[3].label} disabled="disabled"/>
                     </td>
                     <td width="15%">
-                      <input value = {amount} onChange = {onAmountChange} />
+                      <GroupBox value = {amount} type="TextBox" title={headCells[4].label} onChange = {onAmountChange}/>
                     </td>
                     <td width="15%">
-                      <input value = {record === null ? "" : total.toLocaleString('it-IT')} disabled="disabled" />
+                      <GroupBox value = {product === null ? "" : total.toLocaleString('it-IT')} type="TextBox" title={headCells[5].label} disabled="disabled"/>
                     </td>
                     <td width="15%">
                       <IconButton
-                        style={{ marginBottom: 15 }}
+                        style={{ marginBottom: -10 }}
                         aria-label="Add"
+                        color = "primary"
                         size="small"
                         onClick = {handleAddClick}>
                         <AddCircle />
