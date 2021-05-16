@@ -21,6 +21,7 @@ import ProductDetail from "../ProductDetail";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchListGiay } from "./../../../actions/giayAction";
 import { fetchListHangSanXuat } from "./../../../actions/hangSanXuatAction";
+import { fetchListSize } from "./../../../actions/sizeAction";
 
 const headCells = [
   { id: "TenGiay", label: "Tên sản phẩm" },
@@ -36,10 +37,12 @@ const DanhSachSanPham = (props) => {
 
   //Fetched data
   const dispatch = useDispatch();
-  const productList = useSelector((state) => state.Giay);
+  const productList = useSelector((state) => state.ListGiay);
   const brandList = useSelector((state) => state.HangSanXuat);
+  const sizeList = useSelector((state) => state.ListSize);
   const { error: hangSanXuatError, listHangSanXuat } = brandList;
   const { error: giayError, listGiay } = productList;
+  const { error: sizeError, listSize } = sizeList;
 
   // Props in Screens
   const [tableData, setTableData] = useState([]);
@@ -67,6 +70,7 @@ const DanhSachSanPham = (props) => {
       return result;
     }, []);
     setTableData(data);
+    setLoading(true);
   }, [loading]);
 
   // Fetch data from API
@@ -74,6 +78,7 @@ const DanhSachSanPham = (props) => {
     const fetchData = async () => {
       await dispatch(fetchListGiay());
       await dispatch(fetchListHangSanXuat());
+      await dispatch(fetchListSize());
       //set Flag to combine TableData
       // Note: Find a way to select lastest data
       // Done have to use Flag
@@ -145,7 +150,7 @@ const DanhSachSanPham = (props) => {
                   <TableCell component="th" scope="row">
                     {item.GioiTinh}
                   </TableCell>
-                  <TableCell>{item.SoLuong}</TableCell>
+                  <TableCell>{item.TongSoLuong}</TableCell>
                   <TableCell>
                     <IconButton color="secondary">
                       <Edit />
@@ -166,7 +171,7 @@ const DanhSachSanPham = (props) => {
         openPopup={openPopup}
         setOpenPopup={setOpenPopup}
       >
-        <ProductDetail item={selectedItem} />
+        <ProductDetail item={selectedItem} ListSize={listSize} />
       </Popup>
     </div>
   );

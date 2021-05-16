@@ -1,50 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
 import GroupBox from "../../components/controls/GroupBox";
-import Chip from "@material-ui/core/Chip";
-const listSize = [
-  {
-    MaSize: 1,
-    TenSize: "36",
-    SoLuong: 12,
-  },
-  {
-    MaSize: 2,
-    TenSize: "37",
-    SoLuong: 122,
-  },
-  {
-    MaSize: 3,
-    TenSize: "38",
-    SoLuong: 100,
-  },
-  {
-    MaSize: 4,
-    TenSize: "39",
-    SoLuong: 10,
-  },
-  {
-    MaSize: 5,
-    TenSize: "40",
-    SoLuong: 22,
-  },
-  {
-    MaSize: 6,
-    TenSize: "41",
-    SoLuong: 133,
-  },
-  {
-    MaSize: 7,
-    TenSize: "42",
-    SoLuong: 122,
-  },
-  {
-    MaSize: 8,
-    TenSize: "43",
-    SoLuong: 122,
-  },
-];
+import { useDispatch, useSelector } from "react-redux";
+import { fetchGiaySize } from "../../actions/giayAction";
+
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
@@ -67,14 +27,55 @@ const useStyles = makeStyles((theme) => ({
       margin: theme.spacing(1),
     },
   },
+  button: {
+    backgroundColor: "#fff",
+    borderRadius: "2px",
+    border: "1px solid rgba(0,0,0,.09)",
+    cursor: "pointer",
+    boxSizing: "border-box",
+    margin: "0 8px 8px 0",
+  },
+  buttonSelected: {
+    color: "#ee4d2d",
+    borderColor: "#ee4d2d",
+    backgroundColor: "#fff",
+    borderRadius: "2px",
+    border: "1px solid rgba(0,0,0,.09)",
+    cursor: "pointer",
+    boxSizing: "border-box",
+    margin: "0 8px 8px 0",
+  },
+  price: {
+    display: "flex",
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "center",
+    margin: "0px 8px",
+  },
 }));
 
 const ProductDetail = (props) => {
+  // CSS
   const classes = useStyles();
+  // Props in component
   const [flag, setFlag] = useState(-1);
-  const [chosenSize, setChosenSize] = useState(listSize[0]);
-  const { item } = props;
+  const [chosenSize, setChosenSize] = useState();
+  const { item, ListSize } = props;
 
+  // Fetch API
+  const dispatch = useDispatch();
+  const listSize = useSelector((state) => state.SizeGiay);
+  const { loading: sizeLoading, error: sizeError, giaySize } = listSize;
+
+  // Fetch data from API
+  useEffect(() => {
+    const fetchData = async (id) => {
+      await dispatch(fetchGiaySize(id));
+    };
+    fetchData(item.MaGiay);
+  }, [dispatch]);
+
+  //Choose size to see quatity
   const handleChange = (size) => {
     if (flag < 0) {
       setFlag(1);
@@ -86,62 +87,86 @@ const ProductDetail = (props) => {
       setChosenSize(size);
     }
   };
+
   return (
     <div className={classes.root}>
-      <Grid container spacing={4}>
-        <Grid item xs={6}>
-          <img
-            src={`/images/${item.Anh}`}
-            alt={item.TenGiay}
-            className={classes.image}
-          />
+      {sizeLoading ? (
+        <h1>Loading</h1>
+      ) : sizeError ? (
+        <h1>Error</h1>
+      ) : (
+        <Grid container spacing={4}>
+          <Grid item xs={6}>
+            <img
+              src={`/images/${item.Anh}`}
+              alt={item.TenGiay}
+              className={classes.image}
+            />
+            <div className={classes.price}>
+              <label style={{ margin: "8px 8px" }}>Giá nhập:</label>
+              <div
+                style={{
+                  margin: "4px 0px",
+                  color: "darkslateblue",
+                  fontWeight: "bold",
+                  fontSize: 24,
+                }}
+              >
+                {"đ " + Number(item.DonGiaNhap).toLocaleString("it-IT")}
+              </div>
+            </div>
+          </Grid>
+          <Grid item xs={6}>
+            <GroupBox
+              type="TextBox"
+              title="Tên Giày"
+              value={item.TenGiay}
+              readOnly={true}
+              required={true}
+            />
+            <GroupBox
+              type="TextBox"
+              title="Hãng Sản Xuất"
+              value={item.TenHangSanXuat}
+              readOnly={true}
+              required={true}
+            />
+            <GroupBox
+              type="TextBox"
+              title="Giới Tính"
+              value={item.GioiTinh}
+              readOnly={true}
+              required={true}
+            />
+            <GroupBox
+              type="TextBox"
+              title={flag < 0 ? "Tổng số lượng" : "Số lượng"}
+              value={flag < 0 ? item.TongSoLuong : chosenSize.SoLuong}
+              readOnly={true}
+              required={true}
+            />
+            <div className={classes.sizeChips}>
+              <label>Size:</label>
+              {Object.keys(giaySize).map((key) => {
+                return (
+                  <button
+                    className={
+                      chosenSize
+                        ? chosenSize.MaSize === giaySize[key].MaSize
+                          ? classes.buttonSelected
+                          : classes.button
+                        : classes.button
+                    }
+                    onClick={(e) => handleChange(giaySize[key])}
+                  >
+                    {ListSize[key].TenSize}{" "}
+                  </button>
+                );
+              })}
+            </div>
+          </Grid>
         </Grid>
-        <Grid item xs={6}>
-          <GroupBox
-            type="TextBox"
-            title="Tên Giày"
-            value={item.TenGiay}
-            readOnly={true}
-            required={true}
-          />
-          <GroupBox
-            type="TextBox"
-            title="Hãng Sản Xuất"
-            value={item.TenHangSanXuat}
-            readOnly={true}
-            required={true}
-          />
-          <GroupBox
-            type="TextBox"
-            title="Giới Tính"
-            value={item.GioiTinh}
-            readOnly={true}
-            required={true}
-          />
-          <GroupBox
-            type="TextBox"
-            title={flag < 0 ? "Tổng số lượng" : "Số lượng"}
-            value={flag < 0 ? item.SoLuong : chosenSize.SoLuong}
-            readOnly={true}
-            required={true}
-          />
-          <div className={classes.sizeChips}>
-            <label>Size:</label>
-            {listSize.map((size) => {
-              return (
-                <Chip
-                  size="small"
-                  color={
-                    chosenSize.MaSize === size.MaSize ? "primary" : "default"
-                  }
-                  label={size.TenSize}
-                  onClick={(e) => handleChange(size)}
-                />
-              );
-            })}
-          </div>
-        </Grid>
-      </Grid>
+      )}
     </div>
   );
 };

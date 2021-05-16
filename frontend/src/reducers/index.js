@@ -1,8 +1,12 @@
 import { combineReducers } from "redux";
-import giayReducer from "./giayReducer";
+import { listGiayReducer, giayReducer, giaySizeReducer } from "./giayReducer";
+import { listSizeReducer } from "./sizeReducer";
 import hangSanXuatReducer from "./hangSanXuatReducer";
 const rootReducer = combineReducers({
+  ListGiay: listGiayReducer,
+  ListSize: listSizeReducer,
   Giay: giayReducer,
+  SizeGiay: giaySizeReducer,
   HangSanXuat: hangSanXuatReducer,
 });
 

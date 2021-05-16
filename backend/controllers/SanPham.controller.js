@@ -28,6 +28,20 @@ const getByID = async (req, res) => {
   });
 };
 
+// @desc Fetch all ChiTietGiay by id
+// @route Get/api/products/id/sizes
+// @access Public
+const getSizeByID = async (req, res) => {
+  const sanPhamID = req.params["id"];
+  await Giay.GetSizeByID(sanPhamID, (result) => {
+    if (result) {
+      res.status(200).send(JSON.stringify(result));
+    } else {
+      res.status(404);
+    }
+  });
+};
+
 // @desc    Add a new product
 // @route   Post /api/products
 // @access  Public
@@ -47,9 +61,8 @@ const createProduct = async (req, res) => {
     MoTa: req.body.MoTa,
     TyLeLoiNhuan: req.body.TyLeLoiNhuan,
     DonGiaNhap: req.body.DonGiaNhap,
-    Size: req.body.Size
+    Size: req.body.Size,
   };
-
 
   await Giay.Create(product, (result) => {
     res.status(200).send({ message: "Created successfully" });
@@ -77,7 +90,7 @@ const updateProduct = async (req, res) => {
     DonGiaNhap: req.body.DonGiaNhap,
   };
 
-  await Giay.Edit( product, (result) => {
+  await Giay.Edit(product, (result) => {
     res.status(200).send({ message: "Edited successfully" });
   });
 };
@@ -96,4 +109,11 @@ const removeProduct = async (req, res) => {
   });
 };
 
-module.exports = {getList, createProduct, removeProduct, updateProduct,getByID};
+module.exports = {
+  getList,
+  createProduct,
+  removeProduct,
+  updateProduct,
+  getByID,
+  getSizeByID,
+};
