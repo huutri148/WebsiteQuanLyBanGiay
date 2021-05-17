@@ -25,7 +25,7 @@ CREATE TABLE  MAU
 
 CREATE TABLE GIAY
 (
-    MaGiay INT auto_increment UNIQUE NOT NULL,
+    MaGiay INT auto_increment PRIMARY KEY,
     TenGiay NVARCHAR(100) NOT NULL, 
     MaHangSanXuat INT NOT NULL,
     MaMau INT NOT NULL,
@@ -33,10 +33,12 @@ CREATE TABLE GIAY
     Anh varchar(100),
     MoTa NVARCHAR(1000),
     TyLeLoiNhuan FLOAT DEFAULT 0 ,
-    DonGiaNhap DECIMAL(17,2) DEFAULT 0,
-    IsDeleted BOOLEAN DEFAULT false,
-    CONSTRAINT PK_GIAY PRIMARY KEY (GioiTinh,MaMau, MaHangSanXuat)
+    DonGiaNhap DECIMAL(17,0) DEFAULT 0,
+    TongSoLuong int default 0,
+    IsDeleted BOOLEAN DEFAULT false
 );
+
+
 
 alter table GIAY
 add constraint GIAY_HANGSANXUAT_FK
@@ -131,7 +133,7 @@ CREATE TABLE PHIEUBANHANG
     MaKhachHang int not null,
     NgayBan DATETIME DEFAULT CURRENT_TIMESTAMP,
     PhuongThucThanhToan NVARCHAR(100) NOT NULL,
-    TongTien DECIMAL(17,2) DEFAULT 0,
+    TongTien DECIMAL(17,0) DEFAULT 0,
     GhiChu NVARCHAR(100) 
 );
 alter table PHIEUBANHANG
@@ -147,8 +149,8 @@ CREATE TABLE CHITIETPHIEUBANHANG
     MaChiTietGiay int not null,
     SoPhieuBanHang int not null,
     SoLuongMua int DEFAULT 0,
-    GiaBan DECIMAL(17,2) DEFAULT 0,
-    ThanhTien DECIMAL(17,2) DEFAULT 0,
+    GiaBan DECIMAL(17,0) DEFAULT 0,
+    ThanhTien DECIMAL(17,0) DEFAULT 0,
     CONSTRAINT PK_CHITIETPHIEUBANHANG PRIMARY KEY (MaChiTietGiay, SoPhieuBanHang)
 );
 
@@ -216,7 +218,7 @@ CREATE TABLE CHITIETBAOCAOBANHANG
     MaBaoCaoBanHang int not null,
     Ngay DATETIME not null,
     SoLuongPhieuBan int default 0,
-    DoanhThu DECIMAL(17,2) default 0,
+    DoanhThu DECIMAL(17,0) default 0,
     CONSTRAINT PK_CHITIETPHIEUBANHANG PRIMARY KEY (MaBaoCaoBanHang, Ngay)
 );
 
@@ -301,9 +303,9 @@ CREATE TABLE BAOCAOLOINHUAN
     MaNguoiDung int not null,
     NgayBatDau DATETIME DEFAULT CURRENT_TIMESTAMP,
     NgayKetThuc DATETIME DEFAULT CURRENT_TIMESTAMP,
-    TongChi DECIMAL(17,2) default 0 , 
-    TongDoanhThu DECIMAL(17,2) default 0,
-    TongLoiNhuan DECIMAL(17,2) default 0,
+    TongChi DECIMAL(17,0) default 0 , 
+    TongDoanhThu DECIMAL(17,0) default 0,
+    TongLoiNhuan DECIMAL(17,0) default 0,
     IsDeleted boolean  default false
 );
 alter table BAOCAOLOINHUAN 
@@ -314,9 +316,9 @@ foreign key(MaNguoiDung) references NGUOIDUNG(MaNguoiDung);
 CREATE TABLE CHITIETBAOCAOLOINHUAN
 (
     MaBaoCaoLoiNhuan int NOT NULL,
-    Chi DECIMAL(17,2) not null,
-    DoanhThu DECIMAL(17,2) not null,
-    LoiNhuan DECIMAL(17,2) not null,
+    Chi DECIMAL(17,0) not null,
+    DoanhThu DECIMAL(17,0) not null,
+    LoiNhuan DECIMAL(17,0) not null,
     TyLeLoiNhuan FLOAT not null,
     Ngay DATETIME DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT PK_CHITIETPHIEUDATHANG PRIMARY KEY (MaBaoCaoLoiNhuan, Ngay)
@@ -336,7 +338,7 @@ CREATE TABLE PHIEUNHAPKHO
     MaNhaCungCap int not null,
     NgayNhapKho DATETIME DEFAULT CURRENT_TIMESTAMP,
     GhiChu nvarchar(1000) not null,
-    TongTien Decimal(17,2) default 0,
+    TongTien Decimal(17,0) default 0,
     IsDeleted boolean  default false
 );
 alter table PHIEUNHAPKHO 
@@ -355,8 +357,8 @@ CREATE TABLE CHITIETPHIEUNHAPKHO
     MaChiTietGiay int not null, 
     SoPhieuNhapKho int not null,
     SoLuongNhap int default 0,
-    GiaNhap DECIMAL(17,2) default 0,
-    ThanhTien Decimal(17,2) default 0,
+    GiaNhap DECIMAL(17,0) default 0,
+    ThanhTien Decimal(17,0) default 0,
     CONSTRAINT PK_CHITIETPHIEUDATHANG PRIMARY KEY (SoPhieuNhapKho, MaChiTietGiay)
 );
 
@@ -374,7 +376,7 @@ CREATE TABLE PHIEUCHI
     SoPhieuNhapKho int not null,
     NgayLap DATETIME DEFAULT CURRENT_TIMESTAMP,
     GhiChu nvarchar(1000) ,
-    TongTien Decimal(17,2) default 0,
+    TongTien Decimal(17,0) default 0,
     IsDeleted boolean  default false
 );
 alter table PHIEUCHI
@@ -444,17 +446,28 @@ end; $$
 DELIMITER ;
 
 
+-- DELIMITER $$
+-- create procedure USP_GetListGiay()
+-- BEGIN
+-- Select E.TenGiay, F.TenHangSanXuat, E.TenMau, E.GioiTinh, E.SoLuong from (
+-- Select C.TenGiay, C.MaHangSanXuat, C.GioiTinh, C.SoLuong, D.TenMau from (
+-- Select A.TenGiay, A.MaMau, A.MaHangSanXuat, A.GioiTinh, B.SoLuong
+-- from (Select MaGiay, Sum(SoLuong) as SoLuong from ShoesStoreManagement.CHITIETGIAY GROUP BY MaGiay) B
+-- LEFT JOIN ShoesStoreManagement.GIAY A USING (MaGiay)) C left join ShoesStoreManagement.MAU D using (MaMau)) E 
+-- LEFT JOIN ShoesStoreManagement.HANGSANXUAT F using (MaHangSanXuat);
+-- END; $$
+-- DELIMITER ;
+
+
+
 DELIMITER $$
-create procedure USP_GetListGiay()
+create procedure USP_GetListGiay( )
 BEGIN
-Select E.TenGiay, F.TenHangSanXuat, E.TenMau, E.GioiTinh, E.SoLuong from (
-Select C.TenGiay, C.MaHangSanXuat, C.GioiTinh, C.SoLuong, D.TenMau from (
-Select A.TenGiay, A.MaMau, A.MaHangSanXuat, A.GioiTinh, B.SoLuong
-from (Select MaGiay, Sum(SoLuong) as SoLuong from ShoesStoreManagement.CHITIETGIAY GROUP BY MaGiay) B
-LEFT JOIN ShoesStoreManagement.GIAY A USING (MaGiay)) C left join ShoesStoreManagement.MAU D using (MaMau)) E 
-LEFT JOIN ShoesStoreManagement.HANGSANXUAT F using (MaHangSanXuat);
+select * from ShoesStoreManagement.GIAY ;
 END; $$
 DELIMITER ;
+
+
 
 DELIMITER $$
 create procedure USP_GetGiayByID(p_MaGiay int )
@@ -464,10 +477,24 @@ END; $$
 DELIMITER ;
 
 DELIMITER $$
+create procedure USP_GetSizeGiayByID(p_MaGiay int )
+BEGIN
+select * from ShoesStoreManagement.CHITIETGIAY where CHITIETGIAY.MaGiay= p_MaGiay;
+END; $$
+DELIMITER ;
+
+DELIMITER $$
+create procedure USP_GetListSize( )
+BEGIN
+select * from ShoesStoreManagement.SIZE;
+END; $$
+DELIMITER ;
+
+DELIMITER $$
 create procedure USP_ThemSanPham(p_TenGiay NVARCHAR(1000),
     p_MaHangSanXuat int,p_MaMau int ,p_GioiTinh NVARCHAR(1000),
     p_Anh NVARCHAR(1000),p_MoTa NVARCHAR(1000),
-    p_TyLeLoiNhuan FLOAT, p_DonGiaNhap DECIMAL(17,2))
+    p_TyLeLoiNhuan FLOAT, p_DonGiaNhap DECIMAL(17,0))
 BEGIN
 INSERT INTO ShoesStoreManagement.GIAY(TenGiay,
     MaHangSanXuat,MaMau,GioiTinh,Anh,MoTa,TyLeLoiNhuan, 
@@ -504,7 +531,7 @@ create procedure USP_CapNhatThongTinGiay(p_MaGiay int,
     p_TenGiay NVARCHAR(1000),
     p_MaHangSanXuat int,p_MaMau int ,p_GioiTinh NVARCHAR(1000),
     p_Anh NVARCHAR(1000),p_MoTa NVARCHAR(1000),
-    p_TyLeLoiNhuan FLOAT, p_DonGiaNhap DECIMAL(17,2))
+    p_TyLeLoiNhuan FLOAT, p_DonGiaNhap DECIMAL(17,0))
 BEGIN
  UPDATE GIAY  
  SET GIAY.TenGiay = p_TenGiay, GIAY.MaHangSanXuat = p_MaHangSanXuat,
@@ -551,7 +578,7 @@ DELIMITER $$
 create procedure USP_ThemPhieuNhapKho(
     p_MaNhaCungCap int,p_MaNguoiDung int ,
     p_NgayNhapKho DATETIME, 
-    p_TongTien DECIMAL(17,2), p_GhiChu NVARCHAR(100))
+    p_TongTien DECIMAL(17,0), p_GhiChu NVARCHAR(100))
 BEGIN
 INSERT INTO ShoesStoreManagement.PHIEUNHAPKHO(MaNhaCungCap,MaNguoiDung ,
     NgayNhapKho,
@@ -567,7 +594,7 @@ DELIMITER ;
 
 DELIMITER $$
 create procedure USP_ThemChiTietPhieuNhapKho(p_MaChiTietGiay int,
-        p_SoLuongNhap int, p_GiaNhap Decimal(17,2), p_ThanhTien Decimal(17,2))
+        p_SoLuongNhap int, p_GiaNhap Decimal(17,0), p_ThanhTien Decimal(17,0))
 BEGIN
     declare phieuNhapKhoID int;
     set phieuNhapKhoID = (select max(SoPhieuNhapKho) from ShoesStoreManagement.PHIEUNHAPKHO);
@@ -587,7 +614,7 @@ create procedure USP_CapNhatThongTinPhieuNhapKho(
     p_SoPhieuNhapKho int, 
     p_MaNhaCungCap int,p_MaNguoiDung int ,
     p_NgayNhapKho DATETIME, 
-    p_TongTien DECIMAL(17,2), p_GhiChu NVARCHAR(100))
+    p_TongTien DECIMAL(17,0), p_GhiChu NVARCHAR(100))
 BEGIN
 UPDATE PHIEUNHAPKHO
 SET PHIEUNHAPKHO.MaNhaCungCap= p_MaNhaCungCap, PHIEUNHAPKHO.MaNguoiDung= p_MaNguoiDung,
@@ -611,7 +638,7 @@ DELIMITER ;
 DELIMITER $$
 create procedure USP_CapNhatChiTietPhieuNhapKho(
         p_SoPhieuNhapKho int,p_MaChiTietGiay int,
-        p_SoLuongNhap int, p_GiaNhap Decimal(17,2), p_ThanhTien Decimal(17,2)
+        p_SoLuongNhap int, p_GiaNhap Decimal(17,0), p_ThanhTien Decimal(17,0)
 )
 BEGIN
     INSERT INTO ShoesStoreManagement.CHITIETPHIEUNHAPKHO(
@@ -666,7 +693,7 @@ DELIMITER $$
 create procedure USP_ThemPhieuChi(
     p_SoPhieuNhapKho int,p_MaNguoiDung int ,
     p_NgayLap DATETIME, 
-    p_TongTien DECIMAL(17,2), p_GhiChu NVARCHAR(100))
+    p_TongTien DECIMAL(17,0), p_GhiChu NVARCHAR(100))
 BEGIN
     INSERT INTO ShoesStoreManagement.PHIEUNHAPKHO(
     SoPhieuNhapKho,MaNguoiDung ,
@@ -839,7 +866,7 @@ DELIMITER $$
 create procedure USP_ThemPhieuBanHang(
     p_MaKhachHang int,p_MaNguoiDung int ,
     p_NgayBan DATETIME ,p_PhuongThucThanhToan NVARCHAR(1000),
-    p_TongTien DECIMAL(17,2), p_GhiChu NVARCHAR(100))
+    p_TongTien DECIMAL(17,0), p_GhiChu NVARCHAR(100))
 BEGIN
 INSERT INTO ShoesStoreManagement.PHIEUBANHANG(MaKhachHang ,MaNguoiDung ,
     NgayBan ,PhuongThucThanhToan ,
@@ -857,7 +884,7 @@ create procedure USP_CapNhatThongTinPhieuBanHang(
     p_SoPhieuBanHang int,
     p_MaKhachHang int,p_MaNguoiDung int ,
     p_NgayBan DATETIME ,p_PhuongThucThanhToan NVARCHAR(1000),
-    p_TongTien DECIMAL(17,2), p_GhiChu NVARCHAR(100))
+    p_TongTien DECIMAL(17,0), p_GhiChu NVARCHAR(100))
 BEGIN
 UPDATE PHIEUBANHANG
 SET PHIEUBANHANG.MaKhachHang= p_MaKhachHang, PHIEUBANHANG.MaNguoiDung= p_MaNguoiDung,
@@ -869,7 +896,7 @@ DELIMITER ;
 
 DELIMITER $$
 create procedure USP_ThemChiTietPhieuBanHang(p_MaChiTietGiay int,
-        p_SoLuongMua int, p_GiaBan Decimal(17,2), p_ThanhTien Decimal(17,2))
+        p_SoLuongMua int, p_GiaBan Decimal(17,0), p_ThanhTien Decimal(17,2))
 BEGIN
     declare phieuBanHangID int;
     set phieuBanHangID = (select max(SoPhieuBanHang) from ShoesStoreManagement.PHIEUBANHANG);
@@ -1039,71 +1066,19 @@ insert into HANGSANXUAT(TenHangSanXuat)values ("Converse");
 insert into HANGSANXUAT(TenHangSanXuat)values ("Vans");
 insert into HANGSANXUAT(TenHangSanXuat)values ("Fila");
 insert into HANGSANXUAT(TenHangSanXuat)values ("Bitis");
+insert into HANGSANXUAT(TenHangSanXuat)values ("Yeezy");
+insert into HANGSANXUAT(TenHangSanXuat)values ("Air Jordan");
+
 
 
 insert into MAU(TenMau)values ("Purple");
 insert into MAU(TenMau)values ("White");
 insert into MAU(TenMau)values ("Pink");
 insert into MAU(TenMau)values ("Blue");
+insert into MAU(TenMau)values ("Red");
+insert into MAU(TenMau)values ("Black");
+insert into MAU(TenMau)values ("Grey");
 
-insert into GIAY(    
-    TenGiay , 
-    MaHangSanXuat ,
-    MaMau ,
-    GioiTinh ,
-    Anh ,
-    MoTa,
-    TyLeLoiNhuan , 
-    DonGiaNhap 
-    )values (
-    "Van Old Skool Violet", 
-    6,
-    1,
-    "Nu",
-    "abcxyz",
-    "abcxyz",
-    0, 
-    "1200000" 
-);
-insert into GIAY(    
-    TenGiay , 
-    MaHangSanXuat ,
-    MaMau ,
-    GioiTinh ,
-    Anh ,
-    MoTa,
-    TyLeLoiNhuan , 
-    DonGiaNhap 
-    )values (
-    "Fila Wave Neo", 
-    7,
-    2,
-    "Nu",
-    "abcxyz",
-    "abcxyz",
-    0, 
-    "1250000" 
-);
-
-insert into GIAY(    
-    TenGiay , 
-    MaHangSanXuat ,
-    MaMau ,
-    GioiTinh ,
-    Anh ,
-    MoTa,
-    TyLeLoiNhuan , 
-    DonGiaNhap 
-    )values (
-    "Converse 70s Hightop ", 
-    5,
-    4,
-    "Unisex",
-    "abcxyz",
-    "abcxyz",
-    0, 
-    "1000000" 
-);
 
 
 
@@ -1115,35 +1090,435 @@ insert into SIZE(TenSize)values ("42");
 insert into SIZE(TenSize)values ("43");
 
 
-insert into CHITIETGIAY(    
-    MaSize,
-    MaGiay,
-    SoLuong 
-    )values (
-    1,
-    1,
-    100
+insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa, TyLeLoiNhuan ,TongSoLuong, DonGiaNhap) values (
+    "Air Jordan 1 KO 'Chicago' 2021", 
+    10,
+    4,
+    "Unisex",
+    "AirJordan1KO'Chicago'2021.jpg",
+    "white/black/university red",
+    0.1, 
+    160,
+    6375000
 );
 
-insert into CHITIETGIAY(    
-    MaSize,
-    MaGiay,
-    SoLuong 
-    )values (
-    2,
-    1,
-    100
+
+insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa, TyLeLoiNhuan ,TongSoLuong, DonGiaNhap) values (
+    "Air Jordan 1 Mid 'Banned'", 
+    10,
+    4,
+    "Unisex",
+    "AirJordan1Mid'Banned'.jpg",
+    "black/university red",
+    0.1, 
+    160,
+    6375000
 );
-insert into CHITIETGIAY(    
-    MaSize,
-    MaGiay,
-    SoLuong 
-    )values (
+insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa, TyLeLoiNhuan ,TongSoLuong, DonGiaNhap) values (
+    "Air Jordan 1 Mid 'Hyper Royal'", 
+    10,
+    4,
+    "Unisex",
+    "AirJordan1Mid'HyperRoyal'.jpg",
+    "white/black/university red",
+    0.5, 
+    160,
+    6005000 
+);
+insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa, TyLeLoiNhuan ,TongSoLuong, DonGiaNhap) values (
+    "Air Jordan 1 Retro High OG 'Hyper Royal''", 
+    10,
     3,
+    "Unisex",
+    "AirJordan1RetroHighOG'HyperRoyal'.jpg",
+    "white/black/university red",
+    0.1, 
+    160,
+    6375000
+);
+insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa, TyLeLoiNhuan ,TongSoLuong, DonGiaNhap) values (
+    "Air Jordan 1 Retro High OG 'Shadow 2.0'", 
+    10,
+    5,
+    "Unisex",
+    "AirJordan1RetroHighOG'Shadow2.0'.jpg",
+    "white/black/university red",
+    0.2, 
+    160,
+    6375000
+);
+insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa, TyLeLoiNhuan ,TongSoLuong, DonGiaNhap) values (
+    "Air Jordan 5 Retro GS 'Raging Bull' 2021", 
+    10,
+    4,
+    "Unisex",
+    "AirJordan5RetroGS'RagingBull'2021.jpg",
+    "white/black/university red",
+    0.4, 
+    160,
+    6555000
+);
+insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa, TyLeLoiNhuan ,TongSoLuong, DonGiaNhap) values (
+    "Air Jordan 5 Retro 'Raging Bull' 2021", 
+    10,
+    4,
+    "Unisex",
+    "AirJordan5Retro'RagingBull'2021.jpg",
+    "black/university red",
+    0.3, 
+    160,
+    6375000 
+);
+insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa, TyLeLoiNhuan ,TongSoLuong, DonGiaNhap) values (
+    "Air Jordan 6 Retro OG 'Carmine' 2021", 
+    10,
+    5,
+    "Unisex",
+    "AirJordan6RetroOG'Carmine'2021.jpg",
+    "white/black/university red",
+    0.2, 
+    160,
+    6375000
+);
+insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa, TyLeLoiNhuan ,TongSoLuong, DonGiaNhap) values (
+    "Air Jordan 7 Retro 'Flint' 2021", 
+    10,
     1,
-    200
+    "Unisex",
+    "AirJordan7Retro'Flint'2021.jpg",
+    "white/black/university red",
+    0.1, 
+    160,
+    6375000
+);
+insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa, TyLeLoiNhuan ,TongSoLuong, DonGiaNhap) values (
+    "Air Jordan 11 Retro Low GS 'Legend Blue'", 
+    10,
+    1,
+    "Unisex",
+    "AirJordan11RetroLowGS'LegendBlue'.jpg",
+    "white/black/university red",
+    0.1, 
+    160,
+    5005000
+);
+insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa, TyLeLoiNhuan ,TongSoLuong, DonGiaNhap) values (
+    "Air Jordan 11 Retro Low 'Legend Blue'", 
+    10,
+    1,
+    "Unisex",
+    "AirJordan11RetroLow'LegendBlue'.jpg",
+    "white/black/university red",
+    0, 
+    160,
+    6375000
+);
+insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa, TyLeLoiNhuan ,TongSoLuong, DonGiaNhap) values (
+    "Stingwater x Dunk Low SB 'Magic Mushroom'", 
+    10,
+    4,
+    "Unisex",
+    "StingwaterxDunkLowSB'MagicMushroom'.jpg",
+    "white/black/university red",
+    0.2, 
+    160,
+    6375000
+);
+insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa, TyLeLoiNhuan ,TongSoLuong, DonGiaNhap) values (
+    "Travis Scott x Air Jordan 6 Retro 'British Khaki'", 
+    10,
+    6,
+    "Unisex",
+    "TravisScottxAirJordan6Retro'BritishKhaki'.jpg",
+    "white/black/university red",
+    0.2, 
+    160,
+    6375000
 );
 
+insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa, TyLeLoiNhuan ,TongSoLuong, DonGiaNhap) values (
+    "Yeezy 500 'Enflame'", 
+    9,
+    6,
+    "Unisex",
+    "Yeezy500'Enflame'.jpg",
+    "white/black/university red",
+    0.2, 
+    160,
+    6375000
+);
+
+insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa, TyLeLoiNhuan ,TongSoLuong, DonGiaNhap) values (
+    "Yeezy 700 V3 'Kyanite'", 
+    9,
+    3,
+    "Unisex",
+    "Yeezy700V3'Kyanite'.jpg",
+    "white/black/university red",
+    0.2, 
+    160,
+    6375000
+);
+
+insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa, TyLeLoiNhuan ,TongSoLuong, DonGiaNhap) values (
+    "Yeezy Boost 700 'Bright Blue'", 
+    9,
+    3,
+    "Unisex",
+    "YeezyBoost700'BrightBlue'.jpg",
+    "white/black/university red",
+    0.2, 
+    160,
+    6375000
+);
+
+insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa, TyLeLoiNhuan ,TongSoLuong, DonGiaNhap) values (
+    "Yeezy Boost 700 V2 'Cream'", 
+    9,
+    1,
+    "Unisex",
+    "YeezyBoost700V2'Cream'.jpg",
+    "white/black/university red",
+    0.2, 
+    160,
+    6375000
+);
+
+insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa, TyLeLoiNhuan ,TongSoLuong, DonGiaNhap) values (
+    "Yeezy Boost 700 V2 'Cream'", 
+    9,
+    1,
+    "Female",
+    "YeezyBoost700V2'Cream'.jpg",
+    "white/black/university red",
+    0.2, 
+    160,
+    6375000
+);
+
+insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa, TyLeLoiNhuan ,TongSoLuong, DonGiaNhap) values (
+    "Yeezy Slides 'Core' 2021", 
+    9,
+    6,
+    "Unisex",
+    "YeezySlides'Core'2021.jpg",
+    "white/black/university red",
+    0.2, 
+    160,
+    6375000
+);
+
+insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa, TyLeLoiNhuan ,TongSoLuong, DonGiaNhap) values (
+    "Yeezy Slides 'Pure'", 
+    9,
+    6,
+    "Unisex",
+    "YeezySlides'Pure'.jpg",
+    "white/black/university red",
+    0.2, 
+    160,
+    6375000
+);
+
+insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa, TyLeLoiNhuan ,TongSoLuong, DonGiaNhap) values (
+    "Yeezy Slides 'Resin' 2021", 
+    9,
+    6,
+    "Unisex",
+    "YeezySlides'Resin'2021.jpg",
+    "white/black/university red",
+    0.2, 
+    160,
+    6375000
+);
+   
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (1,1,50);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (2,1,20);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (3,1,30);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (4,1,40);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (5,1,10);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (6,1,10);
 
 
 
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (1,2,50);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (2,2,20);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (3,2,30);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (4,2,40);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (5,2,10);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (6,2,10);
+
+
+
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (1,3,50);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (2,3,20);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (3,3,30);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (4,3,40);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (5,3,10);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (6,3,10);
+
+
+
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (1,4,50);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (2,4,20);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (3,4,30);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (4,4,40);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (5,4,10);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (6,4,10);
+
+
+
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (1,5,50);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (2,5,20);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (3,5,30);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (4,5,40);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (5,5,10);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (6,5,10);
+
+
+
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (1,6,50);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (2,6,20);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (3,6,30);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (4,6,40);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (5,6,10);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (6,6,10);
+
+
+
+
+
+
+
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (1,7,50);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (2,7,20);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (3,7,30);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (4,7,40);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (5,7,10);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (6,7,10);
+
+
+
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (1,8,50);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (2,8,20);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (3,8,30);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (4,8,40);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (5,8,10);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (6,8,10);
+
+
+
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (1,9,50);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (2,9,20);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (3,9,30);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (4,9,40);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (5,9,10);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (6,9,10);
+
+
+
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (1,10,50);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (2,10,20);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (3,10,30);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (4,10,40);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (5,10,10);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (6,10,10);
+
+
+
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (1,11,50);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (2,11,20);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (3,11,30);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (4,11,40);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (5,11,10);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (6,11,10);
+
+
+
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (1,12,50);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (2,12,20);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (3,12,30);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (4,12,40);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (5,12,10);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (6,12,10);
+
+
+
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (1,13,50);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (2,13,20);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (3,13,30);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (4,13,40);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (5,13,10);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (6,13,10);
+
+
+
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (1,14,50);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (2,14,20);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (3,14,30);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (4,14,40);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (5,14,10);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (6,14,10);
+
+
+
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (1,15,50);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (2,15,20);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (3,15,30);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (4,15,40);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (5,15,10);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (6,15,10);
+
+
+
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (1,16,50);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (2,16,20);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (3,16,30);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (4,16,40);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (5,16,10);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (6,16,10);
+
+
+
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (1,17,50);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (2,17,20);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (3,17,30);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (4,17,40);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (5,17,10);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (6,17,10);
+
+
+
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (1,18,50);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (2,18,20);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (3,18,30);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (4,18,40);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (5,18,10);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (6,18,10);
+
+
+
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (1,19,50);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (2,19,20);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (3,19,30);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (4,19,40);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (5,19,10);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (6,19,10);
+
+
+
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (1,20,50);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (2,20,20);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (3,20,30);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (4,20,40);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (5,20,10);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (6,20,10);
+
+
+
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (1,21,50);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (2,21,20);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (3,21,30);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (4,21,40);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (5,21,10);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (6,21,10);

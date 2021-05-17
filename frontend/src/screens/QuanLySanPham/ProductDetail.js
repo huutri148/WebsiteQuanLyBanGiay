@@ -1,6 +1,9 @@
-import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
+import React, { useState, useEffect } from "react";
+import { makeStyles } from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
+import GroupBox from "../../components/controls/GroupBox";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchGiaySize } from "../../actions/giayAction";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -11,21 +14,159 @@ const useStyles = makeStyles((theme) => ({
     textAlign: "center",
     color: theme.palette.text.secondary,
   },
+  image: {
+    objectFit: "cover",
+    width: "80%",
+    maxHeight: "100%",
+  },
+  sizeChips: {
+    display: "flex",
+    justifyContent: "center",
+    flexWrap: "wrap",
+    "& > *": {
+      margin: theme.spacing(1),
+    },
+  },
+  button: {
+    backgroundColor: "#fff",
+    borderRadius: "2px",
+    border: "1px solid rgba(0,0,0,.09)",
+    cursor: "pointer",
+    boxSizing: "border-box",
+    margin: "0 8px 8px 0",
+  },
+  buttonSelected: {
+    color: "#ee4d2d",
+    borderColor: "#ee4d2d",
+    backgroundColor: "#fff",
+    borderRadius: "2px",
+    border: "1px solid rgba(0,0,0,.09)",
+    cursor: "pointer",
+    boxSizing: "border-box",
+    margin: "0 8px 8px 0",
+  },
+  price: {
+    display: "flex",
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "center",
+    margin: "0px 8px",
+  },
 }));
 
 const ProductDetail = (props) => {
+  // CSS
   const classes = useStyles();
-  const { item } = props;
+  // Props in component
+  const [flag, setFlag] = useState(-1);
+  const [chosenSize, setChosenSize] = useState();
+  const { item, ListSize } = props;
+
+  // Fetch API
+  const dispatch = useDispatch();
+  const listSize = useSelector((state) => state.SizeGiay);
+  const { loading: sizeLoading, error: sizeError, giaySize } = listSize;
+
+  // Fetch data from API
+  useEffect(() => {
+    const fetchData = async (id) => {
+      await dispatch(fetchGiaySize(id));
+    };
+    fetchData(item.MaGiay);
+  }, [dispatch]);
+
+  //Choose size to see quatity
+  const handleChange = (size) => {
+    if (flag < 0) {
+      setFlag(1);
+      setChosenSize(size);
+    } else if (chosenSize.MaSize === size.MaSize) {
+      setFlag(-1);
+      setChosenSize("");
+    } else if (chosenSize.MaSize !== size.MaSize) {
+      setChosenSize(size);
+    }
+  };
+
   return (
     <div className={classes.root}>
-      <Grid container spacing={4}>
-        <Grid item xs={6}>
-          <img src={item.imgURL} alt={item.TenGiay} />
+      {sizeLoading ? (
+        <h1>Loading</h1>
+      ) : sizeError ? (
+        <h1>Error</h1>
+      ) : (
+        <Grid container spacing={4}>
+          <Grid item xs={6}>
+            <img
+              src={`/images/${item.Anh}`}
+              alt={item.TenGiay}
+              className={classes.image}
+            />
+            <div className={classes.price}>
+              <label style={{ margin: "8px 8px" }}>Giá nhập:</label>
+              <div
+                style={{
+                  margin: "4px 0px",
+                  color: "darkslateblue",
+                  fontWeight: "bold",
+                  fontSize: 24,
+                }}
+              >
+                {"đ " + Number(item.DonGiaNhap).toLocaleString("it-IT")}
+              </div>
+            </div>
+          </Grid>
+          <Grid item xs={6}>
+            <GroupBox
+              type="TextBox"
+              title="Tên Giày"
+              value={item.TenGiay}
+              readOnly={true}
+              required={true}
+            />
+            <GroupBox
+              type="TextBox"
+              title="Hãng Sản Xuất"
+              value={item.TenHangSanXuat}
+              readOnly={true}
+              required={true}
+            />
+            <GroupBox
+              type="TextBox"
+              title="Giới Tính"
+              value={item.GioiTinh}
+              readOnly={true}
+              required={true}
+            />
+            <GroupBox
+              type="TextBox"
+              title={flag < 0 ? "Tổng số lượng" : "Số lượng"}
+              value={flag < 0 ? item.TongSoLuong : chosenSize.SoLuong}
+              readOnly={true}
+              required={true}
+            />
+            <div className={classes.sizeChips}>
+              <label>Size:</label>
+              {Object.keys(giaySize).map((key) => {
+                return (
+                  <button
+                    className={
+                      chosenSize
+                        ? chosenSize.MaSize === giaySize[key].MaSize
+                          ? classes.buttonSelected
+                          : classes.button
+                        : classes.button
+                    }
+                    onClick={(e) => handleChange(giaySize[key])}
+                  >
+                    {ListSize[key].TenSize}{" "}
+                  </button>
+                );
+              })}
+            </div>
+          </Grid>
         </Grid>
-        <Grid item xs={6}>
-          <h1>{item.TenGiay}</h1>
-        </Grid>
-      </Grid>
+      )}
     </div>
   );
 };

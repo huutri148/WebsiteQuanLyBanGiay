@@ -37,7 +37,7 @@ export default function useTable(records, headCells, filterFn) {
   const [orderBy, setOrderBy] = useState();
 
   const TblContainer = (props) => (
-    <Table stickyHeader className={classes.table}>
+    <Table className={classes.table}>
       {props.children}
     </Table>
   );

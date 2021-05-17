@@ -1,100 +1,28 @@
-import { React, useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   InputAdornment,
   Paper,
   Toolbar,
   TableBody,
-  makeStyles,
+  withStyles,
   TableContainer,
   TableRow,
   TableCell,
   IconButton,
   Typography,
 } from "@material-ui/core";
-import useTable from "../../components/useTable";
-import Input from "../../components/controls/Input";
-import { Search, Assignment, Edit, FiberPin } from "@material-ui/icons";
-import ProductCard from "./ProductCard";
-import Popup from "../../components/controls/Popup";
-import ProductDetail from "./ProductDetail";
-const useStyles = makeStyles((theme) => ({
-  title: {
-    padding: theme.spacing(4, 0),
-  },
-  searchInput: {
-    display: "flex",
-    justifyContent: "center",
-  },
-  table: {
-    padding: theme.spacing(0, 8),
-  },
-}));
+import styles from "./styles";
+import useTable from "../../../components/useTable";
+import Input from "../../../components/controls/Input";
+import { Search, Assignment, Edit } from "@material-ui/icons";
+import ProductCard from "../ProductCard";
+import Popup from "../../../components/controls/Popup";
+import ProductDetail from "../ProductDetail";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchListGiay } from "./../../../actions/giayAction";
+import { fetchListHangSanXuat } from "./../../../actions/hangSanXuatAction";
+import { fetchListSize } from "./../../../actions/sizeAction";
 
-const products = [
-  {
-    MaGiay: 1,
-    TenGiay: "Van Old Skool Violet",
-    TenHangSanXuat: "Nike",
-    TenMau: "Violet",
-    GioiTinh: "Unisex",
-    Anh: "/images/2.jpg",
-    SoLuong: 20,
-  },
-  {
-    MaGiay: 3,
-    TenGiay: "Fila Wave Neo",
-    TenHangSanXuat: "Fila",
-    TenMau: "Violet",
-    GioiTinh: "Unisex",
-    Anh: "/images/1.png",
-    SoLuong: 20,
-  },
-  {
-    MaGiay: 2,
-    TenGiay: "Fila Wave Neo",
-    TenHangSanXuat: "Fila",
-    TenMau: "Violet",
-    GioiTinh: "Unisex",
-    Anh: "/images/1.png",
-    SoLuong: 20,
-  },
-  {
-    MaGiay: 4,
-    TenGiay: "Fila Wave Neo",
-    TenHangSanXuat: "Fila",
-    TenMau: "Violet",
-    GioiTinh: "Unisex",
-    Anh: "/images/1.png",
-    SoLuong: 20,
-  },
-  {
-    MaGiay: 5,
-    TenGiay: "Fila Wave Neo",
-    TenHangSanXuat: "Fila",
-    TenMau: "Violet",
-    Anh: "/images/1.png",
-    GioiTinh: "Unisex",
-    SoLuong: 20,
-  },
-  {
-    MaGiay: 6,
-    TenGiay: "Fila Wave Neo",
-    TenHangSanXuat: "Fila",
-    TenMau: "Violet",
-    Anh: "/images/1.png",
-    GioiTinh: "Unisex",
-    SoLuong: 20,
-  },
-  {
-    MaGiay: 7,
-    TenGiay: "Fila Wave Neo",
-    TenHangSanXuat: "Fila",
-    TenMau: "Violet",
-    Anh: "/images/1.png",
-    GioiTinh: "Unisex",
-    SoLuong: 20,
-  },
-];
 const headCells = [
   { id: "TenGiay", label: "Tên sản phẩm" },
   { id: "TenHangSanXuat", label: "Tên hãng sản xuất", disableSorting: true },
@@ -103,23 +31,64 @@ const headCells = [
   { id: "SoLuong", label: "Số lượng" },
   { id: "actions" },
 ];
-const DanhSachSanPham = () => {
-  const classes = useStyles();
-  const [records, setRecords] = useState(products);
-  const [product, setProduct] = useState(products[0]);
-  const [currentIndex, setCurrentIndex] = useState(0);
+const DanhSachSanPham = (props) => {
+  // CSS class
+  const { classes } = props;
+
+  //Fetched data
+  const dispatch = useDispatch();
+  const productList = useSelector((state) => state.ListGiay);
+  const brandList = useSelector((state) => state.HangSanXuat);
+  const sizeList = useSelector((state) => state.ListSize);
+  const { error: hangSanXuatError, listHangSanXuat } = brandList;
+  const { error: giayError, listGiay } = productList;
+  const { error: sizeError, listSize } = sizeList;
+
+  // Props in Screens
+  const [tableData, setTableData] = useState([]);
+  const [loading, setLoading] = useState();
+  const [selectedItem, setSelectedItem] = useState(tableData[0]);
   const [openPopup, setOpenPopup] = useState(false);
   const [filterFn, setFilterFn] = useState({
     fn: (items) => {
       return items;
     },
   });
-
   const { TblContainer, TblHead, TblPagination, recordsAfterPagingAndSorting } =
-    useTable(records, headCells, filterFn);
+    useTable(tableData, headCells, filterFn);
+
+  // setTableData when done fetching
+  useEffect(() => {
+    const data = Object.values(listGiay).reduce((result, value) => {
+      let maHSX = value.MaHangSanXuat;
+      if (typeof listHangSanXuat[maHSX] === "undefined") return [];
+      let { TenHangSanXuat } = listHangSanXuat[maHSX];
+      result.push({
+        TenHangSanXuat,
+        ...value,
+      });
+      return result;
+    }, []);
+    setTableData(data);
+    setLoading(true);
+  }, [loading]);
+
+  // Fetch data from API
+  useEffect(() => {
+    const fetchData = async () => {
+      await dispatch(fetchListGiay());
+      await dispatch(fetchListHangSanXuat());
+      await dispatch(fetchListSize());
+      //set Flag to combine TableData
+      // Note: Find a way to select lastest data
+      // Done have to use Flag
+      setLoading(false);
+    };
+    fetchData();
+  }, [dispatch]);
+
   const handleDetail = (index, data) => {
-    setCurrentIndex(index);
-    setProduct(data);
+    setSelectedItem(data);
     setOpenPopup(true);
   };
   const handleSearch = (e) => {
@@ -134,6 +103,7 @@ const DanhSachSanPham = () => {
       },
     });
   };
+
   return (
     <div>
       <Typography component="h1" variant="h5" className={classes.title}>
@@ -166,18 +136,21 @@ const DanhSachSanPham = () => {
                   }
                 >
                   <TableCell component="th" scope="row">
-                    <ProductCard imgUrl={item.Anh} productName={item.TenGiay} />
+                    <ProductCard
+                      imgUrl={`/images/${item.Anh}`}
+                      productName={item.TenGiay}
+                    />
                   </TableCell>
                   <TableCell component="th" scope="row">
                     {item.TenHangSanXuat}
                   </TableCell>
                   <TableCell component="th" scope="row">
-                    {item.TenMau}
+                    {item.MaMau}
                   </TableCell>
                   <TableCell component="th" scope="row">
                     {item.GioiTinh}
                   </TableCell>
-                  <TableCell>{item.SoLuong}</TableCell>
+                  <TableCell>{item.TongSoLuong}</TableCell>
                   <TableCell>
                     <IconButton color="secondary">
                       <Edit />
@@ -198,10 +171,10 @@ const DanhSachSanPham = () => {
         openPopup={openPopup}
         setOpenPopup={setOpenPopup}
       >
-        <ProductDetail item={product} />
+        <ProductDetail item={selectedItem} ListSize={listSize} />
       </Popup>
     </div>
   );
 };
 
-export default DanhSachSanPham;
+export default withStyles(styles)(DanhSachSanPham);

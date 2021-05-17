@@ -11,6 +11,7 @@ input {
     border: 1px solid #ccc;
     border-radius: 4px;
     margin-bottom: 15px;
+    margin-top: 5px;
 }
 input:disabled {
     background: #EEEEEE;

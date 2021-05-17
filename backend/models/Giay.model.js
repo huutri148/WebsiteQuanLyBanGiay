@@ -49,6 +49,19 @@ Giay.GetByID = (maGiay, callBack) => {
     }
   });
 };
+Giay.GetSizeByID = (maGiay, callBack) => {
+  var conn = db.getConnection();
+  var queryString = sqlString.format(`CALL USP_GetSizeGiayByID(${maGiay})`);
+  conn.query(queryString, (err, res) => {
+    if (err) {
+      throw err;
+    }
+    if (res[0]) {
+      callBack(res[0]);
+      return;
+    }
+  });
+};
 Giay.Create = async function (data, result) {
   var conn = db.getConnection();
   var dataGiay = [
@@ -121,7 +134,7 @@ Giay.Delete = (maGiay, callBack) => {
     if (err) {
       throw err;
     } else {
-      console.log("Deleteted Product".yellow.bold );
+      console.log("Deleteted Product".yellow.bold);
       callBack(res[0]);
     }
   });

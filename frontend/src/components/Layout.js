@@ -16,8 +16,7 @@ import { Link } from "react-router-dom";
 import MenuIcon from "@material-ui/icons/Menu";
 import clsx from "clsx";
 import { mainListItems, secondaryListItems } from "./Sidebar/listMenu";
-import { CenterFocusStrong, ChevronLeft, MicNone } from "@material-ui/icons";
-import ShopLogo from '../images/logo.png'
+import { ChevronLeft } from "@material-ui/icons";
 const drawerWidth = 260;
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -83,13 +82,12 @@ const useStyles = makeStyles((theme) => ({
     height: "100vh",
     overflow: "auto",
   },
-  ShopLogo:{
+  ShopLogo: {
     width: 90,
     height: theme.spacing(7),
     marginRight: 35,
   },
-  container: {
-  },
+  container: {},
   appBarSpacer: theme.mixins.toolbar,
 }));
 export const Layout = (props) => {
@@ -110,7 +108,7 @@ export const Layout = (props) => {
         className={clsx(classes.appBar, open && classes.appBarShift)}
       >
         <Toolbar className={classes.toolbar}>
-        <IconButton
+          <IconButton
             edge="start"
             color="inherit"
             aria-label="open drawer"
@@ -118,7 +116,8 @@ export const Layout = (props) => {
             className={clsx(
               classes.menuButton,
               open && classes.menuButtonHidden
-            )}>
+            )}
+          >
             <MenuIcon />
           </IconButton>
           <Typography
@@ -144,9 +143,10 @@ export const Layout = (props) => {
         classes={{
           paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose),
         }}
-        open={open}>
+        open={open}
+      >
         <div className={classes.toolbarIcon}>
-        <img src={ ShopLogo} className = {classes.ShopLogo}  alt="logo"/> 
+          <img src="/images/logo.png" className={classes.ShopLogo} alt="logo" />
           <IconButton onClick={handleDrawerClose}>
             <ChevronLeft />
           </IconButton>

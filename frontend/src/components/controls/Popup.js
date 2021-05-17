@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import {
   Dialog,
   DialogTitle,
@@ -6,8 +6,6 @@ import {
   makeStyles,
   Typography,
 } from "@material-ui/core";
-import Fab from "@material-ui/core/Fab";
-import CloseIcon from "@material-ui/icons/Close";
 import Slide from "@material-ui/core/Slide";
 const useStyles = makeStyles((theme) => ({
   dialogWrapper: {
@@ -17,6 +15,10 @@ const useStyles = makeStyles((theme) => ({
   },
   dialogTitle: {
     paddingRight: "0px",
+    textTransform: "none",
+    fontSize: 32,
+    color: "darkslateblue",
+    fontWeight: "Bold",
   },
 }));
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -25,7 +27,19 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 export default function Popup(props) {
   const { title, children, openPopup, setOpenPopup } = props;
   const classes = useStyles();
-
+  const node = useRef(null);
+  const handleClick = (e) => {
+    if (node.current && !node.current.contains(e.target)) {
+      //outside clicks
+      setOpenPopup(false);
+    }
+  };
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClick);
+    return () => {
+      document.removeEventListener("mousedown", handleClick);
+    };
+  }, [node]);
   return (
     <Dialog
       open={openPopup}
@@ -34,21 +48,19 @@ export default function Popup(props) {
       classes={{ paper: classes.dialogWrapper }}
     >
       <DialogTitle className={classes.dialogTitle}>
-        <div style={{ display: "flex" }}>
-          <Typography variant="h6" component="div" style={{ flexGrow: 1 }}>
+        <div style={{ display: "flex", backgroundColor: "primary" }}>
+          <Typography
+            variant="h6"
+            component="div"
+            style={{ flexGrow: 1, textAlign: "center" }}
+          >
             {title}
           </Typography>
-          <Fab
-            color="secondary"
-            onClick={() => {
-              setOpenPopup(false);
-            }}
-          >
-            <CloseIcon />
-          </Fab>
         </div>
       </DialogTitle>
-      <DialogContent dividers>{children}</DialogContent>
+      <DialogContent dividers>
+        <div ref={node}>{children}</div>
+      </DialogContent>
     </Dialog>
   );
 }
