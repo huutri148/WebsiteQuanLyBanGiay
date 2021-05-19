@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
-import GroupBox from "../../components/controls/GroupBox";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchGiaySize } from "../../actions/giayAction";
+import GroupBox from "../../components/controls/GroupBox/GroupBox";
 
 const useStyles = makeStyles((theme) => ({
   root: {

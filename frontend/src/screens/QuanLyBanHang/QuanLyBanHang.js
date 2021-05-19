@@ -21,8 +21,6 @@ import "./QuanLyBanHang.css";
 import { AddCircle, Edit, HighlightOff } from "@material-ui/icons";
 import useTable from "../../components/useTable";
 import ProductCard from "../QuanLySanPham/ProductCard";
-import Popup from "../../components/controls/Popup";
-import ProductDetail from "../QuanLySanPham/ProductDetail";
 function TabPanel(props) {
   const classes = useStyles();
   const { children, value, index, ...other } = props;
