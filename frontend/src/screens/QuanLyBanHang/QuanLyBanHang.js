@@ -153,13 +153,12 @@ const selectedProducts = [];
 const QuanLyBanHang = () => {
   const [ignored, forceUpdate] = useState(false);
   const [value, setValue] = useState(0);
-  const [amount, setAmount] = useState(0);
+  const [amount, setAmount] = useState();
   const classes = useStyles();
   const [selectedId, setSelectedId] = useState();
   const [product, setProduct] = useState(null);
   const [total, setTotal] = useState(0);
   const [sumTotal, setSumTotal] = useState(0);
-
   const [phoneNumber, setPhoneNumber] = useState("");
   const [selectedLength, setSelectedLength] = useState(0);
   const [filterFn, setFilterFn] = useState({
@@ -167,6 +166,8 @@ const QuanLyBanHang = () => {
       return items;
     },
   });
+  //regex
+  const phoneRegex = /^[0-9\b]+$/;
   //table
   const { TblContainer, TblHead, TblPagination, recordsAfterPagingAndSorting } =
     useTable(selectedProducts, headCells, filterFn);
@@ -174,7 +175,7 @@ const QuanLyBanHang = () => {
     setSelectedId(val);
     let tmp = products.find((obj) => obj.MaGiay === val);
     setProduct(tmp);
-    setAmount(0);
+    setAmount();
     setTotal(0);
   };
   //handle Button click
@@ -214,8 +215,11 @@ const QuanLyBanHang = () => {
   };
   const onAmountChange = (e) => {
     if (product != null) {
-      setAmount(Number(e.target.value));
-      setTotal(e.target.value * product.DonGia);
+      let tmp = e.target.value;
+      if (tmp === "" || phoneRegex.test(tmp)) {
+        setAmount(Number(tmp));
+        setTotal(tmp * product.DonGia);
+      }
     }
   };
 
@@ -364,7 +368,7 @@ const QuanLyBanHang = () => {
                     <td width="15%">
                       <GroupBox
                         value={amount}
-                        type="TextBox"
+                        type="Number"
                         title={headCells[4].label}
                         onChange={onAmountChange}
                       />
