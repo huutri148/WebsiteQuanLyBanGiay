@@ -31,8 +31,8 @@ const InfoField = (props) => {
                     disabled={item.disabled}
                     value = {item.value}
                     required={item.required}
-                    error = {item.error}
-                    onInput = {item.type === "Number" ? e => item.onInput(e) : null}/>
+                    onChange = {e => item.onChange(e,item.title)}
+                    error = {item.error}/>
               ))}
               <Button size="large" variant="contained" color="primary" onClick = {props.onClick}>
                 {props.buttonContent}

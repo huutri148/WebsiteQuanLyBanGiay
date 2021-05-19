@@ -159,15 +159,13 @@ const QuanLyBanHang = () => {
   const [product, setProduct] = useState(null);
   const [total, setTotal] = useState(0);
   const [sumTotal, setSumTotal] = useState(0);
-  const [phoneNumber, setPhoneNumber] = useState('123');
+  const [phoneNumber, setPhoneNumber] = useState('');
   const [selectedLength,setSelectedLength] = useState(0);
   const [filterFn, setFilterFn] = useState({
     fn: (items) => {
       return items;
     },
   });
-  //regex
-  const phoneRegex = /^[0-9\b]+$/;
   //table
   const { TblContainer, TblHead, TblPagination, recordsAfterPagingAndSorting } =
     useTable(selectedProducts, headCells, filterFn);
@@ -222,52 +220,51 @@ const QuanLyBanHang = () => {
       setTotal(e.target.value * product.DonGia);   
     }
   };
-  const onPhoneNumberChange = e => {
-    let telephone = e.target.value;
-    if (telephone === '' || phoneRegex.test(telephone)) 
-    {
-      setPhoneNumber(telephone);
-      forceUpdate(!ignored);
-      console.log(phoneNumber);
-    }
-  };
+  const onInputChange = (e, title) => {
+    let tmp = groupBoxes.find((obj) => obj.title === title);
+    tmp.value = e.target.value;
+  }
   //Field titles
   const groupBoxes = [
     {
       type: "TextBox",
       title:"Tên Khách Hàng",
       required: true,
+      onChange: (e,title) => onInputChange(e,title),
       validationTip: "Tên Khách Hàng không được trống",
     },
     {
       type: "Number",
       title:"Số Điện Thoại",
       required: true,
-      value: phoneNumber,
+      onChange: (e,title) => onInputChange(e,title),
       validationTip: "Số Điện Thoại không được trống",
-      onInput: e => onPhoneNumberChange(e),
     },
     {
       type: "TextBox",
       title:"Tổng Tiền",
       required: true,
       disabled: "disabled",
+      onChange: (e,title) => onInputChange(e,title),
       value: sumTotal.toLocaleString('it-IT'),
     },
     {
       type: "TextBox",
       title:"Người Lập",
       required: true,
+      onChange: (e,title) => onInputChange(e,title),
       disabled: "disabled",
     },
     {
       type: "Picker",
       title:"Ngày Lập",
+      onChange: (e,title) => onInputChange(e,title),
       required: true,
     },
     {
       type: "TextBox",
       title:"Ghi Chú",
+      onChange: (e,title) => onInputChange(e,title),
       required: false,
     },
   ];

@@ -1,8 +1,22 @@
 import { ErrorOutline } from "@material-ui/icons";
-import React from "react";
+import {React, useState} from "react";
 import ValidationTip from "../ValidationTip";
 import './GroupBox.css';
 export default function GroupBox (props) {
+      //regex
+    const phoneRegex = /^[0-9\b]+$/;
+    const [numberError, setNumberError] = useState(false);   
+    const onlyNumbers = (event) => {
+        if(isNaN(event.key))
+        {
+            setNumberError(true);
+        }
+      };
+    const onInput = (e) => {
+        let tmp = e.target.value;
+        if(tmp ==='' || phoneRegex.test(tmp))
+            setNumberError(false);
+    }
     return(
         <div>
             <span style={{
@@ -16,9 +30,13 @@ export default function GroupBox (props) {
                 <ValidationTip placement="top" title={props.validationTip}>
                         <ErrorOutline style={{float: "right", margin: "5", width:"15", height:"15", display: props.error === true ? "block" : "none"}} color = "secondary"/>
                 </ValidationTip>
+                <ValidationTip placement="top" title={props.title + " chỉ được nhập số"}>
+                        <ErrorOutline style={{float: "right", margin: "5", width:"15", height:"15", display: numberError === true ? "block" : "none"}} color = "secondary"/>
+                </ValidationTip>
             </span>
             {props.type === 'Picker' && 
             <input 
+                onChange = {e => props.onChange(e)}
                 className={props.error === true ? "error" : ""}
                 required = {props.required}
                 disabled = {props.disabled}   
@@ -30,6 +48,7 @@ export default function GroupBox (props) {
             }
             {props.type === 'TextBox' && 
             <input   
+                onChange = {e => props.onChange(e)}
                 className={props.error === true ? "error" : ""}
                 value = {props.value}
                 disabled = {props.disabled}  
@@ -38,8 +57,10 @@ export default function GroupBox (props) {
             } 
             {props.type === 'Number' && 
             <input   
-                onInput = {e => props.onInput(e)}
-                className={props.error === true ? "error" : ""}
+                onChange = {e => props.onChange(e)}
+                onKeyPress= {e => onlyNumbers(e)}
+                onInput = {e => onInput(e)}
+                className={(props.error === true || numberError === true) ? "error" : ""}
                 value = {props.value}
                 disabled = {props.disabled}  
                 readOnly={props.readOnly}    
