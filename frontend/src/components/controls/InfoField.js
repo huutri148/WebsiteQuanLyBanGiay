@@ -32,8 +32,7 @@ const InfoField = (props) => {
                     value = {item.value}
                     required={item.required}
                     error = {item.error}
-                    onInput = {item.onInput}
-                />
+                    onInput = {item.type === "Number" ? e => item.onInput(e) : null}/>
               ))}
               <Button size="large" variant="contained" color="primary" onClick = {props.onClick}>
                 {props.buttonContent}

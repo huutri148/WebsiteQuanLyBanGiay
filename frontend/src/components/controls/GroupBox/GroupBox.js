@@ -7,8 +7,7 @@ export default function GroupBox (props) {
         <div>
             <span style={{
                     fontSize: 16,
-                    fontWeight: 600,
-            }}>
+                    fontWeight: 600,}}>
                 <label>{props.title}</label>
                 <label style={{
                     marginLeft: 5,
@@ -20,7 +19,6 @@ export default function GroupBox (props) {
             </span>
             {props.type === 'Picker' && 
             <input 
-                onChange = {props.onChange}
                 className={props.error === true ? "error" : ""}
                 required = {props.required}
                 disabled = {props.disabled}   
@@ -28,8 +26,7 @@ export default function GroupBox (props) {
                 readOnly={props.readOnly}
                 value = {props.value}
                 defaultValue={(new Date().getMonth()+1 > 9) ? (new Date().getFullYear()+"-" +(new Date().getMonth()+1)+"-"+new Date().getDate()):
-                                                            (new Date().getFullYear()+"-0" +(new Date().getMonth()+1)+"-"+new Date().getDate())}>
-            </input>
+                                                            (new Date().getFullYear()+"-0" +(new Date().getMonth()+1)+"-"+new Date().getDate())}/>
             }
             {props.type === 'TextBox' && 
             <input   
@@ -37,18 +34,16 @@ export default function GroupBox (props) {
                 value = {props.value}
                 disabled = {props.disabled}  
                 readOnly={props.readOnly}    
-                required = {props.required}>
-            </input>
+                required = {props.required}/>
             } 
-             {props.type === 'Number' && 
+            {props.type === 'Number' && 
             <input   
                 onInput = {e => props.onInput(e)}
                 className={props.error === true ? "error" : ""}
                 value = {props.value}
                 disabled = {props.disabled}  
                 readOnly={props.readOnly}    
-                required = {props.required}>
-            </input>
+                required = {props.required}/>
             } 
         </div>
     );

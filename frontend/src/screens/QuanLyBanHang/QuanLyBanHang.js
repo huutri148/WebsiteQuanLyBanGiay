@@ -19,7 +19,6 @@ import "./QuanLyBanHang.css";
 import { AddCircle, Edit, HighlightOff } from "@material-ui/icons";
 import useTable from "../../components/useTable";
 import ProductCard from "../QuanLySanPham/ProductCard";
-import 'react-toastify/dist/ReactToastify.css';
 import InfoField from "../../components/controls/InfoField";
 function TabPanel(props) {
   const classes = useStyles();
@@ -157,11 +156,10 @@ const QuanLyBanHang = () => {
   const [amount, setAmount] = useState(0);
   const classes = useStyles();
   const [selectedId, setSelectedId] = useState();
-  
   const [product, setProduct] = useState(null);
   const [total, setTotal] = useState(0);
   const [sumTotal, setSumTotal] = useState(0);
-  const [phoneNumber, setPhoneNumber] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('123');
   const [selectedLength,setSelectedLength] = useState(0);
   const [filterFn, setFilterFn] = useState({
     fn: (items) => {
@@ -224,11 +222,12 @@ const QuanLyBanHang = () => {
       setTotal(e.target.value * product.DonGia);   
     }
   };
-  const handleOnPhoneNumberChange = e => {
+  const onPhoneNumberChange = e => {
     let telephone = e.target.value;
     if (telephone === '' || phoneRegex.test(telephone)) 
     {
       setPhoneNumber(telephone);
+      forceUpdate(!ignored);
       console.log(phoneNumber);
     }
   };
@@ -246,7 +245,7 @@ const QuanLyBanHang = () => {
       required: true,
       value: phoneNumber,
       validationTip: "Số Điện Thoại không được trống",
-      onInput: e => handleOnPhoneNumberChange(e),
+      onInput: e => onPhoneNumberChange(e),
     },
     {
       type: "TextBox",
@@ -303,8 +302,7 @@ const QuanLyBanHang = () => {
                 GroupBoxes = {records} 
                 cardHeader = "Thông Tin Phiếu"
                 buttonContent = "Lập Phiếu"
-                onClick = {handleSubmitClick}
-              />
+                onClick = {handleSubmitClick}/>
             </Paper>
             <Paper
               className={classes.paper}
