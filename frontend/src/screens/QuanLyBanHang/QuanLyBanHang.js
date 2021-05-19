@@ -238,6 +238,12 @@ const QuanLyBanHang = () => {
       required: true,
       onChange: (e,title) => onInputChange(e,title),
       validationTip: "Tên Khách Hàng không được trống",
+      error: false,
+      checkValidation: (val) => {
+        if(val === null || val === '' || val === undefined)
+          return true;
+        return false;
+      }
     },
     {
       type: "Number",
@@ -245,6 +251,13 @@ const QuanLyBanHang = () => {
       required: true,
       onChange: (e,title) => onInputChange(e,title),
       validationTip: "Số Điện Thoại không được trống",
+      error: false,
+      checkValidation: (val) => {
+        console.log(val);
+        if(val === null || val === '' || val === undefined)
+          return true;
+        return false;
+      }
     },
     {
       type: "TextBox",
@@ -253,6 +266,13 @@ const QuanLyBanHang = () => {
       disabled: "disabled",
       onChange: (e,title) => onInputChange(e,title),
       value: sumTotal.toLocaleString('it-IT'),
+      validationTip: "Tổng Tiền không được bằng 0",
+      error: false,
+      checkValidation: (val) => {
+        if(sumTotal === 0)
+          return true;
+        return false;
+      }
     },
     {
       type: "TextBox",
@@ -260,23 +280,26 @@ const QuanLyBanHang = () => {
       required: true,
       onChange: (e,title) => onInputChange(e,title),
       disabled: "disabled",
+      checkValidation: (val) => false,
     },
     {
       type: "Picker",
       title:"Ngày Lập",
       onChange: (e,title) => onInputChange(e,title),
       required: true,
+      checkValidation: (val) => false,
     },
     {
       type: "TextBox",
       title:"Ghi Chú",
       onChange: (e,title) => onInputChange(e,title),
       required: false,
+      checkValidation: (val) => false,
     },
   ];
   const [records, setRecords] = useState(groupBoxes);
   const handleSubmitClick = () => {
-    groupBoxes.forEach(element => {element.error = true;});
+    groupBoxes.forEach(element => {element.error = element.checkValidation(element.value);});
     setRecords(groupBoxes);
     forceUpdate(!ignored);
   };
