@@ -153,7 +153,7 @@ const selectedProducts = [];
 const QuanLyBanHang = () => {
   const [ignored,forceUpdate] = useState(false);
   const [value, setValue] = useState(0);
-  const [amount, setAmount] = useState(0);
+  const [amount, setAmount] = useState();
   const classes = useStyles();
   const [selectedId, setSelectedId] = useState();
   const [product, setProduct] = useState(null);
@@ -166,6 +166,8 @@ const QuanLyBanHang = () => {
       return items;
     },
   });
+  //regex
+  const phoneRegex = /^[0-9\b]+$/;
   //table
   const { TblContainer, TblHead, TblPagination, recordsAfterPagingAndSorting } =
     useTable(selectedProducts, headCells, filterFn);
@@ -173,7 +175,7 @@ const QuanLyBanHang = () => {
     setSelectedId(val);
     let tmp = products.find((obj) => obj.MaGiay === val);
     setProduct(tmp);
-    setAmount(0);
+    setAmount();
     setTotal(0);
   }
   //handle Button click
@@ -216,8 +218,12 @@ const QuanLyBanHang = () => {
   const onAmountChange = (e) => {
     if(product != null)
     {
-      setAmount(Number(e.target.value));
-      setTotal(e.target.value * product.DonGia);   
+      let tmp = e.target.value;
+      if(tmp ==='' || phoneRegex.test(tmp))
+      {
+        setAmount(Number(tmp));
+        setTotal(tmp * product.DonGia);   
+      }
     }
   };
   const onInputChange = (e, title) => {
@@ -335,7 +341,7 @@ const QuanLyBanHang = () => {
                       <GroupBox value = {product === null ? "" : product.DonGia} type="TextBox" title={headCells[3].label} disabled="disabled"/>
                     </td>
                     <td width="15%">
-                      <GroupBox value = {amount} type="TextBox" title={headCells[4].label} onChange = {onAmountChange}/>
+                      <GroupBox value = {amount} type="Number" title={headCells[4].label} onChange = {onAmountChange}/>
                     </td>
                     <td width="15%">
                       <GroupBox value = {product === null ? "" : total.toLocaleString('it-IT')} type="TextBox" title={headCells[5].label} disabled="disabled"/>
