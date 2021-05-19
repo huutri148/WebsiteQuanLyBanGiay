@@ -6,7 +6,7 @@ import {
   Divider,
   Grid,
 } from "@material-ui/core";
-import Groupbox from "../../components/controls/GroupBox";
+import Groupbox from "../../components/controls/GroupBox/GroupBox";
 const useStyles = makeStyles((theme) => ({
   title: {
     fontSize: 32,
