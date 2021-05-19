@@ -12,7 +12,7 @@ import {
   Table,
   IconButton,
 } from "@material-ui/core";
-import { React, useState, } from "react";
+import { React, useState, useRef } from "react";
 import GroupBox from "../../components/controls/GroupBox/GroupBox";
 import Selector from "../../components/controls/Selector/Selector";
 import "./QuanLyBanHang.css";
@@ -151,21 +151,22 @@ const headCells = [
 ];
 const selectedProducts = [];
 const QuanLyBanHang = () => {
+  //hooks
   const [ignored,forceUpdate] = useState(false);
   const [value, setValue] = useState(0);
-  const [amount, setAmount] = useState();
+  const [amount, setAmount] = useState(0);
   const classes = useStyles();
   const [selectedId, setSelectedId] = useState();
   const [product, setProduct] = useState(null);
   const [total, setTotal] = useState(0);
   const [sumTotal, setSumTotal] = useState(0);
   const [phoneNumber, setPhoneNumber] = useState('');
-  const [selectedLength,setSelectedLength] = useState(0);
   const [filterFn, setFilterFn] = useState({
     fn: (items) => {
       return items;
     },
   });
+  const [amountError, setAmountError] = useState(false);
   //regex
   const phoneRegex = /^[0-9\b]+$/;
   //table
@@ -175,30 +176,37 @@ const QuanLyBanHang = () => {
     setSelectedId(val);
     let tmp = products.find((obj) => obj.MaGiay === val);
     setProduct(tmp);
-    setAmount();
+    setAmount(0);
     setTotal(0);
   }
   //handle Button click
   const handleAddClick = () => 
   {
-    if(product === null)
+    if(amount === 0)
     {
-      //set arlet
+      setAmountError(true);
+      return;
     }
-    else if(selectedProducts.find(item => item.MaGiay === product.MaGiay) === undefined)
+    if(selectedProducts.find(item => item.MaGiay === product.MaGiay) === undefined)
     {
-      let tmp = product;
-      tmp.total = total;
-      tmp.amount = amount;
-      selectedProducts.push(tmp);
-      setSelectedLength(selectedProducts.length);
-      setSumTotal(sumTotal + total);
+      let tmp = sumTotal + total;
+      setSumTotal(tmp);
+      groupBoxes[2].value = tmp;
+      let shoe = product;
+      shoe.total = total;
+      shoe.amount = amount;
+      selectedProducts.push(shoe);
+      console.log(tmp);
     }
-    else{
-      setSumTotal(sumTotal + total - product.total);
-      let tmp = selectedProducts[selectedProducts.indexOf(product)];
-      tmp.total = total;
-      tmp.amount = amount;
+    else
+    {
+      let tmp = sumTotal + total - product.total;
+      setSumTotal(tmp);
+      groupBoxes[2].value = tmp;
+      let shoe = selectedProducts[selectedProducts.indexOf(product)];
+      shoe.total = total;
+      shoe.amount = amount;
+      console.log(tmp);
     }
     forceUpdate(!ignored);
   };
@@ -211,32 +219,16 @@ const QuanLyBanHang = () => {
     setProduct(item);
     forceUpdate(!ignored);
   };
-  //handle Change
-  const handleTabChange = (event, newValue) => {
-    setValue(newValue);
-  };
-  const onAmountChange = (e) => {
-    if(product != null)
-    {
-      let tmp = e.target.value;
-      if(tmp ==='' || phoneRegex.test(tmp))
-      {
-        setAmount(Number(tmp));
-        setTotal(tmp * product.DonGia);   
-      }
-    }
-  };
-  const onInputChange = (e, title) => {
-    let tmp = groupBoxes.find((obj) => obj.title === title);
-    tmp.value = e.target.value;
-  }
   //Field titles
-  const groupBoxes = [
+  const [groupBoxes, setGroupBoxes] = useState([
     {
       type: "TextBox",
       title:"Tên Khách Hàng",
       required: true,
-      onChange: (e,title) => onInputChange(e,title),
+      onChange: (e,title) => {
+        let tmp = groupBoxes.find((obj) => obj.title === title);
+        tmp.value = e.target.value;
+      },
       validationTip: "Tên Khách Hàng không được trống",
       error: false,
       checkValidation: (val) => {
@@ -249,7 +241,10 @@ const QuanLyBanHang = () => {
       type: "Number",
       title:"Số Điện Thoại",
       required: true,
-      onChange: (e,title) => onInputChange(e,title),
+      onChange: (e,title) => {
+        let tmp = groupBoxes.find((obj) => obj.title === title);
+        tmp.value = e.target.value;
+      },
       validationTip: "Số Điện Thoại không được trống",
       error: false,
       checkValidation: (val) => {
@@ -264,7 +259,6 @@ const QuanLyBanHang = () => {
       title:"Tổng Tiền",
       required: true,
       disabled: "disabled",
-      onChange: (e,title) => onInputChange(e,title),
       value: sumTotal.toLocaleString('it-IT'),
       validationTip: "Tổng Tiền không được bằng 0",
       error: false,
@@ -278,30 +272,51 @@ const QuanLyBanHang = () => {
       type: "TextBox",
       title:"Người Lập",
       required: true,
-      onChange: (e,title) => onInputChange(e,title),
       disabled: "disabled",
       checkValidation: (val) => false,
     },
     {
       type: "Picker",
       title:"Ngày Lập",
-      onChange: (e,title) => onInputChange(e,title),
+      onChange: (e,title) => {
+        let tmp = groupBoxes.find((obj) => obj.title === title);
+        tmp.value = e.target.value;
+      },
       required: true,
       checkValidation: (val) => false,
     },
     {
       type: "TextBox",
       title:"Ghi Chú",
-      onChange: (e,title) => onInputChange(e,title),
+      onChange: (e,title) => {
+        let tmp = groupBoxes.find((obj) => obj.title === title);
+        tmp.value = e.target.value;
+      },
       required: false,
       checkValidation: (val) => false,
     },
-  ];
-  const [records, setRecords] = useState(groupBoxes);
+  ]);
+  //handle submit
   const handleSubmitClick = () => {
     groupBoxes.forEach(element => {element.error = element.checkValidation(element.value);});
-    setRecords(groupBoxes);
     forceUpdate(!ignored);
+  };
+  //handle Change
+  const handleTabChange = (event, newValue) => {
+    setValue(newValue);
+  };
+  const onAmountChange = (e) => {
+    if(product != null)
+    {
+      let tmp = e.target.value;
+      if(Number(tmp) === 0 || phoneRegex.test(tmp))
+      {
+        setAmount(Number(tmp));
+        setTotal(tmp * product.DonGia);
+        if(Number(tmp) > 0)
+          setAmountError(false);
+      }
+    }
   };
   return (
     <div className={classes.root}>
@@ -325,9 +340,10 @@ const QuanLyBanHang = () => {
           <Grid container spacing={0}>
             <Paper className={classes.paper} style={{ width: "20%" }}>
               <InfoField 
-                GroupBoxes = {records} 
+                GroupBoxes = {groupBoxes} 
                 cardHeader = "Thông Tin Phiếu"
                 buttonContent = "Lập Phiếu"
+                disabled = {selectedProducts.length === 0 ? 'disabled' : ''}
                 onClick = {handleSubmitClick}/>
             </Paper>
             <Paper
@@ -364,7 +380,7 @@ const QuanLyBanHang = () => {
                       <GroupBox value = {product === null ? "" : product.DonGia} type="TextBox" title={headCells[3].label} disabled="disabled"/>
                     </td>
                     <td width="15%">
-                      <GroupBox value = {amount} type="Number" title={headCells[4].label} onChange = {onAmountChange}/>
+                      <GroupBox value = {amount} type="Number" title={headCells[4].label} onChange = {onAmountChange} error = {amountError} validationTip = "Số Lượng phải lớn hơn 0" disabled = {product === null ? 'disabled' : ''}/>
                     </td>
                     <td width="15%">
                       <GroupBox value = {product === null ? "" : total.toLocaleString('it-IT')} type="TextBox" title={headCells[5].label} disabled="disabled"/>
@@ -375,6 +391,7 @@ const QuanLyBanHang = () => {
                         aria-label="Add"
                         color = "primary"
                         size="small"
+                        disabled = {product === null ? 'disabled' : ''}
                         onClick = {handleAddClick}>
                         <AddCircle />
                       </IconButton>
@@ -383,7 +400,7 @@ const QuanLyBanHang = () => {
                 </tbody>
               </Table>
               <hr className={classes.hr} />
-              <TableContainer style = {{display: selectedLength === 0 ? "none" : "table"}} className={classes.table}>
+              <TableContainer style = {{display: selectedProducts.length === 0 ? "none" : "table"}} className={classes.table}>
                 <TblContainer>
                   <TblHead />
                   <TableBody>

@@ -28,7 +28,7 @@ export default function GroupBox (props) {
                     color: 'Red'}}>{props.required ? '*' : ''}
                 </label>
                 <ValidationTip placement="top" title={props.validationTip}>
-                        <ErrorOutline style={{float: "right", margin: "5", width:"15", height:"15", display: props.error === true ? "block" : "none"}} color = "secondary"/>
+                        <ErrorOutline style={{float: "right", margin: "5", width:"15", height:"15", display: props.error === true && numberError === false ? "block" : "none"}} color = "secondary"/>
                 </ValidationTip>
                 <ValidationTip placement="top" title={props.title + " chỉ được nhập số"}>
                         <ErrorOutline style={{float: "right", margin: "5", width:"15", height:"15", display: numberError === true ? "block" : "none"}} color = "secondary"/>
