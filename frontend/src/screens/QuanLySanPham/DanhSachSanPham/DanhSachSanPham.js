@@ -39,7 +39,7 @@ const DanhSachSanPham = (props) => {
   //Fetched data
   const dispatch = useDispatch();
   const productList = useSelector((state) => state.ListGiay);
-  const brandList = useSelector((state) => state.HangSanXuat);
+  const brandList = useSelector((state) => state.ListHangSanXuat);
   const sizeList = useSelector((state) => state.ListSize);
   const {
     loading: brandLoading,

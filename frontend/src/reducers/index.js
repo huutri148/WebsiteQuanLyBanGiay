@@ -7,7 +7,7 @@ const rootReducer = combineReducers({
   ListSize: listSizeReducer,
   Giay: giayReducer,
   SizeGiay: giaySizeReducer,
-  HangSanXuat: hangSanXuatReducer,
+  ListHangSanXuat: hangSanXuatReducer,
 });
 
 export default rootReducer;
