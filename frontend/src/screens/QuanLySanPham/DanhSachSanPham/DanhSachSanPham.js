@@ -23,6 +23,7 @@ import { fetchListGiay } from "./../../../actions/giayAction";
 import { fetchListHangSanXuat } from "./../../../actions/hangSanXuatAction";
 import { fetchListSize } from "./../../../actions/sizeAction";
 
+
 const headCells = [
   { id: "TenGiay", label: "Tên sản phẩm" },
   { id: "TenHangSanXuat", label: "Tên hãng sản xuất", disableSorting: true },
@@ -43,6 +44,7 @@ const DanhSachSanPham = (props) => {
   const { error: hangSanXuatError, listHangSanXuat } = brandList;
   const { error: giayError, listGiay } = productList;
   const { error: sizeError, listSize } = sizeList;
+
 
   // Props in Screens
   const [tableData, setTableData] = useState([]);

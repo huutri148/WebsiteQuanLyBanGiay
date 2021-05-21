@@ -12,7 +12,7 @@ import {
   Table,
   IconButton,
 } from "@material-ui/core";
-import { React, useState, useRef } from "react";
+import { React, useState, useEffect } from "react";
 import GroupBox from "../../components/controls/GroupBox/GroupBox";
 import Selector from "../../components/controls/Selector/Selector";
 import "./QuanLyBanHang.css";
@@ -20,6 +20,11 @@ import { AddCircle, Edit, HighlightOff } from "@material-ui/icons";
 import useTable from "../../components/useTable";
 import ProductCard from "../QuanLySanPham/ProductCard";
 import InfoField from "../../components/controls/InfoField";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchListGiay } from "../../actions/giayAction";
+import { fetchListHangSanXuat } from "../../actions/hangSanXuatAction";
+import { fetchListSize } from "../../actions/sizeAction";
+import { fetchListMau } from "../../actions/mauAction";
 function TabPanel(props) {
   const classes = useStyles();
   const { children, value, index, ...other } = props;
@@ -68,78 +73,6 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(0, 1),
   },
 }));
-const products = [
-  {
-    MaGiay: 1,
-    TenGiay: "Van Old Skool Violet",
-    TenHangSanXuat: "Nike",
-    TenMau: "Violet",
-    GioiTinh: "Unisex",
-    Anh: "/images/2.jpg",
-    SoLuong: 20,
-    DonGia: "2000000",
-  },
-  {
-    MaGiay: 3,
-    TenGiay: "Fila Wave Neo",
-    TenHangSanXuat: "Fila",
-    TenMau: "Violet",
-    GioiTinh: "Unisex",
-    Anh: "/images/1.png",
-    SoLuong: 20,
-    DonGia: "2000000",
-  },
-  {
-    MaGiay: 2,
-    TenGiay: "Fila Wave Neo",
-    TenHangSanXuat: "Fila",
-    TenMau: "Violet",
-    GioiTinh: "Unisex",
-    Anh: "/images/1.png",
-    SoLuong: 20,
-    DonGia: "2000000",
-  },
-  {
-    MaGiay: 4,
-    TenGiay: "Fila Wave Neo",
-    TenHangSanXuat: "Fila",
-    TenMau: "Violet",
-    GioiTinh: "Unisex",
-    Anh: "/images/1.png",
-    SoLuong: 20,
-    DonGia: "2000000",
-  },
-  {
-    MaGiay: 5,
-    TenGiay: "Fila Wave Neo",
-    TenHangSanXuat: "Fila",
-    TenMau: "Violet",
-    Anh: "/images/1.png",
-    GioiTinh: "Unisex",
-    SoLuong: 20,
-    DonGia: "2000000",
-  },
-  {
-    MaGiay: 6,
-    TenGiay: "Fila Wave Neo",
-    TenHangSanXuat: "Fila",
-    TenMau: "Violet",
-    Anh: "/images/1.png",
-    GioiTinh: "Unisex",
-    SoLuong: 20,
-    DonGia: "2000000",
-  },
-  {
-    MaGiay: 7,
-    TenGiay: "Fila Wave Neo",
-    TenHangSanXuat: "Fila",
-    TenMau: "Violet",
-    Anh: "/images/1.png",
-    GioiTinh: "Unisex",
-    SoLuong: 20,
-    DonGia: "2000000",
-  },
-];
 const headCells = [
   { id: "TenGiay", label: "Tên Giày" },
   { id: "GioiTinh", label: "Giới Tính"},
@@ -151,6 +84,16 @@ const headCells = [
 ];
 const selectedProducts = [];
 const QuanLyBanHang = () => {
+  //Fetched data
+  const dispatch = useDispatch();
+  const productList = useSelector((state) => state.ListGiay);
+  const brandList = useSelector((state) => state.HangSanXuat);
+  const sizeList = useSelector((state) => state.ListSize);
+  const colorList = useSelector((state) => state.ListMau);
+  const { error: hangSanXuatError, listHangSanXuat } = brandList;
+  const { error: giayError, listGiay } = productList;
+  const { error: sizeError, listSize } = sizeList;
+  const { error: mauError, listMau } = colorList;
   //hooks
   const [ignored,forceUpdate] = useState(false);
   const [value, setValue] = useState(0);
@@ -160,7 +103,8 @@ const QuanLyBanHang = () => {
   const [product, setProduct] = useState(null);
   const [total, setTotal] = useState(0);
   const [sumTotal, setSumTotal] = useState(0);
-  const [phoneNumber, setPhoneNumber] = useState('');
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState();
   const [filterFn, setFilterFn] = useState({
     fn: (items) => {
       return items;
@@ -191,29 +135,27 @@ const QuanLyBanHang = () => {
     {
       let tmp = sumTotal + total;
       setSumTotal(tmp);
-      groupBoxes[2].value = tmp;
+      groupBoxes[2].value = tmp.toLocaleString('it-IT');
       let shoe = product;
       shoe.total = total;
       shoe.amount = amount;
       selectedProducts.push(shoe);
-      console.log(tmp);
     }
     else
     {
       let tmp = sumTotal + total - product.total;
       setSumTotal(tmp);
-      groupBoxes[2].value = tmp;
+      groupBoxes[2].value = tmp.toLocaleString('it-IT');
       let shoe = selectedProducts[selectedProducts.indexOf(product)];
       shoe.total = total;
       shoe.amount = amount;
-      console.log(tmp);
     }
-    forceUpdate(!ignored);
   };
   const handleRemoveClick = (item) => {
     selectedProducts.splice(selectedProducts.indexOf(item),1);
-    forceUpdate(!ignored);
-    setSumTotal(sumTotal - item.total);
+    let tmp = sumTotal - item.total;
+    setSumTotal(tmp);
+    groupBoxes[2].value = tmp.toLocaleString('it-IT');
   };
   const handleEditClick = (item) => {
     setProduct(item);
@@ -259,7 +201,7 @@ const QuanLyBanHang = () => {
       title:"Tổng Tiền",
       required: true,
       disabled: "disabled",
-      value: sumTotal.toLocaleString('it-IT'),
+      value: 0,
       validationTip: "Tổng Tiền không được bằng 0",
       error: false,
       checkValidation: (val) => {
@@ -318,6 +260,40 @@ const QuanLyBanHang = () => {
       }
     }
   };
+  // setProducts when done fetching
+  useEffect(() => {
+    const data = Object.values(listGiay).reduce((result, value) => {
+      let maHSX = value.MaHangSanXuat;
+      if (typeof listHangSanXuat[maHSX] === "undefined") return [];
+      let { TenHangSanXuat } = listHangSanXuat[maHSX];
+      let maMau = value.MaMau;
+      if (typeof listMau[maMau] === "undefined") return [];
+      let { TenMau } = listMau[maMau];
+      result.push({
+        TenHangSanXuat,
+        TenMau,
+        ...value,
+      });
+      console.log(result);
+      return result;
+    }, []);
+    setProducts(data);
+    setLoading(true);
+  }, [loading]);
+  // Fetch data from API
+  useEffect(() => {
+    const fetchData = async () => {
+      await dispatch(fetchListGiay());
+      await dispatch(fetchListHangSanXuat());
+      await dispatch(fetchListSize());
+      await dispatch(fetchListMau());
+      //set Flag to combine TableData
+      // Note: Find a way to select lastest data
+      // Done have to use Flag
+      setLoading(false);
+    };
+    fetchData();
+  }, [dispatch]);
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -377,7 +353,7 @@ const QuanLyBanHang = () => {
                       <GroupBox value = {product === null ? "" : product.Size} type="TextBox" title={headCells[2].label} disabled="disabled"/>
                     </td>
                     <td width="15%">
-                      <GroupBox value = {product === null ? "" : product.DonGia} type="TextBox" title={headCells[3].label} disabled="disabled"/>
+                      <GroupBox value = {product === null ? "" : product.DonGiaNhap} type="TextBox" title={headCells[3].label} disabled="disabled"/>
                     </td>
                     <td width="15%">
                       <GroupBox value = {amount} type="Number" title={headCells[4].label} onChange = {onAmountChange} error = {amountError} validationTip = "Số Lượng phải lớn hơn 0" disabled = {product === null ? 'disabled' : ''}/>

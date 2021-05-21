@@ -10,6 +10,7 @@ export default function Selector(props) {
   const sendData = (e)=> {
     props.setSelectedId(e.value);
   }
+  console.log(props.products);
   const options = props.products.map((item) => {
     let newObj = {};
     newObj.value = item.MaGiay;
@@ -20,10 +21,10 @@ export default function Selector(props) {
       "-" +
       item.GioiTinh +
       "-" +
-      item.DonGia +
+      item.DonGiaNhap +
       "-" +
-      item.SoLuong;
-    newObj.Anh = item.Anh;
+      item.TongSoLuong;
+    newObj.Anh = "/images/" + item.Anh;
     return newObj;
   });
   const formatOptionLabel = ({ value, label, Anh }) => {

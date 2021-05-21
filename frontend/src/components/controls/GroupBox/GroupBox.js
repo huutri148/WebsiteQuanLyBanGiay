@@ -36,7 +36,7 @@ export default function GroupBox (props) {
             </span>
             {props.type === 'Picker' && 
             <input 
-                onChange = {e => props.onChange(e)}
+                onChange = {props.onChange}
                 className={props.error === true ? "error" : ""}
                 required = {props.required}
                 disabled = {props.disabled}   
@@ -48,7 +48,7 @@ export default function GroupBox (props) {
             }
             {props.type === 'TextBox' && 
             <input   
-                onChange = {e => props.onChange(e)}
+                onChange = {props.onChange}
                 className={props.error === true ? "error" : ""}
                 value = {props.value}
                 disabled = {props.disabled}  
@@ -57,7 +57,7 @@ export default function GroupBox (props) {
             } 
             {props.type === 'Number' && 
             <input   
-                onChange = {e => props.onChange(e)}
+                onChange = {props.onChange}
                 onKeyPress= {e => onlyNumbers(e)}
                 onInput = {e => onInput(e)}
                 className={(props.error === true || numberError === true) ? "error" : ""}
