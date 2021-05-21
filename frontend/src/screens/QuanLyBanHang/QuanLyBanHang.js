@@ -12,7 +12,7 @@ import {
   Table,
   IconButton,
 } from "@material-ui/core";
-import { React, useState } from "react";
+import { React, useState, useEffect } from "react";
 import GroupBox from "../../components/controls/GroupBox/GroupBox";
 import Selector from "../../components/controls/Selector/Selector";
 import "./QuanLyBanHang.css";
@@ -20,6 +20,11 @@ import { AddCircle, Edit, HighlightOff } from "@material-ui/icons";
 import useTable from "../../components/useTable";
 import ProductCard from "../QuanLySanPham/ProductCard";
 import InfoField from "../../components/controls/InfoField";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchListGiay } from "../../actions/giayAction";
+import { fetchListHangSanXuat } from "../../actions/hangSanXuatAction";
+import { fetchListSize } from "../../actions/sizeAction";
+import { fetchListMau } from "../../actions/mauAction";
 function TabPanel(props) {
   const classes = useStyles();
   const { children, value, index, ...other } = props;
@@ -68,78 +73,6 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(0, 1),
   },
 }));
-const products = [
-  {
-    MaGiay: 1,
-    TenGiay: "Van Old Skool Violet",
-    TenHangSanXuat: "Nike",
-    TenMau: "Violet",
-    GioiTinh: "Unisex",
-    Anh: "/images/2.jpg",
-    SoLuong: 20,
-    DonGia: "2000000",
-  },
-  {
-    MaGiay: 3,
-    TenGiay: "Fila Wave Neo",
-    TenHangSanXuat: "Fila",
-    TenMau: "Violet",
-    GioiTinh: "Unisex",
-    Anh: "/images/1.png",
-    SoLuong: 20,
-    DonGia: "2000000",
-  },
-  {
-    MaGiay: 2,
-    TenGiay: "Fila Wave Neo",
-    TenHangSanXuat: "Fila",
-    TenMau: "Violet",
-    GioiTinh: "Unisex",
-    Anh: "/images/1.png",
-    SoLuong: 20,
-    DonGia: "2000000",
-  },
-  {
-    MaGiay: 4,
-    TenGiay: "Fila Wave Neo",
-    TenHangSanXuat: "Fila",
-    TenMau: "Violet",
-    GioiTinh: "Unisex",
-    Anh: "/images/1.png",
-    SoLuong: 20,
-    DonGia: "2000000",
-  },
-  {
-    MaGiay: 5,
-    TenGiay: "Fila Wave Neo",
-    TenHangSanXuat: "Fila",
-    TenMau: "Violet",
-    Anh: "/images/1.png",
-    GioiTinh: "Unisex",
-    SoLuong: 20,
-    DonGia: "2000000",
-  },
-  {
-    MaGiay: 6,
-    TenGiay: "Fila Wave Neo",
-    TenHangSanXuat: "Fila",
-    TenMau: "Violet",
-    Anh: "/images/1.png",
-    GioiTinh: "Unisex",
-    SoLuong: 20,
-    DonGia: "2000000",
-  },
-  {
-    MaGiay: 7,
-    TenGiay: "Fila Wave Neo",
-    TenHangSanXuat: "Fila",
-    TenMau: "Violet",
-    Anh: "/images/1.png",
-    GioiTinh: "Unisex",
-    SoLuong: 20,
-    DonGia: "2000000",
-  },
-];
 const headCells = [
   { id: "TenGiay", label: "Tên Giày" },
   { id: "GioiTinh", label: "Giới Tính" },
@@ -151,21 +84,33 @@ const headCells = [
 ];
 const selectedProducts = [];
 const QuanLyBanHang = () => {
+  //Fetched data
+  const dispatch = useDispatch();
+  const productList = useSelector((state) => state.ListGiay);
+  const brandList = useSelector((state) => state.ListHangSanXuat);
+  const sizeList = useSelector((state) => state.ListSize);
+  const colorList = useSelector((state) => state.ListMau);
+  const { error: hangSanXuatError, listHangSanXuat } = brandList;
+  const { error: giayError, listGiay } = productList;
+  const { error: sizeError, listSize } = sizeList;
+  const { error: mauError, listMau } = colorList;
+  //hooks
   const [ignored, forceUpdate] = useState(false);
   const [value, setValue] = useState(0);
-  const [amount, setAmount] = useState();
+  const [amount, setAmount] = useState(0);
   const classes = useStyles();
   const [selectedId, setSelectedId] = useState();
   const [product, setProduct] = useState(null);
   const [total, setTotal] = useState(0);
   const [sumTotal, setSumTotal] = useState(0);
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [selectedLength, setSelectedLength] = useState(0);
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState();
   const [filterFn, setFilterFn] = useState({
     fn: (items) => {
       return items;
     },
   });
+  const [amountError, setAmountError] = useState(false);
   //regex
   const phoneRegex = /^[0-9\b]+$/;
   //table
@@ -175,65 +120,55 @@ const QuanLyBanHang = () => {
     setSelectedId(val);
     let tmp = products.find((obj) => obj.MaGiay === val);
     setProduct(tmp);
-    setAmount();
+    setAmount(0);
     setTotal(0);
   };
   //handle Button click
   const handleAddClick = () => {
-    if (product === null) {
-      //set arlet
-    } else if (
+    if (amount === 0) {
+      setAmountError(true);
+      return;
+    }
+    if (
       selectedProducts.find((item) => item.MaGiay === product.MaGiay) ===
       undefined
     ) {
-      let tmp = product;
-      tmp.total = total;
-      tmp.amount = amount;
-      selectedProducts.push(tmp);
-      setSelectedLength(selectedProducts.length);
-      setSumTotal(sumTotal + total);
+      let tmp = sumTotal + total;
+      setSumTotal(tmp);
+      groupBoxes[2].value = tmp.toLocaleString("it-IT");
+      let shoe = product;
+      shoe.total = total;
+      shoe.amount = amount;
+      selectedProducts.push(shoe);
     } else {
-      setSumTotal(sumTotal + total - product.total);
-      let tmp = selectedProducts[selectedProducts.indexOf(product)];
-      tmp.total = total;
-      tmp.amount = amount;
+      let tmp = sumTotal + total - product.total;
+      setSumTotal(tmp);
+      groupBoxes[2].value = tmp.toLocaleString("it-IT");
+      let shoe = selectedProducts[selectedProducts.indexOf(product)];
+      shoe.total = total;
+      shoe.amount = amount;
     }
-    forceUpdate(!ignored);
   };
   const handleRemoveClick = (item) => {
     selectedProducts.splice(selectedProducts.indexOf(item), 1);
-    forceUpdate(!ignored);
-    setSumTotal(sumTotal - item.total);
+    let tmp = sumTotal - item.total;
+    setSumTotal(tmp);
+    groupBoxes[2].value = tmp.toLocaleString("it-IT");
   };
   const handleEditClick = (item) => {
     setProduct(item);
     forceUpdate(!ignored);
   };
-  //handle Change
-  const handleTabChange = (event, newValue) => {
-    setValue(newValue);
-  };
-  const onAmountChange = (e) => {
-    if (product != null) {
-      let tmp = e.target.value;
-      if (tmp === "" || phoneRegex.test(tmp)) {
-        setAmount(Number(tmp));
-        setTotal(tmp * product.DonGia);
-      }
-    }
-  };
-
-  const onInputChange = (e, title) => {
-    let tmp = groupBoxes.find((obj) => obj.title === title);
-    tmp.value = e.target.value;
-  };
   //Field titles
-  const groupBoxes = [
+  const [groupBoxes, setGroupBoxes] = useState([
     {
       type: "TextBox",
       title: "Tên Khách Hàng",
       required: true,
-      onChange: (e, title) => onInputChange(e, title),
+      onChange: (e, title) => {
+        let tmp = groupBoxes.find((obj) => obj.title === title);
+        tmp.value = e.target.value;
+      },
       validationTip: "Tên Khách Hàng không được trống",
       error: false,
       checkValidation: (val) => {
@@ -245,7 +180,10 @@ const QuanLyBanHang = () => {
       type: "Number",
       title: "Số Điện Thoại",
       required: true,
-      onChange: (e, title) => onInputChange(e, title),
+      onChange: (e, title) => {
+        let tmp = groupBoxes.find((obj) => obj.title === title);
+        tmp.value = e.target.value;
+      },
       validationTip: "Số Điện Thoại không được trống",
       error: false,
       checkValidation: (val) => {
@@ -259,8 +197,7 @@ const QuanLyBanHang = () => {
       title: "Tổng Tiền",
       required: true,
       disabled: "disabled",
-      onChange: (e, title) => onInputChange(e, title),
-      value: sumTotal.toLocaleString("it-IT"),
+      value: 0,
       validationTip: "Tổng Tiền không được bằng 0",
       error: false,
       checkValidation: (val) => {
@@ -272,34 +209,85 @@ const QuanLyBanHang = () => {
       type: "TextBox",
       title: "Người Lập",
       required: true,
-      onChange: (e, title) => onInputChange(e, title),
       disabled: "disabled",
       checkValidation: (val) => false,
     },
     {
       type: "Picker",
       title: "Ngày Lập",
-      onChange: (e, title) => onInputChange(e, title),
+      onChange: (e, title) => {
+        let tmp = groupBoxes.find((obj) => obj.title === title);
+        tmp.value = e.target.value;
+      },
       required: true,
       checkValidation: (val) => false,
     },
     {
       type: "TextBox",
-
       title: "Ghi Chú",
-      onChange: (e, title) => onInputChange(e, title),
+      onChange: (e, title) => {
+        let tmp = groupBoxes.find((obj) => obj.title === title);
+        tmp.value = e.target.value;
+      },
       required: false,
       checkValidation: (val) => false,
     },
-  ];
-  const [records, setRecords] = useState(groupBoxes);
+  ]);
+  //handle submit
   const handleSubmitClick = () => {
     groupBoxes.forEach((element) => {
       element.error = element.checkValidation(element.value);
     });
-    setRecords(groupBoxes);
     forceUpdate(!ignored);
   };
+  //handle Change
+  const handleTabChange = (event, newValue) => {
+    setValue(newValue);
+  };
+  const onAmountChange = (e) => {
+    if (product != null) {
+      let tmp = e.target.value;
+      if (Number(tmp) === 0 || phoneRegex.test(tmp)) {
+        setAmount(Number(tmp));
+        setTotal(tmp * product.DonGia);
+        if (Number(tmp) > 0) setAmountError(false);
+      }
+    }
+  };
+  // setProducts when done fetching
+  useEffect(() => {
+    const data = Object.values(listGiay).reduce((result, value) => {
+      let maHSX = value.MaHangSanXuat;
+      if (typeof listHangSanXuat[maHSX] === "undefined") return [];
+      let { TenHangSanXuat } = listHangSanXuat[maHSX];
+      let maMau = value.MaMau;
+      if (typeof listMau[maMau] === "undefined") return [];
+      let { TenMau } = listMau[maMau];
+      result.push({
+        TenHangSanXuat,
+        TenMau,
+        ...value,
+      });
+      console.log(result);
+      return result;
+    }, []);
+    setProducts(data);
+    setLoading(true);
+  }, [loading]);
+  // Fetch data from API
+  useEffect(() => {
+    const fetchData = async () => {
+      await dispatch(fetchListGiay());
+      await dispatch(fetchListHangSanXuat());
+      await dispatch(fetchListSize());
+      await dispatch(fetchListMau());
+      //set Flag to combine TableData
+      // Note: Find a way to select lastest data
+      // Done have to use Flag
+      setLoading(false);
+    };
+    fetchData();
+  }, [dispatch]);
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -322,9 +310,10 @@ const QuanLyBanHang = () => {
           <Grid container spacing={0}>
             <Paper className={classes.paper} style={{ width: "20%" }}>
               <InfoField
-                GroupBoxes={records}
+                GroupBoxes={groupBoxes}
                 cardHeader="Thông Tin Phiếu"
                 buttonContent="Lập Phiếu"
+                disabled={selectedProducts.length === 0 ? "disabled" : ""}
                 onClick={handleSubmitClick}
               />
             </Paper>
@@ -379,7 +368,7 @@ const QuanLyBanHang = () => {
                     </td>
                     <td width="15%">
                       <GroupBox
-                        value={product === null ? "" : product.DonGia}
+                        value={product === null ? "" : product.DonGiaNhap}
                         type="TextBox"
                         title={headCells[3].label}
                         disabled="disabled"
@@ -391,6 +380,9 @@ const QuanLyBanHang = () => {
                         type="Number"
                         title={headCells[4].label}
                         onChange={onAmountChange}
+                        error={amountError}
+                        validationTip="Số Lượng phải lớn hơn 0"
+                        disabled={product === null ? "disabled" : ""}
                       />
                     </td>
                     <td width="15%">
@@ -409,6 +401,7 @@ const QuanLyBanHang = () => {
                         aria-label="Add"
                         color="primary"
                         size="small"
+                        disabled={product === null ? "disabled" : ""}
                         onClick={handleAddClick}
                       >
                         <AddCircle />
@@ -419,7 +412,9 @@ const QuanLyBanHang = () => {
               </Table>
               <hr className={classes.hr} />
               <TableContainer
-                style={{ display: selectedLength === 0 ? "none" : "table" }}
+                style={{
+                  display: selectedProducts.length === 0 ? "none" : "table",
+                }}
                 className={classes.table}
               >
                 <TblContainer>

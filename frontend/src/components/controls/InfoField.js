@@ -31,10 +31,10 @@ const InfoField = (props) => {
                     disabled={item.disabled}
                     value = {item.value}
                     required={item.required}
-                    onChange = {e => item.onChange(e,item.title)}
+                    onChange = {item.disabled === 'disabled' ? e => item.onChange(e,item.title) : null}
                     error = {item.error}/>
               ))}
-              <Button size="large" variant="contained" color="primary" onClick = {props.onClick}>
+              <Button size="large" variant="contained" color="primary" onClick = {props.onClick} disabled = {props.disabled}>
                 {props.buttonContent}
               </Button>
               <hr className={classes.hr} />
