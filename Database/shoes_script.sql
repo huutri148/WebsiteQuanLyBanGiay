@@ -396,7 +396,7 @@ foreign key(SoPhieuNhapKho) references PHIEUNHAPKHO(SoPhieuNhapKho);
 DELIMITER $$
 create procedure USP_DangNhap(p_userName VARCHAR(255),p_passWord VARCHAR(255))
 BEGIN
-select * from ShoesStoreManagement.NGUOIDUNG where TenDangNhap=p_userName and MatKhau=p_passWord;
+select * from ShoesStoreManagement.NGUOIDUNG where TenDangNhap=p_userName ;
 END; $$
 DELIMITER ;
 
