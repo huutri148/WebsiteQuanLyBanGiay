@@ -1,6 +1,7 @@
 const db = require("./DataBaseAccessHelper");
 const sqlString = require("sqlstring");
 const bcrypt = require("bcrypt");
+
 const NguoiDung = {};
 
 NguoiDung.create = async function (data, result) {
@@ -73,11 +74,16 @@ NguoiDung.login = async function (data, callBack) {
   const login = [data.TenDangNhap, password];
   var queryString = sqlString.format("CALL USP_DangNhap(?,?);", login);
 
-  conn.query(queryString, (err, results, fields) => {
+  conn.query(queryString, async (err, results) => {
     if (err) {
       throw err;
     }
-    callBack(results[0]);
+    if (results[0][0]) {
+      const isMatch = await bcrypt.compare(data.MatKhau, results[0][0].MatKhau);
+      if (isMatch) {
+        callBack(results[0][0]);
+      }
+    }
   });
 };
 module.exports = NguoiDung;

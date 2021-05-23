@@ -10,6 +10,7 @@ import {
   TableCell,
   IconButton,
   Typography,
+  CircularProgress,
 } from "@material-ui/core";
 import styles from "./styles";
 import useTable from "../../../components/useTable";
@@ -22,6 +23,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchListGiay } from "./../../../actions/giayAction";
 import { fetchListHangSanXuat } from "./../../../actions/hangSanXuatAction";
 import { fetchListSize } from "./../../../actions/sizeAction";
+
 
 const headCells = [
   { id: "TenGiay", label: "Tên sản phẩm" },
@@ -38,11 +40,16 @@ const DanhSachSanPham = (props) => {
   //Fetched data
   const dispatch = useDispatch();
   const productList = useSelector((state) => state.ListGiay);
-  const brandList = useSelector((state) => state.HangSanXuat);
+  const brandList = useSelector((state) => state.ListHangSanXuat);
   const sizeList = useSelector((state) => state.ListSize);
-  const { error: hangSanXuatError, listHangSanXuat } = brandList;
-  const { error: giayError, listGiay } = productList;
-  const { error: sizeError, listSize } = sizeList;
+  const {
+    loading: brandLoading,
+    error: hangSanXuatError,
+    listHangSanXuat,
+  } = brandList;
+  const { loading: productLoading, error: giayError, listGiay } = productList;
+  const { loading: sizeLoading, error: sizeError, listSize } = sizeList;
+
 
   // Props in Screens
   const [tableData, setTableData] = useState([]);
@@ -124,47 +131,55 @@ const DanhSachSanPham = (props) => {
             onChange={handleSearch}
           />
         </Toolbar>
-        <TableContainer className={classes.table}>
-          <TblContainer>
-            <TblHead />
-            <TableBody>
-              {recordsAfterPagingAndSorting().map((item, index) => (
-                <TableRow
-                  key={item.MaGiay}
-                  style={
-                    index % 2 ? { background: "#eee" } : { background: "white" }
-                  }
-                >
-                  <TableCell component="th" scope="row">
-                    <ProductCard
-                      imgUrl={`/images/${item.Anh}`}
-                      productName={item.TenGiay}
-                    />
-                  </TableCell>
-                  <TableCell component="th" scope="row">
-                    {item.TenHangSanXuat}
-                  </TableCell>
-                  <TableCell component="th" scope="row">
-                    {item.MaMau}
-                  </TableCell>
-                  <TableCell component="th" scope="row">
-                    {item.GioiTinh}
-                  </TableCell>
-                  <TableCell>{item.TongSoLuong}</TableCell>
-                  <TableCell>
-                    <IconButton color="secondary">
-                      <Edit />
-                    </IconButton>
-                    <IconButton color="primary">
-                      <Assignment onClick={() => handleDetail(index, item)} />
-                    </IconButton>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </TblContainer>
-          <TblPagination />
-        </TableContainer>
+        {sizeLoading || productLoading || brandLoading ? (
+          <CircularProgress disableShrink style={{ margin: "0px 16px" }} />
+        ) : sizeError || giayError || hangSanXuatError ? (
+          <h1>Error</h1>
+        ) : (
+          <TableContainer className={classes.table}>
+            <TblContainer>
+              <TblHead />
+              <TableBody>
+                {recordsAfterPagingAndSorting().map((item, index) => (
+                  <TableRow
+                    key={item.MaGiay}
+                    style={
+                      index % 2
+                        ? { background: "#eee" }
+                        : { background: "white" }
+                    }
+                  >
+                    <TableCell component="th" scope="row">
+                      <ProductCard
+                        imgUrl={`/images/${item.Anh}`}
+                        productName={item.TenGiay}
+                      />
+                    </TableCell>
+                    <TableCell component="th" scope="row">
+                      {item.TenHangSanXuat}
+                    </TableCell>
+                    <TableCell component="th" scope="row">
+                      {item.MaMau}
+                    </TableCell>
+                    <TableCell component="th" scope="row">
+                      {item.GioiTinh}
+                    </TableCell>
+                    <TableCell>{item.TongSoLuong}</TableCell>
+                    <TableCell>
+                      <IconButton color="secondary">
+                        <Edit />
+                      </IconButton>
+                      <IconButton color="primary">
+                        <Assignment onClick={() => handleDetail(index, item)} />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </TblContainer>
+            <TblPagination />
+          </TableContainer>
+        )}
       </Paper>
       <Popup
         title="Thông tin sản phẩm"

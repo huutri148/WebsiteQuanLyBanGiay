@@ -1,3 +1,4 @@
+drop database ShoesStoreManagement;
 create schema ShoesStoreManagement;
 use ShoesStoreManagement;
 
@@ -395,7 +396,7 @@ foreign key(SoPhieuNhapKho) references PHIEUNHAPKHO(SoPhieuNhapKho);
 DELIMITER $$
 create procedure USP_DangNhap(p_userName VARCHAR(255),p_passWord VARCHAR(255))
 BEGIN
-select * from ShoesStoreManagement.NGUOIDUNG where TenDangNhap=p_userName and MatKhau=p_passWord;
+select * from ShoesStoreManagement.NGUOIDUNG where TenDangNhap=p_userName ;
 END; $$
 DELIMITER ;
 
@@ -542,6 +543,56 @@ WHERE GIAY.MaGiay =p_MaGiay;
 END; $$
 DELIMITER ;
 
+
+
+
+
+DELIMITER $$
+create procedure USP_GetListMau()
+BEGIN
+    Select * from ShoesStoreManagement.MAU
+    where MAU.IsDeleted = false;
+END; $$
+DELIMITER ;
+
+DELIMITER $$
+create procedure USP_GetMauByID(p_MaMau int )
+BEGIN
+    Select * from ShoesStoreManagement.MAU
+    WHERE MAU.MaMau = p_MaMau and  MAU.IsDeleted = false;
+END; $$
+DELIMITER ;
+
+
+DELIMITER $$
+create procedure USP_ThemMau(
+    p_TenMau  nvarchar(1000))
+BEGIN
+INSERT INTO ShoesStoreManagement.MAU(TenMau)
+VALUES (p_TenMau);
+END; $$
+DELIMITER ;
+
+DELIMITER $$
+create procedure USP_CapNhatThongTinMau(p_MaMau int,
+    p_TenMau nvarchar(1000))
+BEGIN
+UPDATE MAU
+SET  
+    MAU.TenMau= p_TenMau
+WHERE MAU.MaMau = p_MaMau;
+END; $$
+DELIMITER ;
+
+
+DELIMITER $$
+create procedure USP_XoaMau(p_MaMau int)
+BEGIN
+    Update ShoesStoreManagement.MAU
+    set MAU.IsDeleted = true 
+    where MAU.MaMau= p_MaMau;
+END; $$
+DELIMITER ;
 
 
 

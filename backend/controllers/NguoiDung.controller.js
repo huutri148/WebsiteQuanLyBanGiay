@@ -1,4 +1,12 @@
 const NguoiDung = require("../models/NguoiDung.model");
+const jwtHelper = require("../helper/jwt.helper");
+let tokenList = {};
+const accessTokenLife = process.env.ACCESS_TOKEN_LIFE || "1h";
+
+const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET;
+
+const refreshTokenLife = process.env.REFRESH_TOKEN_LIFE;
+const refreshTokenSecret = process.env.REFRESH_TOKEN_SECRET;
 
 // @desc Fetch all Users
 // @route Get/api/users
@@ -70,9 +78,62 @@ const authenUser = async (req, res) => {
     MatKhau: req.body.MatKhau,
   };
 
-  await NguoiDung.login(data, (result) => {
-    res.status(200).send({ message: "Login successfully" });
+  await NguoiDung.login(data, async (result) => {
+    if (result) {
+      try {
+        console.log(result);
+        const user = result;
+
+        //if login success, create refresh token
+        const accessToken = await jwtHelper.generateToken(
+          user,
+          accessTokenSecret,
+          accessTokenLife
+        );
+
+        const refreshToken = await jwtHelper.generateToken(
+          user,
+          refreshTokenSecret,
+          refreshTokenLife
+        );
+        tokenList[refreshToken] = { accessToken, refreshToken };
+
+        return res.status(200).json({ accessToken, refreshToken });
+      } catch (error) {
+        return res.status(500).json(error);
+      }
+    }
   });
 };
+const refreshToken = async (req, res) => {
+  const refreshTokenFromClient = req.body.refreshToken;
 
-module.exports = { getList, getUserByID, registerUser, authenUser };
+  if (refreshTokenFromClient && tokenList[refreshTokenFromClient]) {
+    try {
+      const decoded = await jwtHelper.verifyToken(
+        refreshTokenFromClient,
+        refreshTokenSecret
+      );
+
+      const userData = decoded.data;
+
+      const accessToken = await jwtHelper.generateToken(
+        userData,
+        accessTokenSecret,
+        accessTokenLife
+      );
+
+      return res.status(200).json({ accessToken });
+    } catch (error) {
+      return res.status(500).json(error);
+    }
+  }
+};
+
+module.exports = {
+  getList,
+  getUserByID,
+  registerUser,
+  authenUser,
+  refreshToken,
+};

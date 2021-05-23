@@ -5,24 +5,26 @@ import {
   Tab,
   Tabs,
   Grid,
-  Button,
   TableBody,
-  withStyles,
   TableContainer,
   TableRow,
   TableCell,
   Table,
   IconButton,
 } from "@material-ui/core";
-import { React, useState } from "react";
+import { React, useState, useEffect } from "react";
 import GroupBox from "../../components/controls/GroupBox/GroupBox";
 import Selector from "../../components/controls/Selector/Selector";
 import "./QuanLyBanHang.css";
 import { AddCircle, Edit, HighlightOff } from "@material-ui/icons";
 import useTable from "../../components/useTable";
 import ProductCard from "../QuanLySanPham/ProductCard";
-import Popup from "../../components/controls/Popup";
-import ProductDetail from "../QuanLySanPham/ProductDetail";
+import InfoField from "../../components/controls/InfoField";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchListGiay } from "../../actions/giayAction";
+import { fetchListHangSanXuat } from "../../actions/hangSanXuatAction";
+import { fetchListSize } from "../../actions/sizeAction";
+import { fetchListMau } from "../../actions/mauAction";
 function TabPanel(props) {
   const classes = useStyles();
   const { children, value, index, ...other } = props;
@@ -71,157 +73,221 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(0, 1),
   },
 }));
-
-const products = [
-  {
-    MaGiay: 1,
-    TenGiay: "Van Old Skool Violet",
-    TenHangSanXuat: "Nike",
-    TenMau: "Violet",
-    GioiTinh: "Unisex",
-    Anh: "/images/2.jpg",
-    SoLuong: 20,
-    DonGia: "2000000",
-  },
-  {
-    MaGiay: 3,
-    TenGiay: "Fila Wave Neo",
-    TenHangSanXuat: "Fila",
-    TenMau: "Violet",
-    GioiTinh: "Unisex",
-    Anh: "/images/1.png",
-    SoLuong: 20,
-    DonGia: "2000000",
-  },
-  {
-    MaGiay: 2,
-    TenGiay: "Fila Wave Neo",
-    TenHangSanXuat: "Fila",
-    TenMau: "Violet",
-    GioiTinh: "Unisex",
-    Anh: "/images/1.png",
-    SoLuong: 20,
-    DonGia: "2000000",
-  },
-  {
-    MaGiay: 4,
-    TenGiay: "Fila Wave Neo",
-    TenHangSanXuat: "Fila",
-    TenMau: "Violet",
-    GioiTinh: "Unisex",
-    Anh: "/images/1.png",
-    SoLuong: 20,
-    DonGia: "2000000",
-  },
-  {
-    MaGiay: 5,
-    TenGiay: "Fila Wave Neo",
-    TenHangSanXuat: "Fila",
-    TenMau: "Violet",
-    Anh: "/images/1.png",
-    GioiTinh: "Unisex",
-    SoLuong: 20,
-    DonGia: "2000000",
-  },
-  {
-    MaGiay: 6,
-    TenGiay: "Fila Wave Neo",
-    TenHangSanXuat: "Fila",
-    TenMau: "Violet",
-    Anh: "/images/1.png",
-    GioiTinh: "Unisex",
-    SoLuong: 20,
-    DonGia: "2000000",
-  },
-  {
-    MaGiay: 7,
-    TenGiay: "Fila Wave Neo",
-    TenHangSanXuat: "Fila",
-    TenMau: "Violet",
-    Anh: "/images/1.png",
-    GioiTinh: "Unisex",
-    SoLuong: 20,
-    DonGia: "2000000",
-  },
-];
 const headCells = [
   { id: "TenGiay", label: "Tên Giày" },
-  { id: "GioiTinh", label: "Giới Tính"},
-  { id: "Size", label: "Size"},
-  { id: "DonGia", label: "Đơn Giá"},
+  { id: "GioiTinh", label: "Giới Tính" },
+  { id: "Size", label: "Size" },
+  { id: "DonGia", label: "Đơn Giá" },
   { id: "SoLuong", label: "Số Lượng" },
   { id: "ThanhTien", label: "Thành Tiền" },
   { id: "HanhDong" },
 ];
 const selectedProducts = [];
 const QuanLyBanHang = () => {
-  const [ignored,forceUpdate] = useState(false);
+  //Fetched data
+  const dispatch = useDispatch();
+  const productList = useSelector((state) => state.ListGiay);
+  const brandList = useSelector((state) => state.ListHangSanXuat);
+  const sizeList = useSelector((state) => state.ListSize);
+  const colorList = useSelector((state) => state.ListMau);
+  const { error: hangSanXuatError, listHangSanXuat } = brandList;
+  const { error: giayError, listGiay } = productList;
+  const { error: sizeError, listSize } = sizeList;
+  const { error: mauError, listMau } = colorList;
+  //hooks
+  const [ignored, forceUpdate] = useState(false);
   const [value, setValue] = useState(0);
   const [amount, setAmount] = useState(0);
   const classes = useStyles();
   const [selectedId, setSelectedId] = useState();
-  const [record, setRecord] = useState(null);
+  const [product, setProduct] = useState(null);
   const [total, setTotal] = useState(0);
   const [sumTotal, setSumTotal] = useState(0);
-  const [selectedLength,setSelectedLength] = useState(0);
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState();
   const [filterFn, setFilterFn] = useState({
     fn: (items) => {
       return items;
     },
   });
+  const [amountError, setAmountError] = useState(false);
+  //regex
+  const phoneRegex = /^[0-9\b]+$/;
+  //table
   const { TblContainer, TblHead, TblPagination, recordsAfterPagingAndSorting } =
     useTable(selectedProducts, headCells, filterFn);
-  const setSelectedProduct = (val) =>{
+  const setSelectedProduct = (val) => {
     setSelectedId(val);
     let tmp = products.find((obj) => obj.MaGiay === val);
-    setRecord(tmp);
+    setProduct(tmp);
     setAmount(0);
     setTotal(0);
-  }
-  const handleAddClick = () => 
-  {
-    if(record === null)
-    {
-      //set arlet
+  };
+  //handle Button click
+  const handleAddClick = () => {
+    if (amount === 0) {
+      setAmountError(true);
+      return;
     }
-    else if(selectedProducts.find(item => item.MaGiay === record.MaGiay) == undefined)
-    {
-      let tmp = record;
-      tmp.total = total;
-      tmp.amount = amount;
-      selectedProducts.push(tmp);
-      setSelectedLength(selectedProducts.length);
-      setSumTotal(sumTotal + total);
+    if (
+      selectedProducts.find((item) => item.MaGiay === product.MaGiay) ===
+      undefined
+    ) {
+      let tmp = sumTotal + total;
+      setSumTotal(tmp);
+      groupBoxes[2].value = tmp.toLocaleString("it-IT");
+      let shoe = product;
+      shoe.total = total;
+      shoe.amount = amount;
+      selectedProducts.push(shoe);
+    } else {
+      let tmp = sumTotal + total - product.total;
+      setSumTotal(tmp);
+      groupBoxes[2].value = tmp.toLocaleString("it-IT");
+      let shoe = selectedProducts[selectedProducts.indexOf(product)];
+      shoe.total = total;
+      shoe.amount = amount;
     }
-    else{
-      let tmp = selectedProducts[selectedProducts.indexOf(record)];
-      tmp.total = total;
-      tmp.amount = amount;
-      setSelectedLength(selectedProducts.length);
-      setSumTotal(sumTotal + total - record.total);
-    }
-    forceUpdate(!ignored);
   };
   const handleRemoveClick = (item) => {
-    selectedProducts.splice(selectedProducts.indexOf(item),1);
-    forceUpdate(!ignored);
-    setSumTotal(sumTotal - item.total);
+    selectedProducts.splice(selectedProducts.indexOf(item), 1);
+    let tmp = sumTotal - item.total;
+    setSumTotal(tmp);
+    groupBoxes[2].value = tmp.toLocaleString("it-IT");
   };
   const handleEditClick = (item) => {
-    setRecord(item);
+    setProduct(item);
     forceUpdate(!ignored);
   };
+  //Field titles
+  const [groupBoxes, setGroupBoxes] = useState([
+    {
+      type: "TextBox",
+      title: "Tên Khách Hàng",
+      required: true,
+      onChange: (e, title) => {
+        let tmp = groupBoxes.find((obj) => obj.title === title);
+        tmp.value = e.target.value;
+      },
+      validationTip: "Tên Khách Hàng không được trống",
+      error: false,
+      checkValidation: (val) => {
+        if (val === null || val === "" || val === undefined) return true;
+        return false;
+      },
+    },
+    {
+      type: "Number",
+      title: "Số Điện Thoại",
+      required: true,
+      onChange: (e, title) => {
+        let tmp = groupBoxes.find((obj) => obj.title === title);
+        tmp.value = e.target.value;
+      },
+      validationTip: "Số Điện Thoại không được trống",
+      error: false,
+      checkValidation: (val) => {
+        console.log(val);
+        if (val === null || val === "" || val === undefined) return true;
+        return false;
+      },
+    },
+    {
+      type: "TextBox",
+      title: "Tổng Tiền",
+      required: true,
+      disabled: "disabled",
+      value: 0,
+      validationTip: "Tổng Tiền không được bằng 0",
+      error: false,
+      checkValidation: (val) => {
+        if (sumTotal === 0) return true;
+        return false;
+      },
+    },
+    {
+      type: "TextBox",
+      title: "Người Lập",
+      required: true,
+      disabled: "disabled",
+      checkValidation: (val) => false,
+    },
+    {
+      type: "Picker",
+      title: "Ngày Lập",
+      onChange: (e, title) => {
+        let tmp = groupBoxes.find((obj) => obj.title === title);
+        tmp.value = e.target.value;
+      },
+      required: true,
+      checkValidation: (val) => false,
+    },
+    {
+      type: "TextBox",
+      title: "Ghi Chú",
+      onChange: (e, title) => {
+        let tmp = groupBoxes.find((obj) => obj.title === title);
+        tmp.value = e.target.value;
+      },
+      required: false,
+      checkValidation: (val) => false,
+    },
+  ]);
+  //handle submit
+  const handleSubmitClick = () => {
+    groupBoxes.forEach((element) => {
+      element.error = element.checkValidation(element.value);
+    });
+    forceUpdate(!ignored);
+  };
+  //handle Change
   const handleTabChange = (event, newValue) => {
     setValue(newValue);
   };
   const onAmountChange = (e) => {
-    if(record != null)
-    {
-      setAmount(Number(e.target.value));
-      setTotal(e.target.value * record.DonGia);   
+    if (product != null) {
+      let tmp = e.target.value;
+      if (Number(tmp) === 0 || phoneRegex.test(tmp)) {
+        setAmount(Number(tmp));
+        setTotal(tmp * product.DonGia);
+        if (Number(tmp) > 0) setAmountError(false);
+      }
     }
   };
-
+  // setProducts when done fetching
+  useEffect(() => {
+    const data = Object.values(listGiay).reduce((result, value) => {
+      let maHSX = value.MaHangSanXuat;
+      if (typeof listHangSanXuat[maHSX] === "undefined") return [];
+      let { TenHangSanXuat } = listHangSanXuat[maHSX];
+      let maMau = value.MaMau;
+      if (typeof listMau[maMau] === "undefined") return [];
+      let { TenMau } = listMau[maMau];
+      result.push({
+        TenHangSanXuat,
+        TenMau,
+        ...value,
+      });
+      console.log(result);
+      return result;
+    }, []);
+    setProducts(data);
+    setLoading(true);
+  }, [loading]);
+  // Fetch data from API
+  useEffect(() => {
+    const fetchData = async () => {
+      await dispatch(fetchListGiay());
+      await dispatch(fetchListHangSanXuat());
+      await dispatch(fetchListSize());
+      await dispatch(fetchListMau());
+      //set Flag to combine TableData
+      // Note: Find a way to select lastest data
+      // Done have to use Flag
+      setLoading(false);
+    };
+    fetchData();
+  }, [dispatch]);
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -237,49 +303,19 @@ const QuanLyBanHang = () => {
         </Tabs>
       </div>
       <label className={classes.titleHeader}>
-        {value == 0 ? "Lập Phiếu Bán Hàng" : "Danh Sách Phiếu Bán Hàng"}
+        {value === 0 ? "Lập Phiếu Bán Hàng" : "Danh Sách Phiếu Bán Hàng"}
       </label>
       <TabPanel value={value} index={0}>
         <div>
           <Grid container spacing={0}>
             <Paper className={classes.paper} style={{ width: "20%" }}>
-              <label
-                className={classes.cardHeader}
-                style={{ textAlign: "center" }}
-              >
-                Thông Tin Phiếu
-              </label>
-              <hr className={classes.hr} />
-              <GroupBox type="TextBox" title="Tên Khách Hàng" required={true} />
-              <GroupBox type="TextBox" title="Số Điện Thoại" required={true} />
-              <GroupBox
-                type="TextBox"
-                title="Tổng Tiền"
-                disabled="disabled"
-                value = {Number(sumTotal).toLocaleString('it-IT')}
-                required={true}
+              <InfoField
+                GroupBoxes={groupBoxes}
+                cardHeader="Thông Tin Phiếu"
+                buttonContent="Lập Phiếu"
+                disabled={selectedProducts.length === 0 ? "disabled" : ""}
+                onClick={handleSubmitClick}
               />
-              <GroupBox
-                type="TextBox"
-                title="Người Lập"
-                disabled="disabled"
-                required={true}
-              />
-              <GroupBox type="Picker" title="Ngày Lập" required={true} />
-              <GroupBox type="TextBox" title="Ghi Chú" required={false} />
-              <Button size="large" variant="contained" color="primary">
-                Lập Phiếu
-              </Button>
-              <hr className={classes.hr} />
-              <label
-                style={{
-                  color: "red",
-                  fontWeight: "bold",
-                  textAlign: "center",
-                }}
-              >
-                Lưu ý: Tiền được tính theo VNĐ
-              </label>
             </Paper>
             <Paper
               className={classes.paper}
@@ -287,45 +323,87 @@ const QuanLyBanHang = () => {
             >
               <label className={classes.cardHeader}>Thông Tin Giày</label>
               <hr className={classes.hr} />
-              <Selector title="Hàng Hoá" products={products} setSelectedId = {setSelectedProduct} />
+              <Selector
+                title="Hàng Hoá"
+                products={products}
+                setSelectedId={setSelectedProduct}
+              />
               <hr className={classes.hr} style={{ marginTop: 15 }} />
               <Table striped bordered hover>
                 <thead>
                   <tr>
-                    <th>{headCells[0].label}</th>
-                    <th>{headCells[1].label}</th>
-                    <th>{headCells[2].label}</th>
-                    <th>{headCells[3].label}</th>
-                    <th>{headCells[4].label}</th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
                     <th></th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
                     <td width="25%">
-                      <input value = {record === null ? "" : record.TenGiay} disabled="disabled"/>
+                      <GroupBox
+                        value={product === null ? "" : product.TenGiay}
+                        type="TextBox"
+                        title={headCells[0].label}
+                        disabled="disabled"
+                      />
                     </td>
                     <td width="15%">
-                      <input value = {record === null ? "" : record.GioiTinh} disabled="disabled" />
+                      <GroupBox
+                        value={product === null ? "" : product.GioiTinh}
+                        type="TextBox"
+                        title={headCells[1].label}
+                        disabled="disabled"
+                      />
                     </td>
                     <td width="10%">
-                      <input value = {record === null ? "" : record.Size} disabled="disabled" />
+                      <GroupBox
+                        value={product === null ? "" : product.Size}
+                        type="TextBox"
+                        title={headCells[2].label}
+                        disabled="disabled"
+                      />
                     </td>
                     <td width="15%">
-                      <input value = {record === null ? "" : Number(record.DonGia).toLocaleString('it-IT')} disabled="disabled" />
+                      <GroupBox
+                        value={product === null ? "" : product.DonGiaNhap}
+                        type="TextBox"
+                        title={headCells[3].label}
+                        disabled="disabled"
+                      />
                     </td>
                     <td width="15%">
-                      <input value = {amount} onChange = {onAmountChange} />
+                      <GroupBox
+                        value={amount}
+                        type="Number"
+                        title={headCells[4].label}
+                        onChange={onAmountChange}
+                        error={amountError}
+                        validationTip="Số Lượng phải lớn hơn 0"
+                        disabled={product === null ? "disabled" : ""}
+                      />
                     </td>
                     <td width="15%">
-                      <input value = {record === null ? "" : total.toLocaleString('it-IT')} disabled="disabled" />
+                      <GroupBox
+                        value={
+                          product === null ? "" : total.toLocaleString("it-IT")
+                        }
+                        type="TextBox"
+                        title={headCells[5].label}
+                        disabled="disabled"
+                      />
                     </td>
                     <td width="15%">
                       <IconButton
-                        style={{ marginBottom: 15 }}
+                        style={{ marginBottom: -10 }}
                         aria-label="Add"
+                        color="primary"
                         size="small"
-                        onClick = {handleAddClick}>
+                        disabled={product === null ? "disabled" : ""}
+                        onClick={handleAddClick}
+                      >
                         <AddCircle />
                       </IconButton>
                     </td>
@@ -333,7 +411,12 @@ const QuanLyBanHang = () => {
                 </tbody>
               </Table>
               <hr className={classes.hr} />
-              <TableContainer style = {{display: selectedLength === 0 ? "none" : "table"}} className={classes.table}>
+              <TableContainer
+                style={{
+                  display: selectedProducts.length === 0 ? "none" : "table",
+                }}
+                className={classes.table}
+              >
                 <TblContainer>
                   <TblHead />
                   <TableBody>
@@ -341,31 +424,41 @@ const QuanLyBanHang = () => {
                       <TableRow
                         key={item.MaGiay}
                         style={
-                          index % 2 ? { background: "#eee" } : { background: "white" }
-                        }>
+                          index % 2
+                            ? { background: "#eee" }
+                            : { background: "white" }
+                        }
+                      >
                         <TableCell component="td" width="40%" scope="row">
-                        <ProductCard imgUrl={item.Anh} productName={item.TenGiay} />
+                          <ProductCard
+                            imgUrl={item.Anh}
+                            productName={item.TenGiay}
+                          />
                         </TableCell>
                         <TableCell component="td" scope="row">
-                        {item.GioiTinh}
+                          {item.GioiTinh}
                         </TableCell>
                         <TableCell component="td" scope="row">
-                        {item.Size}
+                          {item.Size}
                         </TableCell>
                         <TableCell component="td" scope="row">
-                        {item.DonGia}
+                          {item.DonGia}
                         </TableCell>
                         <TableCell component="td" scope="row">
-                        {item.amount}
+                          {item.amount}
                         </TableCell>
-                        <TableCell component="td"scope="row">
-                        {item.total}
+                        <TableCell component="td" scope="row">
+                          {item.total}
                         </TableCell>
                         <TableCell component="td" width="15%" scope="row">
                           <IconButton size="small" color="primary">
-                            <Edit onClick={()=>handleEditClick(item)}/>
+                            <Edit onClick={() => handleEditClick(item)} />
                           </IconButton>
-                          <IconButton size="small" color="secondary" onClick={()=>handleRemoveClick(item)}>
+                          <IconButton
+                            size="small"
+                            color="secondary"
+                            onClick={() => handleRemoveClick(item)}
+                          >
                             <HighlightOff />
                           </IconButton>
                         </TableCell>

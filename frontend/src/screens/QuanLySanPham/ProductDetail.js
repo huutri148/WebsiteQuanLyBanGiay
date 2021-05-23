@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { makeStyles } from "@material-ui/core";
-import Grid from "@material-ui/core/Grid";
-import GroupBox from "../../components/controls/GroupBox";
+import { makeStyles, Grid, CircularProgress } from "@material-ui/core";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchGiaySize } from "../../actions/giayAction";
+import GroupBox from "../../components/controls/GroupBox/GroupBox";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -49,7 +48,7 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "row",
     flexWrap: "wrap",
-    justifyContent: "center",
+    justifyContent: "left",
     margin: "0px 8px",
   },
 }));
@@ -73,7 +72,7 @@ const ProductDetail = (props) => {
       await dispatch(fetchGiaySize(id));
     };
     fetchData(item.MaGiay);
-  }, [dispatch]);
+  }, [dispatch, item.MaGiay]);
 
   //Choose size to see quatity
   const handleChange = (size) => {
@@ -91,7 +90,7 @@ const ProductDetail = (props) => {
   return (
     <div className={classes.root}>
       {sizeLoading ? (
-        <h1>Loading</h1>
+        <CircularProgress disableShrink />
       ) : sizeError ? (
         <h1>Error</h1>
       ) : (
@@ -112,7 +111,7 @@ const ProductDetail = (props) => {
                   fontSize: 24,
                 }}
               >
-                {"đ " + Number(item.DonGiaNhap).toLocaleString("it-IT")}
+                {Number(item.DonGiaNhap).toLocaleString("it-IT") + " VNĐ"}
               </div>
             </div>
           </Grid>

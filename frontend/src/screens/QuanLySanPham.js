@@ -1,6 +1,7 @@
 import { CssBaseline, makeStyles, Tab, Tabs } from "@material-ui/core";
 import { React, useState } from "react";
 import DanhSachSanPham from "./QuanLySanPham/DanhSachSanPham/DanhSachSanPham";
+import ThemSanPham from "./QuanLySanPham/ThemSanPham";
 function TabPanel(props) {
   const classes = useStyles();
   const { children, value, index, ...other } = props;
@@ -42,8 +43,8 @@ const QuanLySanPham = () => {
           value={value}
           onChange={handleChange}
         >
-          <Tab className={classes.tabHeader} label="Quản lý" />
-          <Tab className={classes.tabHeader} label="Thêm" />
+          <Tab className={classes.tabHeader} label="Quản lý sản phẩm" />
+          <Tab className={classes.tabHeader} label="Thêm sản phẩm" />
         </Tabs>
       </div>
 
@@ -51,7 +52,7 @@ const QuanLySanPham = () => {
         <DanhSachSanPham className={classes.tabPaper} />
       </TabPanel>
       <TabPanel value={value} index={1}>
-        Thêm sản phẩm mới
+        <ThemSanPham />
       </TabPanel>
     </div>
   );
