@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   Paper,
   makeStyles,
@@ -75,7 +75,7 @@ const ThemSanPham = () => {
           }}
         >
           <Grid xs={4} className={classes.imageCard}>
-            <img src="/images/1.png" className={classes.image} alt="Image" />
+            <img src="/images/1.png" className={classes.image} alt="GIAY1" />
           </Grid>
           <Grid xs={6} className={classes.informationCard}>
             <Groupbox type="TextBox" title="Tên Giày" required={true} />

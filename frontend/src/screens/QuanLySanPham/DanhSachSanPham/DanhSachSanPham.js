@@ -24,7 +24,6 @@ import { fetchListGiay } from "./../../../actions/giayAction";
 import { fetchListHangSanXuat } from "./../../../actions/hangSanXuatAction";
 import { fetchListSize } from "./../../../actions/sizeAction";
 
-
 const headCells = [
   { id: "TenGiay", label: "Tên sản phẩm" },
   { id: "TenHangSanXuat", label: "Tên hãng sản xuất", disableSorting: true },
@@ -49,7 +48,6 @@ const DanhSachSanPham = (props) => {
   } = brandList;
   const { loading: productLoading, error: giayError, listGiay } = productList;
   const { loading: sizeLoading, error: sizeError, listSize } = sizeList;
-
 
   // Props in Screens
   const [tableData, setTableData] = useState([]);
@@ -102,7 +100,7 @@ const DanhSachSanPham = (props) => {
     let target = e.target;
     setFilterFn({
       fn: (items) => {
-        if (target.value == "") return items;
+        if (target.value === "") return items;
         else
           return items.filter((x) =>
             x.fullName.toLowerCase().includes(target.value)

@@ -6,7 +6,7 @@ const HangSanXuat = require("../models/HangSanXuat.model");
 const getList = async (req, res) => {
   await HangSanXuat.Get((result) => {
     if (result) {
-      res.send(JSON.stringify(result));
+      res.status(200).send(JSON.stringify(result));
     } else {
       res.status(404);
       throw new Error("Brand not found ");
@@ -28,7 +28,7 @@ const getBrandByID = async (req, res) => {
   });
 };
 
-// @desc    Register a brand 
+// @desc    Register a brand
 // @route   Post /api/brands
 // @access  Public
 const registerBrand = async (req, res) => {
@@ -46,7 +46,6 @@ const registerBrand = async (req, res) => {
     res.status(200).send({ message: "Created successfully" });
   });
 };
-
 
 // @desc    Update  branch
 // @route   PATCH /api/brands/id
@@ -71,11 +70,11 @@ const updateBrand = async (req, res) => {
 // @desc delete supplier by id
 // @route DELETE/api/brands/id
 // @access Public
-const deleteBrand= async (req, res) => {
+const deleteBrand = async (req, res) => {
   const maHangSanXuat = req.params.id;
   await HangSanXuat.Delete(maHangSanXuat, (result) => {
     if (result) {
-      res.status(200).send({message: "Deleted successfully"});
+      res.status(200).send({ message: "Deleted successfully" });
     } else {
       res.status(404);
     }

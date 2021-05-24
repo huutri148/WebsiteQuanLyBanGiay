@@ -5,7 +5,7 @@ const initalState = {
   listHangSanXuat: {},
 };
 
-const reducer = (state = initalState, action) => {
+export const brandListReducer = (state = initalState, action) => {
   switch (action.type) {
     case hangSanXuatConstant.HANGSANXUAT_LIST_REQUEST: {
       return {
@@ -31,4 +31,81 @@ const reducer = (state = initalState, action) => {
       return state;
   }
 };
-export default reducer;
+
+export const brandCreateReducer = (state = {}, action) => {
+  switch (action.type) {
+    case hangSanXuatConstant.HANGSANXUAT_CREATE_REQUEST: {
+      return {
+        //note: add loading
+        loading: true,
+      };
+    }
+    case hangSanXuatConstant.HANGSANXUAT_CREATE_SUCCESS: {
+      return {
+        loading: false,
+        success: true,
+        brand: action.payload,
+      };
+    }
+    case hangSanXuatConstant.HANGSANXUAT_CREATE_FAIL: {
+      return {
+        loading: false,
+        error: action.payload,
+      };
+    }
+    default:
+      return state;
+  }
+};
+
+export const brandUpdateReducer = (state = {}, action) => {
+  switch (action.type) {
+    case hangSanXuatConstant.HANGSANXUAT_UPDATE_REQUEST: {
+      return {
+        //note: add loading
+        loading: true,
+      };
+    }
+    case hangSanXuatConstant.HANGSANXUAT_UPDATE_SUCCESS: {
+      return {
+        loading: false,
+        success: true,
+        brand: action.payload,
+      };
+    }
+    case hangSanXuatConstant.HANGSANXUAT_UPDATE_FAIL: {
+      return {
+        loading: false,
+        error: action.payload,
+      };
+    }
+    default:
+      return state;
+  }
+};
+
+export const brandDeleteReducer = (state = {}, action) => {
+  switch (action.type) {
+    case hangSanXuatConstant.HANGSANXUAT_DELETE_REQUEST: {
+      return {
+        //note: add loading
+        loading: true,
+      };
+    }
+    case hangSanXuatConstant.HANGSANXUAT_DELETE_SUCCESS: {
+      return {
+        loading: false,
+        success: true,
+        brand: action.payload,
+      };
+    }
+    case hangSanXuatConstant.HANGSANXUAT_DELETE_FAIL: {
+      return {
+        loading: false,
+        error: action.payload,
+      };
+    }
+    default:
+      return state;
+  }
+};
