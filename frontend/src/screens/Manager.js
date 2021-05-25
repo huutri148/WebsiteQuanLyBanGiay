@@ -6,6 +6,7 @@ import "../components/App/App.css";
 import QuanLySanPham from "./QuanLySanPham";
 import QuanLyGioHang from "./QuanLyGioHang";
 import QuanLyNguoiDung from "./QuanLyNguoiDung";
+import QuanLyHangSanXuat from "./QuanLyHangSanXuat/QuanLyHangSanXuat";
 
 import QuanLyBanHang from "./QuanLyBanHang/QuanLyBanHang";
 
@@ -18,7 +19,7 @@ export default function Manager() {
             <Home />
           </Route>
           <Route exact path="/products">
-            <QuanLySanPham />
+            <QuanLyHangSanXuat />
           </Route>
           <Route exact path="/users">
             <QuanLyNguoiDung />

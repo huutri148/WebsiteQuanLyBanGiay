@@ -16,5 +16,14 @@ class AxiosService {
   get(url) {
     return this.instance.get(url);
   }
+  post(url, item) {
+    return this.instance.post(url, item);
+  }
+  patch(url, item) {
+    return this.instance.patch(url, item);
+  }
+  delete(url) {
+    return this.instance.delete(url);
+  }
 }
 export default new AxiosService();
