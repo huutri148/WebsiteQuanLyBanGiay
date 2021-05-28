@@ -6,7 +6,7 @@ import ListSubheader from "@material-ui/core/ListSubheader";
 import HomeIcon from "@material-ui/icons/Home";
 import DashboardIcon from "@material-ui/icons/Dashboard";
 import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
-import ReceiptIcon from '@material-ui/icons/Receipt';
+import ReceiptIcon from "@material-ui/icons/Receipt";
 import PeopleIcon from "@material-ui/icons/People";
 import BarChartIcon from "@material-ui/icons/BarChart";
 import MoneyIcon from "@material-ui/icons/Money";
@@ -14,7 +14,9 @@ import AssignmentIcon from "@material-ui/icons/Assignment";
 import { Link } from "react-router-dom";
 export const mainListItems = (
   <div>
-    <ListSubheader style = { {marginRight: 60}}  inset>Quản lý</ListSubheader>
+    <ListSubheader style={{ marginRight: 60 }} inset>
+      Quản lý
+    </ListSubheader>
 
     <ListItem button component={Link} to="/products">
       <ListItemIcon>
@@ -34,6 +36,12 @@ export const mainListItems = (
       </ListItemIcon>
       <ListItemText primary="Người Dùng" />
     </ListItem>
+    <ListItem button component={Link} to="/suppliers">
+      <ListItemIcon>
+        <HomeIcon />
+      </ListItemIcon>
+      <ListItemText primary="Nhà Cung Cấp" />
+    </ListItem>
     <ListItem button component={Link} to="/users">
       <ListItemIcon>
         <HomeIcon />
@@ -51,7 +59,9 @@ export const mainListItems = (
 
 export const secondaryListItems = (
   <div>
-    <ListSubheader style = { {marginRight: 60}}  inset>Báo cáo</ListSubheader>
+    <ListSubheader style={{ marginRight: 60 }} inset>
+      Báo cáo
+    </ListSubheader>
     <ListItem button component={Link} to="/products">
       <ListItemIcon>
         <BarChartIcon />

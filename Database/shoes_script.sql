@@ -1,5 +1,5 @@
 drop database ShoesStoreManagement;
-create schema ShoesStoreManagement;
+create schema ShoesStoreManagement ;
 use ShoesStoreManagement;
 
 create Table SIZE 
@@ -79,7 +79,6 @@ CREATE TABLE NHACUNGCAP
     Email NVARCHAR(1000) NOT NULL,
     IsDeleted BOOLEAN default false 
 );
-
 CREATE TABLE NGUOIDUNG
 (
     MaNguoiDung int auto_increment PRIMARY KEY,
@@ -1573,3 +1572,9 @@ insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (3,21,30);
 insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (4,21,40);
 insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (5,21,10);
 insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (6,21,10);
+
+INSERT INTO NHACUNGCAP(TenNhaCungCap, SDT, DiaChi, Email) VALUES ("Giay dep", "19006074", "Dia chi van phong: 3 Thep Moi, phuong 12, quan Tan Binh, TP Ho Chi Minh", "lienhe@thitruongsi.com");
+INSERT INTO NHACUNGCAP(TenNhaCungCap, SDT, DiaChi, Email) VALUES ("Kho giay pho", "0866074947", "737/10 Lac Long Quan, P10 - Quan Tan Binh", "lienhe@thitruongsi.com");
+INSERT INTO NHACUNGCAP(TenNhaCungCap, SDT, DiaChi, Email) VALUES ("Giay dep Viet Thuy", "0866074947", "Dia chi van phong: 3 Thep Moi, phuong 12, quan Tan Binh, TP Ho Chi Minh", "lienhe@thitruongsi.com");
+INSERT INTO NHACUNGCAP(TenNhaCungCap, SDT, DiaChi, Email) VALUES ("GS", "0866074947", "Dia chi van phong: 3 Thep Moi, phuong 12, quan Tan Binh, TP Ho Chi Minh", "lienhe@thitruongsi.com");
+INSERT INTO NHACUNGCAP(TenNhaCungCap, SDT, DiaChi, Email) VALUES ("Siviet", "0866074947", "Dia chi van phong: 3 Thep Moi, phuong 12, quan Tan Binh, TP Ho Chi Minh", "lienhe@thitruongsi.com");

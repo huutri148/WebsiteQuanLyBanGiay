@@ -18,13 +18,8 @@ import Input from "../../components/controls/Input";
 import { Search, Add, DeleteOutlined, Edit } from "@material-ui/icons";
 import Popup from "../../components/controls/Popup";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  fetchListHangSanXuat,
-  createHangSanXuat,
-  updateHangSanXuat,
-  deleteHangSanXuat,
-} from "./../../actions/hangSanXuatAction";
-import HangSanXuatForm from "./HangSanXuatForm";
+import * as nhaCungCapAction from "./../../actions/nhaCungCapAction";
+import NhaCungCapForm from "./NhaCungCapForm";
 const useStyles = makeStyles((theme) => ({
   title: {
     padding: theme.spacing(4, 0),
@@ -52,45 +47,48 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const headCells = [
-  { id: "MaHangSanXuat", label: "Mã hãng sản xuất" },
-  { id: "TenHangSanXuat", label: "Tên hãng sản xuất" },
+  { id: "MaNhaCungCap", label: "Mã hãng sản xuất" },
+  { id: "TenNhaCungCap", label: "Tên hãng sản xuất" },
+  { id: "DiaChi", label: "Dia Chi", width: "30%" },
+  { id: "SDT", label: "SDT" },
+  { id: "Email", label: "Email" },
   { id: "actions" },
 ];
-const QuanLyHangSanXuat = () => {
+const QuanLyNhaCungCap = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const [flag, setFlag] = useState();
   const [recordForEdit, setRecordForEdit] = useState(null);
-  const brandList = useSelector((state) => state.ListHangSanXuat);
-  const createBrand = useSelector((state) => state.CreateHangSanXuat);
-  const updateBrand = useSelector((state) => state.UpdateHangSanXuat);
-  const deleteBrand = useSelector((state) => state.DeleteHangSanXuat);
+  const listSupplier = useSelector((state) => state.ListNhaCungCap);
+  const createSupplier = useSelector((state) => state.CreateNhaCungCap);
+  const updateSupplier = useSelector((state) => state.UpdateNhaCungCap);
+  const deleteSupplier = useSelector((state) => state.DeleteNhaCungCap);
   const {
-    loading: brandLoading,
-    error: hangSanXuatError,
-    listHangSanXuat,
-  } = brandList;
-  const { success: createSuccess, error: createError } = createBrand;
-  const { success: updateSuccess, updateError } = updateBrand;
-  const { success: deleteSuccess, deleteError } = deleteBrand;
+    loading: listLoading,
+    error: listError,
+    listNhaCungCap,
+  } = listSupplier;
+  const { success: createSuccess, error: createError } = createSupplier;
+  const { success: updateSuccess, updateError } = updateSupplier;
+  const { success: deleteSuccess, deleteError } = deleteSupplier;
   const [tableData, setTableData] = useState([]);
   const addOrEdit = (item) => {
-    if (item.MaHangSanXuat === null) {
+    if (item.MaNhaCungCap === null) {
       console.log(item);
       dispatch(
-        createHangSanXuat({
-          TenHangSanXuat: item.TenHangSanXuat,
+        nhaCungCapAction.createNhaCungCap({
+          TenNhaCungCap: item.TenHangSanXuat,
         })
       );
     } else {
-      dispatch(updateHangSanXuat(item.MaHangSanXuat, item));
+      dispatch(nhaCungCapAction.updateNhaCungCap(item.MaNhaCungCap, item));
     }
     setRecordForEdit(null);
     setOpenPopup(false);
   };
   // Fetch data from API
   useEffect(() => {
-    const data = Object.values(listHangSanXuat).reduce((result, value) => {
+    const data = Object.values(listNhaCungCap).reduce((result, value) => {
       result.push({
         ...value,
       });
@@ -102,7 +100,7 @@ const QuanLyHangSanXuat = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      await dispatch(fetchListHangSanXuat());
+      await dispatch(nhaCungCapAction.fetchListNhaCungCap());
       setFlag(!flag);
     };
     fetchData();
@@ -122,7 +120,7 @@ const QuanLyHangSanXuat = () => {
     let target = e.target;
     setFilterFn({
       fn: (items) => {
-        if (target.value == "") return items;
+        if (target.value === "") return items;
         else
           return items.filter((x) =>
             x.fullName.toLowerCase().includes(target.value)
@@ -137,7 +135,7 @@ const QuanLyHangSanXuat = () => {
   const handleDelete = (item) => {
     setRecordForEdit(item);
     // Note add confirm
-    dispatch(deleteHangSanXuat(item.MaHangSanXuat));
+    dispatch(nhaCungCapAction.deleteNhaCungCap(item.MaNhaCungCap));
   };
   const openInPopup = (item) => {
     setRecordForEdit(item);
@@ -145,12 +143,12 @@ const QuanLyHangSanXuat = () => {
   };
   return (
     <>
-      {brandLoading ? (
+      {listLoading ? (
         <h1>Loading </h1>
       ) : (
         <div>
           <Typography component="h1" variant="h5" className={classes.title}>
-            Quản lý hãng sản xuất
+            Quản lý nhà cung cấp
           </Typography>
           <Paper>
             <Toolbar className={classes.content}>
@@ -182,7 +180,7 @@ const QuanLyHangSanXuat = () => {
                 <TableBody>
                   {recordsAfterPagingAndSorting().map((item, index) => (
                     <TableRow
-                      key={item.MaHangSanXuat}
+                      key={item.MaNhaCungCap}
                       style={
                         index % 2
                           ? { background: "#eee" }
@@ -190,10 +188,27 @@ const QuanLyHangSanXuat = () => {
                       }
                     >
                       <TableCell component="th" scope="row">
-                        {item.MaHangSanXuat}
+                        {item.MaNhaCungCap}
                       </TableCell>
                       <TableCell component="th" scope="row">
-                        {item.TenHangSanXuat}
+                        {item.TenNhaCungCap}
+                      </TableCell>
+                      <TableCell
+                        component="th"
+                        scope="row"
+                        style={{
+                          whiteSpace: "normal",
+                          wordWrap: "break-word",
+                          width: "30%",
+                        }}
+                      >
+                        {item.DiaChi}
+                      </TableCell>
+                      <TableCell component="th" scope="row">
+                        {item.SDT}
+                      </TableCell>
+                      <TableCell component="th" scope="row">
+                        {item.Email}
                       </TableCell>
                       <TableCell>
                         <IconButton
@@ -219,11 +234,11 @@ const QuanLyHangSanXuat = () => {
             </TableContainer>
           </Paper>
           <Popup
-            title="Hãng sản xuất"
+            title="Thông tin nhà cung cấp"
             openPopup={openPopup}
             setOpenPopup={setOpenPopup}
           >
-            <HangSanXuatForm editItem={recordForEdit} addOrEdit={addOrEdit} />
+            <NhaCungCapForm editItem={recordForEdit} addOrEdit={addOrEdit} />
           </Popup>
         </div>
       )}
@@ -231,4 +246,4 @@ const QuanLyHangSanXuat = () => {
   );
 };
 
-export default QuanLyHangSanXuat;
+export default QuanLyNhaCungCap;

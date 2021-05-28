@@ -1,22 +1,22 @@
 import { combineReducers } from "redux";
 import { listGiayReducer, giayReducer, giaySizeReducer } from "./giayReducer";
 import { listSizeReducer } from "./sizeReducer";
-import {
-  brandListReducer,
-  brandCreateReducer,
-  brandUpdateReducer,
-  brandDeleteReducer,
-} from "./hangSanXuatReducer";
+import * as hangSanXuatReducer from "./hangSanXuatReducer";
+import * as nhaCungCapReducer from "./nhaCungCapReducer";
 import mauReducer from "./mauReducer";
 const rootReducer = combineReducers({
   ListGiay: listGiayReducer,
   ListSize: listSizeReducer,
   Giay: giayReducer,
   SizeGiay: giaySizeReducer,
-  ListHangSanXuat: brandListReducer,
-  CreateHangSanXuat: brandCreateReducer,
-  UpdateHangSanXuat: brandUpdateReducer,
-  DeleteHangSanXuat: brandDeleteReducer,
+  ListHangSanXuat: hangSanXuatReducer.brandListReducer,
+  CreateHangSanXuat: hangSanXuatReducer.brandCreateReducer,
+  UpdateHangSanXuat: hangSanXuatReducer.brandUpdateReducer,
+  DeleteHangSanXuat: hangSanXuatReducer.brandDeleteReducer,
+  ListNhaCungCap: nhaCungCapReducer.supplierListReducer,
+  CreateNhaCungCap: nhaCungCapReducer.supplierCreateReducer,
+  UpdateNhaCungCap: nhaCungCapReducer.supplierUpdateReducer,
+  DeleteNhaCungCap: nhaCungCapReducer.supplierDeleteReducer,
   ListMau: mauReducer,
 });
 

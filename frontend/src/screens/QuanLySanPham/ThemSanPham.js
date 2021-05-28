@@ -14,6 +14,7 @@ import Select from "react-select";
 import Groupbox from "../../components/controls/GroupBox/GroupBox";
 import TransferList from "../../components/controls/TransferList/TransferList";
 import { Person, ExpandMore } from "@material-ui/icons";
+import { useHistory } from "react-router-dom";
 const useStyles = makeStyles((theme) => ({
   title: {
     fontSize: 32,
@@ -55,8 +56,13 @@ const useStyles = makeStyles((theme) => ({
     margin: "22px 20px",
   },
 }));
+
 const ThemSanPham = () => {
   const classes = useStyles();
+  const history = useHistory();
+  const handleQuanLyHangSanXuat = () => {
+    history.push("/brands");
+  };
   return (
     <div>
       <Typography component="h1" variant="h5" className={classes.title}>
@@ -105,6 +111,7 @@ const ThemSanPham = () => {
                 size="small"
                 className={classes.button}
                 startIcon={<Person />}
+                onClick={handleQuanLyHangSanXuat}
               >
                 Quản lý hãng sản xuất
               </Button>
@@ -169,7 +176,7 @@ const ThemSanPham = () => {
                 <label>Mô tả:</label>
               </AccordionSummary>
               <AccordionDetails>
-                <h1>Fucking Choose Size</h1>
+                <h1>Choose Size</h1>
               </AccordionDetails>
             </Accordion>
           </Grid>
