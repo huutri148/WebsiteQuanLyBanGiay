@@ -52,8 +52,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const headCells = [
-  { id: "MaHangSanXuat", label: "Mã hãng sản xuất" },
-  { id: "TenHangSanXuat", label: "Tên hãng sản xuất" },
+  { id: "MaHangSanXuat", label: "Mã" },
+  { id: "TenHangSanXuat", label: "Tên" },
   { id: "actions" },
 ];
 const QuanLyHangSanXuat = () => {
@@ -76,7 +76,6 @@ const QuanLyHangSanXuat = () => {
   const [tableData, setTableData] = useState([]);
   const addOrEdit = (item) => {
     if (item.MaHangSanXuat === null) {
-      console.log(item);
       dispatch(
         createHangSanXuat({
           TenHangSanXuat: item.TenHangSanXuat,

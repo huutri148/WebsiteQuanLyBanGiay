@@ -36,12 +36,18 @@ const NhaCungCapForm = (props) => {
         ...editItem,
       });
   }, [editItem]);
-  const handleChange = (e) => {
-    const { key, value } = e.target;
+  const handleChange = (e, title) => {
+    const { value } = e.target;
     setValues({
       ...values,
-      [e.target.key]: value,
+      [title]: value,
     });
+  };
+  const checkRequiredValidation = (val, name) => {
+    if (name === "SDT") {
+      if (val === null || val === "" || val === undefined) return true;
+    }
+    return false;
   };
   return (
     <form className={classes.root}>
@@ -50,38 +56,37 @@ const NhaCungCapForm = (props) => {
           <GroupBox
             type="TextBox"
             title="Tên nhà cung cấp"
-            key="TenNhaCungCap"
             value={values.TenNhaCungCap}
-            onChange={handleChange}
+            validationTip="Tên Nhà Cung Cấp không được trống"
+            onChange={(e) => handleChange(e, "TenNhaCungCap")}
             readOnly={false}
             required={true}
           />
           <GroupBox
             type="TextBox"
             title="Địa Chỉ"
-            key="DiaChi"
             value={values.DiaChi}
-            onChange={handleChange}
+            onChange={(e) => handleChange(e, "DiaChi")}
             readOnly={false}
             required={true}
           />
         </Grid>
         <Grid item xs={6}>
           <GroupBox
-            type="TextBox"
+            type="Number"
             title="SDT"
-            key="SDT"
             value={values.SDT}
-            onChange={handleChange}
+            error={false}
+            onChange={(e) => handleChange(e, "SDT")}
+            validationTip="Số Điện Thoại không được trống"
             readOnly={false}
             required={true}
           />
           <GroupBox
             type="TextBox"
             title="Email"
-            key="Email"
             value={values.Email}
-            onChange={handleChange}
+            onChange={(e) => handleChange(e, "Email")}
             readOnly={false}
             required={true}
           />

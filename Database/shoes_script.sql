@@ -1161,7 +1161,7 @@ insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa, TyLeLo
     "AirJordan1Mid'Banned'.jpg",
     "black/university red",
     0.1, 
-    160,
+    100,
     6375000
 );
 insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa, TyLeLoiNhuan ,TongSoLuong, DonGiaNhap) values (
@@ -1334,7 +1334,7 @@ insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa, TyLeLo
     6375000
 );
 
-insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa, TyLeLoiNhuan ,TongSoLuong, DonGiaNhap) values (
+insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa, TyLeLoiNhuan ,TongSoLuong, DonGiaNhap,IsDeleted) values (
     "Yeezy Boost 700 V2 'Cream'", 
     9,
     1,
@@ -1343,7 +1343,8 @@ insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa, TyLeLo
     "white/black/university red",
     0.2, 
     160,
-    6375000
+    6375000,
+    true
 );
 
 insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa, TyLeLoiNhuan ,TongSoLuong, DonGiaNhap) values (
@@ -1366,11 +1367,11 @@ insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa, TyLeLo
     "YeezySlides'Pure'.jpg",
     "white/black/university red",
     0.2, 
-    160,
+    100,
     6375000
 );
 
-insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa, TyLeLoiNhuan ,TongSoLuong, DonGiaNhap) values (
+insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa, TyLeLoiNhuan ,TongSoLuong, DonGiaNhap, IsDeleted) values (
     "Yeezy Slides 'Resin' 2021", 
     9,
     6,
@@ -1379,7 +1380,8 @@ insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa, TyLeLo
     "white/black/university red",
     0.2, 
     160,
-    6375000
+    6375000,
+    true
 );
    
 insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (1,1,50);
@@ -1394,9 +1396,9 @@ insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (6,1,10);
 insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (1,2,50);
 insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (2,2,20);
 insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (3,2,30);
-insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (4,2,40);
-insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (5,2,10);
-insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (6,2,10);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (4,2,0);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (5,2,0);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (6,2,0);
 
 
 
@@ -1560,9 +1562,9 @@ insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (6,19,10);
 insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (1,20,50);
 insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (2,20,20);
 insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (3,20,30);
-insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (4,20,40);
-insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (5,20,10);
-insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (6,20,10);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (4,20,0);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (5,20,0);
+insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (6,20,0);
 
 
 

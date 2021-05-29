@@ -23,13 +23,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchListGiay } from "./../../../actions/giayAction";
 import { fetchListHangSanXuat } from "./../../../actions/hangSanXuatAction";
 import { fetchListSize } from "./../../../actions/sizeAction";
+import { fetchListMau } from "./../../../actions/mauAction";
 
 const headCells = [
   { id: "TenGiay", label: "Tên sản phẩm" },
-  { id: "TenHangSanXuat", label: "Tên hãng sản xuất", disableSorting: true },
   { id: "TenMau", label: "Tên màu", disableSorting: true },
   { id: "GioiTinh", label: "Giới tính", disableSorting: true },
   { id: "SoLuong", label: "Số lượng" },
+  { id: "IsDeleted", label: "Trạng Thái" },
   { id: "actions" },
 ];
 const DanhSachSanPham = (props) => {
@@ -41,6 +42,7 @@ const DanhSachSanPham = (props) => {
   const productList = useSelector((state) => state.ListGiay);
   const brandList = useSelector((state) => state.ListHangSanXuat);
   const sizeList = useSelector((state) => state.ListSize);
+  const mauList = useSelector((state) => state.ListMau);
   const {
     loading: brandLoading,
     error: hangSanXuatError,
@@ -48,6 +50,7 @@ const DanhSachSanPham = (props) => {
   } = brandList;
   const { loading: productLoading, error: giayError, listGiay } = productList;
   const { loading: sizeLoading, error: sizeError, listSize } = sizeList;
+  const { loading: mauLoading, error: mauError, listMau } = mauList;
 
   // Props in Screens
   const [tableData, setTableData] = useState([]);
@@ -66,16 +69,18 @@ const DanhSachSanPham = (props) => {
   useEffect(() => {
     const data = Object.values(listGiay).reduce((result, value) => {
       let maHSX = value.MaHangSanXuat;
+      let maMau = value.MaMau;
       if (typeof listHangSanXuat[maHSX] === "undefined") return [];
       let { TenHangSanXuat } = listHangSanXuat[maHSX];
+      let { TenMau } = listMau[maMau];
       result.push({
         TenHangSanXuat,
+        TenMau,
         ...value,
       });
       return result;
     }, []);
     setTableData(data);
-    setLoading(true);
   }, [loading]);
 
   // Fetch data from API
@@ -83,11 +88,12 @@ const DanhSachSanPham = (props) => {
     const fetchData = async () => {
       await dispatch(fetchListGiay());
       await dispatch(fetchListHangSanXuat());
+      await dispatch(fetchListMau());
       await dispatch(fetchListSize());
       //set Flag to combine TableData
       // Note: Find a way to select lastest data
       // Done have to use Flag
-      setLoading(false);
+      setLoading(!loading);
     };
     fetchData();
   }, [dispatch]);
@@ -150,20 +156,39 @@ const DanhSachSanPham = (props) => {
                     <TableCell component="th" scope="row">
                       <ProductCard
                         imgUrl={`/images/${item.Anh}`}
-                        productName={item.TenGiay}
+                        PrimaryText={item.TenGiay}
+                        SecondaryText={item.TenHangSanXuat}
                       />
                     </TableCell>
                     <TableCell component="th" scope="row">
-                      {item.TenHangSanXuat}
-                    </TableCell>
-                    <TableCell component="th" scope="row">
-                      {item.MaMau}
+                      {item.TenMau}
                     </TableCell>
                     <TableCell component="th" scope="row">
                       {item.GioiTinh}
                     </TableCell>
-                    <TableCell>{item.TongSoLuong}</TableCell>
-                    <TableCell>
+                    <TableCell component="th" scope="row">
+                      {item.TongSoLuong}
+                    </TableCell>
+                    <TableCell component="th" scope="row">
+                      <Typography
+                        className={classes.status}
+                        style={{
+                          backgroundColor:
+                            //Note: Fix hardcode 100
+                            (item.IsDeleted === 0 &&
+                              item.TongSoLuong > 100 &&
+                              "green") ||
+                            (item.IsDeleted === 0 &&
+                              item.TongSoLuong <= 100 &&
+                              "blue") ||
+                            (item.IsDeleted === 1 && "red"),
+                        }}
+                      >
+                        {item.IsDeleted === 0 ? "Avaiable" : "IsDeleted"}
+                      </Typography>
+                    </TableCell>
+
+                    <TableCell component="th" scope="row">
                       <IconButton color="secondary">
                         <Edit />
                       </IconButton>

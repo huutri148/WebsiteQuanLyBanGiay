@@ -47,9 +47,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const headCells = [
-  { id: "MaNhaCungCap", label: "Mã hãng sản xuất" },
-  { id: "TenNhaCungCap", label: "Tên hãng sản xuất" },
-  { id: "DiaChi", label: "Dia Chi", width: "30%" },
+  { id: "MaNhaCungCap", label: "Mã" },
+  { id: "TenNhaCungCap", label: "Tên" },
+  { id: "DiaChi", label: "Địa Chỉ", width: "30%" },
   { id: "SDT", label: "SDT" },
   { id: "Email", label: "Email" },
   { id: "actions" },
@@ -77,7 +77,7 @@ const QuanLyNhaCungCap = () => {
       console.log(item);
       dispatch(
         nhaCungCapAction.createNhaCungCap({
-          TenNhaCungCap: item.TenHangSanXuat,
+          ...item,
         })
       );
     } else {
