@@ -1,0 +1,36 @@
+select {
+    display: block;
+    width: 100%;
+    padding: 7px;
+    font-size: 16px;
+    font-family: inherit;
+    font-weight: 600;
+    line-height: 1.42857143;
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-bottom: 15px;
+    margin-top: 5px;
+}
+/* Chrome, Safari, Edge, Opera */
+select::-webkit-outer-spin-button,
+select::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+select:focus { 
+  outline: none !important;
+  border-color: #719ECE;
+}
+/* Firefox */
+select[type=number] {
+  -moz-appearance: textfield;
+}
+select:disabled {
+    background: #EEEEEE;
+    cursor: not-allowed;
+  }
+select.error {
+    border: 1px solid red;
+}

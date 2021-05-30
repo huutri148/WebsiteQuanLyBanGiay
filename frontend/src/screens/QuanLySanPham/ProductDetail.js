@@ -72,6 +72,7 @@ const ProductDetail = (props) => {
       await dispatch(fetchGiaySize(id));
     };
     fetchData(item.MaGiay);
+    console.log(listSize);
   }, [dispatch, item.MaGiay]);
 
   //Choose size to see quatity
