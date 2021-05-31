@@ -12,6 +12,7 @@ import {
 const useStyles = makeStyles((theme) => ({
   table: {
     marginTop: theme.spacing(3),
+    borderRadius: 8,
     "& thead th": {
       fontWeight: "600",
       backgroundColor: "#757575",
@@ -35,9 +36,10 @@ export default function useTable(records, headCells, filterFn) {
   const [rowsPerPage, setRowsPerPage] = useState(pages[page]);
   const [order, setOrder] = useState();
   const [orderBy, setOrderBy] = useState();
-
   const TblContainer = (props) => (
-    <Table className={classes.table}>
+    <Table
+      className={`table table-head-custom table-head-bg table-borderless table-vertical-center ${classes.table}`}
+    >
       {props.children}
     </Table>
   );
@@ -126,10 +128,12 @@ export default function useTable(records, headCells, filterFn) {
   }
 
   const recordsAfterPagingAndSorting = () => {
+    let rows = rowsPerPage;
+
     return stableSort(
       filterFn.fn(records),
       getComparator(order, orderBy)
-    ).slice(page * rowsPerPage, (page + 1) * rowsPerPage);
+    ).slice(page * rows, (page + 1) * rows);
   };
 
   return {

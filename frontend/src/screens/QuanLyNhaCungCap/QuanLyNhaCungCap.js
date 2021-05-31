@@ -3,23 +3,22 @@ import {
   InputAdornment,
   Paper,
   Toolbar,
-  TableBody,
   makeStyles,
-  TableContainer,
-  TableRow,
-  TableCell,
   Button,
-  IconButton,
   Typography,
 } from "@material-ui/core";
 import { green } from "@material-ui/core/colors";
-import useTable from "../../components/useTable";
 import Input from "../../components/controls/Input";
-import { Search, Add, DeleteOutlined, Edit } from "@material-ui/icons";
+import { Search, Add } from "@material-ui/icons";
 import Popup from "../../components/controls/Popup";
 import { useDispatch, useSelector } from "react-redux";
 import * as nhaCungCapAction from "./../../actions/nhaCungCapAction";
 import NhaCungCapForm from "./NhaCungCapForm";
+import ConfirmDialog from "../../components/controls/ConfirmDialog";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import NhaCungCapTable from "./NhaCungCapTable";
+
 const useStyles = makeStyles((theme) => ({
   title: {
     padding: theme.spacing(4, 0),
@@ -36,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
     width: "40%",
   },
   table: {
-    padding: theme.spacing(0, 8),
+    margin: theme.spacing(0, 8),
   },
   newButton: {
     position: "absolute",
@@ -46,19 +45,19 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const headCells = [
-  { id: "MaNhaCungCap", label: "Mã" },
-  { id: "TenNhaCungCap", label: "Tên" },
-  { id: "DiaChi", label: "Địa Chỉ", width: "30%" },
-  { id: "SDT", label: "SDT" },
-  { id: "Email", label: "Email" },
-  { id: "actions" },
-];
 const QuanLyNhaCungCap = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const [flag, setFlag] = useState();
   const [recordForEdit, setRecordForEdit] = useState(null);
+  const [tableData, setTableData] = useState([]);
+
+  const [confirmDialog, setConfirmDialog] = useState({
+    isOpen: false,
+    title: "",
+    subTitle: "",
+  });
+
   const listSupplier = useSelector((state) => state.ListNhaCungCap);
   const createSupplier = useSelector((state) => state.CreateNhaCungCap);
   const updateSupplier = useSelector((state) => state.UpdateNhaCungCap);
@@ -69,9 +68,9 @@ const QuanLyNhaCungCap = () => {
     listNhaCungCap,
   } = listSupplier;
   const { success: createSuccess, error: createError } = createSupplier;
-  const { success: updateSuccess, updateError } = updateSupplier;
-  const { success: deleteSuccess, deleteError } = deleteSupplier;
-  const [tableData, setTableData] = useState([]);
+  const { success: updateSuccess, error: updateError } = updateSupplier;
+  const { success: deleteSuccess, error: deleteError } = deleteSupplier;
+
   const addOrEdit = (item) => {
     if (item.MaNhaCungCap === null) {
       console.log(item);
@@ -103,6 +102,7 @@ const QuanLyNhaCungCap = () => {
       await dispatch(nhaCungCapAction.fetchListNhaCungCap());
       setFlag(!flag);
     };
+
     fetchData();
   }, [dispatch, createSuccess, updateSuccess, deleteSuccess]);
 
@@ -113,8 +113,6 @@ const QuanLyNhaCungCap = () => {
       return items;
     },
   });
-  const { TblContainer, TblHead, TblPagination, recordsAfterPagingAndSorting } =
-    useTable(tableData, headCells, filterFn);
 
   const handleSearch = (e) => {
     let target = e.target;
@@ -132,10 +130,24 @@ const QuanLyNhaCungCap = () => {
     setOpenPopup(true);
     setRecordForEdit(null);
   };
-  const handleDelete = (item) => {
+  const deletedItem = (item) => {
+    setConfirmDialog({
+      ...confirmDialog,
+      isOpen: false,
+    });
     setRecordForEdit(item);
     // Note add confirm
     dispatch(nhaCungCapAction.deleteNhaCungCap(item.MaNhaCungCap));
+  };
+  const handleDelete = (item) => {
+    setConfirmDialog({
+      ...confirmDialog,
+      isOpen: true,
+      title: "Bạn có muốn xóa nhà cung cấp không?",
+      onConfirm: () => {
+        deletedItem(item);
+      },
+    });
   };
   const openInPopup = (item) => {
     setRecordForEdit(item);
@@ -174,64 +186,12 @@ const QuanLyNhaCungCap = () => {
                 New
               </Button>
             </Toolbar>
-            <TableContainer className={classes.table}>
-              <TblContainer>
-                <TblHead />
-                <TableBody>
-                  {recordsAfterPagingAndSorting().map((item, index) => (
-                    <TableRow
-                      key={item.MaNhaCungCap}
-                      style={
-                        index % 2
-                          ? { background: "#eee" }
-                          : { background: "white" }
-                      }
-                    >
-                      <TableCell component="th" scope="row">
-                        {item.MaNhaCungCap}
-                      </TableCell>
-                      <TableCell component="th" scope="row">
-                        {item.TenNhaCungCap}
-                      </TableCell>
-                      <TableCell
-                        component="th"
-                        scope="row"
-                        style={{
-                          whiteSpace: "normal",
-                          wordWrap: "break-word",
-                          width: "30%",
-                        }}
-                      >
-                        {item.DiaChi}
-                      </TableCell>
-                      <TableCell component="th" scope="row">
-                        {item.SDT}
-                      </TableCell>
-                      <TableCell component="th" scope="row">
-                        {item.Email}
-                      </TableCell>
-                      <TableCell>
-                        <IconButton
-                          color="secondary"
-                          onClick={() => {
-                            openInPopup(item);
-                          }}
-                        >
-                          <Edit fontSize="small" />
-                        </IconButton>
-                        <IconButton
-                          color="primary"
-                          onClick={() => handleDelete(item)}
-                        >
-                          <DeleteOutlined fontSize="small" />
-                        </IconButton>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </TblContainer>
-              <TblPagination />
-            </TableContainer>
+            <NhaCungCapTable
+              className={classes.table}
+              HandleDelete={handleDelete}
+              HandleEdit={openInPopup}
+              TableData={tableData}
+            />
           </Paper>
           <Popup
             title="Thông tin nhà cung cấp"
@@ -240,6 +200,11 @@ const QuanLyNhaCungCap = () => {
           >
             <NhaCungCapForm editItem={recordForEdit} addOrEdit={addOrEdit} />
           </Popup>
+          <ToastContainer autoClose={2000} />
+          <ConfirmDialog
+            confirmDialog={confirmDialog}
+            setConfirmDialog={setConfirmDialog}
+          />
         </div>
       )}
     </>

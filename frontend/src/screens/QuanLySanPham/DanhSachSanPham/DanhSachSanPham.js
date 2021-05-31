@@ -67,6 +67,7 @@ const DanhSachSanPham = (props) => {
 
   // setTableData when done fetching
   useEffect(() => {
+    console.log("Combine");
     const data = Object.values(listGiay).reduce((result, value) => {
       let maHSX = value.MaHangSanXuat;
       let maMau = value.MaMau;
@@ -86,6 +87,7 @@ const DanhSachSanPham = (props) => {
   // Fetch data from API
   useEffect(() => {
     const fetchData = async () => {
+      console.log("Fetch");
       await dispatch(fetchListGiay());
       await dispatch(fetchListHangSanXuat());
       await dispatch(fetchListMau());
