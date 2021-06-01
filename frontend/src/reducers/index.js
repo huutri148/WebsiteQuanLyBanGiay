@@ -3,6 +3,7 @@ import { listGiayReducer, giayReducer, giaySizeReducer } from "./giayReducer";
 import { listSizeReducer } from "./sizeReducer";
 import * as hangSanXuatReducer from "./hangSanXuatReducer";
 import * as nhaCungCapReducer from "./nhaCungCapReducer";
+import * as nguoiDungReducer from "./nguoiDungReducer";
 import mauReducer from "./mauReducer";
 const rootReducer = combineReducers({
   ListGiay: listGiayReducer,
@@ -18,6 +19,7 @@ const rootReducer = combineReducers({
   UpdateNhaCungCap: nhaCungCapReducer.supplierUpdateReducer,
   DeleteNhaCungCap: nhaCungCapReducer.supplierDeleteReducer,
   ListMau: mauReducer,
+  UserLogin: nguoiDungReducer.userLoginReducer,
 });
 
 export default rootReducer;

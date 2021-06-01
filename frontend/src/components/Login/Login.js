@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -13,6 +13,8 @@ import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import { useHistory } from "react-router-dom";
+import { login } from "../../actions/nguoiDungAction";
+import { useDispatch, useSelector } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -48,22 +50,38 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Login() {
-  // const [islogged, setIslogged] = useState(false);
-  // const [loginParams, setLoginParams] = useState({
-  //   user_id: "",
-  //   user_password: ""
-  // });
-  const handleFormChange = (event) => {
-    //todo: Get username and password
-  };
+  const [islogged, setIslogged] = useState(false);
+  const [loginParams, setLoginParams] = useState({
+    TenDangNhap: "",
+    MatKhau: "",
+  });
+  const dispatch = useDispatch();
   const history = useHistory();
-  const login = (event) => {
-    //todo: check login
-    localStorage.setItem("accessToken", true);
-    history.replace("/manager");
+  const classes = useStyles();
+
+  const userLogin = useSelector((state) => state.UserLogin);
+  const { loading, error, userInfo } = userLogin;
+
+  useEffect(() => {
+    if (userInfo.accessToken) {
+      console.log(userInfo);
+      history.replace("/manager");
+    }
+  }, [userInfo]);
+  const handleFormChange = (e) => {
+    //todo: Get username and password
+    const { name, value } = e.target;
+    setLoginParams({
+      ...loginParams,
+      [name]: value,
+    });
+  };
+  const handleLogin = (event) => {
+    dispatch(login(loginParams));
+    const user = localStorage.getItem("userInfo");
+    console.log(user);
     event.preventDefault();
   };
-  const classes = useStyles();
 
   return (
     <Grid container component="main" className={classes.root}>
@@ -77,7 +95,7 @@ export default function Login() {
           <Typography component="h1" variant="h5">
             Sign in
           </Typography>
-          <form className={classes.form} noValidate onSubmit={login}>
+          <form className={classes.form} noValidate onSubmit={handleLogin}>
             <TextField
               onChange={handleFormChange}
               variant="outlined"
@@ -86,7 +104,7 @@ export default function Login() {
               fullWidth
               id="username"
               label="Username"
-              name="username"
+              name="TenDangNhap"
               autoComplete="current-username"
               autoFocus
             />
@@ -96,7 +114,7 @@ export default function Login() {
               margin="normal"
               required
               fullWidth
-              name="password"
+              name="MatKhau"
               label="Password"
               type="password"
               id="password"
