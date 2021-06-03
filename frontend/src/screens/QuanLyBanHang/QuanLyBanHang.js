@@ -14,9 +14,9 @@ import {
 } from "@material-ui/core";
 import { React, useState, useEffect } from "react";
 import GroupBox from "../../components/controls/GroupBox/GroupBox";
-import Selector from "../../components/controls/Selector/Selector";
+import ProductSelector from "../../components/controls/Selector/ProductSelector";
 import "./QuanLyBanHang.css";
-import { AddCircle, Edit, HighlightOff } from "@material-ui/icons";
+import { AddCircle, ContactsOutlined, Edit, HighlightOff } from "@material-ui/icons";
 import useTable from "../../components/useTable";
 import ProductCard from "../QuanLySanPham/ProductCard";
 import InfoField from "../../components/controls/InfoField";
@@ -25,6 +25,9 @@ import { fetchListGiay } from "../../actions/giayAction";
 import { fetchListHangSanXuat } from "../../actions/hangSanXuatAction";
 import { fetchListSize } from "../../actions/sizeAction";
 import { fetchListMau } from "../../actions/mauAction";
+import { fetchGiaySize } from "../../actions/giayAction";
+import Select from "react-select";
+import SizeSelector from "../../components/controls/Selector/SizeSelector";
 function TabPanel(props) {
   const classes = useStyles();
   const { children, value, index, ...other } = props;
@@ -98,12 +101,14 @@ const QuanLyBanHang = () => {
   const [ignored, forceUpdate] = useState(false);
   const [value, setValue] = useState(0);
   const [amount, setAmount] = useState(0);
+  const [maxAmount, setMaxAmount] = useState(0);
   const classes = useStyles();
-  const [selectedId, setSelectedId] = useState();
   const [product, setProduct] = useState(null);
   const [total, setTotal] = useState(0);
   const [sumTotal, setSumTotal] = useState(0);
   const [products, setProducts] = useState([]);
+  const [sizes, setSizes] = useState([]);
+  const [size, setSize] = useState(0);
   const [loading, setLoading] = useState();
   const [filterFn, setFilterFn] = useState({
     fn: (items) => {
@@ -117,11 +122,12 @@ const QuanLyBanHang = () => {
   const { TblContainer, TblHead, TblPagination, recordsAfterPagingAndSorting } =
     useTable(selectedProducts, headCells, filterFn);
   const setSelectedProduct = (val) => {
-    setSelectedId(val);
     let tmp = products.find((obj) => obj.MaGiay === val);
     setProduct(tmp);
     setAmount(0);
+    setMaxAmount(0);
     setTotal(0);
+    setSize(0);
   };
   //handle Button click
   const handleAddClick = () => {
@@ -129,24 +135,26 @@ const QuanLyBanHang = () => {
       setAmountError(true);
       return;
     }
-    if (
-      selectedProducts.find((item) => item.MaGiay === product.MaGiay) ===
-      undefined
-    ) {
+    if (selectedProducts.find((item) => item.MaGiay === product.MaGiay) === undefined) 
+    {
       let tmp = sumTotal + total;
       setSumTotal(tmp);
       groupBoxes[2].value = tmp.toLocaleString("it-IT");
       let shoe = product;
       shoe.total = total;
       shoe.amount = amount;
+      shoe.size = size;
       selectedProducts.push(shoe);
-    } else {
+    } 
+    else 
+    {
       let tmp = sumTotal + total - product.total;
       setSumTotal(tmp);
       groupBoxes[2].value = tmp.toLocaleString("it-IT");
       let shoe = selectedProducts[selectedProducts.indexOf(product)];
       shoe.total = total;
       shoe.amount = amount;
+      shoe.size = size;
     }
   };
   const handleRemoveClick = (item) => {
@@ -245,18 +253,36 @@ const QuanLyBanHang = () => {
     setValue(newValue);
   };
   const onAmountChange = (e) => {
-    if (product != null) {
+    if (product != null) 
+    {
       let tmp = e.target.value;
-      if (Number(tmp) === 0 || phoneRegex.test(tmp)) {
-        setAmount(Number(tmp));
-        setTotal(tmp * product.DonGia);
-        if (Number(tmp) > 0) setAmountError(false);
+      if(tmp === "")
+      {
+        setAmount(0);
+        setTotal(0);
       }
+      else
+        if (tmp === 0 || phoneRegex.test(tmp)) {
+          setAmount(Number(tmp));
+          setTotal(Number(tmp) * product.DonGia);
+          console.log(product);
+          if (Number(tmp) > 0 && Number(tmp) <= maxAmount)   
+            setAmountError(false);
+          else
+            setAmountError(true);
+        }
     }
   };
-  // setProducts when done fetching
+  const onSizeChange = (e,size) => {
+    console.log(sizes);
+    setSize(size);
+    setMaxAmount(e);
+    setAmount(e);
+    setTotal(e * product.DonGia);
+  }
+  // set and map Products and Sizes when done fetching
   useEffect(() => {
-    const data = Object.values(listGiay).reduce((result, value) => {
+    const productsData = Object.values(listGiay).reduce((result, value) => {
       let maHSX = value.MaHangSanXuat;
       if (typeof listHangSanXuat[maHSX] === "undefined") return [];
       let { TenHangSanXuat } = listHangSanXuat[maHSX];
@@ -268,11 +294,20 @@ const QuanLyBanHang = () => {
         TenMau,
         ...value,
       });
-      console.log(result);
       return result;
     }, []);
-    setProducts(data);
-    setLoading(true);
+    const sizesData = Object.values(listSize).reduce((result, value) => {
+      result.push({
+        ...value,
+      });
+      return result;
+    }, []);
+    let tempData = productsData.map((item)=>{
+      item.DonGia = item.DonGiaNhap * (100 + item.TyLeLoiNhuan *100)/100;
+      return item;
+    });
+    setProducts(tempData);
+    setSizes(sizesData);
   }, [loading]);
   // Fetch data from API
   useEffect(() => {
@@ -284,7 +319,7 @@ const QuanLyBanHang = () => {
       //set Flag to combine TableData
       // Note: Find a way to select lastest data
       // Done have to use Flag
-      setLoading(false);
+      setLoading(!loading);
     };
     fetchData();
   }, [dispatch]);
@@ -323,7 +358,7 @@ const QuanLyBanHang = () => {
             >
               <label className={classes.cardHeader}>Thông Tin Giày</label>
               <hr className={classes.hr} />
-              <Selector
+              <ProductSelector
                 title="Hàng Hoá"
                 products={products}
                 setSelectedId={setSelectedProduct}
@@ -342,15 +377,15 @@ const QuanLyBanHang = () => {
                 </thead>
                 <tbody>
                   <tr>
-                    <td width="25%">
+                    <td width="30%">
                       <GroupBox
                         value={product === null ? "" : product.TenGiay}
                         type="TextBox"
                         title={headCells[0].label}
-                        disabled="disabled"
+                        readOnly = {true}
                       />
                     </td>
-                    <td width="15%">
+                    <td width="12%">
                       <GroupBox
                         value={product === null ? "" : product.GioiTinh}
                         type="TextBox"
@@ -358,30 +393,35 @@ const QuanLyBanHang = () => {
                         disabled="disabled"
                       />
                     </td>
-                    <td width="10%">
-                      <GroupBox
-                        value={product === null ? "" : product.Size}
+                    <td width="15%">
+                      {
+                        product === null ? <GroupBox
                         type="TextBox"
                         title={headCells[2].label}
-                        disabled="disabled"
-                      />
+                        disabled="disabled"/> : <SizeSelector
+                        title="Size"
+                        ListSize ={sizes}
+                        selectedSize = {size}
+                        onSizeChange = {onSizeChange}
+                        item ={product}/>
+                      }
                     </td>
                     <td width="15%">
                       <GroupBox
-                        value={product === null ? "" : product.DonGiaNhap}
+                        value={product === null ? "" : product.DonGia.toLocaleString("it-IT")}
                         type="TextBox"
                         title={headCells[3].label}
                         disabled="disabled"
                       />
                     </td>
-                    <td width="15%">
+                    <td width="12%">
                       <GroupBox
                         value={amount}
                         type="Number"
                         title={headCells[4].label}
                         onChange={onAmountChange}
                         error={amountError}
-                        validationTip="Số Lượng phải lớn hơn 0"
+                        validationTip={"Số Lượng phải lớn hơn 0 và nhỏ hơn " + maxAmount}
                         disabled={product === null ? "disabled" : ""}
                       />
                     </td>
@@ -395,7 +435,7 @@ const QuanLyBanHang = () => {
                         disabled="disabled"
                       />
                     </td>
-                    <td width="15%">
+                    <td width="10%">
                       <IconButton
                         style={{ marginBottom: -10 }}
                         aria-label="Add"
@@ -431,7 +471,7 @@ const QuanLyBanHang = () => {
                       >
                         <TableCell component="td" width="40%" scope="row">
                           <ProductCard
-                            imgUrl={item.Anh}
+                            imgUrl={"/images/" + item.Anh}
                             productName={item.TenGiay}
                           />
                         </TableCell>
@@ -439,16 +479,16 @@ const QuanLyBanHang = () => {
                           {item.GioiTinh}
                         </TableCell>
                         <TableCell component="td" scope="row">
-                          {item.Size}
+                          {sizes[item.size].TenSize}
                         </TableCell>
                         <TableCell component="td" scope="row">
-                          {item.DonGia}
+                          {item.DonGia.toLocaleString("it-IT")}
                         </TableCell>
                         <TableCell component="td" scope="row">
                           {item.amount}
                         </TableCell>
                         <TableCell component="td" scope="row">
-                          {item.total}
+                          {item.total.toLocaleString("it-IT")}
                         </TableCell>
                         <TableCell component="td" width="15%" scope="row">
                           <IconButton size="small" color="primary">
