@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
+import { storage } from "../../services/firebase/firebaseConfig";
 import {
   Paper,
   makeStyles,
@@ -18,11 +19,10 @@ import { Person } from "@material-ui/icons";
 import { useHistory } from "react-router-dom";
 import ImageUpload from "../../components/controls/ImageUpload";
 import { createGiay } from "./../../actions/giayAction";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { ToastContainer } from "react-toastify";
 import ConfirmDialog from "../../components/controls/ConfirmDialog";
 import "react-toastify/dist/ReactToastify.css";
-
 import _ from "lodash";
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -87,7 +87,6 @@ const ThemSanPham = (props) => {
     MaMau: 0,
     MoTa: "",
     GioiTinh: "",
-    Anh: "",
     TyLeLoiNhuan: "",
     DonGiaNhap: 0,
     Size: [],
@@ -97,9 +96,7 @@ const ThemSanPham = (props) => {
     title: "",
     subTitle: "",
   });
-
-  const createSupplier = useSelector((state) => state.CreateNhaCungCap);
-  const { success: createSuccess, error: createError } = createSupplier;
+  const [chosenFile, setChosenFile] = useState("");
 
   const handleQuanLyHangSanXuat = () => {
     history.push("/brands");
@@ -117,7 +114,46 @@ const ThemSanPham = (props) => {
       [name]: value,
     });
   };
-  const saveSrc = (url) => {};
+  const saveSrc = (url) => {
+    setChosenFile(url);
+  };
+
+  const handleFirebaseUpload = (file) => {
+    setConfirmDialog({
+      ...confirmDialog,
+      isOpen: false,
+    });
+    const uploadTask = storage.ref(`/images/${file.name}`).put(file);
+
+    //initiates the firebase side uploading
+    uploadTask.on(
+      "state_changed",
+      (snapShot) => {
+        //takes a snap shot of the process as it is happening
+        console.log(snapShot);
+      },
+      (err) => {
+        //catches the errors
+        console.log(err);
+      },
+      () => {
+        // gets the functions from storage refences the image storage in firebase by the children
+        // gets the download url then sets the image from firebase as the value for the imgUrl key:
+        storage
+          .ref("images")
+          .child(file.name)
+          .getDownloadURL()
+          .then((fireBaseUrl) => {
+            const srcProperty = "Anh";
+            const item = {
+              ...values,
+              [srcProperty]: fireBaseUrl,
+            };
+            createProduct(item);
+          });
+      }
+    );
+  };
   const handleCheckbox = (e, value, name) => {
     const checkedValues = values["Size"];
     if (e.target.checked) {
@@ -132,27 +168,18 @@ const ThemSanPham = (props) => {
     });
   };
   const createProduct = (item) => {
-    setConfirmDialog({
-      ...confirmDialog,
-      isOpen: false,
-    });
-    console.log(values);
-    dispatch(
-      createGiay({
-        ...values,
-      })
-    );
+    dispatch(createGiay(item));
   };
   const handleSubmit = (e) => {
+    e.preventDefault();
     setConfirmDialog({
       ...confirmDialog,
       isOpen: true,
-      title: "Bạn có muốn thêm mới sản phẩm không?",
+      title: "Bạn có muốn thêm sản phẩm không?",
       onConfirm: () => {
-        createProduct(values);
+        handleFirebaseUpload(chosenFile);
       },
     });
-    e.preventDefault();
   };
 
   return (
@@ -302,7 +329,7 @@ const ThemSanPham = (props) => {
                       type="Number"
                       title="Giá nhập"
                       required={true}
-                      onChange={(e) => handleChange(e, "GiaNhap")}
+                      onChange={(e) => handleChange(e, "DonGiaNhap")}
                     />
                   </div>
                   <div

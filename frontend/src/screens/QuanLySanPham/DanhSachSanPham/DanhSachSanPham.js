@@ -143,7 +143,7 @@ const DanhSachSanPham = (props) => {
                   >
                     <TableCell component="th" scope="row">
                       <ProductCard
-                        imgUrl={`/images/${item.Anh}`}
+                        imgUrl={item.Anh}
                         PrimaryText={item.TenGiay}
                         SecondaryText={item.TenHangSanXuat}
                       />

@@ -92,12 +92,11 @@ class ImageUploadCard extends React.Component {
     var file = event.target.files[0];
     const reader = new FileReader();
     var url = reader.readAsDataURL(file);
-
+    this.saveSrc(file);
     reader.onloadend = function (e) {
       this.setState({
         selectedFile: [reader.result],
       });
-      this.saveSrc(reader.result);
     }.bind(this);
 
     this.setState({
