@@ -52,8 +52,8 @@ const useStyles = makeStyles((theme) => ({
 export default function Login() {
   const [islogged, setIslogged] = useState(false);
   const [loginParams, setLoginParams] = useState({
-    TenDangNhap: "",
-    MatKhau: "",
+    TenDangNhap: "huutri148",
+    MatKhau: "123456",
   });
   const dispatch = useDispatch();
   const history = useHistory();

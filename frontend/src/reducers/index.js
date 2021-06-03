@@ -1,15 +1,16 @@
 import { combineReducers } from "redux";
-import { listGiayReducer, giayReducer, giaySizeReducer } from "./giayReducer";
+import * as GiayReducer from "./giayReducer";
 import { listSizeReducer } from "./sizeReducer";
 import * as hangSanXuatReducer from "./hangSanXuatReducer";
 import * as nhaCungCapReducer from "./nhaCungCapReducer";
 import * as nguoiDungReducer from "./nguoiDungReducer";
 import mauReducer from "./mauReducer";
 const rootReducer = combineReducers({
-  ListGiay: listGiayReducer,
+  ListGiay: GiayReducer.listGiayReducer,
   ListSize: listSizeReducer,
-  Giay: giayReducer,
-  SizeGiay: giaySizeReducer,
+  Giay: GiayReducer.giayReducer,
+  CreateGiay: GiayReducer.giayCreateReducer,
+  SizeGiay: GiayReducer.giaySizeReducer,
   ListHangSanXuat: hangSanXuatReducer.brandListReducer,
   CreateHangSanXuat: hangSanXuatReducer.brandCreateReducer,
   UpdateHangSanXuat: hangSanXuatReducer.brandUpdateReducer,

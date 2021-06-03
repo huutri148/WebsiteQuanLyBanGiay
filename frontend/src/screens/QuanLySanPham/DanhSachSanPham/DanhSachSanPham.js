@@ -21,10 +21,6 @@ import Popup from "../../../components/controls/Popup";
 import ProductDetail from "../ProductDetail";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchListGiay } from "./../../../actions/giayAction";
-import { fetchListHangSanXuat } from "./../../../actions/hangSanXuatAction";
-import { fetchListSize } from "./../../../actions/sizeAction";
-import { fetchListMau } from "./../../../actions/mauAction";
-
 const headCells = [
   { id: "TenGiay", label: "Tên sản phẩm" },
   { id: "TenMau", label: "Tên màu", disableSorting: true },
@@ -36,21 +32,13 @@ const headCells = [
 const DanhSachSanPham = (props) => {
   // CSS class
   const { classes } = props;
+  const { ListSize, ListMau, ListHSX } = props;
 
   //Fetched data
   const dispatch = useDispatch();
   const productList = useSelector((state) => state.ListGiay);
-  const brandList = useSelector((state) => state.ListHangSanXuat);
-  const sizeList = useSelector((state) => state.ListSize);
-  const mauList = useSelector((state) => state.ListMau);
-  const {
-    loading: brandLoading,
-    error: hangSanXuatError,
-    listHangSanXuat,
-  } = brandList;
+
   const { loading: productLoading, error: giayError, listGiay } = productList;
-  const { loading: sizeLoading, error: sizeError, listSize } = sizeList;
-  const { loading: mauLoading, error: mauError, listMau } = mauList;
 
   // Props in Screens
   const [tableData, setTableData] = useState([]);
@@ -71,9 +59,10 @@ const DanhSachSanPham = (props) => {
     const data = Object.values(listGiay).reduce((result, value) => {
       let maHSX = value.MaHangSanXuat;
       let maMau = value.MaMau;
-      if (typeof listHangSanXuat[maHSX] === "undefined") return [];
-      let { TenHangSanXuat } = listHangSanXuat[maHSX];
-      let { TenMau } = listMau[maMau];
+      if (typeof ListHSX[maHSX] === "undefined") return [];
+      if (typeof ListMau[maMau] === "undefined") return [];
+      let { TenHangSanXuat } = ListHSX[maHSX];
+      let { TenMau } = ListMau[maMau];
       result.push({
         TenHangSanXuat,
         TenMau,
@@ -89,9 +78,6 @@ const DanhSachSanPham = (props) => {
     const fetchData = async () => {
       console.log("Fetch");
       await dispatch(fetchListGiay());
-      await dispatch(fetchListHangSanXuat());
-      await dispatch(fetchListMau());
-      await dispatch(fetchListSize());
       //set Flag to combine TableData
       // Note: Find a way to select lastest data
       // Done have to use Flag
@@ -137,9 +123,9 @@ const DanhSachSanPham = (props) => {
             onChange={handleSearch}
           />
         </Toolbar>
-        {sizeLoading || productLoading || brandLoading ? (
+        {productLoading ? (
           <CircularProgress disableShrink style={{ margin: "0px 16px" }} />
-        ) : sizeError || giayError || hangSanXuatError ? (
+        ) : giayError ? (
           <h1>Error</h1>
         ) : (
           <TableContainer className={classes.table}>
@@ -211,7 +197,7 @@ const DanhSachSanPham = (props) => {
         openPopup={openPopup}
         setOpenPopup={setOpenPopup}
       >
-        <ProductDetail item={selectedItem} ListSize={listSize} />
+        <ProductDetail item={selectedItem} ListSize={ListSize} />
       </Popup>
     </div>
   );

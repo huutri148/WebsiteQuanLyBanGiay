@@ -24,14 +24,14 @@ CREATE TABLE  MAU
     IsDeleted BOOLEAN DEFAULT false
 );
 
-CREATE TABLE GIAY
+CREATE TABLE GIAY 
 (
     MaGiay INT auto_increment PRIMARY KEY,
     TenGiay NVARCHAR(100) NOT NULL, 
     MaHangSanXuat INT NOT NULL,
     MaMau INT NOT NULL,
     GioiTinh varchar(100) DEFAULT "Unisex",
-    Anh varchar(100),
+    Anh VARCHAR(1000),
     MoTa NVARCHAR(1000),
     TyLeLoiNhuan FLOAT DEFAULT 0 ,
     DonGiaNhap DECIMAL(17,0) DEFAULT 0,

@@ -15,3 +15,7 @@ export const getGiayByID = (id) => {
 export const getSizeGiay = (id) => {
   return axiosService.get(`${url}/${id}/sizes`);
 };
+
+export const createGiay = (item) => {
+  return axiosService.post(`${url}`, item);
+};
