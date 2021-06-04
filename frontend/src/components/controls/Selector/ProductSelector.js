@@ -7,9 +7,9 @@ export default function ProductSelector(props) {
     setSelectedValue(e.value);
     sendData(e);
   };
-  const sendData = (e)=> {
+  const sendData = (e) => {
     props.setSelectedId(e.value);
-  }
+  };
   const options = props.products.map((item) => {
     let newObj = {};
     newObj.value = item.MaGiay;

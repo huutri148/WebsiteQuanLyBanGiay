@@ -1,5 +1,5 @@
 import * as giayAPI from "../apis/giayAPI";
-import * as giayConstants from "../constants/giayConstant";
+import * as giayConstants from "../../constants/giayConstant";
 import { toast } from "react-toastify";
 export const fetchListGiay = () => async (dispatch) => {
   try {

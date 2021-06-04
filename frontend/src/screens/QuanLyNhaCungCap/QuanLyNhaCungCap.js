@@ -12,7 +12,7 @@ import Input from "../../components/controls/Input";
 import { Search, Add } from "@material-ui/icons";
 import Popup from "../../components/controls/Popup";
 import { useDispatch, useSelector } from "react-redux";
-import * as nhaCungCapAction from "./../../actions/nhaCungCapAction";
+import * as nhaCungCapAction from "./../../redux/actions/nhaCungCapAction";
 import NhaCungCapForm from "./NhaCungCapForm";
 import ConfirmDialog from "../../components/controls/ConfirmDialog";
 import { ToastContainer } from "react-toastify";

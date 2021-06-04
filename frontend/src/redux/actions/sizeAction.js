@@ -1,5 +1,5 @@
 import * as sizeAPI from "../apis/sizeAPI";
-import * as sizeConstants from "../constants/sizeContant";
+import * as sizeConstants from "../../constants/sizeContant";
 export const fetchListSize = () => async (dispatch) => {
   try {
     dispatch({ type: sizeConstants.SIZE_LIST_REQUEST });

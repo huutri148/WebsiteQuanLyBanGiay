@@ -23,7 +23,7 @@ import {
   createHangSanXuat,
   updateHangSanXuat,
   deleteHangSanXuat,
-} from "./../../actions/hangSanXuatAction";
+} from "./../../redux/actions/hangSanXuatAction";
 import HangSanXuatForm from "./HangSanXuatForm";
 const useStyles = makeStyles((theme) => ({
   title: {

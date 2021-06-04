@@ -1,4 +1,4 @@
-import axiosService from "../services/axiosService";
+import axiosService from "../../services/axiosService";
 const url = "/api/sizes";
 
 // GET /api/sizes

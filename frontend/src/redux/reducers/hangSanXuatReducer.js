@@ -1,4 +1,4 @@
-import * as hangSanXuatConstant from "../constants/hangSanXuatConstant";
+import * as hangSanXuatConstant from "../../constants/hangSanXuatConstant";
 import * as _ from "lodash";
 
 const initalState = {

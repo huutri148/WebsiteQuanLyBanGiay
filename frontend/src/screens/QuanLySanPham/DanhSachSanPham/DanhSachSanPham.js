@@ -20,7 +20,7 @@ import ProductCard from "../ProductCard";
 import Popup from "../../../components/controls/Popup";
 import ProductDetail from "../ProductDetail";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchListGiay } from "./../../../actions/giayAction";
+import { fetchListGiay } from "../../../redux/actions/giayAction";
 const headCells = [
   { id: "TenGiay", label: "Tên sản phẩm" },
   { id: "TenMau", label: "Tên màu", disableSorting: true },
@@ -53,9 +53,20 @@ const DanhSachSanPham = (props) => {
   const { TblContainer, TblHead, TblPagination, recordsAfterPagingAndSorting } =
     useTable(tableData, headCells, filterFn);
 
+  // Fetch data from API
+  useEffect(() => {
+    const fetchData = async () => {
+      await dispatch(fetchListGiay());
+      //set Flag to combine TableData
+      // Note: Find a way to select lastest data
+      // Done have to use Flag
+      setLoading(!loading);
+    };
+    fetchData();
+  }, [dispatch]);
+
   // setTableData when done fetching
   useEffect(() => {
-    console.log("Combine");
     const data = Object.values(listGiay).reduce((result, value) => {
       let maHSX = value.MaHangSanXuat;
       let maMau = value.MaMau;
@@ -72,19 +83,6 @@ const DanhSachSanPham = (props) => {
     }, []);
     setTableData(data);
   }, [loading]);
-
-  // Fetch data from API
-  useEffect(() => {
-    const fetchData = async () => {
-      console.log("Fetch");
-      await dispatch(fetchListGiay());
-      //set Flag to combine TableData
-      // Note: Find a way to select lastest data
-      // Done have to use Flag
-      setLoading(!loading);
-    };
-    fetchData();
-  }, [dispatch]);
 
   const handleDetail = (index, data) => {
     setSelectedItem(data);

@@ -16,17 +16,22 @@ import { React, useState, useEffect } from "react";
 import GroupBox from "../../components/controls/GroupBox/GroupBox";
 import ProductSelector from "../../components/controls/Selector/ProductSelector";
 import "./QuanLyBanHang.css";
-import { AddCircle, ContactsOutlined, Edit, HighlightOff } from "@material-ui/icons";
+import {
+  AddCircle,
+  ContactsOutlined,
+  Edit,
+  HighlightOff,
+} from "@material-ui/icons";
 import useTable from "../../components/useTable";
 import ProductCard from "../QuanLySanPham/ProductCard";
 import InfoField from "../../components/controls/InfoField";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchListGiay } from "../../actions/giayAction";
-import { fetchListHangSanXuat } from "../../actions/hangSanXuatAction";
-import { fetchListSize } from "../../actions/sizeAction";
-import { fetchListMau } from "../../actions/mauAction";
-import { fetchGiaySize } from "../../actions/giayAction";
-import { fetchListNguoiDung } from "../../actions/nguoiDungAction";
+import { fetchListGiay } from "../../redux/actions/giayAction";
+import { fetchListHangSanXuat } from "../../redux/actions/hangSanXuatAction";
+import { fetchListSize } from "../../redux/actions/sizeAction";
+import { fetchListMau } from "../../redux/actions/mauAction";
+import { fetchListNguoiDung } from "../../redux/actions/nguoiDungAction";
+import { fetchGiaySize } from "../../redux/actions/giayAction";
 import Select from "react-select";
 import SizeSelector from "../../components/controls/Selector/SizeSelector";
 function TabPanel(props) {
@@ -143,8 +148,10 @@ const QuanLyBanHang = () => {
       setAmountError(true);
       return;
     }
-    if (selectedProducts.find((item) => item.MaGiay === product.MaGiay) === undefined) 
-    {
+    if (
+      selectedProducts.find((item) => item.MaGiay === product.MaGiay) ===
+      undefined
+    ) {
       let tmp = sumTotal + total;
       setSumTotal(tmp);
       groupBoxes[2].value = tmp.toLocaleString("it-IT");
@@ -153,9 +160,7 @@ const QuanLyBanHang = () => {
       shoe.amount = amount;
       shoe.size = size;
       selectedProducts.push(shoe);
-    } 
-    else 
-    {
+    } else {
       let tmp = sumTotal + total - product.total;
       setSumTotal(tmp);
       groupBoxes[2].value = tmp.toLocaleString("it-IT");
@@ -423,7 +428,7 @@ const QuanLyBanHang = () => {
                         value={product === null ? "" : product.TenGiay}
                         type="TextBox"
                         title={headCells[0].label}
-                        readOnly = {true}
+                        readOnly={true}
                       />
                     </td>
                     <td width="12%">
@@ -435,21 +440,29 @@ const QuanLyBanHang = () => {
                       />
                     </td>
                     <td width="15%">
-                      {
-                        product === null ? <GroupBox
-                        type="TextBox"
-                        title={headCells[2].label}
-                        disabled="disabled"/> : <SizeSelector
-                        title="Size"
-                        ListSize ={sizes}
-                        selectedSize = {size}
-                        onSizeChange = {onSizeChange}
-                        item ={product}/>
-                      }
+                      {product === null ? (
+                        <GroupBox
+                          type="TextBox"
+                          title={headCells[2].label}
+                          disabled="disabled"
+                        />
+                      ) : (
+                        <SizeSelector
+                          title="Size"
+                          ListSize={sizes}
+                          selectedSize={size}
+                          onSizeChange={onSizeChange}
+                          item={product}
+                        />
+                      )}
                     </td>
                     <td width="15%">
                       <GroupBox
-                        value={product === null ? "" : product.DonGia.toLocaleString("it-IT")}
+                        value={
+                          product === null
+                            ? ""
+                            : product.DonGia.toLocaleString("it-IT")
+                        }
                         type="TextBox"
                         title={headCells[3].label}
                         disabled="disabled"
@@ -462,7 +475,9 @@ const QuanLyBanHang = () => {
                         title={headCells[4].label}
                         onChange={onAmountChange}
                         error={amountError}
-                        validationTip={"Số Lượng phải lớn hơn 0 và nhỏ hơn " + maxAmount}
+                        validationTip={
+                          "Số Lượng phải lớn hơn 0 và nhỏ hơn " + maxAmount
+                        }
                         disabled={product === null ? "disabled" : ""}
                       />
                     </td>

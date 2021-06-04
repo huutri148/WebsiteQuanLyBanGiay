@@ -1,5 +1,6 @@
-import * as nguoiDungConstant from "../constants/nguoiDungConstant";
+import * as nguoiDungConstant from "../../constants/nguoiDungConstant";
 import * as _ from "lodash";
+const userInfo = JSON.parse(localStorage.getItem("userInfo"));
 
 const initalState = {
   userInfo: {},
@@ -39,12 +40,14 @@ export const userLoginReducer = (state = initalState, action) => {
       return {
         //note: add loading
         loading: true,
+        isLoggedIn: false,
         userInfo: {},
       };
     }
     case nguoiDungConstant.NGUOIDUNG_LOGIN_SUCCESS: {
       return {
         loading: false,
+        isLoggedIn: true,
         userInfo: { ...action.payload },
       };
     }
@@ -52,6 +55,7 @@ export const userLoginReducer = (state = initalState, action) => {
       return {
         loading: false,
         error: action.payload,
+        isLoggedIn: false,
       };
     }
     default:

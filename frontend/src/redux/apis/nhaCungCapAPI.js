@@ -1,5 +1,5 @@
-import axiosService from "../services/axiosService";
-const url = "/api/bill";
+import axiosService from "../../services/axiosService";
+const url = "/api/suppliers";
 
 export const getList = () => {
   return axiosService.get(url);
@@ -18,3 +18,4 @@ export const update = (id, item) => {
 export const deleteItem = (id) => {
   // Add config for cofig (header with token)
   return axiosService.delete(`${url}/${id}`);
+};

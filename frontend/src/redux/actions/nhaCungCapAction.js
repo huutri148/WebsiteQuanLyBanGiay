@@ -1,5 +1,5 @@
 import * as nhaCungCapAPI from "../apis/nhaCungCapAPI";
-import * as nhaCungCapConstants from "../constants/nhaCungCapConstant";
+import * as nhaCungCapConstants from "../../constants/nhaCungCapConstant";
 import { toast } from "react-toastify";
 export const fetchListNhaCungCap = () => async (dispatch) => {
   try {

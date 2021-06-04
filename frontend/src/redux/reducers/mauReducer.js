@@ -1,4 +1,4 @@
-import * as mauConstant from "../constants/mauConstant";
+import * as mauConstant from "../../constants/mauConstant";
 import * as _ from "lodash";
 
 const initalState = {
