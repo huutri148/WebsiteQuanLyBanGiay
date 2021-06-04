@@ -3,14 +3,17 @@ import {React, useState} from "react";
 import ValidationTip from "../ValidationTip";
 import './GroupBox.css';
 export default function GroupBox (props) {
-      //regex
+    //set default date
+    let date = new Date().getDate();
+    if(date < 10) date = '0' + date;
+    let month = new Date().getMonth() + 1;
+    if(month < 10) month = '0' + month;
+    //regex
     const phoneRegex = /^[0-9\b]+$/;
     const [numberError, setNumberError] = useState(false);   
     const onlyNumbers = (event) => {
         if(isNaN(event.key))
-        {
             setNumberError(true);
-        }
       };
     const onInput = (e) => {
         let tmp = e.target.value;
@@ -43,8 +46,7 @@ export default function GroupBox (props) {
                 type="date"
                 readOnly={props.readOnly}
                 value = {props.value}
-                defaultValue={(new Date().getMonth()+1 > 9) ? (new Date().getFullYear()+"-" +(new Date().getMonth()+1)+"-"+new Date().getDate()):
-                                                            (new Date().getFullYear()+"-0" +(new Date().getMonth()+1)+"-"+new Date().getDate())}/>
+                defaultValue={new Date().getFullYear()+"-" + month + "-" + date}/>
             }
             {props.type === 'TextBox' && 
             <input   
@@ -65,6 +67,18 @@ export default function GroupBox (props) {
                 disabled = {props.disabled}  
                 readOnly={props.readOnly}    
                 required = {props.required}/>
+            } 
+            {props.type === 'Select' && 
+            <select   
+                onChange = {props.onChange}
+                className={(props.error === true) ? "error" : ""}
+                disabled = {props.disabled}  
+                readOnly={props.readOnly}    
+                required = {props.required}>
+                    {props.options.map((item) => (
+                        <option value = {item}> {item} </option> 
+                    ))}
+            </select>
             } 
         </div>
     );

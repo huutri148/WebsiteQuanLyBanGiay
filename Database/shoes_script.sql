@@ -131,10 +131,11 @@ CREATE TABLE PHIEUBANHANG
     SoPhieuBanHang int auto_increment primary key,
     MaNguoiDung int not null,
     MaKhachHang int not null,
+    TenKhachHang NVARCHAR(1000) NOT NULL,
     NgayBan DATETIME DEFAULT CURRENT_TIMESTAMP,
     PhuongThucThanhToan NVARCHAR(100) NOT NULL,
     TongTien DECIMAL(17,0) DEFAULT 0,
-    GhiChu NVARCHAR(100) 
+    GhiChu NVARCHAR(1000) 
 );
 alter table PHIEUBANHANG
 add constraint PHIEUBANHANG_NGUOIDUNG_FK
@@ -628,7 +629,7 @@ DELIMITER $$
 create procedure USP_ThemPhieuNhapKho(
     p_MaNhaCungCap int,p_MaNguoiDung int ,
     p_NgayNhapKho DATETIME, 
-    p_TongTien DECIMAL(17,0), p_GhiChu NVARCHAR(100))
+    p_TongTien DECIMAL(17,0), p_GhiChu NVARCHAR(1000))
 BEGIN
 INSERT INTO ShoesStoreManagement.PHIEUNHAPKHO(MaNhaCungCap,MaNguoiDung ,
     NgayNhapKho,
@@ -664,7 +665,7 @@ create procedure USP_CapNhatThongTinPhieuNhapKho(
     p_SoPhieuNhapKho int, 
     p_MaNhaCungCap int,p_MaNguoiDung int ,
     p_NgayNhapKho DATETIME, 
-    p_TongTien DECIMAL(17,0), p_GhiChu NVARCHAR(100))
+    p_TongTien DECIMAL(17,0), p_GhiChu NVARCHAR(1000))
 BEGIN
 UPDATE PHIEUNHAPKHO
 SET PHIEUNHAPKHO.MaNhaCungCap= p_MaNhaCungCap, PHIEUNHAPKHO.MaNguoiDung= p_MaNguoiDung,
@@ -743,7 +744,7 @@ DELIMITER $$
 create procedure USP_ThemPhieuChi(
     p_SoPhieuNhapKho int,p_MaNguoiDung int ,
     p_NgayLap DATETIME, 
-    p_TongTien DECIMAL(17,0), p_GhiChu NVARCHAR(100))
+    p_TongTien DECIMAL(17,0), p_GhiChu NVARCHAR(1000))
 BEGIN
     INSERT INTO ShoesStoreManagement.PHIEUNHAPKHO(
     SoPhieuNhapKho,MaNguoiDung ,
@@ -916,7 +917,7 @@ DELIMITER $$
 create procedure USP_ThemPhieuBanHang(
     p_MaKhachHang int,p_MaNguoiDung int ,
     p_NgayBan DATETIME ,p_PhuongThucThanhToan NVARCHAR(1000),
-    p_TongTien DECIMAL(17,0), p_GhiChu NVARCHAR(100))
+    p_TongTien DECIMAL(17,0), p_GhiChu NVARCHAR(1000))
 BEGIN
 INSERT INTO ShoesStoreManagement.PHIEUBANHANG(MaKhachHang ,MaNguoiDung ,
     NgayBan ,PhuongThucThanhToan ,
@@ -934,7 +935,7 @@ create procedure USP_CapNhatThongTinPhieuBanHang(
     p_SoPhieuBanHang int,
     p_MaKhachHang int,p_MaNguoiDung int ,
     p_NgayBan DATETIME ,p_PhuongThucThanhToan NVARCHAR(1000),
-    p_TongTien DECIMAL(17,0), p_GhiChu NVARCHAR(100))
+    p_TongTien DECIMAL(17,0), p_GhiChu NVARCHAR(1000))
 BEGIN
 UPDATE PHIEUBANHANG
 SET PHIEUBANHANG.MaKhachHang= p_MaKhachHang, PHIEUBANHANG.MaNguoiDung= p_MaNguoiDung,
@@ -1580,3 +1581,8 @@ INSERT INTO NHACUNGCAP(TenNhaCungCap, SDT, DiaChi, Email) VALUES ("Kho giay pho"
 INSERT INTO NHACUNGCAP(TenNhaCungCap, SDT, DiaChi, Email) VALUES ("Giay dep Viet Thuy", "0866074947", "Dia chi van phong: 3 Thep Moi, phuong 12, quan Tan Binh, TP Ho Chi Minh", "lienhe@thitruongsi.com");
 INSERT INTO NHACUNGCAP(TenNhaCungCap, SDT, DiaChi, Email) VALUES ("GS", "0866074947", "Dia chi van phong: 3 Thep Moi, phuong 12, quan Tan Binh, TP Ho Chi Minh", "lienhe@thitruongsi.com");
 INSERT INTO NHACUNGCAP(TenNhaCungCap, SDT, DiaChi, Email) VALUES ("Siviet", "0866074947", "Dia chi van phong: 3 Thep Moi, phuong 12, quan Tan Binh, TP Ho Chi Minh", "lienhe@thitruongsi.com");
+
+-- delete later
+insert into NGUOIDUNG(MaChucVu,TenNguoiDung,TenDangNhap,MatKhau,SDT,DiaChi,Email,Avatar,IsDeleted) values (5,"Khách Vãng Lai","khachvanglai","123","01212801223","SG","khachvanglai@khachvanglai","khachvanglai.jpg",false);
+insert into NGUOIDUNG(MaChucVu,TenNguoiDung,TenDangNhap,MatKhau,SDT,DiaChi,Email,Avatar,IsDeleted) values (1,"At Min","admin","123","01212801223","SG","admin@admin","admin.jpg",false);
+insert into NGUOIDUNG(MaChucVu,TenNguoiDung,TenDangNhap,MatKhau,SDT,DiaChi,Email,Avatar,IsDeleted) values (5,"Trần Duy Khánh","duykhanh","123","01212801223","SG","duykhanh@duykhanh","duykhanh.jpg",false);
