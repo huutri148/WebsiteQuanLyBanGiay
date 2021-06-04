@@ -1,5 +1,5 @@
 import * as mauAPI from "../apis/mauAPI";
-import * as mauConstants from "../constants/mauConstant";
+import * as mauConstants from "../../constants/mauConstant";
 export const fetchListMau = () => async (dispatch) => {
   try {
     dispatch({ type: mauConstants.MAU_LIST_REQUEST });

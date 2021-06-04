@@ -7,9 +7,9 @@ export default function ProductSelector(props) {
     setSelectedValue(e.value);
     sendData(e);
   };
-  const sendData = (e)=> {
+  const sendData = (e) => {
     props.setSelectedId(e.value);
-  }
+  };
   const options = props.products.map((item) => {
     let newObj = {};
     newObj.value = item.MaGiay;
@@ -23,7 +23,7 @@ export default function ProductSelector(props) {
       item.DonGia +
       "-" +
       item.TongSoLuong;
-    newObj.Anh = "/images/" + item.Anh;
+    newObj.Anh = item.Anh;
     return newObj;
   });
   const formatOptionLabel = ({ value, label, Anh }) => {

@@ -1,4 +1,4 @@
-import * as nhaCungCapConstant from "../constants/nhaCungCapConstant";
+import * as nhaCungCapConstant from "../../constants/nhaCungCapConstant";
 import * as _ from "lodash";
 
 const initalState = {

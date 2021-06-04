@@ -3,9 +3,9 @@ import { React, useState, useEffect } from "react";
 import DanhSachSanPham from "./QuanLySanPham/DanhSachSanPham/DanhSachSanPham";
 import ThemSanPham from "./QuanLySanPham/ThemSanPham";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchListHangSanXuat } from "./../actions/hangSanXuatAction";
-import { fetchListSize } from "./../actions/sizeAction";
-import { fetchListMau } from "./../actions/mauAction";
+import { fetchListHangSanXuat } from "./../redux/actions/hangSanXuatAction";
+import { fetchListSize } from "./../redux/actions/sizeAction";
+import { fetchListMau } from "./../redux/actions/mauAction";
 function TabPanel(props) {
   const classes = useStyles();
   const { children, value, index, ...other } = props;

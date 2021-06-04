@@ -1,4 +1,4 @@
-import * as giayConstant from "../constants/giayConstant";
+import * as giayConstant from "../../constants/giayConstant";
 import * as _ from "lodash";
 
 const initalState = {

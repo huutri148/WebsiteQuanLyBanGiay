@@ -1,5 +1,5 @@
 import * as _ from "lodash";
-import * as sizeConstant from "../constants/sizeContant";
+import * as sizeConstant from "../../constants/sizeContant";
 
 const initalState = {
   listSize: {},

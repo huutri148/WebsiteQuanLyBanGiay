@@ -1,5 +1,5 @@
 import * as hangSanXuatAPI from "../apis/hangSanXuatAPI";
-import * as hangSanXuatConstants from "../constants/hangSanXuatConstant";
+import * as hangSanXuatConstants from "../../constants/hangSanXuatConstant";
 export const fetchListHangSanXuat = () => async (dispatch) => {
   try {
     dispatch({ type: hangSanXuatConstants.HANGSANXUAT_LIST_REQUEST });

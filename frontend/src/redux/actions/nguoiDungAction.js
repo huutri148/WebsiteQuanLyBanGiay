@@ -1,5 +1,5 @@
 import * as nguoiDungAPI from "../apis/nguoiDungAPI";
-import * as nguoiDungConstants from "../constants/nguoiDungConstant";
+import * as nguoiDungConstants from "../../constants/nguoiDungConstant";
 
 export const login = (item) => async (dispatch) => {
   try {

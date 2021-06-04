@@ -18,7 +18,7 @@ import Groupbox from "../../components/controls/GroupBox/GroupBox";
 import { Person } from "@material-ui/icons";
 import { useHistory } from "react-router-dom";
 import ImageUpload from "../../components/controls/ImageUpload";
-import { createGiay } from "./../../actions/giayAction";
+import { createGiay } from "./../../redux/actions/giayAction";
 import { useDispatch } from "react-redux";
 import { ToastContainer } from "react-toastify";
 import ConfirmDialog from "../../components/controls/ConfirmDialog";
@@ -114,8 +114,8 @@ const ThemSanPham = (props) => {
       [name]: value,
     });
   };
-  const saveSrc = (url) => {
-    setChosenFile(url);
+  const saveFile = (file) => {
+    setChosenFile(file);
   };
 
   const handleFirebaseUpload = (file) => {
@@ -202,7 +202,7 @@ const ThemSanPham = (props) => {
               }}
             >
               <Grid xs={4} className={classes.imageCard}>
-                <ImageUpload className={classes.image} SaveSrc={saveSrc} />
+                <ImageUpload className={classes.image} SaveFile={saveFile} />
                 <div
                   style={{
                     justifyContent: "center",
