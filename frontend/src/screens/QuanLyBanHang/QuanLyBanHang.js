@@ -92,6 +92,8 @@ const headCells = [
 ];
 const selectedProducts = [];
 const QuanLyBanHang = () => {
+  //styles
+  const classes = useStyles();
   //Fetched data
   const dispatch = useDispatch();
   const productList = useSelector((state) => state.ListGiay);
@@ -103,11 +105,11 @@ const QuanLyBanHang = () => {
   const { error: sizeError, listSize } = sizeList;
   const { error: mauError, listMau } = colorList;
   //hooks
+  //const [record, setRecord]
   const [ignored, forceUpdate] = useState(false);
   const [value, setValue] = useState(0);
   const [amount, setAmount] = useState(0);
   const [maxAmount, setMaxAmount] = useState(0);
-  const classes = useStyles();
   const [product, setProduct] = useState(null);
   const [total, setTotal] = useState(0);
   const [sumTotal, setSumTotal] = useState(0);
@@ -115,12 +117,12 @@ const QuanLyBanHang = () => {
   const [sizes, setSizes] = useState([]);
   const [size, setSize] = useState(0);
   const [loading, setLoading] = useState();
+  const [amountError, setAmountError] = useState(false);
   const [filterFn, setFilterFn] = useState({
     fn: (items) => {
       return items;
     },
   });
-  const [amountError, setAmountError] = useState(false);
   //regex
   const phoneRegex = /^[0-9\b]+$/;
   //table
@@ -178,10 +180,7 @@ const QuanLyBanHang = () => {
       type: "TextBox",
       title: "Tên Khách Hàng",
       required: true,
-      onChange: (e, title) => {
-        let tmp = groupBoxes.find((obj) => obj.title === title);
-        tmp.value = e.target.value;
-      },
+      onChange: (e) => groupBoxes[0].value = e.target.value,
       validationTip: "Tên Khách Hàng không được trống",
       error: false,
       checkValidation: (val) => {
@@ -193,10 +192,7 @@ const QuanLyBanHang = () => {
       type: "Number",
       title: "Số Điện Thoại",
       required: true,
-      onChange: (e, title) => {
-        let tmp = groupBoxes.find((obj) => obj.title === title);
-        tmp.value = e.target.value;
-      },
+      onChange: (e) => groupBoxes[1].value = e.target.value,
       validationTip: "Số Điện Thoại không được trống",
       error: false,
       checkValidation: (val) => {
@@ -219,6 +215,16 @@ const QuanLyBanHang = () => {
       },
     },
     {
+      type: "Select",
+      title: "Phương Thức Thanh Toán",
+      required: true,
+      options: ["Thanh toán trực tiếp", "Thanh toán online"],
+      error: false,
+      value: "Thanh toán trực tiếp",
+      onChange: (e) => groupBoxes[3].value = e.target.value,
+      checkValidation: (val) => false,
+    },
+    {
       type: "TextBox",
       title: "Người Lập",
       required: true,
@@ -228,30 +234,42 @@ const QuanLyBanHang = () => {
     {
       type: "Picker",
       title: "Ngày Lập",
-      onChange: (e, title) => {
-        let tmp = groupBoxes.find((obj) => obj.title === title);
-        tmp.value = e.target.value;
-      },
+      onChange: (e) => groupBoxes[4].value = e.target.value,
       required: true,
       checkValidation: (val) => false,
     },
     {
       type: "TextBox",
       title: "Ghi Chú",
-      onChange: (e, title) => {
-        let tmp = groupBoxes.find((obj) => obj.title === title);
-        tmp.value = e.target.value;
-      },
+      onChange: (e) => groupBoxes[5].value = e.target.value,
       required: false,
       checkValidation: (val) => false,
     },
   ]);
   //handle submit
   const handleSubmitClick = () => {
+    var check = false;
     groupBoxes.forEach((element) => {
       element.error = element.checkValidation(element.value);
+      if(element.error === true)
+        check = true;
     });
-    forceUpdate(!ignored);
+    if(check === true)
+      forceUpdate(!ignored);
+    else
+    {
+      let item = {
+        MaNguoiDung : 2,
+        MaKhanhHang : 1,
+        TenKhachHang : groupBoxes[0].value,
+        SoDienThoai: groupBoxes[1].value,
+        PhuongThucThanhToan:groupBoxes[3].value,
+        NgayLap: groupBoxes[4].value,
+        TongTien : sumTotal,
+        GhiChu : groupBoxes[5].value,
+      }
+      console.log(item);
+    }
   };
   //handle Change
   const handleTabChange = (event, newValue) => {
@@ -342,6 +360,7 @@ const QuanLyBanHang = () => {
       <TabPanel value={value} index={0}>
         <div>
           <Grid container spacing={0}>
+            {/* bill */}
             <Paper className={classes.paper} style={{ width: "20%" }}>
               <InfoField
                 GroupBoxes={groupBoxes}
@@ -351,6 +370,7 @@ const QuanLyBanHang = () => {
                 onClick={handleSubmitClick}
               />
             </Paper>
+            {/* bill details */}
             <Paper
               className={classes.paper}
               style={{ width: "72%", margin: 0 }}
