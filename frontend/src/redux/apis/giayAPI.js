@@ -1,4 +1,4 @@
-import axiosService from "../services/axiosService";
+import axiosService from "../../services/axiosService";
 const url = "/api/products";
 
 // GET /api/products
@@ -14,4 +14,8 @@ export const getGiayByID = (id) => {
 // GET /api/products/:id/sizes
 export const getSizeGiay = (id) => {
   return axiosService.get(`${url}/${id}/sizes`);
+};
+
+export const createGiay = (item) => {
+  return axiosService.post(`${url}`, item);
 };

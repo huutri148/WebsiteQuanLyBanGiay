@@ -1,16 +1,15 @@
 import React, { useState } from "react";
 import Select from "react-select";
-import "./Selector.css";
-export default function Selector(props) {
+
+export default function ProductSelector(props) {
   const [selectedValue, setSelectedValue] = useState(0);
   const handleChange = (e) => {
     setSelectedValue(e.value);
     sendData(e);
   };
-  const sendData = (e)=> {
+  const sendData = (e) => {
     props.setSelectedId(e.value);
-  }
-  console.log(props.products);
+  };
   const options = props.products.map((item) => {
     let newObj = {};
     newObj.value = item.MaGiay;
@@ -21,10 +20,10 @@ export default function Selector(props) {
       "-" +
       item.GioiTinh +
       "-" +
-      item.DonGiaNhap +
+      item.DonGia +
       "-" +
       item.TongSoLuong;
-    newObj.Anh = "/images/" + item.Anh;
+    newObj.Anh = item.Anh;
     return newObj;
   });
   const formatOptionLabel = ({ value, label, Anh }) => {

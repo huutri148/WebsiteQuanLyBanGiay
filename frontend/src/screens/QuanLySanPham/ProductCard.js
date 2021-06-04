@@ -1,6 +1,6 @@
 import React from "react";
-import { makeStyles, Typography } from "@material-ui/core";
-const useStyles = makeStyles({
+import { makeStyles, Typography, Grid } from "@material-ui/core";
+const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
     flexDirection: "row",
@@ -18,23 +18,25 @@ const useStyles = makeStyles({
     },
   },
   title: {
-    maxWidth: "50%",
+    maxWidth: "90%",
+    fontWeight: "bold",
   },
-});
+}));
 
 const ProductCard = (props) => {
   const classes = useStyles();
   return (
-    <div className={classes.root}>
-      <img
-        src={props.imgUrl}
-        className={classes.image}
-        alt={props.productName}
-      />
-      <Typography component="h4" variant="h6" className={classes.title}>
-        {props.productName}
-      </Typography>
-    </div>
+    <Grid container>
+      <Grid item lg={2}>
+        <img src={props.imgUrl} className={classes.image} alt={props.Primary} />
+      </Grid>
+      <Grid item lg={10}>
+        <Typography className={classes.title}>{props.PrimaryText}</Typography>
+        <Typography color="textSecondary" variant="body2">
+          {props.SecondaryText}
+        </Typography>
+      </Grid>
+    </Grid>
   );
 };
 

@@ -23,15 +23,16 @@ const InfoField = (props) => {
                 {props.cardHeader}
               </label>
               <hr className={classes.hr} />
-              {props.GroupBoxes.map((item, index) => (
+              {props.GroupBoxes.map((item) => (
                 <GroupBox
+                    options = {item.options}
                     type={item.type}
                     title={item.title}
                     validationTip = {item.validationTip}
                     disabled={item.disabled}
                     value = {item.value}
                     required={item.required}
-                    onChange = {item.disabled === 'disabled' ? e => item.onChange(e,item.title) : null}
+                    onChange = {item.onChange === undefined ? null : e => item.onChange(e)}
                     error = {item.error}/>
               ))}
               <Button size="large" variant="contained" color="primary" onClick = {props.onClick} disabled = {props.disabled}>

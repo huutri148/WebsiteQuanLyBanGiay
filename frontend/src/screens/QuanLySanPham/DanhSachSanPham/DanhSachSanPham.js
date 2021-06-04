@@ -20,34 +20,25 @@ import ProductCard from "../ProductCard";
 import Popup from "../../../components/controls/Popup";
 import ProductDetail from "../ProductDetail";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchListGiay } from "./../../../actions/giayAction";
-import { fetchListHangSanXuat } from "./../../../actions/hangSanXuatAction";
-import { fetchListSize } from "./../../../actions/sizeAction";
-
+import { fetchListGiay } from "../../../redux/actions/giayAction";
 const headCells = [
   { id: "TenGiay", label: "Tên sản phẩm" },
-  { id: "TenHangSanXuat", label: "Tên hãng sản xuất", disableSorting: true },
   { id: "TenMau", label: "Tên màu", disableSorting: true },
   { id: "GioiTinh", label: "Giới tính", disableSorting: true },
   { id: "SoLuong", label: "Số lượng" },
+  { id: "IsDeleted", label: "Trạng Thái" },
   { id: "actions" },
 ];
 const DanhSachSanPham = (props) => {
   // CSS class
   const { classes } = props;
+  const { ListSize, ListMau, ListHSX } = props;
 
   //Fetched data
   const dispatch = useDispatch();
   const productList = useSelector((state) => state.ListGiay);
-  const brandList = useSelector((state) => state.ListHangSanXuat);
-  const sizeList = useSelector((state) => state.ListSize);
-  const {
-    loading: brandLoading,
-    error: hangSanXuatError,
-    listHangSanXuat,
-  } = brandList;
+
   const { loading: productLoading, error: giayError, listGiay } = productList;
-  const { loading: sizeLoading, error: sizeError, listSize } = sizeList;
 
   // Props in Screens
   const [tableData, setTableData] = useState([]);
@@ -62,35 +53,36 @@ const DanhSachSanPham = (props) => {
   const { TblContainer, TblHead, TblPagination, recordsAfterPagingAndSorting } =
     useTable(tableData, headCells, filterFn);
 
+  // Fetch data from API
+  useEffect(() => {
+    const fetchData = async () => {
+      await dispatch(fetchListGiay());
+      //set Flag to combine TableData
+      // Note: Find a way to select lastest data
+      // Done have to use Flag
+      setLoading(!loading);
+    };
+    fetchData();
+  }, [dispatch]);
+
   // setTableData when done fetching
   useEffect(() => {
     const data = Object.values(listGiay).reduce((result, value) => {
       let maHSX = value.MaHangSanXuat;
-      if (typeof listHangSanXuat[maHSX] === "undefined") return [];
-      let { TenHangSanXuat } = listHangSanXuat[maHSX];
+      let maMau = value.MaMau;
+      if (typeof ListHSX[maHSX] === "undefined") return [];
+      if (typeof ListMau[maMau] === "undefined") return [];
+      let { TenHangSanXuat } = ListHSX[maHSX];
+      let { TenMau } = ListMau[maMau];
       result.push({
         TenHangSanXuat,
+        TenMau,
         ...value,
       });
       return result;
     }, []);
     setTableData(data);
-    setLoading(true);
   }, [loading]);
-
-  // Fetch data from API
-  useEffect(() => {
-    const fetchData = async () => {
-      await dispatch(fetchListGiay());
-      await dispatch(fetchListHangSanXuat());
-      await dispatch(fetchListSize());
-      //set Flag to combine TableData
-      // Note: Find a way to select lastest data
-      // Done have to use Flag
-      setLoading(false);
-    };
-    fetchData();
-  }, [dispatch]);
 
   const handleDetail = (index, data) => {
     setSelectedItem(data);
@@ -129,9 +121,9 @@ const DanhSachSanPham = (props) => {
             onChange={handleSearch}
           />
         </Toolbar>
-        {sizeLoading || productLoading || brandLoading ? (
+        {productLoading ? (
           <CircularProgress disableShrink style={{ margin: "0px 16px" }} />
-        ) : sizeError || giayError || hangSanXuatError ? (
+        ) : giayError ? (
           <h1>Error</h1>
         ) : (
           <TableContainer className={classes.table}>
@@ -149,21 +141,40 @@ const DanhSachSanPham = (props) => {
                   >
                     <TableCell component="th" scope="row">
                       <ProductCard
-                        imgUrl={`/images/${item.Anh}`}
-                        productName={item.TenGiay}
+                        imgUrl={item.Anh}
+                        PrimaryText={item.TenGiay}
+                        SecondaryText={item.TenHangSanXuat}
                       />
                     </TableCell>
                     <TableCell component="th" scope="row">
-                      {item.TenHangSanXuat}
-                    </TableCell>
-                    <TableCell component="th" scope="row">
-                      {item.MaMau}
+                      {item.TenMau}
                     </TableCell>
                     <TableCell component="th" scope="row">
                       {item.GioiTinh}
                     </TableCell>
-                    <TableCell>{item.TongSoLuong}</TableCell>
-                    <TableCell>
+                    <TableCell component="th" scope="row">
+                      {item.TongSoLuong}
+                    </TableCell>
+                    <TableCell component="th" scope="row">
+                      <Typography
+                        className={classes.status}
+                        style={{
+                          backgroundColor:
+                            //Note: Fix hardcode 100
+                            (item.IsDeleted === 0 &&
+                              item.TongSoLuong > 100 &&
+                              "green") ||
+                            (item.IsDeleted === 0 &&
+                              item.TongSoLuong <= 100 &&
+                              "blue") ||
+                            (item.IsDeleted === 1 && "red"),
+                        }}
+                      >
+                        {item.IsDeleted === 0 ? "Avaiable" : "IsDeleted"}
+                      </Typography>
+                    </TableCell>
+
+                    <TableCell component="th" scope="row">
                       <IconButton color="secondary">
                         <Edit />
                       </IconButton>
@@ -184,7 +195,7 @@ const DanhSachSanPham = (props) => {
         openPopup={openPopup}
         setOpenPopup={setOpenPopup}
       >
-        <ProductDetail item={selectedItem} ListSize={listSize} />
+        <ProductDetail item={selectedItem} ListSize={ListSize} />
       </Popup>
     </div>
   );

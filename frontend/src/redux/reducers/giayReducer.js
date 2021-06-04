@@ -1,4 +1,4 @@
-import * as giayConstant from "../constants/giayConstant";
+import * as giayConstant from "../../constants/giayConstant";
 import * as _ from "lodash";
 
 const initalState = {
@@ -45,7 +45,7 @@ export const giayReducer = (state = initalState, action) => {
     case giayConstant.GIAY_SUCCESS: {
       return {
         loading: false,
-        giay: {},
+        giay: { ...action.payload },
       };
     }
     case giayConstant.GIAY_FAIL: {
@@ -65,7 +65,7 @@ export const giaySizeReducer = (state = initalState, action) => {
       return {
         //note: add loading
         loading: true,
-        giay: {},
+        giaySize: {},
       };
     }
     case giayConstant.GIAY_SIZE_LIST_SUCCESS: {
@@ -73,6 +73,31 @@ export const giaySizeReducer = (state = initalState, action) => {
       return {
         loading: false,
         giaySize: { ...list },
+      };
+    }
+    case giayConstant.GIAY_SIZE_LIST_FAIL: {
+      return {
+        loading: false,
+        error: action.payload,
+      };
+    }
+    default:
+      return state;
+  }
+};
+export const giayCreateReducer = (state = initalState, action) => {
+  switch (action.type) {
+    case giayConstant.GIAY_CREATE_REQUEST: {
+      return {
+        //note: add loading
+        loading: true,
+        giay: {},
+      };
+    }
+    case giayConstant.GIAY_CREATE_SUCCESS: {
+      return {
+        loading: false,
+        giay: { ...action.payload },
       };
     }
     case giayConstant.GIAY_SIZE_LIST_FAIL: {

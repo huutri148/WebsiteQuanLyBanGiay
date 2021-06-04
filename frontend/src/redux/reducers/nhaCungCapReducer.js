@@ -1,27 +1,27 @@
-import * as hangSanXuatConstant from "../constants/hangSanXuatConstant";
+import * as nhaCungCapConstant from "../../constants/nhaCungCapConstant";
 import * as _ from "lodash";
 
 const initalState = {
-  listHangSanXuat: {},
+  listNhaCungCap: {},
 };
 
-export const brandListReducer = (state = initalState, action) => {
+export const supplierListReducer = (state = initalState, action) => {
   switch (action.type) {
-    case hangSanXuatConstant.HANGSANXUAT_LIST_REQUEST: {
+    case nhaCungCapConstant.NHACUNGCAP_LIST_REQUEST: {
       return {
         //note: add loading
         loading: true,
-        listHangSanXuat: {},
+        listNhaCungCap: {},
       };
     }
-    case hangSanXuatConstant.HANGSANXUAT_LIST_SUCCESS: {
-      const brands = _.mapKeys(action.payload, "MaHangSanXuat");
+    case nhaCungCapConstant.NHACUNGCAP_LIST_SUCCESS: {
+      const suppliers = _.mapKeys(action.payload, "MaNhaCungCap");
       return {
         loading: false,
-        listHangSanXuat: { ...brands },
+        listNhaCungCap: { ...suppliers },
       };
     }
-    case hangSanXuatConstant.HANGSANXUAT_LIST_FAIL: {
+    case nhaCungCapConstant.NHACUNGCAP_LIST_FAIL: {
       return {
         loading: false,
         error: action.payload,
@@ -32,22 +32,22 @@ export const brandListReducer = (state = initalState, action) => {
   }
 };
 
-export const brandCreateReducer = (state = {}, action) => {
+export const supplierCreateReducer = (state = {}, action) => {
   switch (action.type) {
-    case hangSanXuatConstant.HANGSANXUAT_CREATE_REQUEST: {
+    case nhaCungCapConstant.NHACUNGCAP_CREATE_REQUEST: {
       return {
         //note: add loading
         loading: true,
       };
     }
-    case hangSanXuatConstant.HANGSANXUAT_CREATE_SUCCESS: {
+    case nhaCungCapConstant.NHACUNGCAP_CREATE_SUCCESS: {
       return {
         loading: false,
         success: true,
-        brand: action.payload,
+        supplier: action.payload,
       };
     }
-    case hangSanXuatConstant.HANGSANXUAT_CREATE_FAIL: {
+    case nhaCungCapConstant.NHACUNGCAP_CREATE_FAIL: {
       return {
         loading: false,
         error: action.payload,
@@ -58,22 +58,22 @@ export const brandCreateReducer = (state = {}, action) => {
   }
 };
 
-export const brandUpdateReducer = (state = {}, action) => {
+export const supplierUpdateReducer = (state = {}, action) => {
   switch (action.type) {
-    case hangSanXuatConstant.HANGSANXUAT_UPDATE_REQUEST: {
+    case nhaCungCapConstant.NHACUNGCAP_UPDATE_REQUEST: {
       return {
         //note: add loading
         loading: true,
       };
     }
-    case hangSanXuatConstant.HANGSANXUAT_UPDATE_SUCCESS: {
+    case nhaCungCapConstant.NHACUNGCAP_UPDATE_SUCCESS: {
       return {
         loading: false,
         success: true,
-        brand: action.payload,
+        supplier: action.payload,
       };
     }
-    case hangSanXuatConstant.HANGSANXUAT_UPDATE_FAIL: {
+    case nhaCungCapConstant.NHACUNGCAP_UPDATE_FAIL: {
       return {
         loading: false,
         error: action.payload,
@@ -84,22 +84,22 @@ export const brandUpdateReducer = (state = {}, action) => {
   }
 };
 
-export const brandDeleteReducer = (state = {}, action) => {
+export const supplierDeleteReducer = (state = {}, action) => {
   switch (action.type) {
-    case hangSanXuatConstant.HANGSANXUAT_DELETE_REQUEST: {
+    case nhaCungCapConstant.NHACUNGCAP_DELETE_REQUEST: {
       return {
         //note: add loading
         loading: true,
       };
     }
-    case hangSanXuatConstant.HANGSANXUAT_DELETE_SUCCESS: {
+    case nhaCungCapConstant.NHACUNGCAP_DELETE_SUCCESS: {
       return {
         loading: false,
         success: true,
-        brand: action.payload,
+        supplier: action.payload,
       };
     }
-    case hangSanXuatConstant.HANGSANXUAT_DELETE_FAIL: {
+    case nhaCungCapConstant.NHACUNGCAP_DELETE_FAIL: {
       return {
         loading: false,
         error: action.payload,
