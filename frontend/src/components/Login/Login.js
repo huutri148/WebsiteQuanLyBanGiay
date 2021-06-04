@@ -63,7 +63,7 @@ export default function Login() {
   const { loading, error, userInfo } = userLogin;
 
   useEffect(() => {
-    if (userInfo.accessToken) {
+    if (userInfo) {
       console.log(userInfo);
       history.replace("/manager");
     }

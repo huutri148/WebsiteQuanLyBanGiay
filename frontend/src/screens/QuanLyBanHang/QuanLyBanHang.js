@@ -26,6 +26,7 @@ import { fetchListHangSanXuat } from "../../actions/hangSanXuatAction";
 import { fetchListSize } from "../../actions/sizeAction";
 import { fetchListMau } from "../../actions/mauAction";
 import { fetchGiaySize } from "../../actions/giayAction";
+import { fetchListNguoiDung } from "../../actions/nguoiDungAction";
 import Select from "react-select";
 import SizeSelector from "../../components/controls/Selector/SizeSelector";
 function TabPanel(props) {
@@ -95,12 +96,19 @@ const QuanLyBanHang = () => {
   const brandList = useSelector((state) => state.ListHangSanXuat);
   const sizeList = useSelector((state) => state.ListSize);
   const colorList = useSelector((state) => state.ListMau);
+  const userList = useSelector((state) => state.ListNguoiDung);
   const { error: hangSanXuatError, listHangSanXuat } = brandList;
   const { error: giayError, listGiay } = productList;
   const { error: sizeError, listSize } = sizeList;
   const { error: mauError, listMau } = colorList;
+  const { error: nguoidungError, listNguoiDung } = userList;
   //hooks
   //const [record, setRecord]
+  //data
+  const [products, setProducts] = useState([]);
+  const [sizes, setSizes] = useState([]);
+  const [users, setUsers] = useState([]);
+  //variables
   const [ignored, forceUpdate] = useState(false);
   const [value, setValue] = useState(0);
   const [amount, setAmount] = useState(0);
@@ -108,8 +116,6 @@ const QuanLyBanHang = () => {
   const [product, setProduct] = useState(null);
   const [total, setTotal] = useState(0);
   const [sumTotal, setSumTotal] = useState(0);
-  const [products, setProducts] = useState([]);
-  const [sizes, setSizes] = useState([]);
   const [size, setSize] = useState(0);
   const [loading, setLoading] = useState();
   const [amountError, setAmountError] = useState(false);
@@ -169,19 +175,82 @@ const QuanLyBanHang = () => {
     setProduct(item);
     forceUpdate(!ignored);
   };
+  //handle submit
+  const handleSubmitClick = () => {
+    var check = false;
+    groupBoxes.forEach((element) => {
+      element.error = element.checkValidation(element.value);
+      if(element.error === true)
+        check = true;
+    });
+    if(check === true)
+      forceUpdate(!ignored);
+    else
+    {
+      //set default date
+      if(groupBoxes[4].value === undefined)
+      {
+        let date = new Date().getDate();
+        if(date < 10) date = '0' + date;
+        let month = new Date().getMonth() + 1;
+        if(month < 10) month = '0' + month;
+        groupBoxes[4].value = new Date().getFullYear()+"-" + month + "-" + date;
+      }
+      //get record
+      let item = {
+        MaNguoiDung : 2,
+        MaKhanhHang : 1,
+        TenKhachHang : groupBoxes[0].value === undefined ?  groupBoxes[0].options[0].label :groupBoxes[0].value.label,
+        SoDienThoai: groupBoxes[1].value,
+        TongTien : groupBoxes[2].value,
+        PhuongThucThanhToan: groupBoxes[3].value === undefined ?  groupBoxes[3].options[0].label : groupBoxes[3].value.label,
+        NgayLap: groupBoxes[4].value,
+        GhiChu : groupBoxes[5].value === undefined ? null : groupBoxes[5].value,
+      }
+      console.log(item);
+    }
+  };
+  //handle Change
+  const handleTabChange = (event, newValue) => {
+    setValue(newValue);
+  };
+  const onAmountChange = (e) => {
+    if (product != null) 
+    {
+      let tmp = e.target.value;
+      if(tmp === "")
+      {
+        setAmount(0);
+        setTotal(0);
+      }
+      else
+        if (tmp === 0 || phoneRegex.test(tmp)) {
+          setAmount(Number(tmp));
+          setTotal(Number(tmp) * product.DonGia);
+          if (Number(tmp) > 0 && Number(tmp) <= maxAmount)   
+            setAmountError(false);
+          else
+            setAmountError(true);
+        }
+    }
+  };
+  const onSizeChange = (e,size) => {
+    setSize(size);
+    setMaxAmount(e);
+    setAmount(e);
+    setTotal(e * product.DonGia);
+  }
   //Field titles
   const [groupBoxes, setGroupBoxes] = useState([
     {
-      type: "TextBox",
+      type: "Select",
       title: "Tên Khách Hàng",
       required: true,
-      onChange: (e) => groupBoxes[0].value = e.target.value,
+      onChange: (e) => groupBoxes[0].value = e,
+      options:[{value: 1, label: "Khách Vãng Lai"}],
       validationTip: "Tên Khách Hàng không được trống",
       error: false,
-      checkValidation: (val) => {
-        if (val === null || val === "" || val === undefined) return true;
-        return false;
-      },
+      checkValidation: (val) => false,
     },
     {
       type: "Number",
@@ -191,7 +260,6 @@ const QuanLyBanHang = () => {
       validationTip: "Số Điện Thoại không được trống",
       error: false,
       checkValidation: (val) => {
-        console.log(val);
         if (val === null || val === "" || val === undefined) return true;
         return false;
       },
@@ -205,7 +273,7 @@ const QuanLyBanHang = () => {
       validationTip: "Tổng Tiền không được bằng 0",
       error: false,
       checkValidation: (val) => {
-        if (sumTotal === 0) return true;
+        if (val === 0) return true;
         return false;
       },
     },
@@ -213,10 +281,9 @@ const QuanLyBanHang = () => {
       type: "Select",
       title: "Phương Thức Thanh Toán",
       required: true,
-      options: ["Thanh toán trực tiếp", "Thanh toán online"],
+      options: [{value: "Thanh toán trực tiếp", label: "Thanh toán trực tiếp"},{value: "Thanh toán online", label: "Thanh toán online"}],
       error: false,
-      value: "Thanh toán trực tiếp",
-      onChange: (e) => groupBoxes[3].value = e.target.value,
+      onChange: (e) => groupBoxes[3].value = e,
       checkValidation: (val) => false,
     },
     {
@@ -241,64 +308,7 @@ const QuanLyBanHang = () => {
       checkValidation: (val) => false,
     },
   ]);
-  //handle submit
-  const handleSubmitClick = () => {
-    var check = false;
-    groupBoxes.forEach((element) => {
-      element.error = element.checkValidation(element.value);
-      if(element.error === true)
-        check = true;
-    });
-    if(check === true)
-      forceUpdate(!ignored);
-    else
-    {
-      let item = {
-        MaNguoiDung : 2,
-        MaKhanhHang : 1,
-        TenKhachHang : groupBoxes[0].value,
-        SoDienThoai: groupBoxes[1].value,
-        PhuongThucThanhToan:groupBoxes[3].value,
-        NgayLap: groupBoxes[4].value,
-        TongTien : sumTotal,
-        GhiChu : groupBoxes[5].value,
-      }
-      console.log(item);
-    }
-  };
-  //handle Change
-  const handleTabChange = (event, newValue) => {
-    setValue(newValue);
-  };
-  const onAmountChange = (e) => {
-    if (product != null) 
-    {
-      let tmp = e.target.value;
-      if(tmp === "")
-      {
-        setAmount(0);
-        setTotal(0);
-      }
-      else
-        if (tmp === 0 || phoneRegex.test(tmp)) {
-          setAmount(Number(tmp));
-          setTotal(Number(tmp) * product.DonGia);
-          console.log(product);
-          if (Number(tmp) > 0 && Number(tmp) <= maxAmount)   
-            setAmountError(false);
-          else
-            setAmountError(true);
-        }
-    }
-  };
-  const onSizeChange = (e,size) => {
-    console.log(sizes);
-    setSize(size);
-    setMaxAmount(e);
-    setAmount(e);
-    setTotal(e * product.DonGia);
-  }
-  // set and map Products and Sizes when done fetching
+  // set and map Products, Sizes, Users when done fetching
   useEffect(() => {
     const productsData = Object.values(listGiay).reduce((result, value) => {
       let maHSX = value.MaHangSanXuat;
@@ -320,12 +330,22 @@ const QuanLyBanHang = () => {
       });
       return result;
     }, []);
+    const usersData = Object.values(listNguoiDung).reduce((result, value) => {
+      result.push({
+        ...value,
+      });
+      return result;
+    }, []);
     let tempData = productsData.map((item)=>{
       item.DonGia = item.DonGiaNhap * (100 + item.TyLeLoiNhuan *100)/100;
       return item;
     });
     setProducts(tempData);
     setSizes(sizesData);
+    setUsers(usersData);
+    groupBoxes[0].options = usersData.map(item => {
+      return {value: item.MaNguoiDung, label: item.TenNguoiDung}
+    });
   }, [loading]);
   // Fetch data from API
   useEffect(() => {
@@ -334,6 +354,7 @@ const QuanLyBanHang = () => {
       await dispatch(fetchListHangSanXuat());
       await dispatch(fetchListSize());
       await dispatch(fetchListMau());
+      await dispatch(fetchListNguoiDung());
       //set Flag to combine TableData
       // Note: Find a way to select lastest data
       // Done have to use Flag
@@ -491,8 +512,8 @@ const QuanLyBanHang = () => {
                       >
                         <TableCell component="td" width="40%" scope="row">
                           <ProductCard
-                            imgUrl={"/images/" + item.Anh}
-                            productName={item.TenGiay}
+                            imgUrl={item.Anh}
+                            PrimaryText={item.TenGiay}
                           />
                         </TableCell>
                         <TableCell component="td" scope="row">
@@ -510,7 +531,7 @@ const QuanLyBanHang = () => {
                         <TableCell component="td" scope="row">
                           {item.total.toLocaleString("it-IT")}
                         </TableCell>
-                        <TableCell component="td" width="15%" scope="row">
+                        <TableCell component="td" scope="row">
                           <IconButton size="small" color="primary">
                             <Edit onClick={() => handleEditClick(item)} />
                           </IconButton>

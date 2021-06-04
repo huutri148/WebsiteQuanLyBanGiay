@@ -8,11 +8,11 @@ import * as phieuBanHangReducer from "./phieuBanHangReducer";
 import mauReducer from "./mauReducer";
 const rootReducer = combineReducers({
   //giay size mau
-  ListGiay: listGiayReducer,
+  ListGiay: GiayReducer.listGiayReducer,
   ListSize: listSizeReducer,
-  Giay: giayReducer,
+  Giay: GiayReducer.giayReducer,
   CreateGiay: GiayReducer.giayCreateReducer,
-  SizeGiay: giaySizeReducer,
+  SizeGiay: GiayReducer.giaySizeReducer,
   ListMau: mauReducer,
   //hang san xuat
   ListHangSanXuat: hangSanXuatReducer.brandListReducer,
@@ -31,6 +31,7 @@ const rootReducer = combineReducers({
   DeletePhieuBanHang: phieuBanHangReducer.billDeleteReducer,
   //login
   UserLogin: nguoiDungReducer.userLoginReducer,
+  ListNguoiDung: nguoiDungReducer.listNguoiDungReducer,
 });
 
 export default rootReducer;

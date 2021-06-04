@@ -1,5 +1,6 @@
 import { ErrorOutline } from "@material-ui/icons";
 import {React, useState} from "react";
+import Selector from "../Selector/Selector";
 import ValidationTip from "../ValidationTip";
 import './GroupBox.css';
 export default function GroupBox (props) {
@@ -69,16 +70,9 @@ export default function GroupBox (props) {
                 required = {props.required}/>
             } 
             {props.type === 'Select' && 
-            <select   
-                onChange = {props.onChange}
-                className={(props.error === true) ? "error" : ""}
-                disabled = {props.disabled}  
-                readOnly={props.readOnly}    
-                required = {props.required}>
-                    {props.options.map((item) => (
-                        <option value = {item}> {item} </option> 
-                    ))}
-            </select>
+            <Selector   
+                options={props.options}
+                onChange = {props.onChange} />
             } 
         </div>
     );

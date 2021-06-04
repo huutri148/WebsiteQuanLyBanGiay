@@ -1,6 +1,25 @@
 import * as nguoiDungAPI from "../apis/nguoiDungAPI";
 import * as nguoiDungConstants from "../constants/nguoiDungConstant";
+export const fetchListNguoiDung = () => async (dispatch) => {
+  try {
+    dispatch({ type: nguoiDungConstants.NGUOIDUNG_LIST_REQUEST });
 
+    const { data } = await nguoiDungAPI.getList();
+
+    dispatch({
+      type: nguoiDungConstants.NGUOIDUNG_LIST_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: nguoiDungConstants.NGUOIDUNG_LIST_FAIL,
+      payload:
+        error.response && error.response.message
+          ? error.response.data.data.message
+          : error.messagge,
+    });
+  }
+};
 export const login = (item) => async (dispatch) => {
   try {
     dispatch({ type: nguoiDungConstants.NGUOIDUNG_LOGIN_REQUEST });

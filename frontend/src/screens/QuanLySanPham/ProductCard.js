@@ -21,22 +21,25 @@ const useStyles = makeStyles((theme) => ({
     maxWidth: "90%",
     fontWeight: "bold",
   },
+  container: {
+    display: "flex",
+  },
 }));
 
 const ProductCard = (props) => {
   const classes = useStyles();
   return (
-    <Grid container>
-      <Grid item lg={2}>
+    <div className={classes.container}>
+      <div >
         <img src={props.imgUrl} className={classes.image} alt={props.Primary} />
-      </Grid>
-      <Grid item lg={10}>
+      </div>
+      <div >
         <Typography className={classes.title}>{props.PrimaryText}</Typography>
         <Typography color="textSecondary" variant="body2">
           {props.SecondaryText}
         </Typography>
-      </Grid>
-    </Grid>
+      </div>
+    </div>
   );
 };
 

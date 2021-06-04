@@ -1,7 +1,7 @@
 drop database ShoesStoreManagement;
 create schema ShoesStoreManagement ;
 use ShoesStoreManagement;
-
+ALTER DATABASE ShoesStoreManagement CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 create Table SIZE 
 (
     MaSize INT auto_increment PRIMARY KEY,
@@ -1562,8 +1562,8 @@ INSERT INTO NHACUNGCAP(TenNhaCungCap, SDT, DiaChi, Email) VALUES ("Kho giay pho"
 INSERT INTO NHACUNGCAP(TenNhaCungCap, SDT, DiaChi, Email) VALUES ("Giay dep Viet Thuy", "0866074947", "Dia chi van phong: 3 Thep Moi, phuong 12, quan Tan Binh, TP Ho Chi Minh", "lienhe@thitruongsi.com");
 INSERT INTO NHACUNGCAP(TenNhaCungCap, SDT, DiaChi, Email) VALUES ("GS", "0866074947", "Dia chi van phong: 3 Thep Moi, phuong 12, quan Tan Binh, TP Ho Chi Minh", "lienhe@thitruongsi.com");
 INSERT INTO NHACUNGCAP(TenNhaCungCap, SDT, DiaChi, Email) VALUES ("Siviet", "0866074947", "Dia chi van phong: 3 Thep Moi, phuong 12, quan Tan Binh, TP Ho Chi Minh", "lienhe@thitruongsi.com");
-
 -- delete later
-insert into NGUOIDUNG(MaChucVu,TenNguoiDung,TenDangNhap,MatKhau,SDT,DiaChi,Email,Avatar,IsDeleted) values (5,"Khách Vãng Lai","khachvanglai","123","01212801223","SG","khachvanglai@khachvanglai","khachvanglai.jpg",false);
-insert into NGUOIDUNG(MaChucVu,TenNguoiDung,TenDangNhap,MatKhau,SDT,DiaChi,Email,Avatar,IsDeleted) values (1,"At Min","admin","123","01212801223","SG","admin@admin","admin.jpg",false);
-insert into NGUOIDUNG(MaChucVu,TenNguoiDung,TenDangNhap,MatKhau,SDT,DiaChi,Email,Avatar,IsDeleted) values (5,"Trần Duy Khánh","duykhanh","123","01212801223","SG","duykhanh@duykhanh","duykhanh.jpg",false);
+-- SET NAMES utf8;
+-- insert into NGUOIDUNG(MaChucVu,TenNguoiDung,TenDangNhap,MatKhau,SDT,DiaChi,Email,Avatar,IsDeleted) values (5,"Khách Vãng Lai","khachvanglai","123","01212801223","SG","khachvanglai@khachvanglai","khachvanglai.jpg",false);
+-- insert into NGUOIDUNG(MaChucVu,TenNguoiDung,TenDangNhap,MatKhau,SDT,DiaChi,Email,Avatar,IsDeleted) values (1,"At Min","admin","123","01212801223","SG","admin@admin","admin.jpg",false);
+-- insert into NGUOIDUNG(MaChucVu,TenNguoiDung,TenDangNhap,MatKhau,SDT,DiaChi,Email,Avatar,IsDeleted) values (5,"Trần Duy Khánh","duykhanh","123","01212801223","SG","duykhanh@duykhanh","duykhanh.jpg",false);
