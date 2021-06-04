@@ -24,14 +24,14 @@ CREATE TABLE  MAU
     IsDeleted BOOLEAN DEFAULT false
 );
 
-CREATE TABLE GIAY
+CREATE TABLE GIAY 
 (
     MaGiay INT auto_increment PRIMARY KEY,
     TenGiay NVARCHAR(100) NOT NULL, 
     MaHangSanXuat INT NOT NULL,
     MaMau INT NOT NULL,
     GioiTinh varchar(100) DEFAULT "Unisex",
-    Anh varchar(100),
+    Anh VARCHAR(1000),
     MoTa NVARCHAR(1000),
     TyLeLoiNhuan FLOAT DEFAULT 0 ,
     DonGiaNhap DECIMAL(17,0) DEFAULT 0,
@@ -1146,7 +1146,7 @@ insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa, TyLeLo
     10,
     4,
     "Unisex",
-    "AirJordan1KO'Chicago'2021.jpg",
+    "https://firebasestorage.googleapis.com/v0/b/shoesstoremanagement.appspot.com/o/images%2FAirJordan1KO'Chicago'2021.jpg?alt=media&token=b63a412c-2e41-4f55-a707-2e24e7656216",
     "white/black/university red",
     0.1, 
     160,
@@ -1159,7 +1159,7 @@ insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa, TyLeLo
     10,
     4,
     "Unisex",
-    "AirJordan1Mid'Banned'.jpg",
+    "https://firebasestorage.googleapis.com/v0/b/shoesstoremanagement.appspot.com/o/images%2FAirJordan1Mid'Banned'.jpg?alt=media&token=417af690-b73d-4d9b-92f3-74f1a606b8a9",
     "black/university red",
     0.1, 
     100,
@@ -1170,7 +1170,7 @@ insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa, TyLeLo
     10,
     4,
     "Unisex",
-    "AirJordan1Mid'HyperRoyal'.jpg",
+    "https://firebasestorage.googleapis.com/v0/b/shoesstoremanagement.appspot.com/o/images%2FAirJordan1Mid'HyperRoyal'.jpg?alt=media&token=23e5b4f2-f33c-47a3-994b-27829dbf4779",
     "white/black/university red",
     0.5, 
     160,
@@ -1181,7 +1181,7 @@ insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa, TyLeLo
     10,
     3,
     "Unisex",
-    "AirJordan1RetroHighOG'HyperRoyal'.jpg",
+    "https://firebasestorage.googleapis.com/v0/b/shoesstoremanagement.appspot.com/o/images%2FAirJordan1RetroHighOG'HyperRoyal'.jpg?alt=media&token=56cde7c3-94e7-43e1-a445-cba0a564294a",
     "white/black/university red",
     0.1, 
     160,
@@ -1192,7 +1192,7 @@ insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa, TyLeLo
     10,
     5,
     "Unisex",
-    "AirJordan1RetroHighOG'Shadow2.0'.jpg",
+    "https://firebasestorage.googleapis.com/v0/b/shoesstoremanagement.appspot.com/o/images%2FAirJordan1RetroHighOG'Shadow2.0'.jpg?alt=media&token=1f2c376e-d296-4de3-a9a6-d18f449b9718",
     "white/black/university red",
     0.2, 
     160,
@@ -1203,7 +1203,7 @@ insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa, TyLeLo
     10,
     4,
     "Unisex",
-    "AirJordan5RetroGS'RagingBull'2021.jpg",
+    "https://firebasestorage.googleapis.com/v0/b/shoesstoremanagement.appspot.com/o/images%2FAirJordan5RetroGS'RagingBull'2021.jpg?alt=media&token=ea070343-69d0-44ab-b3be-90cbb24cf061",
     "white/black/university red",
     0.4, 
     160,
@@ -1214,7 +1214,7 @@ insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa, TyLeLo
     10,
     4,
     "Unisex",
-    "AirJordan5Retro'RagingBull'2021.jpg",
+    "https://firebasestorage.googleapis.com/v0/b/shoesstoremanagement.appspot.com/o/images%2FAirJordan5RetroGS'RagingBull'2021.jpg?alt=media&token=ea070343-69d0-44ab-b3be-90cbb24cf061",
     "black/university red",
     0.3, 
     160,
@@ -1225,7 +1225,7 @@ insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa, TyLeLo
     10,
     5,
     "Unisex",
-    "AirJordan6RetroOG'Carmine'2021.jpg",
+    "https://firebasestorage.googleapis.com/v0/b/shoesstoremanagement.appspot.com/o/images%2FAirJordan6RetroOG'Carmine'2021.jpg?alt=media&token=8e9a5495-691c-4def-bfdb-9b8fe478642f",
     "white/black/university red",
     0.2, 
     160,
@@ -1236,7 +1236,7 @@ insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa, TyLeLo
     10,
     1,
     "Unisex",
-    "AirJordan7Retro'Flint'2021.jpg",
+    "https://firebasestorage.googleapis.com/v0/b/shoesstoremanagement.appspot.com/o/images%2FAirJordan7Retro'Flint'2021.jpg?alt=media&token=7f61c7b9-02e6-4946-84ec-8efe2e09a4ce",
     "white/black/university red",
     0.1, 
     160,
@@ -1247,7 +1247,7 @@ insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa, TyLeLo
     10,
     1,
     "Unisex",
-    "AirJordan11RetroLowGS'LegendBlue'.jpg",
+    "https://firebasestorage.googleapis.com/v0/b/shoesstoremanagement.appspot.com/o/images%2FAirJordan11RetroLowGS'LegendBlue'.jpg?alt=media&token=1eb33d8b-fe7d-4a87-8ad5-9b84bca50cc3",
     "white/black/university red",
     0.1, 
     160,
@@ -1258,7 +1258,7 @@ insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa, TyLeLo
     10,
     1,
     "Unisex",
-    "AirJordan11RetroLow'LegendBlue'.jpg",
+    "https://firebasestorage.googleapis.com/v0/b/shoesstoremanagement.appspot.com/o/images%2FAirJordan11RetroLow'LegendBlue'.jpg?alt=media&token=7fcb259a-5be9-4b90-8c91-4ea4fffd3333",
     "white/black/university red",
     0, 
     160,
@@ -1269,7 +1269,7 @@ insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa, TyLeLo
     10,
     4,
     "Unisex",
-    "StingwaterxDunkLowSB'MagicMushroom'.jpg",
+    "https://firebasestorage.googleapis.com/v0/b/shoesstoremanagement.appspot.com/o/images%2FStingwaterxDunkLowSB'MagicMushroom'.jpg?alt=media&token=b358a832-0c69-4114-9640-86cce8c5199b",
     "white/black/university red",
     0.2, 
     160,
@@ -1280,7 +1280,7 @@ insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa, TyLeLo
     10,
     6,
     "Unisex",
-    "TravisScottxAirJordan6Retro'BritishKhaki'.jpg",
+    "https://firebasestorage.googleapis.com/v0/b/shoesstoremanagement.appspot.com/o/images%2FTravisScottxAirJordan6Retro'BritishKhaki'.jpg?alt=media&token=d6baffc0-4cdc-4b7c-84d1-0e31b5900ddd",
     "white/black/university red",
     0.2, 
     160,
@@ -1292,7 +1292,7 @@ insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa, TyLeLo
     9,
     6,
     "Unisex",
-    "Yeezy500'Enflame'.jpg",
+    "https://firebasestorage.googleapis.com/v0/b/shoesstoremanagement.appspot.com/o/images%2FYeezy500'Enflame'.jpg?alt=media&token=58fbb08c-c8df-4225-8329-3893798fc33a",
     "white/black/university red",
     0.2, 
     160,
@@ -1304,7 +1304,7 @@ insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa, TyLeLo
     9,
     3,
     "Unisex",
-    "Yeezy700V3'Kyanite'.jpg",
+    "https://firebasestorage.googleapis.com/v0/b/shoesstoremanagement.appspot.com/o/images%2FYeezy700V3'Kyanite'.jpg?alt=media&token=177d827f-fc00-42fd-a9c2-95db90293693",
     "white/black/university red",
     0.2, 
     160,
@@ -1316,7 +1316,7 @@ insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa, TyLeLo
     9,
     3,
     "Unisex",
-    "YeezyBoost700'BrightBlue'.jpg",
+    "https://firebasestorage.googleapis.com/v0/b/shoesstoremanagement.appspot.com/o/images%2FYeezyBoost700'BrightBlue'.jpg?alt=media&token=df4fcc3d-19ab-4b76-8ec5-6e54e84989d3",
     "white/black/university red",
     0.2, 
     160,
@@ -1328,24 +1328,11 @@ insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa, TyLeLo
     9,
     1,
     "Unisex",
-    "YeezyBoost700V2'Cream'.jpg",
+    "https://firebasestorage.googleapis.com/v0/b/shoesstoremanagement.appspot.com/o/images%2FYeezyBoost700V2'Cream'.jpg?alt=media&token=9f932453-76cc-4bd3-9763-fb4e951dc2c2",
     "white/black/university red",
     0.2, 
     160,
     6375000
-);
-
-insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa, TyLeLoiNhuan ,TongSoLuong, DonGiaNhap,IsDeleted) values (
-    "Yeezy Boost 700 V2 'Cream'", 
-    9,
-    1,
-    "Female",
-    "YeezyBoost700V2'Cream'.jpg",
-    "white/black/university red",
-    0.2, 
-    160,
-    6375000,
-    true
 );
 
 insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa, TyLeLoiNhuan ,TongSoLuong, DonGiaNhap) values (
@@ -1353,7 +1340,7 @@ insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa, TyLeLo
     9,
     6,
     "Unisex",
-    "YeezySlides'Core'2021.jpg",
+    "https://firebasestorage.googleapis.com/v0/b/shoesstoremanagement.appspot.com/o/images%2FYeezySlides'Core'%202021.jpg?alt=media&token=1f3cdbeb-1559-40ec-b5d9-04f6ca4961e3",
     "white/black/university red",
     0.2, 
     160,
@@ -1365,7 +1352,7 @@ insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa, TyLeLo
     9,
     6,
     "Unisex",
-    "YeezySlides'Pure'.jpg",
+    "https://firebasestorage.googleapis.com/v0/b/shoesstoremanagement.appspot.com/o/images%2FYeezySlides'Pure'.jpg?alt=media&token=8944a917-3be7-4575-a649-ee0317a924f1",
     "white/black/university red",
     0.2, 
     100,
@@ -1377,7 +1364,7 @@ insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa, TyLeLo
     9,
     6,
     "Unisex",
-    "YeezySlides'Resin'2021.jpg",
+    "https://firebasestorage.googleapis.com/v0/b/shoesstoremanagement.appspot.com/o/images%2FYeezySlides'Resin'2021.jpg?alt=media&token=643a4b30-6e3a-4ad1-8aaf-018d7ac190ee",
     "white/black/university red",
     0.2, 
     160,
@@ -1569,12 +1556,6 @@ insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (6,20,0);
 
 
 
-insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (1,21,50);
-insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (2,21,20);
-insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (3,21,30);
-insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (4,21,40);
-insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (5,21,10);
-insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (6,21,10);
 
 INSERT INTO NHACUNGCAP(TenNhaCungCap, SDT, DiaChi, Email) VALUES ("Giay dep", "19006074", "Dia chi van phong: 3 Thep Moi, phuong 12, quan Tan Binh, TP Ho Chi Minh", "lienhe@thitruongsi.com");
 INSERT INTO NHACUNGCAP(TenNhaCungCap, SDT, DiaChi, Email) VALUES ("Kho giay pho", "0866074947", "737/10 Lac Long Quan, P10 - Quan Tan Binh", "lienhe@thitruongsi.com");

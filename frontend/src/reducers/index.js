@@ -1,8 +1,9 @@
 import { combineReducers } from "redux";
-import { listGiayReducer, giayReducer, giaySizeReducer } from "./giayReducer";
+import * as GiayReducer from "./giayReducer";
 import { listSizeReducer } from "./sizeReducer";
 import * as hangSanXuatReducer from "./hangSanXuatReducer";
 import * as nhaCungCapReducer from "./nhaCungCapReducer";
+import * as nguoiDungReducer from "./nguoiDungReducer";
 import * as phieuBanHangReducer from "./phieuBanHangReducer";
 import mauReducer from "./mauReducer";
 const rootReducer = combineReducers({
@@ -10,6 +11,7 @@ const rootReducer = combineReducers({
   ListGiay: listGiayReducer,
   ListSize: listSizeReducer,
   Giay: giayReducer,
+  CreateGiay: GiayReducer.giayCreateReducer,
   SizeGiay: giaySizeReducer,
   ListMau: mauReducer,
   //hang san xuat
@@ -27,6 +29,8 @@ const rootReducer = combineReducers({
   CreatePhieuBanHang: phieuBanHangReducer.billCreateReducer,
   UpdatePhieuBanHang: phieuBanHangReducer.billUpdateReducer,
   DeletePhieuBanHang: phieuBanHangReducer.billDeleteReducer,
+  //login
+  UserLogin: nguoiDungReducer.userLoginReducer,
 });
 
 export default rootReducer;

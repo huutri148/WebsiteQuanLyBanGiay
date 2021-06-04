@@ -97,11 +97,7 @@ const ProductDetail = (props) => {
       ) : (
         <Grid container spacing={4}>
           <Grid item xs={6}>
-            <img
-              src={`/images/${item.Anh}`}
-              alt={item.TenGiay}
-              className={classes.image}
-            />
+            <img src={item.Anh} alt={item.TenGiay} className={classes.image} />
             <div className={classes.price}>
               <label style={{ margin: "8px 8px" }}>Giá nhập:</label>
               <div

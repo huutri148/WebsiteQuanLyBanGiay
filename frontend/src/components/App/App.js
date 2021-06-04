@@ -17,16 +17,9 @@ function App() {
       <div className="App">
         <Router>
           <Switch>
-            <Route
-              path="/manager"
-              render={() => {
-                return localStorage.getItem("accessToken") ? (
-                  <Manager />
-                ) : (
-                  <Redirect to="/" />
-                );
-              }}
-            />
+            <Route path="/manager">
+              <Manager />
+            </Route>
             <Route path="/">
               <Login />
             </Route>
