@@ -1,5 +1,5 @@
 import * as phieuBanHangAPI from "../apis/phieuBanHangAPI";
-import * as phieuBanHangConstants from "../constants/phieuBanHangConstant";
+import * as phieuBanHangConstants from "../../constants/phieuBanHangConstant";
 export const fetchListPhieuBanHang = () => async (dispatch) => {
   try {
     dispatch({ type: phieuBanHangConstants.PHIEUBANHANG_LIST_REQUEST });

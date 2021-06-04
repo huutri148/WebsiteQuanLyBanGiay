@@ -1,4 +1,4 @@
-import * as phieuBanHangConstant from "../constants/phieuBanHangConstant";
+import * as phieuBanHangConstant from "../../constants/phieuBanHangConstant";
 import * as _ from "lodash";
 
 const initalState = {
