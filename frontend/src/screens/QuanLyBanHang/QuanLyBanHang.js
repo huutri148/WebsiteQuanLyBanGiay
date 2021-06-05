@@ -27,6 +27,7 @@ import ProductCard from "../QuanLySanPham/ProductCard";
 import InfoField from "../../components/controls/InfoField";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchListGiay } from "../../redux/actions/giayAction";
+import { createPhieuBanHang, updatePhieuBanHang } from "../../redux/actions/phieuBanHangAction";
 import { fetchListHangSanXuat } from "../../redux/actions/hangSanXuatAction";
 import { fetchListSize } from "../../redux/actions/sizeAction";
 import { fetchListMau } from "../../redux/actions/mauAction";
@@ -154,7 +155,7 @@ const QuanLyBanHang = () => {
     ) {
       let tmp = sumTotal + total;
       setSumTotal(tmp);
-      groupBoxes[2].value = tmp.toLocaleString("it-IT");
+      groupBoxes[1].value = tmp.toLocaleString("it-IT");
       let shoe = product;
       shoe.total = total;
       shoe.amount = amount;
@@ -163,7 +164,7 @@ const QuanLyBanHang = () => {
     } else {
       let tmp = sumTotal + total - product.total;
       setSumTotal(tmp);
-      groupBoxes[2].value = tmp.toLocaleString("it-IT");
+      groupBoxes[1].value = tmp.toLocaleString("it-IT");
       let shoe = selectedProducts[selectedProducts.indexOf(product)];
       shoe.total = total;
       shoe.amount = amount;
@@ -174,7 +175,7 @@ const QuanLyBanHang = () => {
     selectedProducts.splice(selectedProducts.indexOf(item), 1);
     let tmp = sumTotal - item.total;
     setSumTotal(tmp);
-    groupBoxes[2].value = tmp.toLocaleString("it-IT");
+    groupBoxes[1].value = tmp.toLocaleString("it-IT");
   };
   const handleEditClick = (item) => {
     setProduct(item);
@@ -193,7 +194,7 @@ const QuanLyBanHang = () => {
     else
     {
       //set default date
-      if(groupBoxes[4].value === undefined)
+      if(groupBoxes[3].value === undefined)
       {
         let date = new Date().getDate();
         if(date < 10) date = '0' + date;
@@ -204,15 +205,16 @@ const QuanLyBanHang = () => {
       //get record
       let item = {
         MaNguoiDung : 2,
-        MaKhanhHang : 1,
-        TenKhachHang : groupBoxes[0].value === undefined ?  groupBoxes[0].options[0].label :groupBoxes[0].value.label,
-        SoDienThoai: groupBoxes[1].value,
-        TongTien : groupBoxes[2].value,
-        PhuongThucThanhToan: groupBoxes[3].value === undefined ?  groupBoxes[3].options[0].label : groupBoxes[3].value.label,
-        NgayLap: groupBoxes[4].value,
+        MaKhachHang : groupBoxes[0].value === undefined ?  1 : groupBoxes[0].value.value,
+        TenKhachHang : groupBoxes[0].value === undefined ?  "Khách Vãng Lai" : groupBoxes[0].value.label,
+        TongTien : sumTotal,
+        PhuongThucThanhToan: groupBoxes[2].value === undefined ?  "Thanh toán trực tiếp" : groupBoxes[2].value.label,
+        NgayBan: groupBoxes[4].value,
         GhiChu : groupBoxes[5].value === undefined ? null : groupBoxes[5].value,
       }
       console.log(item);
+      //to do: Add success later
+      item.SoPhieuBanHang === null ? dispatch(createPhieuBanHang(item)) : dispatch(updatePhieuBanHang(item.SoPhieuBanHang, item));
     }
   };
   //handle Change
@@ -258,18 +260,6 @@ const QuanLyBanHang = () => {
       checkValidation: (val) => false,
     },
     {
-      type: "Number",
-      title: "Số Điện Thoại",
-      required: true,
-      onChange: (e) => groupBoxes[1].value = e.target.value,
-      validationTip: "Số Điện Thoại không được trống",
-      error: false,
-      checkValidation: (val) => {
-        if (val === null || val === "" || val === undefined) return true;
-        return false;
-      },
-    },
-    {
       type: "TextBox",
       title: "Tổng Tiền",
       required: true,
@@ -288,7 +278,7 @@ const QuanLyBanHang = () => {
       required: true,
       options: [{value: "Thanh toán trực tiếp", label: "Thanh toán trực tiếp"},{value: "Thanh toán online", label: "Thanh toán online"}],
       error: false,
-      onChange: (e) => groupBoxes[3].value = e,
+      onChange: (e) => groupBoxes[2].value = e,
       checkValidation: (val) => false,
     },
     {
@@ -315,42 +305,52 @@ const QuanLyBanHang = () => {
   ]);
   // set and map Products, Sizes, Users when done fetching
   useEffect(() => {
-    const productsData = Object.values(listGiay).reduce((result, value) => {
-      let maHSX = value.MaHangSanXuat;
-      if (typeof listHangSanXuat[maHSX] === "undefined") return [];
-      let { TenHangSanXuat } = listHangSanXuat[maHSX];
-      let maMau = value.MaMau;
-      if (typeof listMau[maMau] === "undefined") return [];
-      let { TenMau } = listMau[maMau];
-      result.push({
-        TenHangSanXuat,
-        TenMau,
-        ...value,
+    if(listGiay != undefined)
+    {
+      const productsData = Object.values(listGiay).reduce((result, value) => {
+        let maHSX = value.MaHangSanXuat;
+        if (typeof listHangSanXuat[maHSX] === "undefined") return [];
+        let { TenHangSanXuat } = listHangSanXuat[maHSX];
+        let maMau = value.MaMau;
+        if (typeof listMau[maMau] === "undefined") return [];
+        let { TenMau } = listMau[maMau];
+        result.push({
+          TenHangSanXuat,
+          TenMau,
+          ...value,
+        });
+        return result;
+      }, []);
+      let tempData = productsData.map((item)=>{
+        item.DonGia = item.DonGiaNhap * (100 + item.TyLeLoiNhuan *100)/100;
+        return item;
       });
-      return result;
-    }, []);
-    const sizesData = Object.values(listSize).reduce((result, value) => {
-      result.push({
-        ...value,
+      setProducts(tempData);
+    }
+    if(listSize != undefined)
+    {
+      const sizesData = Object.values(listSize).reduce((result, value) => {
+        result.push({
+          ...value,
+        });
+        return result;
+      }, []);
+      setSizes(sizesData);
+    }
+
+    if(listNguoiDung != undefined)
+    {
+      const usersData = Object.values(listNguoiDung).reduce((result, value) => {
+        result.push({
+          ...value,
+        });
+        return result;
+      }, []);
+      setUsers(usersData);
+      groupBoxes[0].options = usersData.map(item => {
+        return {value: item.MaNguoiDung, label: item.TenNguoiDung}
       });
-      return result;
-    }, []);
-    const usersData = Object.values(listNguoiDung).reduce((result, value) => {
-      result.push({
-        ...value,
-      });
-      return result;
-    }, []);
-    let tempData = productsData.map((item)=>{
-      item.DonGia = item.DonGiaNhap * (100 + item.TyLeLoiNhuan *100)/100;
-      return item;
-    });
-    setProducts(tempData);
-    setSizes(sizesData);
-    setUsers(usersData);
-    groupBoxes[0].options = usersData.map(item => {
-      return {value: item.MaNguoiDung, label: item.TenNguoiDung}
-    });
+    }
   }, [loading]);
   // Fetch data from API
   useEffect(() => {

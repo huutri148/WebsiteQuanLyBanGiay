@@ -131,7 +131,6 @@ CREATE TABLE PHIEUBANHANG
     SoPhieuBanHang int auto_increment primary key,
     MaNguoiDung int not null,
     MaKhachHang int not null,
-    TenKhachHang NVARCHAR(1000) NOT NULL,
     NgayBan DATETIME DEFAULT CURRENT_TIMESTAMP,
     PhuongThucThanhToan NVARCHAR(100) NOT NULL,
     TongTien DECIMAL(17,0) DEFAULT 0,
