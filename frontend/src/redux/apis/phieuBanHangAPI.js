@@ -1,5 +1,5 @@
 import axiosService from "../../services/axiosService";
-const url = "/api/bill";
+const url = "/api/bills";
 
 export const getList = () => {
   return axiosService.get(url);
