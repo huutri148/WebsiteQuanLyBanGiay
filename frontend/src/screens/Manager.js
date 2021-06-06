@@ -1,16 +1,22 @@
 import React from "react";
-import { Route, BrowserRouter as Router, Switch } from "react-router-dom";
+import {
+  Route,
+  BrowserRouter as Router,
+  Switch,
+  withRouter,
+} from "react-router-dom";
 import { Layout } from "../components/Layout";
-import Home from "./Home";
+import { Home } from "./Home";
 import "../components/App/App.css";
-import QuanLySanPham from "./QuanLySanPham";
+import QuanLySanPham from "./QuanLySanPham/QuanLySanPham";
 import QuanLyGioHang from "./QuanLyGioHang";
 import QuanLyNguoiDung from "./QuanLyNguoiDung";
 import QuanLyNhaCungCap from "./QuanLyNhaCungCap/QuanLyNhaCungCap";
 import QuanLyHangSanXuat from "./QuanLyHangSanXuat/QuanLyHangSanXuat";
 import QuanLyBanHang from "./QuanLyBanHang/QuanLyBanHang";
+import { PrivateRoute } from "../services/auth/auth";
 
-export default function Manager() {
+export const Manager = withRouter(() => {
   return (
     <Router>
       <Layout>
@@ -18,9 +24,9 @@ export default function Manager() {
           <Route exact path="/">
             <Home />
           </Route>
-          <Route exact path="/products">
+          <PrivateRoute exact path="/products">
             <QuanLySanPham />
-          </Route>
+          </PrivateRoute>
           <Route exact path="/users">
             <QuanLyNguoiDung />
           </Route>
@@ -40,4 +46,4 @@ export default function Manager() {
       </Layout>
     </Router>
   );
-}
+});

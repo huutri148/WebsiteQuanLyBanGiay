@@ -62,9 +62,6 @@ const useStyles = makeStyles((theme) => ({
     flewGrow: 1,
     textTransform: "none",
   },
-  accordion: {
-    margin: "22px 20px",
-  },
   CheckBox: {
     marginTop: "20px",
   },
@@ -208,6 +205,7 @@ const ThemSanPham = (props) => {
                     justifyContent: "center",
                     display: "flex",
                     marginTop: "20px",
+                    paddingRight: "40px",
                   }}
                 >
                   <Button

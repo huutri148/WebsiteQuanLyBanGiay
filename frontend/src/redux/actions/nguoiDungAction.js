@@ -1,5 +1,6 @@
 import * as nguoiDungAPI from "../apis/nguoiDungAPI";
 import * as nguoiDungConstants from "../../constants/nguoiDungConstant";
+import localStorageService from "../../services/localStorageService";
 export const fetchListNguoiDung = () => async (dispatch) => {
   try {
     dispatch({ type: nguoiDungConstants.NGUOIDUNG_LIST_REQUEST });
@@ -30,7 +31,9 @@ export const login = (item) => async (dispatch) => {
       type: nguoiDungConstants.NGUOIDUNG_LOGIN_SUCCESS,
       payload: data,
     });
-    localStorage.setItem("userInfo", JSON.stringify(data));
+    //localStorage.setItem("userInfo", JSON.stringify(data));
+    localStorageService.setAccessToken("access_token", data.accessToken);
+    localStorageService.setItem("refresh_token", data.refreshToken);
   } catch (error) {
     dispatch({
       type: nguoiDungConstants.NGUOIDUNG_LOGIN_FAIL,
