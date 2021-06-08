@@ -1,6 +1,26 @@
 import * as nguoiDungAPI from "../apis/nguoiDungAPI";
 import * as nguoiDungConstants from "../../constants/nguoiDungConstant";
+import localStorageService from "../../services/localStorageService";
+export const fetchListNguoiDung = () => async (dispatch) => {
+  try {
+    dispatch({ type: nguoiDungConstants.NGUOIDUNG_LIST_REQUEST });
 
+    const { data } = await nguoiDungAPI.getList();
+
+    dispatch({
+      type: nguoiDungConstants.NGUOIDUNG_LIST_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: nguoiDungConstants.NGUOIDUNG_LIST_FAIL,
+      payload:
+        error.response && error.response.message
+          ? error.response.data.data.message
+          : error.messagge,
+    });
+  }
+};
 export const login = (item) => async (dispatch) => {
   try {
     dispatch({ type: nguoiDungConstants.NGUOIDUNG_LOGIN_REQUEST });
@@ -11,7 +31,9 @@ export const login = (item) => async (dispatch) => {
       type: nguoiDungConstants.NGUOIDUNG_LOGIN_SUCCESS,
       payload: data,
     });
-    localStorage.setItem("userInfo", JSON.stringify(data));
+    //localStorage.setItem("userInfo", JSON.stringify(data));
+    localStorageService.setAccessToken("access_token", data.accessToken);
+    localStorageService.setItem("refresh_token", data.refreshToken);
   } catch (error) {
     dispatch({
       type: nguoiDungConstants.NGUOIDUNG_LOGIN_FAIL,
@@ -24,7 +46,7 @@ export const login = (item) => async (dispatch) => {
 };
 
 export const logout = () => async (dispatch) => {
-  localStorage.removeItem("userInfo");
+  localStorage.removeItem("access_token");
 };
 export const register = (item) => async (dispatch) => {
   try {

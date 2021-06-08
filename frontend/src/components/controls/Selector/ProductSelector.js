@@ -71,12 +71,6 @@ export default function ProductSelector(props) {
       marginTop: 10,
     }),
   };
-  const filterOptions = (candidate, input) => {
-    if (input) {
-      return candidate.value === options[0].value;
-    }
-    return true;
-  };
   return (
     <div style={{ padding: "0px 10px", display: "block" }}>
       <label
@@ -88,6 +82,7 @@ export default function ProductSelector(props) {
         {props.title}
       </label>
       <Select
+        placeholder = "Hàng Hoá ..."
         value={options.find((obj) => obj.value === selectedValue)}
         onChange={handleChange}
         formatOptionLabel={formatOptionLabel}

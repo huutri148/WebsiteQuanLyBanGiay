@@ -12,9 +12,11 @@ import Grid from "@material-ui/core/Grid";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
-import { useHistory } from "react-router-dom";
 import { login } from "../../redux/actions/nguoiDungAction";
 import { useDispatch, useSelector } from "react-redux";
+import { isAuthenticated } from "../../services/jwtAuthService";
+//import { history } from "../../helper/history";
+import { withRouter, useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -49,25 +51,23 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Login() {
+export const Login = withRouter(() => {
   const [islogged, setIslogged] = useState(false);
   const [loginParams, setLoginParams] = useState({
     TenDangNhap: "huutri148",
     MatKhau: "123456",
   });
   const dispatch = useDispatch();
-  const history = useHistory();
   const classes = useStyles();
-
+  const history = useHistory();
   const userLogin = useSelector((state) => state.UserLogin);
   const { loading, error, userInfo } = userLogin;
-
   useEffect(() => {
-    if (userInfo.accessToken) {
-      console.log(userInfo);
-      history.replace("/manager");
+    if (isAuthenticated()) {
+      history.replace("/");
     }
   }, [userInfo]);
+
   const handleFormChange = (e) => {
     //todo: Get username and password
     const { name, value } = e.target;
@@ -78,8 +78,6 @@ export default function Login() {
   };
   const handleLogin = (event) => {
     dispatch(login(loginParams));
-    const user = localStorage.getItem("userInfo");
-    console.log(user);
     event.preventDefault();
   };
 
@@ -151,4 +149,4 @@ export default function Login() {
       </Grid>
     </Grid>
   );
-}
+});

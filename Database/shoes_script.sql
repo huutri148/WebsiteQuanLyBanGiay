@@ -1,7 +1,7 @@
 drop database ShoesStoreManagement;
 create schema ShoesStoreManagement ;
 use ShoesStoreManagement;
-
+ALTER DATABASE ShoesStoreManagement CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 create Table SIZE 
 (
     MaSize INT auto_increment PRIMARY KEY,
@@ -131,7 +131,6 @@ CREATE TABLE PHIEUBANHANG
     SoPhieuBanHang int auto_increment primary key,
     MaNguoiDung int not null,
     MaKhachHang int not null,
-    TenKhachHang NVARCHAR(1000) NOT NULL,
     NgayBan DATETIME DEFAULT CURRENT_TIMESTAMP,
     PhuongThucThanhToan NVARCHAR(100) NOT NULL,
     TongTien DECIMAL(17,0) DEFAULT 0,
@@ -266,6 +265,7 @@ CREATE TABLE PHIEUDATHANG
     MaNguoiDung int not null,
     MaNhaCungCap int not null,
     NgayLap datetime DEFAULT CURRENT_TIMESTAMP,
+    TrangThai varchar(100),
     IsDeleted BOOLEAN default false
 );
 
@@ -965,6 +965,84 @@ DELIMITER ;
 
 
 
+DELIMITER $$
+create procedure USP_GetListPhieuDatHang()
+BEGIN
+    Select * from PHIEUDATHANG where PHIEUDATHANG.IsDeleted = false;
+END; $$
+DELIMITER ;
+
+DELIMITER $$
+create procedure USP_GetPhieuDatHangByID(p_SoPhieuDatHang int )
+BEGIN
+    Select * from PHIEUDATHANG where PHIEUDATHANG.SoPhieuDatHang = p_SoPhieuDatHang;
+END; $$
+DELIMITER ;
+
+DELIMITER $$
+create procedure USP_GetPhieuDatHangByNhaCungCap(p_MaNhaCungCap int )
+BEGIN
+    Select * from PHIEUDATHANG where PHIEUDATHANG.MaNhaCungCap = p_MaNhaCungCap and PHIEUDATHANG.IsDeleted = false;
+END; $$
+DELIMITER ;
+
+
+DELIMITER $$
+create procedure USP_ThemPhieuDathang(
+    p_MaNhaCungCap int,p_MaNguoiDung int ,
+    p_NgayLap DATETIME, p_TrangThai varchar(100))
+BEGIN
+INSERT INTO ShoesStoreManagement.PHIEUDATHANG(MaNhaCungCap ,MaNguoiDung ,
+    NgayLap , TrangThai)
+VALUES (
+    p_MaNhaCungCap ,p_MaNguoiDung ,
+    p_NgayLap ,p_TrangThai);
+END; $$
+DELIMITER ;
+
+
+DELIMITER $$
+create procedure USP_CapNhatThongTinPhieuDatHang(
+    p_SoPhieuDatHang int,
+    p_MaNhaCungCap int,p_MaNguoiDung int ,
+    p_NgayLap DATETIME ,p_TrangThai NVARCHAR(100))
+BEGIN
+UPDATE PHIEUDATHANG
+SET PHIEUDATHANG.MaNguoiDung= p_MaNguoiDung,
+    PHIEUDATHANG.MaNhaCungCap = p_MaNhaCungCap,
+    PHIEUDATHANG.NgayLap= p_NgayLap,
+    PHIEUDATHANG.TrangThai= p_TrangThai
+WHERE PHIEUDATHANG.SoPhieuDatHang=p_SoPhieuDatHang;
+END; $$
+DELIMITER ;
+
+
+
+DELIMITER $$
+create procedure USP_ThemChiTietPhieuDatHang(p_MaChiTietGiay int,
+        p_SoLuongDat int)
+BEGIN
+    declare phieuDatHangID int;
+    set phieuDatHangID = (select max(SoPhieuDatHang) from ShoesStoreManagement.PHIEUDATHANG);
+    INSERT INTO ShoesStoreManagement.CHITIETPHIEUBANHANG(MaChiTietGiay ,SoPhieuDatHang, 
+        SoLuongDat)
+    VALUES ( p_MaChiTietGiay ,phieuDatHangID,
+        p_SoLuongDat);
+END; $$
+DELIMITER ;
+
+
+
+
+DELIMITER $$
+create procedure USP_XoaPhieuDatHang(p_SoPhieu int)
+BEGIN
+ UPDATE PHIEUDATHANG  
+ SET PHIEUDATHANG.IsDeleted = true 
+ WHERE PHIEUDATHANG.SoPhieuDatHang =p_SoPhieu;
+END; $$
+DELIMITER ;
+
 
 
 
@@ -1562,8 +1640,10 @@ INSERT INTO NHACUNGCAP(TenNhaCungCap, SDT, DiaChi, Email) VALUES ("Kho giay pho"
 INSERT INTO NHACUNGCAP(TenNhaCungCap, SDT, DiaChi, Email) VALUES ("Giay dep Viet Thuy", "0866074947", "Dia chi van phong: 3 Thep Moi, phuong 12, quan Tan Binh, TP Ho Chi Minh", "lienhe@thitruongsi.com");
 INSERT INTO NHACUNGCAP(TenNhaCungCap, SDT, DiaChi, Email) VALUES ("GS", "0866074947", "Dia chi van phong: 3 Thep Moi, phuong 12, quan Tan Binh, TP Ho Chi Minh", "lienhe@thitruongsi.com");
 INSERT INTO NHACUNGCAP(TenNhaCungCap, SDT, DiaChi, Email) VALUES ("Siviet", "0866074947", "Dia chi van phong: 3 Thep Moi, phuong 12, quan Tan Binh, TP Ho Chi Minh", "lienhe@thitruongsi.com");
-
 -- delete later
-insert into NGUOIDUNG(MaChucVu,TenNguoiDung,TenDangNhap,MatKhau,SDT,DiaChi,Email,Avatar,IsDeleted) values (5,"Khách Vãng Lai","khachvanglai","123","01212801223","SG","khachvanglai@khachvanglai","khachvanglai.jpg",false);
-insert into NGUOIDUNG(MaChucVu,TenNguoiDung,TenDangNhap,MatKhau,SDT,DiaChi,Email,Avatar,IsDeleted) values (1,"At Min","admin","123","01212801223","SG","admin@admin","admin.jpg",false);
-insert into NGUOIDUNG(MaChucVu,TenNguoiDung,TenDangNhap,MatKhau,SDT,DiaChi,Email,Avatar,IsDeleted) values (5,"Trần Duy Khánh","duykhanh","123","01212801223","SG","duykhanh@duykhanh","duykhanh.jpg",false);
+-- SET NAMES utf8;
+-- insert into NGUOIDUNG(MaChucVu,TenNguoiDung,TenDangNhap,MatKhau,SDT,DiaChi,Email,Avatar,IsDeleted) values (5,"Khách Vãng Lai","khachvanglai","123","01212801223","SG","khachvanglai@khachvanglai","khachvanglai.jpg",false);
+-- insert into NGUOIDUNG(MaChucVu,TenNguoiDung,TenDangNhap,MatKhau,SDT,DiaChi,Email,Avatar,IsDeleted) values (1,"At Min","admin","123","01212801223","SG","admin@admin","admin.jpg",false);
+-- insert into NGUOIDUNG(MaChucVu,TenNguoiDung,TenDangNhap,MatKhau,SDT,DiaChi,Email,Avatar,IsDeleted) values (5,"Trần Duy Khánh","duykhanh","123","01212801223","SG","duykhanh@duykhanh","duykhanh.jpg",false);
+
+

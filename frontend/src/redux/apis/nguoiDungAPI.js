@@ -18,3 +18,7 @@ export const register = (item) => {
   };
   return axiosService.post(`${url}`, item, config);
 };
+export const getList = () => {
+  return axiosService.get(url);
+};
+
