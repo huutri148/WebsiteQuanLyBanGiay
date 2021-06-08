@@ -205,7 +205,7 @@ const ThemSanPham = (props) => {
                     justifyContent: "center",
                     display: "flex",
                     marginTop: "20px",
-                    paddingRight: "40px",
+                    paddingRight: "80px",
                   }}
                 >
                   <Button

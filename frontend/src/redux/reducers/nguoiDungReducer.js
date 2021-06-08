@@ -58,6 +58,9 @@ export const userLoginReducer = (state = initalState, action) => {
         isLoggedIn: false,
       };
     }
+    case nguoiDungConstant.NGUOIDUNG_LOGOUT: {
+      return {};
+    }
     default:
       return state;
   }

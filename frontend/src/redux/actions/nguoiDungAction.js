@@ -46,7 +46,7 @@ export const login = (item) => async (dispatch) => {
 };
 
 export const logout = () => async (dispatch) => {
-  localStorage.removeItem("userInfo");
+  localStorage.removeItem("access_token");
 };
 export const register = (item) => async (dispatch) => {
   try {

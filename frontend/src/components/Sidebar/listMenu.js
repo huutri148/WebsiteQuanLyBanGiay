@@ -9,6 +9,7 @@ import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
 import ReceiptIcon from "@material-ui/icons/Receipt";
 import PeopleIcon from "@material-ui/icons/People";
 import BarChartIcon from "@material-ui/icons/BarChart";
+import FolderIcon from "@material-ui/icons/Folder";
 import MoneyIcon from "@material-ui/icons/Money";
 import AssignmentIcon from "@material-ui/icons/Assignment";
 import { Link } from "react-router-dom";
@@ -41,6 +42,12 @@ export const mainListItems = (
         <HomeIcon />
       </ListItemIcon>
       <ListItemText primary="Nhà Cung Cấp" />
+    </ListItem>
+    <ListItem button component={Link} to="/orders">
+      <ListItemIcon>
+        <FolderIcon />
+      </ListItemIcon>
+      <ListItemText primary="Đặt hàng" />
     </ListItem>
     <ListItem button component={Link} to="/users">
       <ListItemIcon>

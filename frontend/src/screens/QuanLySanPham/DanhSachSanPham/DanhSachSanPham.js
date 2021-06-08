@@ -168,6 +168,7 @@ const DanhSachSanPham = (props) => {
                               item.TongSoLuong <= 100 &&
                               "blue") ||
                             (item.IsDeleted === 1 && "red"),
+                          boxShadow: " 0 2px 2px 1px rgba(0,0,0,0.24)",
                         }}
                       >
                         {item.IsDeleted === 0 ? "Avaiable" : "IsDeleted"}

@@ -1,6 +1,5 @@
 import React from "react";
 import { isAuthenticated } from "../jwtAuthService";
-import AuthenticateBeforeRender from "./AuthBeforeRender";
 import { Route, Redirect } from "react-router-dom";
 
 export const PrivateRoute = ({ component: Component, ...rest }) => (

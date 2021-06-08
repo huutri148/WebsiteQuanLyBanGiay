@@ -11,6 +11,7 @@ import {
   Drawer,
   Divider,
   List,
+  ListItem,
   ListItemIcon,
   ListItemText,
 } from "@material-ui/core";
@@ -25,7 +26,7 @@ import {
   Settings,
   ExitToApp,
 } from "@material-ui/icons";
-import { StyledMenu, StyledMenuItem } from "./TMenu";
+import { StyledMenu } from "./TMenu";
 const drawerWidth = 260;
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -177,30 +178,30 @@ export const Layout = (props) => {
             onClose={handleCloseMenu}
             className={classes.menu}
           >
-            <StyledMenuItem>
+            <ListItem button component={Link} to="/">
               <ListItemIcon>
                 <Home fontSize="small" color="primary" />
               </ListItemIcon>
               <ListItemText primary="Home" />
-            </StyledMenuItem>
-            <StyledMenuItem>
+            </ListItem>
+            <ListItem button component={Link} to="/profile">
               <ListItemIcon>
                 <Person fontSize="small" color="primary" />
               </ListItemIcon>
               <ListItemText primary="Profile" />
-            </StyledMenuItem>
-            <StyledMenuItem>
+            </ListItem>
+            <ListItem button component={Link} to="/settings">
               <ListItemIcon>
                 <Settings fontSize="small" color="primary" />
               </ListItemIcon>
               <ListItemText primary="Settings" />
-            </StyledMenuItem>
-            <StyledMenuItem>
+            </ListItem>
+            <ListItem>
               <ListItemIcon>
                 <ExitToApp fontSize="small" color="primary" />
               </ListItemIcon>
               <ListItemText primary="Logout" />
-            </StyledMenuItem>
+            </ListItem>
           </StyledMenu>
         </Toolbar>
       </AppBar>

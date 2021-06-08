@@ -14,7 +14,7 @@ import QuanLyNguoiDung from "./QuanLyNguoiDung";
 import QuanLyNhaCungCap from "./QuanLyNhaCungCap/QuanLyNhaCungCap";
 import QuanLyHangSanXuat from "./QuanLyHangSanXuat/QuanLyHangSanXuat";
 import QuanLyBanHang from "./QuanLyBanHang/QuanLyBanHang";
-import { PrivateRoute } from "../services/auth/auth";
+import QuanLyPhieuDatHang from "./QuanLyPhieuDatHang/QuanLyPhieuDatHang";
 
 export const Manager = withRouter(() => {
   return (
@@ -24,9 +24,9 @@ export const Manager = withRouter(() => {
           <Route exact path="/">
             <Home />
           </Route>
-          <PrivateRoute exact path="/products">
+          <Route exact path="/products">
             <QuanLySanPham />
-          </PrivateRoute>
+          </Route>
           <Route exact path="/users">
             <QuanLyNguoiDung />
           </Route>
@@ -41,6 +41,9 @@ export const Manager = withRouter(() => {
           </Route>
           <Route exact path="/bills">
             <QuanLyBanHang />
+          </Route>
+          <Route exact path="/orders">
+            <QuanLyPhieuDatHang />
           </Route>
         </Switch>
       </Layout>
