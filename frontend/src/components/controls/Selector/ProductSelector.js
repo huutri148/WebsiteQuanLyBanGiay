@@ -2,13 +2,14 @@ import React, { useState } from "react";
 import Select from "react-select";
 
 export default function ProductSelector(props) {
-  const [selectedValue, setSelectedValue] = useState(0);
+  const [selectedValue, setSelectedValue] = useState();
   const handleChange = (e) => {
     setSelectedValue(e.value);
-    sendData(e);
+    sendData(e.value);
+    console.log(e.value);
   };
   const sendData = (e) => {
-    props.setSelectedId(e.value);
+    props.setSelectedId(e);
   };
   const options = props.products.map((item) => {
     let newObj = {};
