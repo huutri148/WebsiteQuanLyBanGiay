@@ -1,10 +1,9 @@
 import React from "react";
-
-export const Home = () => {
+import { withRouter } from "react-router-dom";
+export const Home = withRouter(() => {
   return (
     <div>
       <h1>Home</h1>
     </div>
   );
-};
-export default Home;
+});

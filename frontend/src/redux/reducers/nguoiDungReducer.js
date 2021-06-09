@@ -48,7 +48,7 @@ export const userLoginReducer = (state = initalState, action) => {
       return {
         loading: false,
         isLoggedIn: true,
-        userInfo: { ...action.payload },
+        userInfo: { ...action.payload.userInfo },
       };
     }
     case nguoiDungConstant.NGUOIDUNG_LOGIN_FAIL: {
@@ -58,8 +58,10 @@ export const userLoginReducer = (state = initalState, action) => {
         isLoggedIn: false,
       };
     }
+    case nguoiDungConstant.NGUOIDUNG_LOGOUT: {
+      return {};
+    }
     default:
       return state;
   }
 };
-

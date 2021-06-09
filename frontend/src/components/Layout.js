@@ -11,12 +11,22 @@ import {
   Drawer,
   Divider,
   List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
 } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import MenuIcon from "@material-ui/icons/Menu";
 import clsx from "clsx";
 import { mainListItems, secondaryListItems } from "./Sidebar/listMenu";
-import { ChevronLeft } from "@material-ui/icons";
+import {
+  ChevronLeft,
+  Home,
+  Person,
+  Settings,
+  ExitToApp,
+} from "@material-ui/icons";
+import { StyledMenu } from "./TMenu";
 const drawerWidth = 260;
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -87,17 +97,34 @@ const useStyles = makeStyles((theme) => ({
     height: theme.spacing(7),
     marginRight: 35,
   },
+  name: {
+    fontSize: "0.875rem",
+    fontFamily: "Roboto, Helvetica, Arial, sans-serif",
+  },
+  avatar: {
+    margin: "0px 30px 0px 10px",
+  },
+  menu: {},
   container: {},
   appBarSpacer: theme.mixins.toolbar,
 }));
 export const Layout = (props) => {
   const classes = useStyles();
   const [open, setOpen] = React.useState(true);
+  const [anchorEl, setAnchorEl] = React.useState(null);
   const handleDrawerOpen = () => {
     setOpen(true);
   };
   const handleDrawerClose = () => {
     setOpen(false);
+  };
+
+  const handleClickMenu = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleCloseMenu = () => {
+    setAnchorEl(null);
   };
 
   return (
@@ -131,11 +158,51 @@ export const Layout = (props) => {
               Sneaker Land
             </Link>
           </Typography>
-          <IconButton color="inherit">
-            <Badge badgeContent={4} color="secondary">
-              <Avatar>T</Avatar>
-            </Badge>
+          <IconButton
+            color="inherit"
+            onClick={handleClickMenu}
+            className={classes.name}
+          >
+            <span>
+              Hi,
+              <strong> Huu Tri</strong>
+            </span>
+
+            <Avatar className={classes.avatar}>T</Avatar>
           </IconButton>
+          <StyledMenu
+            id="customized-menu"
+            anchorEl={anchorEl}
+            keepMounted
+            open={Boolean(anchorEl)}
+            onClose={handleCloseMenu}
+            className={classes.menu}
+          >
+            <ListItem button component={Link} to="/">
+              <ListItemIcon>
+                <Home fontSize="small" color="primary" />
+              </ListItemIcon>
+              <ListItemText primary="Home" />
+            </ListItem>
+            <ListItem button component={Link} to="/profile">
+              <ListItemIcon>
+                <Person fontSize="small" color="primary" />
+              </ListItemIcon>
+              <ListItemText primary="Profile" />
+            </ListItem>
+            <ListItem button component={Link} to="/settings">
+              <ListItemIcon>
+                <Settings fontSize="small" color="primary" />
+              </ListItemIcon>
+              <ListItemText primary="Settings" />
+            </ListItem>
+            <ListItem>
+              <ListItemIcon>
+                <ExitToApp fontSize="small" color="primary" />
+              </ListItemIcon>
+              <ListItemText primary="Logout" />
+            </ListItem>
+          </StyledMenu>
         </Toolbar>
       </AppBar>
       <Drawer
