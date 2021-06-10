@@ -83,7 +83,10 @@ const authenUser = async (req, res) => {
       try {
         console.log(result);
         const user = result;
-
+        const userInfo = {
+          TenDangNhap: user.TenDangNhap,
+          MatKhau: user.MaChucVu,
+        };
         //if login success, create refresh token
         const accessToken = await jwtHelper.generateToken(
           user,
@@ -98,7 +101,7 @@ const authenUser = async (req, res) => {
         );
         tokenList[refreshToken] = { accessToken, refreshToken };
 
-        return res.status(200).json({ accessToken, refreshToken });
+        return res.status(200).json({ accessToken, refreshToken, userInfo });
       } catch (error) {
         return res.status(500).json(error);
       }

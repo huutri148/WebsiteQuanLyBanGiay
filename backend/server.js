@@ -35,7 +35,7 @@ app.use("/api/products", productRoutes);
 app.use("/api/bills", billRoutes);
 app.use("/api/carts", cartRoutes);
 app.use("/api/recdockets", recDocketRoutes);
-//app.use("/api/orders", orderRoutes);
+app.use("/api/orders", orderRoutes);
 app.use("/api/suppliers", supplierRoutes);
 app.use("/api/brands", brandRoutes);
 app.use("/api/baocaobanhangs", baoCaoBanHangRoutes);
