@@ -14,7 +14,17 @@ import {
 } from "@material-ui/core";
 import useTable from "../../components/useTable";
 import Input from "../../components/controls/Input";
-import { Search, Check, Clear, ArrowRightAlt } from "@material-ui/icons";
+import {
+  Search,
+  Check,
+  Clear,
+  ArrowRightAlt,
+  CloudDownload,
+  Print,
+  FilterList,
+  PrintDisabledRounded,
+  ViewColumn,
+} from "@material-ui/icons";
 import { useSelector } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
@@ -25,9 +35,11 @@ const useStyles = makeStyles((theme) => ({
     color: "darkslateblue",
     fontWeight: "Bold",
   },
-  searchInput: {
+  toolbar: {
     display: "flex",
-    justifyContent: "center",
+    position: "relative",
+    alignItems: "center",
+    padding: theme.spacing(0, 8),
   },
   table: {
     padding: theme.spacing(0, 8),
@@ -46,6 +58,17 @@ const useStyles = makeStyles((theme) => ({
   },
   cancelButton: {
     color: "#FF3D57",
+  },
+  actions: {
+    flex: "1 1 auto",
+    textAlign: "right",
+    marginTop: "30px",
+  },
+  searchInput: {
+    flex: "1 1 auto",
+  },
+  actionsButton: {
+    "&:hover, &.Mui-focusVisible": { color: "#1976d2" },
   },
 }));
 
@@ -124,19 +147,44 @@ const DanhSachPhieuDatHang = (props) => {
             Quản lý phiếu đặt hàng
           </Typography>
           <Paper>
-            <Toolbar className={classes.searchInput}>
-              <Input
-                label="Search"
-                style={{ marginTop: "30px" }}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <Search />
-                    </InputAdornment>
-                  ),
-                }}
-                onChange={handleSearch}
-              />
+            <Toolbar className={classes.toolbar}>
+              <div className={classes.searchInput}>
+                <Input
+                  label="Search"
+                  style={{ marginTop: "30px" }}
+                  fullWidth="true"
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <Search />
+                      </InputAdornment>
+                    ),
+                  }}
+                  onChange={handleSearch}
+                />
+              </div>
+              <div className={classes.actions}>
+                <Tooltip title="Tải file csv">
+                  <IconButton className={classes.actionsButton}>
+                    <CloudDownload />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title="In">
+                  <IconButton className={classes.actionsButton}>
+                    <Print />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title="Chọn cột">
+                  <IconButton className={classes.actionsButton}>
+                    <ViewColumn />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title="Lọc">
+                  <IconButton className={classes.actionsButton}>
+                    <FilterList />
+                  </IconButton>
+                </Tooltip>
+              </div>
             </Toolbar>
             <TableContainer className={classes.table}>
               <TblContainer>

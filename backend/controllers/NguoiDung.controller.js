@@ -85,7 +85,9 @@ const authenUser = async (req, res) => {
         const user = result;
         const userInfo = {
           TenDangNhap: user.TenDangNhap,
-          MatKhau: user.MaChucVu,
+          MaChucVu: user.MaChucVu,
+          Avatar: user.Avatar,
+          MaNguoiDung: user.MaNguoiDung,
         };
         //if login success, create refresh token
         const accessToken = await jwtHelper.generateToken(

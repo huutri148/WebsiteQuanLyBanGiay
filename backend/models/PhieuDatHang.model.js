@@ -15,26 +15,30 @@ PhieuDatHang.Create = async function (data, result) {
     "CALL USP_ThemPhieuDatHang(?,?,?,?);",
     dataPhieuDatHang
   );
-  conn.query(queryString, (err, res) => {
-    if (err) {
-      //Todo: Handle error
-      throw err;
-    } else {
-      console.log(`Created PhieuDatHang successfully`);
-      data.ChiTietPhieuDatHang.map(function await(chiTietPhieuDatHang) {
-        let qr = sqlString.format(
-          `CALL USP_ThemChiTietPhieuDatHang(${chiTietPhieuDatHang.MaChiTietGiay},${chiTietPhieuDatHang.SoLuongDat});`
-        );
-        conn.query(qr, (error, response) => {
-          if (error) {
-            console.log(error);
-          } else {
-          }
+  try {
+    conn.query(queryString, (err, res) => {
+      if (err) {
+        //Todo: Handle error
+        throw err;
+      } else {
+        console.log(`Created PhieuDatHang successfully`);
+        data.ChiTietPhieuDatHang.map(function await(chiTietPhieuDatHang) {
+          let qr = sqlString.format(
+            `CALL USP_ThemChiTietPhieuDatHang(${chiTietPhieuDatHang.MaChiTietGiay},${chiTietPhieuDatHang.SoLuongDat});`
+          );
+          conn.query(qr, (error, response) => {
+            if (error) {
+              console.log(error);
+            } else {
+            }
+          });
         });
-      });
-      result(res[0]);
-    }
-  });
+        result(res[0]);
+      }
+    });
+  } catch (error) {
+    throw error;
+  }
 };
 
 PhieuDatHang.GetByID = (soPhieuDatHang, callBack) => {

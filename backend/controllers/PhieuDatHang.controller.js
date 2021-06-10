@@ -80,7 +80,7 @@ const removeOrder = async (req, res) => {
   const orderID = req.params.id;
   await PhieuDatHang.Delete(orderID, (result) => {
     if (result) {
-      res.status(200).send(JSON.stringify(result));
+      res.status(200).send({ message: "Deleted Successfully" });
     } else {
       res.status(404);
     }

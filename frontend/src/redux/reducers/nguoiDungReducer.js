@@ -48,7 +48,7 @@ export const userLoginReducer = (state = initalState, action) => {
       return {
         loading: false,
         isLoggedIn: true,
-        userInfo: { ...action.payload.userInfo },
+        userInfo: { ...action.payload },
       };
     }
     case nguoiDungConstant.NGUOIDUNG_LOGIN_FAIL: {
