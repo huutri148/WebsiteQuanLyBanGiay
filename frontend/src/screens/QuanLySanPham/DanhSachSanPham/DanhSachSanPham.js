@@ -37,8 +37,13 @@ const DanhSachSanPham = (props) => {
   //Fetched data
   const dispatch = useDispatch();
   const productList = useSelector((state) => state.ListGiay);
+  const brandList = useSelector((state) => state.ListHangSanXuat);
+  const mauList = useSelector((state) => state.ListMau);
+  const sizeList = useSelector((state) => state.ListSize);
 
   const { loading: productLoading, error: giayError, listGiay } = productList;
+  const { listHangSanXuat } = brandList;
+  const { listMau } = mauList;
 
   // Props in Screens
   const [tableData, setTableData] = useState([]);
@@ -62,7 +67,7 @@ const DanhSachSanPham = (props) => {
       // Done have to use Flag
       setLoading(!loading);
     };
-    fetchData();
+    if (typeof productLoading === "undefined") fetchData();
   }, [dispatch]);
 
   // setTableData when done fetching
@@ -70,10 +75,10 @@ const DanhSachSanPham = (props) => {
     const data = Object.values(listGiay).reduce((result, value) => {
       let maHSX = value.MaHangSanXuat;
       let maMau = value.MaMau;
-      if (typeof ListHSX[maHSX] === "undefined") return [];
-      if (typeof ListMau[maMau] === "undefined") return [];
-      let { TenHangSanXuat } = ListHSX[maHSX];
-      let { TenMau } = ListMau[maMau];
+      if (typeof listHangSanXuat[maHSX] === "undefined") return [];
+      if (typeof listMau[maMau] === "undefined") return [];
+      let { TenHangSanXuat } = listHangSanXuat[maHSX];
+      let { TenMau } = listMau[maMau];
       result.push({
         TenHangSanXuat,
         TenMau,

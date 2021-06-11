@@ -52,6 +52,7 @@ const QuanLySanPham = () => {
       await dispatch(fetchListMau());
       await dispatch(fetchListSize());
     };
+
     fetchData();
   }, [dispatch]);
 
@@ -80,19 +81,10 @@ const QuanLySanPham = () => {
           </div>
 
           <TabPanel value={value} index={0}>
-            <DanhSachSanPham
-              className={classes.tabPaper}
-              ListSize={listSize}
-              ListMau={listMau}
-              ListHSX={listHangSanXuat}
-            />
+            <DanhSachSanPham className={classes.tabPaper} />
           </TabPanel>
           <TabPanel value={value} index={1}>
-            <ThemSanPham
-              ListSize={listSize}
-              ListMau={listMau}
-              ListHSX={listHangSanXuat}
-            />
+            <ThemSanPham />
           </TabPanel>
         </div>
       )}
