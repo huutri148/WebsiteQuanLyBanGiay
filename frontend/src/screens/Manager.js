@@ -13,7 +13,7 @@ import QuanLyGioHang from "./QuanLyGioHang";
 import QuanLyNguoiDung from "./QuanLyNguoiDung";
 import QuanLyNhaCungCap from "./QuanLyNhaCungCap/QuanLyNhaCungCap";
 import QuanLyHangSanXuat from "./QuanLyHangSanXuat/QuanLyHangSanXuat";
-import QuanLyBanHang from "./QuanLyBanHang/QuanLyBanHang";
+import QuanLyBanHang from "./QuanLyBanHang";
 import QuanLyPhieuDatHang from "./QuanLyPhieuDatHang/QuanLyPhieuDatHang";
 
 export const Manager = withRouter(() => {

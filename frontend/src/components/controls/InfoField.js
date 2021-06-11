@@ -23,8 +23,9 @@ const InfoField = (props) => {
                 {props.cardHeader}
               </label>
               <hr className={classes.hr} />
-              {props.GroupBoxes.map((item) => (
+              {props.GroupBoxes.map((item,index) => (
                 <GroupBox
+                    key = {index}
                     options = {item.options}
                     type={item.type}
                     title={item.title}
