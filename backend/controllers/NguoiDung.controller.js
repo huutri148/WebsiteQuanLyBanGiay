@@ -87,6 +87,8 @@ const authenUser = async (req, res) => {
           MaChucVu: user.MaChucVu,
           Avatar: user.Avatar,
           MaNguoiDung: user.MaNguoiDung,
+          SDT: user.SDT,
+          Email: user.Email,
         };
         //if login success, create refresh token
         const accessToken = await jwtHelper.generateToken(
@@ -134,10 +136,20 @@ const refreshToken = async (req, res) => {
   }
 };
 
+const authenUserWithToken = async (req, res) => {
+  const data = req.jwtDecoded.data;
+  try {
+    return res.status(200).json(data);
+  } catch (error) {
+    return res.status(500).json(error);
+  }
+};
+
 module.exports = {
   getList,
   getUserByID,
   registerUser,
   authenUser,
   refreshToken,
+  authenUserWithToken,
 };

@@ -32,8 +32,9 @@ export const login = (item) => async (dispatch) => {
       payload: data,
     });
     //localStorage.setItem("userInfo", JSON.stringify(data));
-    localStorageService.setAccessToken("access_token", data.accessToken);
+    localStorageService.setItem("access_token", data.accessToken);
     localStorageService.setItem("refresh_token", data.refreshToken);
+    dispatch(setUser(data.userInfo));
   } catch (error) {
     dispatch({
       type: nguoiDungConstants.NGUOIDUNG_LOGIN_FAIL,
@@ -66,6 +67,25 @@ export const register = (item) => async (dispatch) => {
   } catch (error) {
     dispatch({
       type: nguoiDungConstants.NGUOIDUNG_REGISTER_FAIL,
+      payload:
+        error.response && error.response.message
+          ? error.response.data.data.message
+          : error.messagge,
+    });
+  }
+};
+
+export const setUser = (item) => (dispatch) => {
+  try {
+    dispatch({ type: nguoiDungConstants.NGUOIDUNG_INFO_REQUEST });
+
+    dispatch({
+      type: nguoiDungConstants.NGUOIDUNG_INFO_SUCCESS,
+      payload: item,
+    });
+  } catch (error) {
+    dispatch({
+      type: nguoiDungConstants.NGUOIDUNG_INFO_FAIL,
       payload:
         error.response && error.response.message
           ? error.response.data.data.message

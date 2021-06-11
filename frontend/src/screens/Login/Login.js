@@ -60,8 +60,8 @@ export const Login = withRouter(() => {
   const dispatch = useDispatch();
   const classes = useStyles();
   const history = useHistory();
-  const userLogin = useSelector((state) => state.UserLogin);
-  const { loading, error, userInfo } = userLogin;
+  const userLogin = useSelector((state) => state.User);
+  const { userInfo } = userLogin;
   useEffect(() => {
     if (isAuthenticated()) {
       history.replace("/");
