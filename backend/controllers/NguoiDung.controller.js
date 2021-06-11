@@ -87,6 +87,7 @@ const authenUser = async (req, res) => {
           MaChucVu: user.MaChucVu,
           Avatar: user.Avatar,
           MaNguoiDung: user.MaNguoiDung,
+          TenNguoiDung: user.TenNguoiDung,
           SDT: user.SDT,
           Email: user.Email,
         };

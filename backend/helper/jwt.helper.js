@@ -6,6 +6,7 @@ let generateToken = (user, secretSignature, tokenLife) => {
       MaNguoiDung: user.MaNguoiDung,
       Avatar: user.Avatar,
       TenDangNhap: user.TenDangNhap,
+      TenNguoiDung: user.TenNguoiDung,
       MaChucVu: user.MaChucVu,
       SDT: user.SDT,
       Email: user.Email,

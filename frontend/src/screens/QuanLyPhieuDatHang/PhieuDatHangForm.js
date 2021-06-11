@@ -99,6 +99,7 @@ const PhieuDatHangForm = () => {
   const sizeList = useSelector((state) => state.ListSize);
   const colorList = useSelector((state) => state.ListMau);
   const productsList = useSelector((state) => state.SetProducts);
+  const user = useSelector((state) => state.User);
 
   // Data Field
   const { listNhaCungCap } = supplierList;
@@ -107,6 +108,7 @@ const PhieuDatHangForm = () => {
   const { listHangSanXuat } = brandList;
   const { listSize } = sizeList;
   const { listMau } = colorList;
+  const { userInfo } = user;
 
   //Fetch NhaCungCap
   useEffect(() => {
@@ -129,7 +131,7 @@ const PhieuDatHangForm = () => {
       // Done have to use Flag
       setLoading(!loading);
     };
-
+    thongTinPhieu[1].value = userInfo.TenNguoiDung;
     if (!isCombined || typeof isCombined === "undefined") {
       fetchData();
     } else {
@@ -251,7 +253,7 @@ const PhieuDatHangForm = () => {
       }
       //get record
       let record = {
-        MaNguoiDung: 2,
+        MaNguoiDung: userInfo.MaNguoiDung,
         MaNhaCungCap:
           thongTinPhieuBoxes[0].value === undefined
             ? 1
