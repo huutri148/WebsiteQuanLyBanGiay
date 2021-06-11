@@ -81,7 +81,6 @@ const authenUser = async (req, res) => {
   await NguoiDung.login(data, async (result) => {
     if (result) {
       try {
-        console.log(result);
         const user = result;
         const userInfo = {
           TenDangNhap: user.TenDangNhap,
