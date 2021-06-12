@@ -14,7 +14,7 @@ import { fetchListSize } from "../redux/actions/sizeAction";
 import { fetchListMau } from "../redux/actions/mauAction";
 import { fetchListPhieuBanHang} from "../redux/actions/phieuBanHangAction";
 import { fetchListNguoiDung } from "../redux/actions/nguoiDungAction";
-import { FaceRounded } from "@material-ui/icons";
+import DanhSachPhieuBanHang from "./QuanLyBanHang/DanhSachPhieuBanHang/DanhSachPhieuBanHang";
 
 function TabPanel(props) {
   const classes = useStyles();
@@ -131,20 +131,6 @@ const QuanLyBanHang = () => {
       });
       setProducts(tempData);
     }
-    
-    if (listPhieuBanHang != undefined) {
-      const billsData = Object.values(listPhieuBanHang).reduce((result, value) => {
-        let maNguoiDung = value.MaNguoiDung;
-        if (typeof listNguoiDung[maNguoiDung] === "undefined") return [];
-        let { TenNguoiLap } = listNguoiDung[maNguoiDung];
-        result.push({
-          ...value,
-          TenNguoiLap,
-        });
-        return result;
-      }, []);
-      setBills(billsData);
-    }
   }, [listGiay,listHangSanXuat,listMau]);
   useEffect(() => {
     const fetchData = async () => {
@@ -156,20 +142,17 @@ const QuanLyBanHang = () => {
   }, []);
   // fetch and set Bills
   useEffect(() => {
-    if (listPhieuBanHang != undefined) {
+    if (listPhieuBanHang != undefined) 
+    {
       const billsData = Object.values(listPhieuBanHang).reduce((result, value) => {
-        let maNguoiDung = value.MaNguoiDung;
-        if (typeof listNguoiDung[maNguoiDung] === "undefined") return [];
-        let { TenNguoiLap } = listNguoiDung[maNguoiDung];
         result.push({
           ...value,
-          TenNguoiLap,
         });
         return result;
       }, []);
       setBills(billsData);
     }
-  }, [listNguoiDung,listPhieuBanHang]);
+  }, [listPhieuBanHang]);
   useEffect(() => {
     const fetchData = async () => {
       await dispatch(fetchListPhieuBanHang());
@@ -186,14 +169,18 @@ const QuanLyBanHang = () => {
           value={value}
           onChange={handleTabChange}
         >
-          <Tab className={classes.tabHeader} label="Lập Phiếu Bán Hàng" />
           <Tab className={classes.tabHeader} label="Danh Sách Phiếu Bán Hàng" />
+          <Tab className={classes.tabHeader} label="Lập Phiếu Bán Hàng" />
         </Tabs>
       </div>
       <label className={classes.titleHeader}>
-        {value === 0 ? "Lập Phiếu Bán Hàng" : "Danh Sách Phiếu Bán Hàng"}
+        {value === 1 ? "Lập Phiếu Bán Hàng" : "Danh Sách Phiếu Bán Hàng"}
       </label>
       <TabPanel value={value} index={0}>
+        {console.log(bills)}
+        <DanhSachPhieuBanHang bills={bills} />
+      </TabPanel>
+      <TabPanel value={value} index={1}>
         <PhieuBanHang 
           key={"PhieuBanHang"}
           index={0}
@@ -202,8 +189,6 @@ const QuanLyBanHang = () => {
           products = {products}
           isLoading = {!nguoidungLoading && !nguoidungLoading && !giayLoading ? false : true}
         />
-      </TabPanel>
-      <TabPanel value={value} index={1}>
       </TabPanel>
       <TabPanel value={value} index={2}>
       </TabPanel>

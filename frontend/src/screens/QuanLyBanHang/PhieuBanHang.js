@@ -66,8 +66,8 @@ const headCells = [
   { id: "ThanhTien", label: "Thành Tiền" },
   { id: "HanhDong" },
 ];
-const selectedProducts = [];
 const PhieuBanHang = (props) => {
+  const [selectedProducts, setSelectedProducts] = useState([]);
   //styles
   const classes = useStyles();
   //fetch
@@ -112,8 +112,7 @@ const PhieuBanHang = (props) => {
         return;
       let tmp = sumTotal + total;
       setSumTotal(tmp);
-      tmpGroupBoxes[1].value = tmp.toLocaleString("it-IT");
-      setGroupBoxes(tmpGroupBoxes);
+      groupBoxes[1].value = tmp.toLocaleString("it-IT");
       let shoe = { ...product, total, amount, size, maxAmount };
       selectedProducts.push(shoe);
       resetField();
@@ -122,8 +121,7 @@ const PhieuBanHang = (props) => {
     {
       let tmp = sumTotal + total - product.total;
       setSumTotal(tmp);
-      tmpGroupBoxes[1].value = tmp.toLocaleString("it-IT");
-      setGroupBoxes(tmpGroupBoxes);
+      groupBoxes[1].value = tmp.toLocaleString("it-IT");
       product.total = total;
       product.amount = amount;
       product.size = size;
@@ -135,8 +133,7 @@ const PhieuBanHang = (props) => {
     selectedProducts.splice(selectedProducts.indexOf(item), 1);
     let tmp = sumTotal - item.total;
     setSumTotal(tmp);
-    tmpGroupBoxes[1].value = tmp.toLocaleString("it-IT");
-    setGroupBoxes(tmpGroupBoxes);
+    groupBoxes[1].value = tmp.toLocaleString("it-IT");
   };
   const handleEditClick = (item) => {
     setProduct(item);
@@ -151,14 +148,13 @@ const PhieuBanHang = (props) => {
   const handleSubmitClick = () => 
   {
     var isAbleToSubmit = false;
-    tmpGroupBoxes.forEach((element,index) => 
+    groupBoxes.forEach((element) => 
     {
-      console.log(index,element.value);
       element.error = element.checkValidation(element.value);
       if (element.error === true)
         isAbleToSubmit = true;
     });
-    setGroupBoxes(tmpGroupBoxes);
+    console.log(groupBoxes);
     if (isAbleToSubmit === true)
       forceUpdate(!ignored);
     else 
@@ -170,8 +166,7 @@ const PhieuBanHang = (props) => {
         if (date < 10) date = '0' + date;
         let month = new Date().getMonth() + 1;
         if (month < 10) month = '0' + month;
-        tmpGroupBoxes[4].value = new Date().getFullYear() + "-" + month + "-" + date;
-        setGroupBoxes(tmpGroupBoxes);
+        groupBoxes[4].value = new Date().getFullYear() + "-" + month + "-" + date;
       }
       //get record
       let record = {
@@ -230,16 +225,16 @@ const PhieuBanHang = (props) => {
     setSize(0);
     setEditing(false);
   }
-  let tmpGroupBoxes = [
+  const [groupBoxes,setGroupBoxes] = useState([
     {
       type: "Select",
       title: "Tên Khách Hàng",
       required: true,
-      onChange: (e) => {tmpGroupBoxes[0].value = e; tmpGroupBoxes[0].error = false;},
-      options: [],
+      onChange: (e) => {groupBoxes[0].value = e; groupBoxes[0].error = false;},
+      options: users.map(element => { return { value: element.MaNguoiDung, label: element.TenNguoiDung } }),
       validationTip: "Tên Khách Hàng không được trống",
       error: false,
-      checkValidation: (val) => val === undefined ? true : false,
+      checkValidation: (val) => false,
     },
     {
       type: "TextBox",
@@ -263,7 +258,7 @@ const PhieuBanHang = (props) => {
         { value: "Thanh toán online", label: "Thanh toán online" },
       ],
       error: false,
-      onChange: (e) => (tmpGroupBoxes[2].value = e),
+      onChange: (e) => (groupBoxes[2].value = e),
       checkValidation: (val) => false,
     },
     {
@@ -276,23 +271,17 @@ const PhieuBanHang = (props) => {
     {
       type: "Picker",
       title: "Ngày Lập",
-      onChange: (e) => (tmpGroupBoxes[4].value = e.target.value),
+      onChange: (e) => (groupBoxes[4].value = e.target.value),
       required: true,
       checkValidation: (val) => false,
     },
     {
       type: "TextBox",
       title: "Ghi Chú",
-      onChange: (e) => (tmpGroupBoxes[5].value = e.target.value),
+      onChange: (e) => (groupBoxes[5].value = e.target.value),
       required: false,
       checkValidation: (val) => false,
-    }];
-  const [groupBoxes, setGroupBoxes] = useState([]);
-  //Field titles
-  useEffect(() => {
-    tmpGroupBoxes[0].options = users.map(element => { return { value: element.MaNguoiDung, label: element.TenNguoiDung } });
-    setGroupBoxes(tmpGroupBoxes);
-  }, [users]);
+    }]);
   return (
     <>
       {isLoading || groupBoxes === [] || users === [] || products === [] || sizes === [] ?

@@ -8,25 +8,22 @@ import {
   TableRow,
   TableCell,
   IconButton,
-  Typography,
   makeStyles,
   Tooltip,
 } from "@material-ui/core";
-import useTable from "../../components/useTable";
-import Input from "../../components/controls/Input";
+import Input from "../../../components/controls/Input";
 import {
   Search,
-  Check,
-  Clear,
   ArrowRightAlt,
   CloudDownload,
   Print,
   FilterList,
-  PrintDisabledRounded,
   ViewColumn,
+  Edit,
 } from "@material-ui/icons";
 import { useSelector } from "react-redux";
-
+import useTable from "../../../components/useTable";
+import moment from 'moment'
 const useStyles = makeStyles((theme) => ({
   title: {
     padding: theme.spacing(4, 0),
@@ -73,18 +70,18 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const headCells = [
-  { id: "SoPhieuDatHang", label: "Số phiếu" },
-  { id: "TenNhaCungCap", label: "Nhà cung cấp", disableSorting: true },
-  { id: "TenNguoiDung", label: "Người đặt", disableSorting: true },
-  { id: "TrangThai", label: "Trạng Thái" },
-  { id: "NgayDat", label: "Ngày đặt" },
+  { id: "SoPhieuBanHang", label: "Số phiếu" },
+  { id: "TenKhachHang", label: "Người mua", disableSorting: true },
+  { id: "NgayBan", label: "Ngày lập" },
+  { id: "TenNguoiDung", label: "Người lập", disableSorting: true },
+  { id: "TongTien", label: "Tổng Tiền" },
   { id: "actions" },
 ];
 const DanhSachPhieuBanHang = (props) => {
   // CSS class
   const classes = useStyles();
   //props
-  const {listPhieuBanHang, isLoading} = props;
+  const {bills} = props;
   //hooks
   // Props in Screens
   const [filterFn, setFilterFn] = useState({
@@ -94,7 +91,7 @@ const DanhSachPhieuBanHang = (props) => {
   });
 
   const { TblContainer, TblHead, TblPagination, recordsAfterPagingAndSorting } =
-    useTable(tableData, headCells, filterFn);
+    useTable(bills, headCells, filterFn);
   const handleDetail = (index, data) => {};
   const handleSearch = (e) => {
     let target = e.target;
@@ -110,7 +107,7 @@ const DanhSachPhieuBanHang = (props) => {
   };
     return (
     <>
-      {listPhieuBanHang === [] ? (<h1>Loading</h1>) 
+      {bills === [] ? (<h1>Loading</h1>) 
         : 
         (
         <div>
@@ -160,7 +157,7 @@ const DanhSachPhieuBanHang = (props) => {
                 <TableBody>
                   {recordsAfterPagingAndSorting().map((item, index) => (
                     <TableRow
-                      key={item.SoPhieuDatHang}
+                      key={item.SoPhieuBanHang}
                       style={
                         index % 2
                           ? { background: "#eee" }
@@ -168,41 +165,24 @@ const DanhSachPhieuBanHang = (props) => {
                       }
                     >
                       <TableCell component="th" scope="row">
-                        {item.SoPhieuDatHang}
-                      </TableCell>
-                      <TableCell component="th" scope="row">
-                        {item.TenNhaCungCap}
+                        {item.SoPhieuBanHang}
                       </TableCell>
                       <TableCell component="th" scope="row">
                         {item.TenNguoiDung}
                       </TableCell>
                       <TableCell component="th" scope="row">
-                        <Typography
-                          className={classes.status}
-                          style={{
-                            backgroundColor:
-                              //Note: Fix hardcode 100
-                              (item.TrangThai === "Đã thanh toán" &&
-                                "rgba(9,182,109,1)") ||
-                              (item.TrangThai === "Chờ" && "#FF3D57"),
-                            boxShadow: " 0 2px 2px 1px rgba(0,0,0,0.24)",
-                          }}
-                        >
-                          {item.TrangThai}
-                        </Typography>
+                        {moment(item.NgayBan).format("DD/MM/YYYY")}
                       </TableCell>
                       <TableCell component="th" scope="row">
-                        {item.NgayLap}
+                        {item.TenKhachHang}
                       </TableCell>
                       <TableCell component="th" scope="row">
-                        <Tooltip title="Xác nhận">
-                          <IconButton>
-                            <Check className={classes.checkButton} />
-                          </IconButton>
-                        </Tooltip>
-                        <Tooltip title="Hủy đơn">
-                          <IconButton>
-                            <Clear className={classes.cancelButton} />
+                        {item.TongTien.toLocaleString("it-IT")}
+                      </TableCell>
+                      <TableCell component="th" scope="row">
+                        <Tooltip title="Chỉnh sửa">
+                          <IconButton >
+                            <Edit color="primary"/>
                           </IconButton>
                         </Tooltip>
                         <Tooltip title="Xem chi tiết">
