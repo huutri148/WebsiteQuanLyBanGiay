@@ -113,7 +113,6 @@ const DanhSachPhieuDatHang = (props) => {
         let { TenNhaCungCap } = listNhaCungCap[maNhaCungCap];
         let { TenNguoiDung } = listNguoiDung[maNguoiDung];
         const date = moment(value.NgayLap).format("DD/MM/YYYY");
-        console.log(date);
 
         result.push({
           ...value,
@@ -123,7 +122,6 @@ const DanhSachPhieuDatHang = (props) => {
         });
         return result;
       }, []);
-      console.log(data);
       setTableData(data);
     };
     combineData();

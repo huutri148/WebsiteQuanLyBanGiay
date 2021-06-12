@@ -1,4 +1,3 @@
-
 import { Layout } from "../../components/Layout";
 import QuanLyBanHang from "../QuanLyBanHang";
 const quanLyBanHang = () => (
@@ -13,6 +12,7 @@ const quanLyBanHangRoute = [
     exact: true,
     component: quanLyBanHang,
     private: true,
+    role: "NhanVienBanHang",
   },
 ];
 

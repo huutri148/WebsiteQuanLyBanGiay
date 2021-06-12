@@ -29,6 +29,7 @@ class App extends React.Component {
                   exact
                   path={route.path}
                   component={route.component}
+                  Role={route.role}
                 />
               ) : (
                 <Route exact path={route.path} component={route.component} />

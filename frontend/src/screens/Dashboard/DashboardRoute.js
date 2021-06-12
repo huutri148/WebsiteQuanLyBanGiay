@@ -12,6 +12,7 @@ const dashBoardRoute = [
     exact: true,
     component: dashboard,
     private: true,
+    role: "NguoiDung",
   },
 ];
 

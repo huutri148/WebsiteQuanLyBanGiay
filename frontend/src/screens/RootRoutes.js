@@ -4,6 +4,7 @@ import quanLyPhieuDatHangRoute from "./QuanLyPhieuDatHang/QuanLyPhieuDatHangRout
 import quanLyNhaCungCapRoute from "./QuanLyNhaCungCap/QuanLyNhaCungCapRoute";
 import quanLyHangSanXuatRoute from "./QuanLyHangSanXuat/QuanLyHangSanXuatRoute";
 import loginRoute from "./Login/LoginRoute";
+import sessionRoute from "./session/sessionRoute";
 import dashboarRoute from "./Dashboard/DashboardRoute";
 const routes = [
   ...quanLySanPhamRoute,
@@ -13,6 +14,7 @@ const routes = [
   ...quanLyNhaCungCapRoute,
   ...quanLyHangSanXuatRoute,
   ...dashboarRoute,
+  ...sessionRoute,
 ];
 
 export default routes;
