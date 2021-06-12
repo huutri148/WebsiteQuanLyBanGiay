@@ -1,15 +1,12 @@
-import Login from "./Login";
+import { Login } from "./Login";
 
-const settings = {
-  layout: { show: false },
-};
-const loginRoutes = [
+const loginRoute = [
   {
     path: "/login",
     exact: true,
     component: Login,
-    settings,
+    private: false,
   },
 ];
 
-export default loginRoutes;
+export default loginRoute;

@@ -1,17 +1,11 @@
-import {
-  Route,
-  BrowserRouter as Router,
-  Switch,
-  Redirect,
-} from "react-router-dom";
 import React from "react";
-import { Manager } from "../../screens/Manager";
-import { Login } from "../../screens/Login/Login";
+import { Route, BrowserRouter as Router } from "react-router-dom";
 import { Provider } from "react-redux";
-import configureStore from "../../redux/configureStore";
 import { history } from "../../helper/history";
+import "./App.css";
+import configureStore from "../../redux/configureStore";
 import { PrivateRoute } from "../../services/auth/auth";
-
+import routes from "../../screens/RootRoutes";
 const store = configureStore();
 
 class App extends React.Component {
@@ -27,8 +21,17 @@ class App extends React.Component {
       <Provider store={store}>
         <div className="App">
           <Router history={history}>
-            <PrivateRoute exact path="/" component={Manager} />
-            <Route path="/login" component={Login} />
+            {routes.map((route, index) => {
+              return route.private ? (
+                <PrivateRoute
+                  exact
+                  path={route.path}
+                  component={route.component}
+                />
+              ) : (
+                <Route exact path={route.path} component={route.component} />
+              );
+            })}
           </Router>
         </div>
       </Provider>
