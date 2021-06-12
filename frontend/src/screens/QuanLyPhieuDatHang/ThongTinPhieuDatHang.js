@@ -3,7 +3,7 @@ export const thongTinPhieu = [
     type: "Select",
     title: "Tên nhà cung cấp",
     required: true,
-    options: [{ value: 1, label: "Khách Vãng Lai" }],
+    options: [],
     onChange: (e) => (thongTinPhieu[0].value = e),
     validationTip: "Tên nhà cung cấp không được trống",
     error: false,
@@ -12,7 +12,7 @@ export const thongTinPhieu = [
   {
     type: "TextBox",
     title: "Người Lập",
-    required: true,
+    required: false,
     disabled: "disabled",
     checkValidation: (val) => false,
   },
@@ -27,7 +27,7 @@ export const thongTinPhieu = [
 
 export const CTPHHeadCell = [
   { id: "TenGiay", label: "Tên Giày" },
-  { id: "GioiTinh", label: "Giới Tính" },
-  { id: "Size", label: "Size" },
-  { id: "SoLuong", label: "Số Lượng" },
+  { id: "TenSize", label: "Size" },
+  { id: "SoLuongDat", label: "Số Lượng Đặt" },
+  { id: "Actions" },
 ];

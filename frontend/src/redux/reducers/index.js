@@ -39,6 +39,7 @@ const rootReducer = combineReducers({
   //login
   UserLogin: nguoiDungReducer.userLoginReducer,
   ListNguoiDung: nguoiDungReducer.listNguoiDungReducer,
+  User: nguoiDungReducer.setUserReducer,
 });
 
 export default rootReducer;

@@ -6,7 +6,6 @@ export default function ProductSelector(props) {
   const handleChange = (e) => {
     setSelectedValue(e.value);
     sendData(e.value);
-    console.log(e.value);
   };
   const sendData = (e) => {
     props.setSelectedId(e);
@@ -83,7 +82,7 @@ export default function ProductSelector(props) {
         {props.title}
       </label>
       <Select
-        placeholder = "Hàng Hoá ..."
+        placeholder="Hàng Hoá ..."
         value={options.find((obj) => obj.value === selectedValue)}
         onChange={handleChange}
         formatOptionLabel={formatOptionLabel}

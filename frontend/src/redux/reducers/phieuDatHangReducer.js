@@ -44,7 +44,6 @@ export const orderCreateReducer = (state = {}, action) => {
       return {
         loading: false,
         success: true,
-        order: action.payload,
       };
     }
     case phieuDatHangConstant.PHIEUDATHANG_CREATE_FAIL: {
@@ -96,7 +95,6 @@ export const orderDeleteReducer = (state = {}, action) => {
       return {
         loading: false,
         success: true,
-        order: action.payload,
       };
     }
     case phieuDatHangConstant.PHIEUDATHANG_DELETE_FAIL: {
