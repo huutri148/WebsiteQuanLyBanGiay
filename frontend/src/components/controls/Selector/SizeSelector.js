@@ -59,7 +59,7 @@ export default function SizeSelector(props) {
       </label>
       <select value={selectedValue} onChange={(e) => handleChange(e)}>
         {listAvailableSize.map((item) => (
-          <option value={item.MaSize}>{item.TenSize}</option>
+          <option key = {item.MaSize} value={item.MaSize}>{item.TenSize}</option>
         ))}
       </select>
     </div>

@@ -950,7 +950,11 @@ create procedure USP_ThemChiTietPhieuBanHang(p_MaChiTietGiay int,
         p_SoLuongMua int, p_GiaBan Decimal(17,0), p_ThanhTien Decimal(17,2))
 BEGIN
     declare phieuBanHangID int;
+    declare giayID int;
     set phieuBanHangID = (select max(SoPhieuBanHang) from ShoesStoreManagement.PHIEUBANHANG);
+    set giayID = (select MaGiay 
+                  from ShoesStoreManagement.CHITIETGIAY 
+                  where CHITIETGIAY.MaChiTietGiay = p_MaChiTietGiay);
     INSERT INTO ShoesStoreManagement.CHITIETPHIEUBANHANG(MaChiTietGiay ,SoPhieuBanHang, 
         SoLuongMua , GiaBan , ThanhTien)
     VALUES ( p_MaChiTietGiay ,phieuBanHangID,
@@ -958,6 +962,9 @@ BEGIN
     Update ShoesStoreManagement.CHITIETGIAY 
     set CHITIETGIAY.SoLuong = CHITIETGIAY.SoLuong - p_SoLuongMua 
     where CHITIETGIAY.MaChiTietGiay = p_MaChiTietGiay;
+    Update ShoesStoreManagement.GIAY 
+    set GIAY.TongSoLuong = GIAY.TongSoLuong - p_SoLuongMua 
+    where GIAY.MaGiay = giayID;
 END; $$
 DELIMITER ;
 

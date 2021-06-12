@@ -1,5 +1,6 @@
-import QuanLyBanHang from "./QuanLyBanHang";
+
 import { Layout } from "../../components/Layout";
+import QuanLyBanHang from "../QuanLyBanHang";
 const quanLyBanHang = () => (
   <Layout>
     <QuanLyBanHang />
