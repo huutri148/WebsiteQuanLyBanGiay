@@ -1,14 +1,17 @@
 import QuanLySanPham from "./QuanLySanPham";
+import { Layout } from "../../components/Layout";
+const quanLySanPham = () => (
+  <Layout>
+    <QuanLySanPham />
+  </Layout>
+);
 
-const settings = {
-  layout: { show: true },
-};
 const quanLySanPhamRoutes = [
   {
     path: "/products",
     exact: true,
-    component: QuanLySanPham,
-    settings,
+    component: quanLySanPham,
+    private: true,
   },
 ];
 

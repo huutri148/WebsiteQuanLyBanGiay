@@ -36,14 +36,10 @@ const QuanLySanPham = () => {
   const brandList = useSelector((state) => state.ListHangSanXuat);
   const sizeList = useSelector((state) => state.ListSize);
   const mauList = useSelector((state) => state.ListMau);
-  const {
-    loading: brandLoading,
-    error: hangSanXuatError,
-    listHangSanXuat,
-  } = brandList;
+  const { loading: brandLoading, error: hangSanXuatError } = brandList;
 
-  const { loading: sizeLoading, error: sizeError, listSize } = sizeList;
-  const { loading: mauLoading, error: mauError, listMau } = mauList;
+  const { loading: sizeLoading, error: sizeError } = sizeList;
+  const { loading: mauLoading, error: mauError } = mauList;
 
   // Fetch data from API
   useEffect(() => {
@@ -52,6 +48,7 @@ const QuanLySanPham = () => {
       await dispatch(fetchListMau());
       await dispatch(fetchListSize());
     };
+
     fetchData();
   }, [dispatch]);
 
@@ -80,19 +77,10 @@ const QuanLySanPham = () => {
           </div>
 
           <TabPanel value={value} index={0}>
-            <DanhSachSanPham
-              className={classes.tabPaper}
-              ListSize={listSize}
-              ListMau={listMau}
-              ListHSX={listHangSanXuat}
-            />
+            <DanhSachSanPham className={classes.tabPaper} />
           </TabPanel>
           <TabPanel value={value} index={1}>
-            <ThemSanPham
-              ListSize={listSize}
-              ListMau={listMau}
-              ListHSX={listHangSanXuat}
-            />
+            <ThemSanPham />
           </TabPanel>
         </div>
       )}

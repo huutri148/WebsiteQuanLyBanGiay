@@ -988,7 +988,7 @@ DELIMITER ;
 
 
 DELIMITER $$
-create procedure USP_ThemPhieuDathang(
+create procedure USP_ThemPhieuDatHang(
     p_MaNhaCungCap int,p_MaNguoiDung int ,
     p_NgayLap DATETIME, p_TrangThai varchar(100))
 BEGIN
@@ -1024,7 +1024,7 @@ create procedure USP_ThemChiTietPhieuDatHang(p_MaChiTietGiay int,
 BEGIN
     declare phieuDatHangID int;
     set phieuDatHangID = (select max(SoPhieuDatHang) from ShoesStoreManagement.PHIEUDATHANG);
-    INSERT INTO ShoesStoreManagement.CHITIETPHIEUBANHANG(MaChiTietGiay ,SoPhieuDatHang, 
+    INSERT INTO ShoesStoreManagement.CHITIETPHIEUDATHANG(MaChiTietGiay ,SoPhieuDatHang, 
         SoLuongDat)
     VALUES ( p_MaChiTietGiay ,phieuDatHangID,
         p_SoLuongDat);

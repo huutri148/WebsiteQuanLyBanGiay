@@ -19,7 +19,7 @@ import { Person } from "@material-ui/icons";
 import { useHistory } from "react-router-dom";
 import ImageUpload from "../../components/controls/ImageUpload";
 import { createGiay } from "./../../redux/actions/giayAction";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { ToastContainer } from "react-toastify";
 import ConfirmDialog from "../../components/controls/ConfirmDialog";
 import "react-toastify/dist/ReactToastify.css";
@@ -73,8 +73,6 @@ const defaultGioiTinh = [
 ];
 
 const ThemSanPham = (props) => {
-  const { ListSize, ListMau, ListHSX } = props;
-
   const classes = useStyles();
   const dispatch = useDispatch();
   const history = useHistory();
@@ -94,6 +92,14 @@ const ThemSanPham = (props) => {
     subTitle: "",
   });
   const [chosenFile, setChosenFile] = useState("");
+
+  const brandList = useSelector((state) => state.ListHangSanXuat);
+  const sizeList = useSelector((state) => state.ListSize);
+  const mauList = useSelector((state) => state.ListMau);
+  const { listHangSanXuat } = brandList;
+
+  const { listSize } = sizeList;
+  const { listMau } = mauList;
 
   const handleQuanLyHangSanXuat = () => {
     history.push("/brands");
@@ -246,10 +252,10 @@ const ThemSanPham = (props) => {
                       Hãng sản xuất:
                     </label>
                     <Select
-                      value={ListHSX[values.MaHSX]}
+                      value={listHangSanXuat[values.MaHSX]}
                       onChange={(e) => handleSelect(e, "MaHangSanXuat")}
                       name="MaHangSanXuat"
-                      options={_.map(ListHSX, (value) => {
+                      options={_.map(listHangSanXuat, (value) => {
                         return value;
                       })}
                       getOptionLabel={(option) => option.TenHangSanXuat}
@@ -306,10 +312,10 @@ const ThemSanPham = (props) => {
                       Màu sắc:
                     </label>
                     <Select
-                      value={ListMau[values.MaMau]}
+                      value={listMau[values.MaMau]}
                       onChange={(e) => handleSelect(e, "MaMau")}
                       name="MaMau"
-                      options={_.map(ListMau, (value) => {
+                      options={_.map(listMau, (value) => {
                         return value;
                       })}
                       getOptionLabel={(option) => option.TenMau}
@@ -356,7 +362,7 @@ const ThemSanPham = (props) => {
                   <div className={classes.CheckBox}>
                     <FormLabel component="legend">Chọn Size</FormLabel>
                     <FormGroup aria-label="position" row>
-                      {_.map(ListSize, (value) => {
+                      {_.map(listSize, (value) => {
                         return (
                           <FormControlLabel
                             value={value.MaSize}

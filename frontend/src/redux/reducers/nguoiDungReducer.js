@@ -41,14 +41,12 @@ export const userLoginReducer = (state = initalState, action) => {
         //note: add loading
         loading: true,
         isLoggedIn: false,
-        userInfo: {},
       };
     }
     case nguoiDungConstant.NGUOIDUNG_LOGIN_SUCCESS: {
       return {
         loading: false,
         isLoggedIn: true,
-        userInfo: { ...action.payload.userInfo },
       };
     }
     case nguoiDungConstant.NGUOIDUNG_LOGIN_FAIL: {
@@ -56,6 +54,34 @@ export const userLoginReducer = (state = initalState, action) => {
         loading: false,
         error: action.payload,
         isLoggedIn: false,
+      };
+    }
+    case nguoiDungConstant.NGUOIDUNG_LOGOUT: {
+      return {};
+    }
+    default:
+      return state;
+  }
+};
+
+export const setUserReducer = (state = initalState, action) => {
+  switch (action.type) {
+    case nguoiDungConstant.NGUOIDUNG_INFO_REQUEST: {
+      return {
+        isSet: false,
+        userInfo: {},
+      };
+    }
+    case nguoiDungConstant.NGUOIDUNG_INFO_SUCCESS: {
+      return {
+        isSet: true,
+        userInfo: { ...action.payload },
+      };
+    }
+    case nguoiDungConstant.NGUOIDUNG_INFO_FAIL: {
+      return {
+        isSet: false,
+        error: action.payload,
       };
     }
     case nguoiDungConstant.NGUOIDUNG_LOGOUT: {

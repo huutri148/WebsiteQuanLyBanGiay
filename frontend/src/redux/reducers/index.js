@@ -14,6 +14,7 @@ const rootReducer = combineReducers({
   Giay: GiayReducer.giayReducer,
   CreateGiay: GiayReducer.giayCreateReducer,
   SizeGiay: GiayReducer.giaySizeReducer,
+  SetProducts: GiayReducer.setProductsReducer,
   ListMau: mauReducer,
   //hang san xuat
   ListHangSanXuat: hangSanXuatReducer.brandListReducer,
@@ -38,6 +39,7 @@ const rootReducer = combineReducers({
   //login
   UserLogin: nguoiDungReducer.userLoginReducer,
   ListNguoiDung: nguoiDungReducer.listNguoiDungReducer,
+  User: nguoiDungReducer.setUserReducer,
 });
 
 export default rootReducer;
