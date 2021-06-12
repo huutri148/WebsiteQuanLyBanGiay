@@ -298,7 +298,7 @@ const PhieuBanHang = (props) => {
         </Paper>
         {/* bill details */}
         <Paper className={classes.paper} style={{ width: "72%", margin: 0 }}>
-          <label className={classes.cardHeader}>Thông Tin Giày</label>
+          <label className={classes.cardHeader}>Chi Thiết Phiếu</label>
           <hr className={classes.hr} />
           <ProductSelector
             title="Hàng Hoá"

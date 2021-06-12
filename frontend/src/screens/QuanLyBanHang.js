@@ -12,7 +12,6 @@ import { fetchListGiay } from "../redux/actions/giayAction";
 import { fetchListHangSanXuat } from "../redux/actions/hangSanXuatAction";
 import { fetchListSize } from "../redux/actions/sizeAction";
 import { fetchListMau } from "../redux/actions/mauAction";
-import { fetchListPhieuBanHang} from "../redux/actions/phieuBanHangAction";
 import { fetchListNguoiDung } from "../redux/actions/nguoiDungAction";
 import DanhSachPhieuBanHang from "./QuanLyBanHang/DanhSachPhieuBanHang/DanhSachPhieuBanHang";
 
@@ -50,27 +49,23 @@ const QuanLyBanHang = () => {
   const sizeList = useSelector((state) => state.ListSize);
   const colorList = useSelector((state) => state.ListMau);
   const userList = useSelector((state) => state.ListNguoiDung);
-  const billList = useSelector((state) => state.ListPhieuBanHang);
   //passing value
   const { loading: hangSanXuatLoading, error: hangSanXuatError, listHangSanXuat } = brandList;
   const { loading: giayLoading, error: giayError, listGiay } = productList;
   const { loading: sizeLoading, error: sizeError, listSize } = sizeList;
   const { loading: mauLoading, error: mauError, listMau } = colorList;
   const { loading: nguoidungLoading, error: nguoidungError, listNguoiDung } = userList;
-  const { loading: phieubanhangLoading, error: phieubanhangError, listPhieuBanHang } = billList;
   //data
   const [products, setProducts] = useState([]);
   const [sizes, setSizes] = useState([]);
   const [users, setUsers] = useState([]);
-  const [bills, setBills] = useState([]);
   //variables
-  const [loading, setLoading] = useState();
   const [value,setValue] = useState(0);
   //handle change
   const handleTabChange = (event, newValue) => {
     setValue(newValue);
   };
-  // fetch and set Sizes
+  // set Sizes
   useEffect(() => {
     if (listSize != undefined) {
       const sizesData = Object.values(listSize).reduce((result, value) => {
@@ -82,13 +77,7 @@ const QuanLyBanHang = () => {
       setSizes(sizesData);
     }
   }, [listSize]);
-  useEffect(() => {
-    const fetchData = async () => {
-      await dispatch(fetchListSize());
-    };
-    fetchData();
-  }, []);
-  // fetch and set Users
+  // set Users
   useEffect(() => {
     if (listNguoiDung != undefined) {
       const usersData = Object.values(listNguoiDung).reduce((result, value) => {
@@ -106,7 +95,7 @@ const QuanLyBanHang = () => {
     };
     fetchData();
   }, []);
-  // fetch and set Products
+  // set Products
   useEffect(() => {
     if (listGiay != undefined) {
       const productsData = Object.values(listGiay).reduce((result, value) => {
@@ -132,30 +121,13 @@ const QuanLyBanHang = () => {
       setProducts(tempData);
     }
   }, [listGiay,listHangSanXuat,listMau]);
+  //fetch data
   useEffect(() => {
     const fetchData = async () => {
       await dispatch(fetchListGiay());
       await dispatch(fetchListMau());
       await dispatch(fetchListHangSanXuat());
-    };
-    fetchData();
-  }, []);
-  // fetch and set Bills
-  useEffect(() => {
-    if (listPhieuBanHang != undefined) 
-    {
-      const billsData = Object.values(listPhieuBanHang).reduce((result, value) => {
-        result.push({
-          ...value,
-        });
-        return result;
-      }, []);
-      setBills(billsData);
-    }
-  }, [listPhieuBanHang]);
-  useEffect(() => {
-    const fetchData = async () => {
-      await dispatch(fetchListPhieuBanHang());
+      await dispatch(fetchListSize());
     };
     fetchData();
   }, []);
@@ -177,8 +149,7 @@ const QuanLyBanHang = () => {
         {value === 1 ? "Lập Phiếu Bán Hàng" : "Danh Sách Phiếu Bán Hàng"}
       </label>
       <TabPanel value={value} index={0}>
-        {console.log(bills)}
-        <DanhSachPhieuBanHang bills={bills} />
+        <DanhSachPhieuBanHang />
       </TabPanel>
       <TabPanel value={value} index={1}>
         <PhieuBanHang 

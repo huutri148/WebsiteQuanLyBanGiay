@@ -75,3 +75,23 @@ export const deletePhieuBanHang = (id) => async (dispatch) => {
     });
   }
 };
+export const fetchListChiTietPhieuBanHang = (id) => async (dispatch) => {
+  try {
+    dispatch({ type: phieuBanHangConstants.PHIEUBANHANG_DETAIL_REQUEST });
+
+    const { data } = await phieuBanHangAPI.getDetails(id);
+
+    dispatch({
+      type: phieuBanHangConstants.PHIEUBANHANG_DETAIL_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: phieuBanHangConstants.PHIEUBANHANG_DETAIL_FAIL,
+      payload:
+        error.response && error.response.message
+          ? error.response.data.data.message
+          : error.messagge,
+    });
+  }
+};

@@ -27,16 +27,17 @@ export default function SizeSelector(props) {
   useEffect(() => {
     setSelectedValue(0);
     var tmp = [];
-    ListSize.forEach(element => {
-      if (giaySize[element.MaSize] !== undefined)
-          if (giaySize[element.MaSize].SoLuong !== undefined)
-            if(giaySize[element.MaSize].SoLuong > 0)
-              {
-                if(tmp.length == 0)
-                  sendData(element.MaSize);
-                tmp.push(element);
-              }
-      });
+    if(ListSize != undefined)
+      ListSize.forEach(element => {
+        if (giaySize[element.MaSize] !== undefined)
+            if (giaySize[element.MaSize].SoLuong !== undefined)
+              if(giaySize[element.MaSize].SoLuong > 0)
+                {
+                  if(tmp.length == 0)
+                    sendData(element.MaSize);
+                  tmp.push(element);
+                }
+        });
     setListAvailableSize(tmp);
   }, [loading]);
   // Fetch data from API

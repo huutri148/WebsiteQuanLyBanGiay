@@ -31,6 +31,7 @@ const rootReducer = combineReducers({
   CreatePhieuBanHang: phieuBanHangReducer.billCreateReducer,
   UpdatePhieuBanHang: phieuBanHangReducer.billUpdateReducer,
   DeletePhieuBanHang: phieuBanHangReducer.billDeleteReducer,
+  ListChiTietPhieuBanHang: phieuBanHangReducer.billDetailListReducer,
   //phieu dat hang
   ListPhieuDatHang: phieuDatHangReducer.orderListReducer,
   CreatePhieuDatHang: phieuDatHangReducer.orderCreateReducer,
