@@ -64,7 +64,6 @@ const updateOrder = async (req, res) => {
     SoPhieuDatHang: req.body.SoPhieuDatHang,
     MaNguoiDung: req.body.MaNguoiDung,
     MaNhaCungCap: req.body.MaNhaCungCap,
-    NgayLap: req.body.NgayLap,
     TrangThai: req.body.TrangThai,
   };
 
@@ -74,7 +73,7 @@ const updateOrder = async (req, res) => {
 };
 
 // @desc    Remove a order
-// @route   Delete /api/orders
+// @route   Delete /api/orders/:id
 // @access  Public
 const removeOrder = async (req, res) => {
   const orderID = req.params.id;

@@ -102,7 +102,7 @@ PhieuDatHang.Delete = (soPhieu, callBack) => {
       throw err;
     } else {
       console.log("Deleteted Order".yellow.bold);
-      callBack(res[0]);
+      callBack(res);
     }
   });
 };

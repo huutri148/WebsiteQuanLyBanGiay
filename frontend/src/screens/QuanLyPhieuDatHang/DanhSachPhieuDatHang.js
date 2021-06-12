@@ -25,7 +25,11 @@ import {
   PrintDisabledRounded,
   ViewColumn,
 } from "@material-ui/icons";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  updatePhieuDatHang,
+  deletePhieuDatHang,
+} from "../../redux/actions/phieuDatHangAction";
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -83,6 +87,7 @@ const headCells = [
 const DanhSachPhieuDatHang = (props) => {
   // CSS class
   const classes = useStyles();
+  const dispatch = useDispatch();
 
   const supplierList = useSelector((state) => state.ListNhaCungCap);
   const userList = useSelector((state) => state.ListNguoiDung);
@@ -111,6 +116,7 @@ const DanhSachPhieuDatHang = (props) => {
         if (typeof listNhaCungCap[maNhaCungCap] === "undefined") return [];
         let { TenNhaCungCap } = listNhaCungCap[maNhaCungCap];
         let { TenNguoiDung } = listNguoiDung[maNguoiDung];
+
         result.push({
           TenNhaCungCap,
           TenNguoiDung,
@@ -136,7 +142,18 @@ const DanhSachPhieuDatHang = (props) => {
       },
     });
   };
+  const handleDelete = (item) => {
+    dispatch(deletePhieuDatHang(item.SoPhieuDatHang));
+  };
 
+  const handleConfirm = (item) => {
+    const updateItem = {
+      ...item,
+      TrangThai: "Đã xử lý",
+    };
+    console.log(updateItem);
+    dispatch(updatePhieuDatHang(item.SoPhieuDatHang, updateItem));
+  };
   return (
     <>
       {supplierLoading || userLoading || orderLoading ? (
@@ -214,7 +231,7 @@ const DanhSachPhieuDatHang = (props) => {
                           style={{
                             backgroundColor:
                               //Note: Fix hardcode 100
-                              (item.TrangThai === "Đã thanh toán" &&
+                              (item.TrangThai === "Đã xử lý" &&
                                 "rgba(9,182,109,1)") ||
                               (item.TrangThai === "Chờ" && "#FF3D57"),
                             boxShadow: " 0 2px 2px 1px rgba(0,0,0,0.24)",
@@ -228,12 +245,12 @@ const DanhSachPhieuDatHang = (props) => {
                       </TableCell>
                       <TableCell component="th" scope="row">
                         <Tooltip title="Xác nhận">
-                          <IconButton>
+                          <IconButton onClick={() => handleConfirm(item)}>
                             <Check className={classes.checkButton} />
                           </IconButton>
                         </Tooltip>
                         <Tooltip title="Hủy đơn">
-                          <IconButton>
+                          <IconButton onClick={() => handleDelete(item)}>
                             <Clear className={classes.cancelButton} />
                           </IconButton>
                         </Tooltip>

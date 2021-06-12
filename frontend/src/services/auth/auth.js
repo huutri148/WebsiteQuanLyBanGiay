@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 export const PrivateRoute = ({ component: Component, ...rest }) => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.User);
-  const { userInfo, isSet } = user;
+  const { isSet } = user;
   return (
     <Route
       {...rest}

@@ -6,6 +6,8 @@ import "./App.css";
 import configureStore from "../../redux/configureStore";
 import { PrivateRoute } from "../../services/auth/auth";
 import routes from "../../screens/RootRoutes";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 const store = configureStore();
 
 class App extends React.Component {
@@ -34,6 +36,7 @@ class App extends React.Component {
             })}
           </Router>
         </div>
+        <ToastContainer autoClose={2000} />
       </Provider>
     );
   }

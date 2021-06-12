@@ -1037,9 +1037,9 @@ DELIMITER ;
 DELIMITER $$
 create procedure USP_XoaPhieuDatHang(p_SoPhieu int)
 BEGIN
- UPDATE PHIEUDATHANG  
- SET PHIEUDATHANG.IsDeleted = true 
- WHERE PHIEUDATHANG.SoPhieuDatHang =p_SoPhieu;
+    UPDATE PHIEUDATHANG  
+    SET PHIEUDATHANG.IsDeleted = true 
+    WHERE PHIEUDATHANG.SoPhieuDatHang =p_SoPhieu;
 END; $$
 DELIMITER ;
 
