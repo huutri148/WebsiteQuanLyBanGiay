@@ -11,7 +11,6 @@ import {
   makeStyles,
   Tooltip,
 } from "@material-ui/core";
-import Input from "../../../components/controls/Input";
 import {
   Search,
   ArrowRightAlt,
@@ -21,9 +20,13 @@ import {
   ViewColumn,
   Edit,
 } from "@material-ui/icons";
-import { useSelector } from "react-redux";
+import Input from "../../../components/controls/Input";
+import { useDispatch, useSelector } from "react-redux";
 import useTable from "../../../components/useTable";
 import moment from 'moment'
+import Popup from "../../../components/controls/Popup";
+import Detail from "../Detail";
+import { fetchListPhieuBanHang , fetchListChiTietPhieuBanHang} from "../../../redux/actions/phieuBanHangAction";
 const useStyles = makeStyles((theme) => ({
   title: {
     padding: theme.spacing(4, 0),
@@ -75,24 +78,78 @@ const headCells = [
   { id: "NgayBan", label: "Ngày lập" },
   { id: "TenNguoiDung", label: "Người lập", disableSorting: true },
   { id: "TongTien", label: "Tổng Tiền" },
+  { id: "PhuongThucThanhToan", label: "Phương Thức Thanh Toán" },
   { id: "actions" },
+];
+const detailsHeadCells = [
+  { id: "TenGiay", label: "Tên Giày" },
+  { id: "GioiTinh", label: "Giới Tính" },
+  { id: "Size", label: "Size" },
+  { id: "DonGia", label: "Đơn Giá" },
+  { id: "SoLuong", label: "Số Lượng" },
+  { id: "ThanhTien", label: "Thành Tiền" },
+  { id: "HanhDong" },
 ];
 const DanhSachPhieuBanHang = (props) => {
   // CSS class
   const classes = useStyles();
-  //props
-  const {bills} = props;
+  //Fetched data
+  const dispatch = useDispatch();
+  const billList = useSelector((state) => state.ListPhieuBanHang);
+  //passing value
+  const { loading: phieubanhangLoading, error: phieubanhangError, listPhieuBanHang } = billList;
+  //data
+  const [bills, setBills] = useState([]);
   //hooks
+  const [id, setId] = useState(0);
+  const [openPopup, setOpenPopup] = useState(false);
   // Props in Screens
   const [filterFn, setFilterFn] = useState({
     fn: (items) => {
       return items;
     },
   });
-
+  
   const { TblContainer, TblHead, TblPagination, recordsAfterPagingAndSorting } =
     useTable(bills, headCells, filterFn);
-  const handleDetail = (index, data) => {};
+  const [groupBoxes, setGroupBoxes] = useState([]) ;
+  //handle click
+  const handleDetailClick = (item) => {
+    setGroupBoxes ([
+      {
+        type: "Label",
+        title: "Tên Khách Hàng",
+        value: item.TenKhachHang,
+      },
+      {
+        type: "Label",
+        title: "Tổng Tiền",
+        value: item.TongTien.toLocaleString("it-IT"),
+      },
+      {
+        type: "Label",
+        title: "Phương Thức Thanh Toán",
+        value: item.PhuongThucThanhToan,
+      },
+      {
+        type: "Label",
+        title: "Người Lập",
+        value: item.TenNguoiDung,
+      },
+      {
+        type: "Label",
+        title: "Ngày Lập",
+        value: moment(item.NgayBan).format("DD/MM/YYYY"),
+      },
+      {
+        type: "Label",
+        title: "Ghi Chú",
+        value: item.GhiChu,
+      },
+    ]);
+    setId(item.SoPhieuBanHang);
+    setOpenPopup(true);
+  }
   const handleSearch = (e) => {
     let target = e.target;
     setFilterFn({
@@ -105,9 +162,29 @@ const DanhSachPhieuBanHang = (props) => {
       },
     });
   };
+  // set Bills
+  useEffect(() => {
+    if (listPhieuBanHang != undefined) 
+    {
+      const billsData = Object.values(listPhieuBanHang).reduce((result, value) => {
+        result.push({
+          ...value,
+        });
+        return result;
+      }, []);
+      setBills(billsData);
+    }
+  }, [listPhieuBanHang]);
+  //fetch data
+  useEffect(() => {
+    const fetchData = async () => {
+      await dispatch(fetchListPhieuBanHang());
+    };
+    fetchData();
+  }, [dispatch]);
     return (
     <>
-      {bills === [] ? (<h1>Loading</h1>) 
+      {bills === [] || bills === undefined ? (<h1>Loading</h1>) 
         : 
         (
         <div>
@@ -180,13 +257,16 @@ const DanhSachPhieuBanHang = (props) => {
                         {item.TongTien.toLocaleString("it-IT")}
                       </TableCell>
                       <TableCell component="th" scope="row">
+                        {item.PhuongThucThanhToan}
+                      </TableCell>
+                      <TableCell component="th" scope="row">
                         <Tooltip title="Chỉnh sửa">
                           <IconButton >
                             <Edit color="primary"/>
                           </IconButton>
                         </Tooltip>
                         <Tooltip title="Xem chi tiết">
-                          <IconButton>
+                          <IconButton onClick = {() => handleDetailClick(item)}>
                             <ArrowRightAlt />
                           </IconButton>
                         </Tooltip>
@@ -198,6 +278,17 @@ const DanhSachPhieuBanHang = (props) => {
               <TblPagination />
             </TableContainer>
           </Paper>
+          <Popup
+            title="Thông Tin Phiếu Bán Hàng"
+            openPopup={openPopup}
+            setOpenPopup={setOpenPopup}>
+            <Detail 
+              type = "bill" 
+              id = {id}
+              header = "Phiếu Bán Hàng"
+              headCells = {detailsHeadCells}
+              groupBoxes = {groupBoxes}/>
+          </Popup>
         </div>
       )}
     </>

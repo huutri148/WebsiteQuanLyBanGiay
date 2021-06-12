@@ -4,6 +4,9 @@ import * as _ from "lodash";
 const initalState = {
   listPhieuBanHang: {},
 };
+const initalDetailState = {
+  listChiTietPhieuBanHang: {},
+};
 
 export const billListReducer = (state = initalState, action) => {
   switch (action.type) {
@@ -100,6 +103,32 @@ export const billDeleteReducer = (state = {}, action) => {
       };
     }
     case phieuBanHangConstant.PHIEUBANHANG_DELETE_FAIL: {
+      return {
+        loading: false,
+        error: action.payload,
+      };
+    }
+    default:
+      return state;
+  }
+};
+export const billDetailListReducer = (state = initalDetailState, action) => {
+  switch (action.type) {
+    case phieuBanHangConstant.PHIEUBANHANG_DETAIL_REQUEST: {
+      return {
+        //note: add loading
+        loading: true,
+        listChiTietPhieuBanHang: {},
+      };
+    }
+    case phieuBanHangConstant.PHIEUBANHANG_DETAIL_SUCCESS: {
+      const details = action.payload;
+      return {
+        loading: false,
+        listChiTietPhieuBanHang: { ...details },
+      };
+    }
+    case phieuBanHangConstant.PHIEUBANHANG_DETAIL_FAIL: {
       return {
         loading: false,
         error: action.payload,

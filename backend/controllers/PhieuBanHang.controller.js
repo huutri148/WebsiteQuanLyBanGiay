@@ -18,8 +18,22 @@ const getList = async (req, res) => {
 // @route Get/api/bills/id
 // @access Public
 const getByID = async (req, res) => {
-  const sanPhamID = req.params.id;
-  await PhieuBanHang.GetByID(sanPhamID, (result) => {
+  const phieuBanHangID = req.params.id;
+  await PhieuBanHang.GetByID(phieuBanHangID, (result) => {
+    if (result) {
+      res.status(200).send(JSON.stringify(result));
+    } else {
+      res.status(404);
+    }
+  });
+};
+
+// @desc Fetch all Details by id
+// @route Get/api/bills/details/id
+// @access Public
+const getDetails = async (req, res) => {
+  const phieuBanHangID = req.params.id;
+  await PhieuBanHang.GetDetails(phieuBanHangID, (result) => {
     if (result) {
       res.status(200).send(JSON.stringify(result));
     } else {
@@ -77,4 +91,4 @@ const updateBill = async (req, res) => {
   });
 };
 
-module.exports = { getList, createBill, updateBill, getByID };
+module.exports = { getList, createBill, updateBill, getByID, getDetails };

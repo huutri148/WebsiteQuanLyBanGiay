@@ -879,8 +879,8 @@ DELIMITER ;
 DELIMITER $$
 create procedure USP_GetListPhieuBanHang()
 BEGIN
-Select C.SoPhieuBanHang,C.TenNguoiDung, C.NgayBan, C.TongTien, D.TenNguoiDung as TenKhachHang, D.SDT from (
-Select A.SoPhieuBanHang, A.TongTien, A.NgayBan, B.TenNguoiDung, A.MaKhachHang
+Select C.SoPhieuBanHang,C.TenNguoiDung, C.NgayBan, C.PhuongThucThanhToan, C.TongTien, D.TenNguoiDung as TenKhachHang, D.SDT from (
+Select A.SoPhieuBanHang, A.TongTien, A.NgayBan, B.TenNguoiDung, A.MaKhachHang, A.PhuongThucThanhToan
 from (Select *  from ShoesStoreManagement.PHIEUBANHANG ) A 
 left join  ShoesStoreManagement.NGUOIDUNG B USING (MaNguoiDung)) C
 left join ShoesStoreManagement.NGUOIDUNG D on 
@@ -891,8 +891,8 @@ DELIMITER ;
 DELIMITER $$
 create procedure USP_GetPhieuBanHangByID(p_SoPhieuBanHang int )
 BEGIN
-Select C.SoPhieuBanHang,C.TenNguoiDung, C.NgayBan, C.TongTien, D.TenNguoiDung as TenKhachHang, D.SDT from (
-Select A.SoPhieuBanHang, A.NgayBan, A.TongTien,  B.TenNguoiDung, A.MaKhachHang
+Select C.SoPhieuBanHang,C.TenNguoiDung, C.NgayBan,C.PhuongThucThanhToan, C.TongTien, D.TenNguoiDung as TenKhachHang, D.SDT from (
+Select A.SoPhieuBanHang, A.NgayBan, A.TongTien,  B.TenNguoiDung, A.MaKhachHang, A.PhuongThucThanhToan
 from (Select *  from ShoesStoreManagement.PHIEUBANHANG ) A
 LEFT JOIN   ShoesStoreManagement.NGUOIDUNG B USING (MaNguoiDung) where A.SoPhieuBanHang = p_SoPhieuBanHang) C
 left join ShoesStoreManagement.NGUOIDUNG D on 
@@ -903,8 +903,8 @@ DELIMITER ;
 DELIMITER $$
 create procedure USP_GetPhieuBanHangByMaKhachHang(p_MaKhachHang int )
 BEGIN
-Select C.SoPhieuBanHang,C.TenNguoiDung, C.NgayBan, C.TongTien, D.TenNguoiDung as TenKhachHang, D.SDT from (
-Select A.SoPhieuBanHang,  A.TongTien, A.NgayBan, B.TenNguoiDung, A.MaKhachHang
+Select C.SoPhieuBanHang,C.TenNguoiDung, C.NgayBan,C.PhuongThucThanhToan, C.TongTien, D.TenNguoiDung as TenKhachHang, D.SDT from (
+Select A.SoPhieuBanHang,  A.TongTien, A.NgayBan, B.TenNguoiDung, A.MaKhachHang, A.PhuongThucThanhToan
 from (Select *  from ShoesStoreManagement.NGUOIDUNG) B
 LEFT JOIN ShoesStoreManagement.PHIEUBANHANG A  USING (MaNguoiDung) where A.MaKhachHang = p_MaKhachHang) C
 left join ShoesStoreManagement.NGUOIDUNG D on 
@@ -968,7 +968,20 @@ BEGIN
 END; $$
 DELIMITER ;
 
-
+DELIMITER $$
+create procedure USP_GetChiTietPhieuBanHangByID(p_SoPhieuBanHang int)
+BEGIN
+    Select C.Anh, C.TenGiay, C.GioiTinh, D.TenSize, A.GiaBan, A.SoLuongMua, A.ThanhTien, A.SoPhieuBanHang
+    from ShoesStoreManagement.CHITIETPHIEUBANHANG A 
+    left join ShoesStoreManagement.CHITIETGIAY B 
+    on A.MaChiTietGiay = B.MaChiTietGiay
+    left join ShoesStoreManagement.GIAY C
+    on C.MaGiay = B.MaGiay
+    left join ShoesStoreManagement.SIZE D
+    on D.MaSize = B.MaSize 
+    where A.SoPhieuBanHang = p_SoPhieuBanHang;
+END; $$
+DELIMITER ;
 
 
 

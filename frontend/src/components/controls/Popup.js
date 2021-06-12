@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
     textTransform: "none",
     fontSize: 32,
     color: "darkslateblue",
-    fontWeight: "Bold",
+    fontWeight: "600",
   },
 }));
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -43,7 +43,7 @@ export default function Popup(props) {
   return (
     <Dialog
       open={openPopup}
-      maxWidth="md"
+      maxWidth= {false}
       TransitionComponent={Transition}
       classes={{ paper: classes.dialogWrapper }}
     >
@@ -52,7 +52,7 @@ export default function Popup(props) {
           <Typography
             variant="h6"
             component="div"
-            style={{ flexGrow: 1, textAlign: "center" }}
+            style={{ flexGrow: 1, textAlign: "center", fontWeight: "600" }}
           >
             {title}
           </Typography>
