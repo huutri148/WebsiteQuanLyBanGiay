@@ -1012,12 +1012,11 @@ DELIMITER $$
 create procedure USP_CapNhatThongTinPhieuDatHang(
     p_SoPhieuDatHang int,
     p_MaNhaCungCap int,p_MaNguoiDung int ,
-    p_NgayLap DATETIME ,p_TrangThai NVARCHAR(100))
+  p_TrangThai NVARCHAR(100))
 BEGIN
 UPDATE PHIEUDATHANG
 SET PHIEUDATHANG.MaNguoiDung= p_MaNguoiDung,
     PHIEUDATHANG.MaNhaCungCap = p_MaNhaCungCap,
-    PHIEUDATHANG.NgayLap= p_NgayLap,
     PHIEUDATHANG.TrangThai= p_TrangThai
 WHERE PHIEUDATHANG.SoPhieuDatHang=p_SoPhieuDatHang;
 END; $$

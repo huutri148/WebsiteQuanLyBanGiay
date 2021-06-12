@@ -20,7 +20,11 @@ import GroupBox from "../../components/controls/GroupBox/GroupBox";
 import SizeSelector from "../../components/controls/Selector/SizeSelector";
 import useTable from "../../components/useTable";
 import ProductCard from "../QuanLySanPham/ProductCard";
-import { thongTinPhieu, CTPHHeadCell } from "./ThongTinPhieuDatHang";
+import {
+  thongTinPhieu,
+  CTPHHeadCell,
+  QuanLyPhieuDatHangTab,
+} from "./ThongTinPhieuDatHang";
 import _ from "lodash";
 import { fetchListGiay, setProducts } from "../../redux/actions/giayAction";
 import { fetchListHangSanXuat } from "../../redux/actions/hangSanXuatAction";
@@ -64,7 +68,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const PhieuDatHangForm = () => {
+const PhieuDatHangForm = (props) => {
   //regex
   const phoneRegex = /^[0-9\b]+$/;
   const classes = useStyles();
@@ -234,6 +238,7 @@ const PhieuDatHangForm = () => {
       selectedProducts.splice(selectedProducts.indexOf(item), 1)
     );
   };
+
   const handleSubmitClick = () => {
     var check = false;
     thongTinPhieuBoxes.forEach((element) => {
@@ -269,6 +274,9 @@ const PhieuDatHangForm = () => {
       };
       console.log(record);
       dispatch(createPhieuDatHang(record));
+
+      // Switch to List Tab
+      props.SetTab(QuanLyPhieuDatHangTab.DanhSachPhieuDatHang);
     }
   };
 

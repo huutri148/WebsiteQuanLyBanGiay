@@ -12,8 +12,6 @@ import {
   makeStyles,
   Tooltip,
 } from "@material-ui/core";
-import useTable from "../../components/useTable";
-import Input from "../../components/controls/Input";
 import {
   Search,
   Check,
@@ -26,10 +24,14 @@ import {
   ViewColumn,
 } from "@material-ui/icons";
 import { useSelector, useDispatch } from "react-redux";
+import moment from "moment";
+import useTable from "../../components/useTable";
+import Input from "../../components/controls/Input";
 import {
   updatePhieuDatHang,
   deletePhieuDatHang,
 } from "../../redux/actions/phieuDatHangAction";
+import { DSPDHHeadCell } from "./ThongTinPhieuDatHang";
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -76,15 +78,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const headCells = [
-  { id: "SoPhieuDatHang", label: "Số phiếu" },
-  { id: "TenNhaCungCap", label: "Nhà cung cấp", disableSorting: true },
-  { id: "TenNguoiDung", label: "Người đặt", disableSorting: true },
-  { id: "TrangThai", label: "Trạng Thái" },
-  { id: "NgayDat", label: "Ngày đặt" },
-  { id: "actions" },
-];
 const DanhSachPhieuDatHang = (props) => {
+  const { UpdateData } = props;
+
   // CSS class
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -105,7 +101,7 @@ const DanhSachPhieuDatHang = (props) => {
   });
 
   const { TblContainer, TblHead, TblPagination, recordsAfterPagingAndSorting } =
-    useTable(tableData, headCells, filterFn);
+    useTable(tableData, DSPDHHeadCell, filterFn);
 
   useEffect(() => {
     const combineData = () => {
@@ -116,20 +112,24 @@ const DanhSachPhieuDatHang = (props) => {
         if (typeof listNhaCungCap[maNhaCungCap] === "undefined") return [];
         let { TenNhaCungCap } = listNhaCungCap[maNhaCungCap];
         let { TenNguoiDung } = listNguoiDung[maNguoiDung];
+        const date = moment(value.NgayLap).format("DD/MM/YYYY");
+        console.log(date);
 
         result.push({
+          ...value,
           TenNhaCungCap,
           TenNguoiDung,
-          ...value,
+          NgayLap: date,
         });
         return result;
       }, []);
+      console.log(data);
       setTableData(data);
     };
     combineData();
   }, [listNhaCungCap, listNguoiDung, listPhieuDatHang]);
 
-  const handleDetail = (index, data) => {};
+  const handleDetail = (data) => {};
   const handleSearch = (e) => {
     let target = e.target;
     setFilterFn({
@@ -144,6 +144,7 @@ const DanhSachPhieuDatHang = (props) => {
   };
   const handleDelete = (item) => {
     dispatch(deletePhieuDatHang(item.SoPhieuDatHang));
+    UpdateData();
   };
 
   const handleConfirm = (item) => {
@@ -151,7 +152,7 @@ const DanhSachPhieuDatHang = (props) => {
       ...item,
       TrangThai: "Đã xử lý",
     };
-    console.log(updateItem);
+    UpdateData();
     dispatch(updatePhieuDatHang(item.SoPhieuDatHang, updateItem));
   };
   return (
@@ -255,7 +256,7 @@ const DanhSachPhieuDatHang = (props) => {
                           </IconButton>
                         </Tooltip>
                         <Tooltip title="Xem chi tiết">
-                          <IconButton>
+                          <IconButton onClick={() => handleDetail(item)}>
                             <ArrowRightAlt />
                           </IconButton>
                         </Tooltip>
