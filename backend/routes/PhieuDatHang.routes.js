@@ -8,6 +8,6 @@ const {
   removeOrder,
 } = require("../controllers/PhieuDatHang.controller");
 
-router.route("/").get(getList).post(createOrder).patch(updateOrder);
-router.route("/:id").get(getByID).delete(removeOrder);
+router.route("/").get(getList).post(createOrder);
+router.route("/:id").get(getByID).delete(removeOrder).patch(updateOrder);
 module.exports = router;

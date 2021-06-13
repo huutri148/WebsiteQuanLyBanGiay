@@ -101,7 +101,7 @@ export const giayCreateReducer = (state = initalState, action) => {
         giay: { ...action.payload },
       };
     }
-    case giayConstant.GIAY_SIZE_LIST_FAIL: {
+    case giayConstant.GIAY_CREATE_FAIL: {
       return {
         loading: false,
         error: action.payload,

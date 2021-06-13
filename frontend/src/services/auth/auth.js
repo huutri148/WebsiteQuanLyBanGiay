@@ -4,26 +4,35 @@ import { Route, Redirect } from "react-router-dom";
 import jwt_decode from "jwt-decode";
 import { setUser } from "../../redux/actions/nguoiDungAction";
 import { useDispatch, useSelector } from "react-redux";
-export const PrivateRoute = ({ component: Component, ...rest }) => {
+import { authRoles } from "./authRoles";
+export const PrivateRoute = ({ component: Component, Role, ...rest }) => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.User);
-  const { userInfo, isSet } = user;
+  const { isSet } = user;
   return (
     <Route
       {...rest}
       render={(props) => {
-        const token = isAuthenticated();
+        const isAuth = isAuthenticated();
+        var isMatchRole = false;
 
         // Just for purpose of development
         // Need to use Refresh token when access token expired
-        if (token && typeof isSet === "undefined") {
+        if (isAuth) {
           const access = localStorage.getItem("access_token");
           var decode2 = jwt_decode(access);
-          dispatch(setUser(decode2.data));
+          isMatchRole = authRoles[Role].includes(decode2.data.MaChucVu);
+          if (typeof isSet === "undefined") dispatch(setUser(decode2.data));
         }
 
-        return token ? (
-          <Component {...props} />
+        return isAuth ? (
+          isMatchRole ? (
+            <Component {...props} />
+          ) : (
+            <Redirect
+              to={{ pathname: "/session/404", state: { from: props.location } }}
+            />
+          )
         ) : (
           <Redirect
             to={{ pathname: "/login", state: { from: props.location } }}

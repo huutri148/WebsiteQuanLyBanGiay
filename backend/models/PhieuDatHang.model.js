@@ -75,12 +75,11 @@ PhieuDatHang.Edit = async function (data, result) {
     data.SoPhieuDatHang,
     data.MaNguoiDung,
     data.MaNhaCungCap,
-    data.NgayLap,
     data.TrangThai,
   ];
 
   var queryString = sqlString.format(
-    "CALL USP_CapNhatThongTinPhieuDatHang(?,?,?,?,?);",
+    "CALL USP_CapNhatThongTinPhieuDatHang(?,?,?,?);",
     dataPhieuDatHang
   );
   conn.query(queryString, (err, res) => {
@@ -102,7 +101,7 @@ PhieuDatHang.Delete = (soPhieu, callBack) => {
       throw err;
     } else {
       console.log("Deleteted Order".yellow.bold);
-      callBack(res[0]);
+      callBack(res);
     }
   });
 };

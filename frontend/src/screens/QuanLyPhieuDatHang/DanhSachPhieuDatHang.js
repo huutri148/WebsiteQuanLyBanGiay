@@ -12,8 +12,6 @@ import {
   makeStyles,
   Tooltip,
 } from "@material-ui/core";
-import useTable from "../../components/useTable";
-import Input from "../../components/controls/Input";
 import {
   Search,
   Check,
@@ -25,7 +23,15 @@ import {
   PrintDisabledRounded,
   ViewColumn,
 } from "@material-ui/icons";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import moment from "moment";
+import useTable from "../../components/useTable";
+import Input from "../../components/controls/Input";
+import {
+  updatePhieuDatHang,
+  deletePhieuDatHang,
+} from "../../redux/actions/phieuDatHangAction";
+import { DSPDHHeadCell } from "./ThongTinPhieuDatHang";
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -72,17 +78,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const headCells = [
-  { id: "SoPhieuDatHang", label: "Số phiếu" },
-  { id: "TenNhaCungCap", label: "Nhà cung cấp", disableSorting: true },
-  { id: "TenNguoiDung", label: "Người đặt", disableSorting: true },
-  { id: "TrangThai", label: "Trạng Thái" },
-  { id: "NgayDat", label: "Ngày đặt" },
-  { id: "actions" },
-];
 const DanhSachPhieuDatHang = (props) => {
+  const { UpdateData } = props;
+
   // CSS class
   const classes = useStyles();
+  const dispatch = useDispatch();
 
   const supplierList = useSelector((state) => state.ListNhaCungCap);
   const userList = useSelector((state) => state.ListNguoiDung);
@@ -100,7 +101,7 @@ const DanhSachPhieuDatHang = (props) => {
   });
 
   const { TblContainer, TblHead, TblPagination, recordsAfterPagingAndSorting } =
-    useTable(tableData, headCells, filterFn);
+    useTable(tableData, DSPDHHeadCell, filterFn);
 
   useEffect(() => {
     const combineData = () => {
@@ -111,10 +112,13 @@ const DanhSachPhieuDatHang = (props) => {
         if (typeof listNhaCungCap[maNhaCungCap] === "undefined") return [];
         let { TenNhaCungCap } = listNhaCungCap[maNhaCungCap];
         let { TenNguoiDung } = listNguoiDung[maNguoiDung];
+        const date = moment(value.NgayLap).format("DD/MM/YYYY");
+
         result.push({
+          ...value,
           TenNhaCungCap,
           TenNguoiDung,
-          ...value,
+          NgayLap: date,
         });
         return result;
       }, []);
@@ -123,7 +127,7 @@ const DanhSachPhieuDatHang = (props) => {
     combineData();
   }, [listNhaCungCap, listNguoiDung, listPhieuDatHang]);
 
-  const handleDetail = (index, data) => {};
+  const handleDetail = (data) => {};
   const handleSearch = (e) => {
     let target = e.target;
     setFilterFn({
@@ -136,7 +140,19 @@ const DanhSachPhieuDatHang = (props) => {
       },
     });
   };
+  const handleDelete = (item) => {
+    dispatch(deletePhieuDatHang(item.SoPhieuDatHang));
+    UpdateData();
+  };
 
+  const handleConfirm = (item) => {
+    const updateItem = {
+      ...item,
+      TrangThai: "Đã xử lý",
+    };
+    UpdateData();
+    dispatch(updatePhieuDatHang(item.SoPhieuDatHang, updateItem));
+  };
   return (
     <>
       {supplierLoading || userLoading || orderLoading ? (
@@ -214,7 +230,7 @@ const DanhSachPhieuDatHang = (props) => {
                           style={{
                             backgroundColor:
                               //Note: Fix hardcode 100
-                              (item.TrangThai === "Đã thanh toán" &&
+                              (item.TrangThai === "Đã xử lý" &&
                                 "rgba(9,182,109,1)") ||
                               (item.TrangThai === "Chờ" && "#FF3D57"),
                             boxShadow: " 0 2px 2px 1px rgba(0,0,0,0.24)",
@@ -228,17 +244,17 @@ const DanhSachPhieuDatHang = (props) => {
                       </TableCell>
                       <TableCell component="th" scope="row">
                         <Tooltip title="Xác nhận">
-                          <IconButton>
+                          <IconButton onClick={() => handleConfirm(item)}>
                             <Check className={classes.checkButton} />
                           </IconButton>
                         </Tooltip>
                         <Tooltip title="Hủy đơn">
-                          <IconButton>
+                          <IconButton onClick={() => handleDelete(item)}>
                             <Clear className={classes.cancelButton} />
                           </IconButton>
                         </Tooltip>
                         <Tooltip title="Xem chi tiết">
-                          <IconButton>
+                          <IconButton onClick={() => handleDetail(item)}>
                             <ArrowRightAlt />
                           </IconButton>
                         </Tooltip>

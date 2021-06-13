@@ -32,14 +32,12 @@ const headCells = [
 const DanhSachSanPham = (props) => {
   // CSS class
   const { classes } = props;
-  const { ListSize, ListMau, ListHSX } = props;
 
   //Fetched data
   const dispatch = useDispatch();
   const productList = useSelector((state) => state.ListGiay);
   const brandList = useSelector((state) => state.ListHangSanXuat);
   const mauList = useSelector((state) => state.ListMau);
-  const sizeList = useSelector((state) => state.ListSize);
 
   const { loading: productLoading, error: giayError, listGiay } = productList;
   const { listHangSanXuat } = brandList;
@@ -201,7 +199,7 @@ const DanhSachSanPham = (props) => {
         openPopup={openPopup}
         setOpenPopup={setOpenPopup}
       >
-        <ProductDetail item={selectedItem} ListSize={ListSize} />
+        <ProductDetail item={selectedItem} />
       </Popup>
     </div>
   );
