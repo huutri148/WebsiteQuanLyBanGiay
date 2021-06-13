@@ -21,14 +21,8 @@ import Popup from "../../../components/controls/Popup";
 import ProductDetail from "../ProductDetail";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchListGiay } from "../../../redux/actions/giayAction";
-const headCells = [
-  { id: "TenGiay", label: "Tên sản phẩm" },
-  { id: "TenMau", label: "Tên màu", disableSorting: true },
-  { id: "GioiTinh", label: "Giới tính", disableSorting: true },
-  { id: "SoLuong", label: "Số lượng" },
-  { id: "IsDeleted", label: "Trạng Thái" },
-  { id: "actions" },
-];
+import { DSSPHeadCells } from "../ThongTinQuanLySanPham";
+
 const DanhSachSanPham = (props) => {
   // CSS class
   const { classes } = props;
@@ -54,7 +48,7 @@ const DanhSachSanPham = (props) => {
     },
   });
   const { TblContainer, TblHead, TblPagination, recordsAfterPagingAndSorting } =
-    useTable(tableData, headCells, filterFn);
+    useTable(tableData, DSSPHeadCells, filterFn);
 
   // Fetch data from API
   useEffect(() => {

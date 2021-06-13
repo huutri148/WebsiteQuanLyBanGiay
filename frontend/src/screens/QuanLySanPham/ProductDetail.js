@@ -3,7 +3,6 @@ import { makeStyles, Grid, CircularProgress } from "@material-ui/core";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchGiaySize } from "../../redux/actions/giayAction";
 import GroupBox from "../../components/controls/GroupBox/GroupBox";
-import * as _ from "lodash";
 
 const useStyles = makeStyles((theme) => ({
   root: {

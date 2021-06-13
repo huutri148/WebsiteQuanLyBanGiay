@@ -25,13 +25,13 @@ import {
 } from "@material-ui/icons";
 import { useSelector, useDispatch } from "react-redux";
 import moment from "moment";
-import useTable from "../../components/useTable";
-import Input from "../../components/controls/Input";
+import useTable from "../../../components/useTable";
+import Input from "../../../components/controls/Input";
 import {
   updatePhieuDatHang,
   deletePhieuDatHang,
-} from "../../redux/actions/phieuDatHangAction";
-import { DSPDHHeadCell } from "./ThongTinPhieuDatHang";
+} from "../../../redux/actions/phieuDatHangAction";
+import { DSPDHHeadCell } from "../ThongTinPhieuDatHang";
 
 const useStyles = makeStyles((theme) => ({
   title: {

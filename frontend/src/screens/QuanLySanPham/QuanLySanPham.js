@@ -1,11 +1,13 @@
 import { CssBaseline, makeStyles, Tab, Tabs } from "@material-ui/core";
 import { React, useState, useEffect } from "react";
 import DanhSachSanPham from "./DanhSachSanPham/DanhSachSanPham";
-import ThemSanPham from "./ThemSanPham";
+import ThemSanPham from "./SanPhamForm/ThemSanPham";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchListHangSanXuat } from "../../redux/actions/hangSanXuatAction";
 import { fetchListSize } from "../../redux/actions/sizeAction";
 import { fetchListMau } from "../../redux/actions/mauAction";
+import { QuanLySanPhamTab } from "./ThongTinQuanLySanPham";
+
 function TabPanel(props) {
   const classes = useStyles();
   const { children, value, index, ...other } = props;
@@ -30,8 +32,11 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const QuanLySanPham = () => {
-  const [value, setValue] = useState(0);
+  const classes = useStyles();
   const dispatch = useDispatch();
+
+  const [value, setValue] = useState(QuanLySanPhamTab.DanhSachSanPham);
+  const [updateFromChildren, setUpdateFromChildren] = useState(false);
 
   const brandList = useSelector((state) => state.ListHangSanXuat);
   const sizeList = useSelector((state) => state.ListSize);
@@ -50,13 +55,19 @@ const QuanLySanPham = () => {
     };
 
     fetchData();
-  }, [dispatch]);
+  }, [dispatch, updateFromChildren]);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
-  const classes = useStyles();
 
+  const switchTab = (value) => {
+    setValue(value);
+  };
+
+  const updateData = () => {
+    setUpdateFromChildren(!updateFromChildren);
+  };
   return (
     <>
       {sizeLoading || brandLoading || mauLoading ? (
@@ -76,11 +87,11 @@ const QuanLySanPham = () => {
             </Tabs>
           </div>
 
-          <TabPanel value={value} index={0}>
+          <TabPanel value={value} index={QuanLySanPhamTab.DanhSachSanPham}>
             <DanhSachSanPham className={classes.tabPaper} />
           </TabPanel>
-          <TabPanel value={value} index={1}>
-            <ThemSanPham />
+          <TabPanel value={value} index={QuanLySanPhamTab.SanPhamForm}>
+            <ThemSanPham SwitchTab={switchTab} UpdateData={updateData} />
           </TabPanel>
         </div>
       )}

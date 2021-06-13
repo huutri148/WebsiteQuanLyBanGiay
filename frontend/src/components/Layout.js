@@ -6,7 +6,6 @@ import {
   makeStyles,
   Typography,
   Avatar,
-  Badge,
   CssBaseline,
   Drawer,
   Divider,
@@ -19,6 +18,8 @@ import { Link } from "react-router-dom";
 import MenuIcon from "@material-ui/icons/Menu";
 import clsx from "clsx";
 import { mainListItems, secondaryListItems } from "./Sidebar/listMenu";
+import { useDispatch } from "react-redux";
+import { logout } from "../redux/actions/nguoiDungAction";
 import {
   ChevronLeft,
   Home,
@@ -110,6 +111,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 export const Layout = (props) => {
   const classes = useStyles();
+  const dispatch = useDispatch();
   const [open, setOpen] = React.useState(true);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const handleDrawerOpen = () => {
@@ -125,6 +127,9 @@ export const Layout = (props) => {
 
   const handleCloseMenu = () => {
     setAnchorEl(null);
+  };
+  const handleLogout = () => {
+    dispatch(logout());
   };
 
   return (
@@ -196,7 +201,7 @@ export const Layout = (props) => {
               </ListItemIcon>
               <ListItemText primary="Settings" />
             </ListItem>
-            <ListItem>
+            <ListItem button onClick={handleLogout}>
               <ListItemIcon>
                 <ExitToApp fontSize="small" color="primary" />
               </ListItemIcon>

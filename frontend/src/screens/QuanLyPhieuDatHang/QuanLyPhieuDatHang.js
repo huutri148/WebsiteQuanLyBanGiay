@@ -1,11 +1,13 @@
 import { CssBaseline, makeStyles, Tab, Tabs } from "@material-ui/core";
 import { React, useState, useEffect } from "react";
-import DanhSachPhieuDatHang from "./DanhSachPhieuDatHang";
-import PhieuDatHangForm from "./PhieuDatHangForm";
+import DanhSachPhieuDatHang from "./DanhSachPhieuDatHang/DanhSachPhieuDatHang";
+import PhieuDatHangForm from "./PhieuDatHangForm/PhieuDatHangForm";
 import { useDispatch } from "react-redux";
 import { fetchListNhaCungCap } from "../../redux/actions/nhaCungCapAction";
 import { fetchListNguoiDung } from "../../redux/actions/nguoiDungAction";
 import { fetchListPhieuDatHang } from "../../redux/actions/phieuDatHangAction";
+import { QuanLyPhieuDatHangTab } from "./ThongTinPhieuDatHang";
+
 function TabPanel(props) {
   const classes = useStyles();
   const { children, value, index, ...other } = props;
@@ -33,7 +35,6 @@ const QuanLyPhieuDatHang = () => {
   const classes = useStyles();
 
   const [value, setValue] = useState(0);
-  const [loading, setLoading] = useState(false);
   const [updateFromChildren, setUpdateFromChildren] = useState(false);
   const dispatch = useDispatch();
 
@@ -72,13 +73,16 @@ const QuanLyPhieuDatHang = () => {
         </Tabs>
       </div>
 
-      <TabPanel value={value} index={0}>
+      <TabPanel
+        value={value}
+        index={QuanLyPhieuDatHangTab.DanhSachPhieuDatHang}
+      >
         <DanhSachPhieuDatHang
           className={classes.tabPaper}
           UpdateData={updateState}
         />
       </TabPanel>
-      <TabPanel value={value} index={1}>
+      <TabPanel value={value} index={QuanLyPhieuDatHangTab.PhieuDatHangForm}>
         <PhieuDatHangForm SetTab={updateTab} />
       </TabPanel>
     </div>
