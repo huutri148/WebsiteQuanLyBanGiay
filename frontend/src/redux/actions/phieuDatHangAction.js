@@ -29,7 +29,7 @@ export const createPhieuDatHang = (item) => async (dispatch) => {
       type: phieuDatHangConstants.PHIEUDATHANG_CREATE_SUCCESS,
       payload: data,
     });
-    await toast.success("Created Successfully");
+    toast.success("Created Successfully");
   } catch (error) {
     dispatch({
       type: phieuDatHangConstants.PHIEUDATHANG_CREATE_FAIL,

@@ -54,7 +54,7 @@ const useStyles = makeStyles((theme) => ({
 export const Login = withRouter(() => {
   const [islogged, setIslogged] = useState(false);
   const [loginParams, setLoginParams] = useState({
-    TenDangNhap: "huutri148",
+    TenDangNhap: "huutri1480",
     MatKhau: "123456",
   });
   const dispatch = useDispatch();

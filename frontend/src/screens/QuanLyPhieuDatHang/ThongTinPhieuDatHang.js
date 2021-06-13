@@ -31,3 +31,17 @@ export const CTPHHeadCell = [
   { id: "SoLuongDat", label: "Số Lượng Đặt" },
   { id: "Actions" },
 ];
+
+export const QuanLyPhieuDatHangTab = {
+  DanhSachPhieuDatHang: 0,
+  PhieuDatHangForm: 1,
+};
+
+export const DSPDHHeadCell = [
+  { id: "SoPhieuDatHang", label: "Số phiếu" },
+  { id: "TenNhaCungCap", label: "Nhà cung cấp", disableSorting: true },
+  { id: "TenNguoiDung", label: "Người đặt", disableSorting: true },
+  { id: "TrangThai", label: "Trạng Thái" },
+  { id: "NgayDat", label: "Ngày đặt" },
+  { id: "actions" },
+];

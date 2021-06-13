@@ -3,6 +3,7 @@ import { makeStyles, Grid, CircularProgress } from "@material-ui/core";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchGiaySize } from "../../redux/actions/giayAction";
 import GroupBox from "../../components/controls/GroupBox/GroupBox";
+import * as _ from "lodash";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -59,12 +60,14 @@ const ProductDetail = (props) => {
   // Props in component
   const [flag, setFlag] = useState(-1);
   const [chosenSize, setChosenSize] = useState();
-  const { item, ListSize } = props;
+  const { item } = props;
 
   // Fetch API
   const dispatch = useDispatch();
-  const listSize = useSelector((state) => state.SizeGiay);
-  const { loading: sizeLoading, error: sizeError, giaySize } = listSize;
+  const sizeGiay = useSelector((state) => state.SizeGiay);
+  const sizeList = useSelector((state) => state.ListSize);
+  const { loading: sizeLoading, error: sizeError, giaySize } = sizeGiay;
+  const { listSize } = sizeList;
 
   // Fetch data from API
   useEffect(() => {
@@ -72,7 +75,6 @@ const ProductDetail = (props) => {
       await dispatch(fetchGiaySize(id));
     };
     fetchData(item.MaGiay);
-    console.log(listSize);
   }, [dispatch, item.MaGiay]);
 
   //Choose size to see quatity
@@ -93,7 +95,7 @@ const ProductDetail = (props) => {
       {sizeLoading ? (
         <CircularProgress disableShrink />
       ) : sizeError ? (
-        <h1>Error</h1>
+        <h1>{sizeError}</h1>
       ) : (
         <Grid container spacing={4}>
           <Grid item xs={6}>
@@ -155,7 +157,7 @@ const ProductDetail = (props) => {
                     }
                     onClick={(e) => handleChange(giaySize[key])}
                   >
-                    {ListSize[key].TenSize}{" "}
+                    {listSize[key].TenSize}{" "}
                   </button>
                 );
               })}

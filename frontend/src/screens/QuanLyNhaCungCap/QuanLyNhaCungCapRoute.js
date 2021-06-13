@@ -11,6 +11,8 @@ const quanLyNhaCungCapRoute = [
     path: "/suppliers",
     exact: true,
     component: quanLyNhaCungCap,
+    private: true,
+    role: "Admin",
   },
 ];
 

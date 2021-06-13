@@ -18,10 +18,7 @@ import useTable from "../../components/useTable";
 import ProductCard from "../QuanLySanPham/ProductCard";
 import InfoField from "../../components/controls/InfoField";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  createPhieuBanHang,
-  updatePhieuBanHang,
-} from "../../redux/actions/phieuBanHangAction";
+import { createPhieuBanHang, updatePhieuBanHang } from "../../redux/actions/phieuBanHangAction";
 import SizeSelector from "../../components/controls/Selector/SizeSelector";
 
 const useStyles = makeStyles((theme) => ({
@@ -65,14 +62,14 @@ const headCells = [
   { id: "ThanhTien", label: "Thành Tiền" },
   { id: "HanhDong" },
 ];
-const selectedProducts = [];
 const PhieuBanHang = (props) => {
+  const [selectedProducts, setSelectedProducts] = useState([]);
   //styles
   const classes = useStyles();
   //fetch
   const dispatch = useDispatch();
   //props
-  const { products, sizes, users } = props;
+  const { products, sizes, users, isLoading } = props;
   //variables
   const [ignored, forceUpdate] = useState(false);
   const [editing, setEditing] = useState(false);
@@ -105,12 +102,9 @@ const PhieuBanHang = (props) => {
       setAmountError(true);
       return;
     }
-    if (!editing) {
-      if (
-        selectedProducts.find(
-          (element) => element.MaChiTietGiay === product.MaChiTietGiay
-        )
-      )
+    if (!editing) 
+    {
+      if (selectedProducts.find(element => element.MaChiTietGiay === product.MaChiTietGiay))
         return;
       let tmp = sumTotal + total;
       setSumTotal(tmp);
@@ -118,7 +112,9 @@ const PhieuBanHang = (props) => {
       let shoe = { ...product, total, amount, size, maxAmount };
       selectedProducts.push(shoe);
       resetField();
-    } else {
+    }
+    else 
+    {
       let tmp = sumTotal + total - product.total;
       setSumTotal(tmp);
       groupBoxes[1].value = tmp.toLocaleString("it-IT");
@@ -127,6 +123,7 @@ const PhieuBanHang = (props) => {
       product.size = size;
       resetField();
     }
+    forceUpdate(!ignored);
   };
   const handleRemoveClick = (item) => {
     selectedProducts.splice(selectedProducts.indexOf(item), 1);
@@ -144,44 +141,46 @@ const PhieuBanHang = (props) => {
     setOpenPopup(true);
   };
   //handle submit
-  const handleSubmitClick = () => {
-    var check = false;
-    groupBoxes.forEach((element) => {
+  const handleSubmitClick = () => 
+  {
+    var isAbleToSubmit = false;
+    groupBoxes.forEach((element) => 
+    {
       element.error = element.checkValidation(element.value);
-      if (element.error === true) check = true;
+      if (element.error === true)
+        isAbleToSubmit = true;
     });
-    if (check === true) forceUpdate(!ignored);
-    else {
+    console.log(groupBoxes);
+    if (isAbleToSubmit === true)
+      forceUpdate(!ignored);
+    else 
+    {
       //set default date
-      if (groupBoxes[3].value === undefined) {
+      if (groupBoxes[4].value === undefined) 
+      {
         let date = new Date().getDate();
-        if (date < 10) date = "0" + date;
+        if (date < 10) date = '0' + date;
         let month = new Date().getMonth() + 1;
-        if (month < 10) month = "0" + month;
-        groupBoxes[4].value =
-          new Date().getFullYear() + "-" + month + "-" + date;
+        if (month < 10) month = '0' + month;
+        groupBoxes[4].value = new Date().getFullYear() + "-" + month + "-" + date;
       }
       //get record
       let record = {
         MaNguoiDung: 2,
-        MaKhachHang:
-          groupBoxes[0].value === undefined ? 1 : groupBoxes[0].value.value,
+        MaKhachHang: groupBoxes[0].value === undefined ? 1 : groupBoxes[0].value.value,
         TongTien: sumTotal,
-        PhuongThucThanhToan:
-          groupBoxes[2].value === undefined
-            ? "Thanh toán trực tiếp"
-            : groupBoxes[2].value.label,
+        PhuongThucThanhToan: groupBoxes[2].value === undefined ? "Thanh toán trực tiếp" : groupBoxes[2].value.label,
         NgayBan: groupBoxes[4].value,
         GhiChu: groupBoxes[5].value === undefined ? null : groupBoxes[5].value,
-        ChiTietPhieuBanHang: selectedProducts.map((element) => {
+        ChiTietPhieuBanHang: selectedProducts.map(element => {
           return {
             MaChiTietGiay: element.MaChiTietGiay,
             SoLuongMua: element.amount,
             GiaBan: element.DonGia,
-            ThanhTien: element.total,
+            ThanhTien: element.total
           };
-        }),
-      };
+        })
+      }
       console.log(record);
       dispatch(createPhieuBanHang(record));
       //to do: Add success later
@@ -195,12 +194,16 @@ const PhieuBanHang = (props) => {
       if (tmp === "") {
         setAmount(0);
         setTotal(0);
-      } else if (tmp === 0 || phoneRegex.test(tmp)) {
-        setAmount(Number(tmp));
-        setTotal(Number(tmp) * product.DonGia);
-        if (Number(tmp) > 0 && Number(tmp) <= maxAmount) setAmountError(false);
-        else setAmountError(true);
       }
+      else
+        if (tmp === 0 || phoneRegex.test(tmp)) {
+          setAmount(Number(tmp));
+          setTotal(Number(tmp) * product.DonGia);
+          if (Number(tmp) > 0 && Number(tmp) <= maxAmount)
+            setAmountError(false);
+          else
+            setAmountError(true);
+        }
     }
   };
   const onSizeChange = (e, size, MaChiTietGiay) => {
@@ -217,17 +220,14 @@ const PhieuBanHang = (props) => {
     setTotal(0);
     setSize(0);
     setEditing(false);
-  };
-  //Field titles
-  const [groupBoxes, setGroupBoxes] = useState([
+  }
+  const [groupBoxes,setGroupBoxes] = useState([
     {
       type: "Select",
       title: "Tên Khách Hàng",
       required: true,
-      onChange: (e) => (groupBoxes[0].value = e),
-      options: users.map((item) => {
-        return { value: item.MaNguoiDung, label: item.TenNguoiDung };
-      }),
+      onChange: (e) => {groupBoxes[0].value = e; groupBoxes[0].error = false;},
+      options: users.map(element => { return { value: element.MaNguoiDung, label: element.TenNguoiDung } }),
       validationTip: "Tên Khách Hàng không được trống",
       error: false,
       checkValidation: (val) => false,
@@ -281,6 +281,10 @@ const PhieuBanHang = (props) => {
   ]);
   return (
     <div>
+      {groupBoxes === [] || users === [] || products === [] || sizes === [] ?
+      (<h1>Loading</h1>)
+      :
+      (
       <Grid container spacing={0}>
         {/* bill */}
         <Paper className={classes.paper} style={{ width: "20%" }}>
@@ -294,7 +298,7 @@ const PhieuBanHang = (props) => {
         </Paper>
         {/* bill details */}
         <Paper className={classes.paper} style={{ width: "72%", margin: 0 }}>
-          <label className={classes.cardHeader}>Thông Tin Giày</label>
+          <label className={classes.cardHeader}>Chi Thiết Phiếu</label>
           <hr className={classes.hr} />
           <ProductSelector
             title="Hàng Hoá"
@@ -474,6 +478,7 @@ const PhieuBanHang = (props) => {
           </TableContainer>
         </Paper>
       </Grid>
+      )}
     </div>
   );
 };

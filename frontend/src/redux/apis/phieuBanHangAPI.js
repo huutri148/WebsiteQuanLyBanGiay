@@ -19,3 +19,6 @@ export const deleteItem = (id) => {
   // Add config for cofig (header with token)
   return axiosService.delete(`${url}/${id}`);
 };
+export const getDetails = (id) => {
+  return axiosService.get(`${url}/details/${id}`);
+};

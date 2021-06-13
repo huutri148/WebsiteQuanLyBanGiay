@@ -30,8 +30,11 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const QuanLyPhieuDatHang = () => {
+  const classes = useStyles();
+
   const [value, setValue] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [updateFromChildren, setUpdateFromChildren] = useState(false);
   const dispatch = useDispatch();
 
   // Fetch data from API
@@ -42,13 +45,18 @@ const QuanLyPhieuDatHang = () => {
       await dispatch(fetchListPhieuDatHang());
     };
     fetchData();
-  }, [dispatch]);
+  }, [dispatch, updateFromChildren]);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
-  const classes = useStyles();
-
+  const updateTab = (id) => {
+    setValue(id);
+    setUpdateFromChildren(!updateFromChildren);
+  };
+  const updateState = () => {
+    setUpdateFromChildren(!updateFromChildren);
+  };
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -65,10 +73,13 @@ const QuanLyPhieuDatHang = () => {
       </div>
 
       <TabPanel value={value} index={0}>
-        <DanhSachPhieuDatHang className={classes.tabPaper} />
+        <DanhSachPhieuDatHang
+          className={classes.tabPaper}
+          UpdateData={updateState}
+        />
       </TabPanel>
       <TabPanel value={value} index={1}>
-        <PhieuDatHangForm />
+        <PhieuDatHangForm SetTab={updateTab} />
       </TabPanel>
     </div>
   );

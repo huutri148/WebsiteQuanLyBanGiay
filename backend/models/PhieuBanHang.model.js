@@ -5,8 +5,8 @@ const PhieuBanHang = {};
 PhieuBanHang.Create = async function (data, result) {
   var conn = db.getConnection();
   var dataPhieuBanHang = [
-    data.MaNguoiDung,
     data.MaKhachHang,
+    data.MaNguoiDung,
     data.NgayBan,
     data.PhuongThucThanhToan,
     data.TongTien,
@@ -108,6 +108,21 @@ PhieuBanHang.Edit = async function (data, result) {
     } else {
       console.log(`Updated product ${data.SoPhieuBanHang} successfully`);
       result(res[0]);
+    }
+  });
+};
+PhieuBanHang.GetDetails = function (soPhieuBanHang,callBack) {
+  var conn = db.getConnection();
+  var queryString = sqlString.format(
+    `CALL USP_GetChiTietPhieuBanHangByID(${soPhieuBanHang});`
+  );
+  conn.query(queryString, (err, res) => {
+    if (err) {
+      throw err;
+    }
+    if (res[0]) {
+      console.log("Found Details:".yellow.bold, res[0]);
+      callBack(res[0]);
     }
   });
 };

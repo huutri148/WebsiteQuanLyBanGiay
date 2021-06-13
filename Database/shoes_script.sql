@@ -879,8 +879,8 @@ DELIMITER ;
 DELIMITER $$
 create procedure USP_GetListPhieuBanHang()
 BEGIN
-Select C.SoPhieuBanHang,C.TenNguoiDung, C.NgayBan, C.TongTien, D.TenNguoiDung as TenKhachHang, D.SDT from (
-Select A.SoPhieuBanHang, A.TongTien, A.NgayBan, B.TenNguoiDung, A.MaKhachHang
+Select C.SoPhieuBanHang,C.TenNguoiDung, C.NgayBan, C.PhuongThucThanhToan, C.TongTien, D.TenNguoiDung as TenKhachHang, D.SDT from (
+Select A.SoPhieuBanHang, A.TongTien, A.NgayBan, B.TenNguoiDung, A.MaKhachHang, A.PhuongThucThanhToan
 from (Select *  from ShoesStoreManagement.PHIEUBANHANG ) A 
 left join  ShoesStoreManagement.NGUOIDUNG B USING (MaNguoiDung)) C
 left join ShoesStoreManagement.NGUOIDUNG D on 
@@ -891,8 +891,8 @@ DELIMITER ;
 DELIMITER $$
 create procedure USP_GetPhieuBanHangByID(p_SoPhieuBanHang int )
 BEGIN
-Select C.SoPhieuBanHang,C.TenNguoiDung, C.NgayBan, C.TongTien, D.TenNguoiDung as TenKhachHang, D.SDT from (
-Select A.SoPhieuBanHang, A.NgayBan, A.TongTien,  B.TenNguoiDung, A.MaKhachHang
+Select C.SoPhieuBanHang,C.TenNguoiDung, C.NgayBan,C.PhuongThucThanhToan, C.TongTien, D.TenNguoiDung as TenKhachHang, D.SDT from (
+Select A.SoPhieuBanHang, A.NgayBan, A.TongTien,  B.TenNguoiDung, A.MaKhachHang, A.PhuongThucThanhToan
 from (Select *  from ShoesStoreManagement.PHIEUBANHANG ) A
 LEFT JOIN   ShoesStoreManagement.NGUOIDUNG B USING (MaNguoiDung) where A.SoPhieuBanHang = p_SoPhieuBanHang) C
 left join ShoesStoreManagement.NGUOIDUNG D on 
@@ -903,8 +903,8 @@ DELIMITER ;
 DELIMITER $$
 create procedure USP_GetPhieuBanHangByMaKhachHang(p_MaKhachHang int )
 BEGIN
-Select C.SoPhieuBanHang,C.TenNguoiDung, C.NgayBan, C.TongTien, D.TenNguoiDung as TenKhachHang, D.SDT from (
-Select A.SoPhieuBanHang,  A.TongTien, A.NgayBan, B.TenNguoiDung, A.MaKhachHang
+Select C.SoPhieuBanHang,C.TenNguoiDung, C.NgayBan,C.PhuongThucThanhToan, C.TongTien, D.TenNguoiDung as TenKhachHang, D.SDT from (
+Select A.SoPhieuBanHang,  A.TongTien, A.NgayBan, B.TenNguoiDung, A.MaKhachHang, A.PhuongThucThanhToan
 from (Select *  from ShoesStoreManagement.NGUOIDUNG) B
 LEFT JOIN ShoesStoreManagement.PHIEUBANHANG A  USING (MaNguoiDung) where A.MaKhachHang = p_MaKhachHang) C
 left join ShoesStoreManagement.NGUOIDUNG D on 
@@ -950,7 +950,11 @@ create procedure USP_ThemChiTietPhieuBanHang(p_MaChiTietGiay int,
         p_SoLuongMua int, p_GiaBan Decimal(17,0), p_ThanhTien Decimal(17,2))
 BEGIN
     declare phieuBanHangID int;
+    declare giayID int;
     set phieuBanHangID = (select max(SoPhieuBanHang) from ShoesStoreManagement.PHIEUBANHANG);
+    set giayID = (select MaGiay 
+                  from ShoesStoreManagement.CHITIETGIAY 
+                  where CHITIETGIAY.MaChiTietGiay = p_MaChiTietGiay);
     INSERT INTO ShoesStoreManagement.CHITIETPHIEUBANHANG(MaChiTietGiay ,SoPhieuBanHang, 
         SoLuongMua , GiaBan , ThanhTien)
     VALUES ( p_MaChiTietGiay ,phieuBanHangID,
@@ -958,10 +962,26 @@ BEGIN
     Update ShoesStoreManagement.CHITIETGIAY 
     set CHITIETGIAY.SoLuong = CHITIETGIAY.SoLuong - p_SoLuongMua 
     where CHITIETGIAY.MaChiTietGiay = p_MaChiTietGiay;
+    Update ShoesStoreManagement.GIAY 
+    set GIAY.TongSoLuong = GIAY.TongSoLuong - p_SoLuongMua 
+    where GIAY.MaGiay = giayID;
 END; $$
 DELIMITER ;
 
-
+DELIMITER $$
+create procedure USP_GetChiTietPhieuBanHangByID(p_SoPhieuBanHang int)
+BEGIN
+    Select C.Anh, C.TenGiay, C.GioiTinh, D.TenSize, A.GiaBan, A.SoLuongMua, A.ThanhTien, A.SoPhieuBanHang
+    from ShoesStoreManagement.CHITIETPHIEUBANHANG A 
+    left join ShoesStoreManagement.CHITIETGIAY B 
+    on A.MaChiTietGiay = B.MaChiTietGiay
+    left join ShoesStoreManagement.GIAY C
+    on C.MaGiay = B.MaGiay
+    left join ShoesStoreManagement.SIZE D
+    on D.MaSize = B.MaSize 
+    where A.SoPhieuBanHang = p_SoPhieuBanHang;
+END; $$
+DELIMITER ;
 
 
 
@@ -1005,12 +1025,11 @@ DELIMITER $$
 create procedure USP_CapNhatThongTinPhieuDatHang(
     p_SoPhieuDatHang int,
     p_MaNhaCungCap int,p_MaNguoiDung int ,
-    p_NgayLap DATETIME ,p_TrangThai NVARCHAR(100))
+  p_TrangThai NVARCHAR(100))
 BEGIN
 UPDATE PHIEUDATHANG
 SET PHIEUDATHANG.MaNguoiDung= p_MaNguoiDung,
     PHIEUDATHANG.MaNhaCungCap = p_MaNhaCungCap,
-    PHIEUDATHANG.NgayLap= p_NgayLap,
     PHIEUDATHANG.TrangThai= p_TrangThai
 WHERE PHIEUDATHANG.SoPhieuDatHang=p_SoPhieuDatHang;
 END; $$
@@ -1037,9 +1056,9 @@ DELIMITER ;
 DELIMITER $$
 create procedure USP_XoaPhieuDatHang(p_SoPhieu int)
 BEGIN
- UPDATE PHIEUDATHANG  
- SET PHIEUDATHANG.IsDeleted = true 
- WHERE PHIEUDATHANG.SoPhieuDatHang =p_SoPhieu;
+    UPDATE PHIEUDATHANG  
+    SET PHIEUDATHANG.IsDeleted = true 
+    WHERE PHIEUDATHANG.SoPhieuDatHang =p_SoPhieu;
 END; $$
 DELIMITER ;
 

@@ -73,9 +73,12 @@ const defaultGioiTinh = [
 ];
 
 const ThemSanPham = (props) => {
+  //hooks
   const classes = useStyles();
   const dispatch = useDispatch();
   const history = useHistory();
+
+  // State of component
   const [values, setValues] = useState({
     TenGiay: "",
     MaHangSanXuat: "",
@@ -93,14 +96,16 @@ const ThemSanPham = (props) => {
   });
   const [chosenFile, setChosenFile] = useState("");
 
+  //Select data from store
   const brandList = useSelector((state) => state.ListHangSanXuat);
   const sizeList = useSelector((state) => state.ListSize);
   const mauList = useSelector((state) => state.ListMau);
-  const { listHangSanXuat } = brandList;
 
+  const { listHangSanXuat } = brandList;
   const { listSize } = sizeList;
   const { listMau } = mauList;
 
+  //Function to handle
   const handleQuanLyHangSanXuat = () => {
     history.push("/brands");
   };
@@ -120,7 +125,6 @@ const ThemSanPham = (props) => {
   const saveFile = (file) => {
     setChosenFile(file);
   };
-
   const handleFirebaseUpload = (file) => {
     setConfirmDialog({
       ...confirmDialog,
@@ -385,7 +389,6 @@ const ThemSanPham = (props) => {
             confirmDialog={confirmDialog}
             setConfirmDialog={setConfirmDialog}
           />
-          <ToastContainer />
         </Paper>
       </form>
     </div>
