@@ -60,7 +60,7 @@ const headCells = [
   { id: "DonGia", label: "Đơn Giá" },
   { id: "SoLuong", label: "Số Lượng" },
   { id: "ThanhTien", label: "Thành Tiền" },
-  { id: "HanhDong" },
+  { id: "HanhDong" ,disableSorting: true },
 ];
 const PhieuBanHang = (props) => {
   const [selectedProducts, setSelectedProducts] = useState([]);
