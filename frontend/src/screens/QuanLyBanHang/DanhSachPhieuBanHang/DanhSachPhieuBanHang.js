@@ -11,14 +11,15 @@ import {
   makeStyles,
   Tooltip,
 } from "@material-ui/core";
+import { green } from '@material-ui/core/colors';
 import {
   Search,
-  ArrowRightAlt,
   CloudDownload,
-  Print,
   FilterList,
   ViewColumn,
   Edit,
+  Print,
+  Assignment,
 } from "@material-ui/icons";
 import Input from "../../../components/controls/Input";
 import { useDispatch, useSelector } from "react-redux";
@@ -27,6 +28,7 @@ import moment from 'moment'
 import Popup from "../../../components/controls/Popup";
 import Detail from "../Detail";
 import { fetchListPhieuBanHang , fetchListChiTietPhieuBanHang} from "../../../redux/actions/phieuBanHangAction";
+import BillToPrint from "../BillToPrint";
 const useStyles = makeStyles((theme) => ({
   title: {
     padding: theme.spacing(4, 0),
@@ -79,7 +81,7 @@ const headCells = [
   { id: "TenNguoiDung", label: "Người lập", disableSorting: true },
   { id: "TongTien", label: "Tổng Tiền" },
   { id: "PhuongThucThanhToan", label: "Phương Thức Thanh Toán" },
-  { id: "actions" },
+  { id: "actions", disableSorting: true  },
 ];
 const detailsHeadCells = [
   { id: "TenGiay", label: "Tên Giày" },
@@ -88,7 +90,7 @@ const detailsHeadCells = [
   { id: "DonGia", label: "Đơn Giá" },
   { id: "SoLuong", label: "Số Lượng" },
   { id: "ThanhTien", label: "Thành Tiền" },
-  { id: "HanhDong" },
+  { id: "HanhDong", disableSorting: true  },
 ];
 const DanhSachPhieuBanHang = (props) => {
   // CSS class
@@ -100,9 +102,11 @@ const DanhSachPhieuBanHang = (props) => {
   const { loading: phieubanhangLoading, error: phieubanhangError, listPhieuBanHang } = billList;
   //data
   const [bills, setBills] = useState([]);
+  const [bill, setBill] = useState({});
   //hooks
   const [id, setId] = useState(0);
-  const [openPopup, setOpenPopup] = useState(false);
+  const [openPrintPopup, setOpenPrintPopup] = useState(false);
+  const [openDetailPopup, setOpenDetailPopup] = useState(false);
   // Props in Screens
   const [filterFn, setFilterFn] = useState({
     fn: (items) => {
@@ -148,7 +152,43 @@ const DanhSachPhieuBanHang = (props) => {
       },
     ]);
     setId(item.SoPhieuBanHang);
-    setOpenPopup(true);
+    setOpenDetailPopup(true);
+  }
+  const handlePrintClick = (item) => {
+    setGroupBoxes ([
+      {
+        type: "Label",
+        title: "Tên Khách Hàng",
+        value: item.TenKhachHang,
+      },
+      {
+        type: "Label",
+        title: "Tổng Tiền",
+        value: item.TongTien.toLocaleString("it-IT"),
+      },
+      {
+        type: "Label",
+        title: "Phương Thức Thanh Toán",
+        value: item.PhuongThucThanhToan,
+      },
+      {
+        type: "Label",
+        title: "Người Lập",
+        value: item.TenNguoiDung,
+      },
+      {
+        type: "Label",
+        title: "Ngày Lập",
+        value: moment(item.NgayBan).format("DD/MM/YYYY"),
+      },
+      {
+        type: "Label",
+        title: "Ghi Chú",
+        value: item.GhiChu,
+      },
+    ]);
+    setId(item.SoPhieuBanHang);
+    setOpenPrintPopup(true);
   }
   const handleSearch = (e) => {
     let target = e.target;
@@ -211,11 +251,6 @@ const DanhSachPhieuBanHang = (props) => {
                     <CloudDownload />
                   </IconButton>
                 </Tooltip>
-                <Tooltip title="In">
-                  <IconButton className={classes.actionsButton}>
-                    <Print />
-                  </IconButton>
-                </Tooltip>
                 <Tooltip title="Chọn cột">
                   <IconButton className={classes.actionsButton}>
                     <ViewColumn />
@@ -260,14 +295,14 @@ const DanhSachPhieuBanHang = (props) => {
                         {item.PhuongThucThanhToan}
                       </TableCell>
                       <TableCell component="th" scope="row">
-                        <Tooltip title="Chỉnh sửa">
-                          <IconButton >
-                            <Edit color="primary"/>
-                          </IconButton>
-                        </Tooltip>
                         <Tooltip title="Xem chi tiết">
                           <IconButton onClick = {() => handleDetailClick(item)}>
-                            <ArrowRightAlt />
+                            <Assignment color="primary"/>
+                          </IconButton>
+                        </Tooltip>
+                        <Tooltip title="In Phiếu">
+                          <IconButton onClick = {() => handlePrintClick(item)}>
+                            <Print style={{ color: green[500] }}/>
                           </IconButton>
                         </Tooltip>
                       </TableCell>
@@ -280,14 +315,23 @@ const DanhSachPhieuBanHang = (props) => {
           </Paper>
           <Popup
             title="Thông Tin Phiếu Bán Hàng"
-            openPopup={openPopup}
-            setOpenPopup={setOpenPopup}>
+            openPopup={openDetailPopup}
+            setOpenPopup={setOpenDetailPopup}>
             <Detail 
               type = "bill" 
               id = {id}
               header = "Phiếu Bán Hàng"
               headCells = {detailsHeadCells}
               groupBoxes = {groupBoxes}/>
+          </Popup>
+          <Popup
+            title="In Phiếu Bán Hàng"
+            openPopup={openPrintPopup}
+            setOpenPopup={setOpenPrintPopup}>
+              <BillToPrint 
+                 id = {id}
+                 groupBoxes = {groupBoxes}
+              />
           </Popup>
         </div>
       )}
