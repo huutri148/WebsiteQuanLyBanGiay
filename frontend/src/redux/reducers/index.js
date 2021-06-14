@@ -6,6 +6,7 @@ import * as nhaCungCapReducer from "./nhaCungCapReducer";
 import * as nguoiDungReducer from "./nguoiDungReducer";
 import * as phieuBanHangReducer from "./phieuBanHangReducer";
 import * as phieuDatHangReducer from "./phieuDatHangReducer";
+import * as chucVuReducer from "./chucVuReducer";
 import mauReducer from "./mauReducer";
 const rootReducer = combineReducers({
   //giay size mau
@@ -40,7 +41,11 @@ const rootReducer = combineReducers({
   //login
   UserLogin: nguoiDungReducer.userLoginReducer,
   ListNguoiDung: nguoiDungReducer.listNguoiDungReducer,
+  ListKhachHang: nguoiDungReducer.listKhachHangReducer,
+  ListNhanVien: nguoiDungReducer.listNhanVienReducer,
   User: nguoiDungReducer.setUserReducer,
+  //ChucVu
+  ListChucVu: chucVuReducer.listChucVuReducer,
 });
 
 export default rootReducer;

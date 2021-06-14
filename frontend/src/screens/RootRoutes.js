@@ -6,6 +6,7 @@ import quanLyHangSanXuatRoute from "./QuanLyHangSanXuat/QuanLyHangSanXuatRoute";
 import loginRoute from "./Login/LoginRoute";
 import sessionRoute from "./session/sessionRoute";
 import dashboarRoute from "./Dashboard/DashboardRoute";
+import quanLyNguoiDungRoute from "./QuanLyNguoiDung/QuanLyNguoiDungRoute";
 const routes = [
   ...quanLySanPhamRoute,
   ...loginRoute,
@@ -13,6 +14,7 @@ const routes = [
   ...quanLyPhieuDatHangRoute,
   ...quanLyNhaCungCapRoute,
   ...quanLyHangSanXuatRoute,
+  ...quanLyNguoiDungRoute,
   ...dashboarRoute,
   ...sessionRoute,
 ];

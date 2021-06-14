@@ -1,12 +1,13 @@
 import * as nguoiDungConstant from "../../constants/nguoiDungConstant";
 import * as _ from "lodash";
-const userInfo = JSON.parse(localStorage.getItem("userInfo"));
 
 const initalState = {
   userInfo: {},
 };
 const userInitalState = {
   listNguoiDung: {},
+  listKhachHang: {},
+  listNhanVien: {},
 };
 export const listNguoiDungReducer = (state = userInitalState, action) => {
   switch (action.type) {
@@ -86,6 +87,60 @@ export const setUserReducer = (state = initalState, action) => {
     }
     case nguoiDungConstant.NGUOIDUNG_LOGOUT: {
       return {};
+    }
+    default:
+      return state;
+  }
+};
+
+export const listKhachHangReducer = (state = userInitalState, action) => {
+  switch (action.type) {
+    case nguoiDungConstant.KHACHHANG_LIST_REQUEST: {
+      return {
+        //note: add loading
+        loading: true,
+        listKhachHang: {},
+      };
+    }
+    case nguoiDungConstant.KHACHHANG_LIST_SUCCESS: {
+      const users = _.mapKeys(action.payload, "MaNguoiDung");
+      return {
+        loading: false,
+        listKhachHang: { ...users },
+      };
+    }
+    case nguoiDungConstant.KHACHHANG_LIST_FAIL: {
+      return {
+        loading: false,
+        error: action.payload,
+      };
+    }
+    default:
+      return state;
+  }
+};
+
+export const listNhanVienReducer = (state = userInitalState, action) => {
+  switch (action.type) {
+    case nguoiDungConstant.NHANVIEN_LIST_REQUEST: {
+      return {
+        //note: add loading
+        loading: true,
+        listNhanVien: {},
+      };
+    }
+    case nguoiDungConstant.NHANVIEN_LIST_SUCCESS: {
+      const users = _.mapKeys(action.payload, "MaNguoiDung");
+      return {
+        loading: false,
+        listNhanVien: { ...users },
+      };
+    }
+    case nguoiDungConstant.NHANVIEN_LIST_FAIL: {
+      return {
+        loading: false,
+        error: action.payload,
+      };
     }
     default:
       return state;

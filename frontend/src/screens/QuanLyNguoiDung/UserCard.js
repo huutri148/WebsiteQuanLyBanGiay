@@ -1,5 +1,5 @@
 import React from "react";
-import { makeStyles, Typography } from "@material-ui/core";
+import { makeStyles, Typography, Avatar } from "@material-ui/core";
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
@@ -10,12 +10,7 @@ const useStyles = makeStyles((theme) => ({
   image: {
     width: "80px",
     height: "80px",
-    objectFit: "scale-down",
     marginRight: "10px",
-    "&:hover": {
-      transform: "scale(5,5) translate(50px,0)",
-      zindex: 2000,
-    },
   },
   title: {
     maxWidth: "90%",
@@ -31,7 +26,11 @@ const ProductCard = (props) => {
   return (
     <div className={classes.container}>
       <div>
-        <img src={props.imgUrl} className={classes.image} alt={props.Primary} />
+        <Avatar
+          src={props.imgUrl}
+          className={classes.image}
+          alt={props.Primary}
+        />
       </div>
       <div>
         <Typography className={classes.title}>{props.PrimaryText}</Typography>

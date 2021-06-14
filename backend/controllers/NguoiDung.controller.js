@@ -22,6 +22,34 @@ const getList = async (req, res) => {
   });
 };
 
+// @desc Fetch all customers
+// @route Get/api/customers
+// @access Public
+const getCustomers = async (req, res) => {
+  await NguoiDung.getCustomers((result) => {
+    if (result) {
+      res.send(JSON.stringify(result));
+    } else {
+      res.status(404);
+      throw new Error("User not found ");
+    }
+  });
+};
+
+// @desc Fetch all Users
+// @route Get/api/users
+// @access Public
+const getEmployees = async (req, res) => {
+  await NguoiDung.getEmployees((result) => {
+    if (result) {
+      res.send(JSON.stringify(result));
+    } else {
+      res.status(404);
+      throw new Error("User not found ");
+    }
+  });
+};
+
 // @desc Fetch all User by id
 // @route Get/api/users/id
 // @access Public
@@ -153,4 +181,6 @@ module.exports = {
   authenUser,
   refreshToken,
   authenUserWithToken,
+  getCustomers,
+  getEmployees,
 };
