@@ -135,7 +135,7 @@ const DanhSachPhieuDatHang = (props) => {
         if (target.value === "") return items;
         else
           return items.filter((x) =>
-            x.fullName.toLowerCase().includes(target.value)
+            x.TenNhaCungCap.toLowerCase().includes(target.value)
           );
       },
     });

@@ -91,9 +91,9 @@ const DanhSachSanPham = (props) => {
       fn: (items) => {
         if (target.value === "") return items;
         else
-          return items.filter((x) =>
-            x.fullName.toLowerCase().includes(target.value)
-          );
+          return items.filter((x) => {
+            return x.TenGiay.toLowerCase().includes(target.value);
+          });
       },
     });
   };

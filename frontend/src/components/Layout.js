@@ -18,8 +18,9 @@ import { Link } from "react-router-dom";
 import MenuIcon from "@material-ui/icons/Menu";
 import clsx from "clsx";
 import { mainListItems, secondaryListItems } from "./Sidebar/listMenu";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../redux/actions/nguoiDungAction";
+import { withRouter } from "react-router-dom";
 import {
   ChevronLeft,
   Home,
@@ -109,11 +110,14 @@ const useStyles = makeStyles((theme) => ({
   container: {},
   appBarSpacer: theme.mixins.toolbar,
 }));
-export const Layout = (props) => {
+export const Layout = withRouter((props) => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const [open, setOpen] = React.useState(true);
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const userLogin = useSelector((state) => state.User);
+  const { userInfo } = userLogin;
+
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -130,6 +134,7 @@ export const Layout = (props) => {
   };
   const handleLogout = () => {
     dispatch(logout());
+    props.history.push("/login");
   };
 
   return (
@@ -170,7 +175,7 @@ export const Layout = (props) => {
           >
             <span>
               Hi,
-              <strong> Huu Tri</strong>
+              <strong> {userInfo.TenDangNhap}</strong>
             </span>
 
             <Avatar className={classes.avatar}>T</Avatar>
@@ -234,4 +239,4 @@ export const Layout = (props) => {
       </main>
     </div>
   );
-};
+});

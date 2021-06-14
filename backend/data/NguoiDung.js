@@ -17,7 +17,8 @@ const users = [
     Email: "123@example.com",
     SDT: "0987654567",
     DiaChi: "Thanh Hoa",
-    Avatar: "Nguyen Huu Tri",
+    Avatar:
+      "https://firebasestorage.googleapis.com/v0/b/shoesstoremanagement.appspot.com/o/images%2Favatar.jpg?alt=media&token=f4541838-9024-4859-b287-4cdbbebcf181",
     IsDeleted: false,
   },
   {
@@ -28,7 +29,8 @@ const users = [
     SDT: "0987654567",
     MaChucVu: "2",
     DiaChi: "Thanh Hoa",
-    Avatar: "Nguyen Huu Tri",
+    Avatar:
+      "https://firebasestorage.googleapis.com/v0/b/shoesstoremanagement.appspot.com/o/images%2Favatar.jpg?alt=media&token=f4541838-9024-4859-b287-4cdbbebcf181",
     IsDeleted: false,
   },
   {
@@ -39,7 +41,8 @@ const users = [
     SDT: "0987654567",
     DiaChi: "Thanh Hoa",
     MaChucVu: "3",
-    Avatar: "Nguyen Huu Tri",
+    Avatar:
+      "https://firebasestorage.googleapis.com/v0/b/shoesstoremanagement.appspot.com/o/images%2Favatar.jpg?alt=media&token=f4541838-9024-4859-b287-4cdbbebcf181",
     IsDeleted: false,
   },
   {
@@ -50,7 +53,8 @@ const users = [
     SDT: "0987654567",
     MaChucVu: "4",
     DiaChi: "Thanh Hoa",
-    Avatar: "Nguyen Huu Tri",
+    Avatar:
+      "https://firebasestorage.googleapis.com/v0/b/shoesstoremanagement.appspot.com/o/images%2Favatar.jpg?alt=media&token=f4541838-9024-4859-b287-4cdbbebcf181",
     IsDeleted: false,
   },
 ];
