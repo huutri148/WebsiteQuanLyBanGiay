@@ -178,7 +178,7 @@ export const Layout = withRouter((props) => {
               <strong> {userInfo.TenDangNhap}</strong>
             </span>
 
-            <Avatar className={classes.avatar}>T</Avatar>
+            <Avatar className={classes.avatar} src={userInfo.Avatar}></Avatar>
           </IconButton>
           <StyledMenu
             id="customized-menu"
