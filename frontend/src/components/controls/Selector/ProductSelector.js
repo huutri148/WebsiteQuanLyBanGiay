@@ -20,7 +20,7 @@ export default function ProductSelector(props) {
       "-" +
       item.GioiTinh +
       "-" +
-      item.DonGia +
+      item.DonGiaBan +
       "-" +
       item.TongSoLuong;
     newObj.Anh = item.Anh;

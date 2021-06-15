@@ -14,23 +14,24 @@ import {
 } from "@material-ui/core";
 import { AddCircle, Edit, HighlightOff } from "@material-ui/icons";
 import { useDispatch, useSelector } from "react-redux";
-import ProductSelector from "../../components/controls/Selector/ProductSelector";
-import IntroField from "../../components/controls/InfoField";
-import GroupBox from "../../components/controls/GroupBox/GroupBox";
-import SizeSelector from "../../components/controls/Selector/SizeSelector";
-import useTable from "../../components/useTable";
-import ProductCard from "../QuanLySanPham/ProductCard";
+import ProductSelector from "../../../components/controls/Selector/ProductSelector";
+import IntroField from "../../../components/controls/InfoField";
+import GroupBox from "../../../components/controls/GroupBox/GroupBox";
+import SizeSelector from "../../../components/controls/Selector/SizeSelector";
+import useTable from "../../../components/useTable";
+import ProductCard from "../../QuanLySanPham/ProductCard";
+import ConfirmDialog from "../../../components/controls/ConfirmDialog";
 import {
   thongTinPhieu,
   CTPHHeadCell,
   QuanLyPhieuDatHangTab,
-} from "./ThongTinPhieuDatHang";
+} from "../ThongTinPhieuDatHang";
 import _ from "lodash";
-import { fetchListGiay, setProducts } from "../../redux/actions/giayAction";
-import { fetchListHangSanXuat } from "../../redux/actions/hangSanXuatAction";
-import { fetchListSize } from "../../redux/actions/sizeAction";
-import { fetchListMau } from "../../redux/actions/mauAction";
-import { createPhieuDatHang } from "../../redux/actions/phieuDatHangAction";
+import { fetchListGiay, setProducts } from "../../../redux/actions/giayAction";
+import { fetchListHangSanXuat } from "../../../redux/actions/hangSanXuatAction";
+import { fetchListSize } from "../../../redux/actions/sizeAction";
+import { fetchListMau } from "../../../redux/actions/mauAction";
+import { createPhieuDatHang } from "../../../redux/actions/phieuDatHangAction";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -93,6 +94,12 @@ const PhieuDatHangForm = (props) => {
       return items;
     },
   });
+  const [confirmDialog, setConfirmDialog] = useState({
+    isOpen: false,
+    title: "",
+    subTitle: "",
+  });
+
   const { TblContainer, TblHead, TblPagination, recordsAfterPagingAndSorting } =
     useTable(selectedProducts, CTPHHeadCell, filterFn);
 
@@ -227,19 +234,11 @@ const PhieuDatHangForm = (props) => {
       resetField();
     }
   };
-  const handleEditClick = (item) => {
-    setChosenProduct(item);
-    setEditing(true);
-    setAmount(item.SoLuongDat);
-  };
-  const handleRemoveClick = (item) => {
-    console.log(selectedProducts.splice(selectedProducts.indexOf(item), 1));
-    setSelectedProducts(
-      selectedProducts.splice(selectedProducts.indexOf(item), 1)
-    );
-  };
-
-  const handleSubmitClick = () => {
+  const addPhieu = () => {
+    setConfirmDialog({
+      ...confirmDialog,
+      isOpen: false,
+    });
     var check = false;
     thongTinPhieuBoxes.forEach((element) => {
       element.error = element.checkValidation(element.value);
@@ -278,6 +277,28 @@ const PhieuDatHangForm = (props) => {
       // Switch to List Tab
       props.SetTab(QuanLyPhieuDatHangTab.DanhSachPhieuDatHang);
     }
+  };
+  const handleEditClick = (item) => {
+    setChosenProduct(item);
+    setEditing(true);
+    setAmount(item.SoLuongDat);
+  };
+  const handleRemoveClick = (item) => {
+    console.log(selectedProducts.splice(selectedProducts.indexOf(item), 1));
+    setSelectedProducts(
+      selectedProducts.splice(selectedProducts.indexOf(item), 1)
+    );
+  };
+
+  const handleSubmitClick = () => {
+    setConfirmDialog({
+      ...confirmDialog,
+      isOpen: true,
+      title: "Bạn có muốn thêm phiếu không?",
+      onConfirm: () => {
+        addPhieu();
+      },
+    });
   };
 
   return (
@@ -453,6 +474,10 @@ const PhieuDatHangForm = (props) => {
             </TableContainer>
           </Paper>
         </Grid>
+        <ConfirmDialog
+          confirmDialog={confirmDialog}
+          setConfirmDialog={setConfirmDialog}
+        />
       </div>
     </div>
   );

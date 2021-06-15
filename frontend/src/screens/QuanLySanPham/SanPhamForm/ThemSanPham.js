@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { storage } from "../../services/firebase/firebaseConfig";
+import { storage } from "../../../services/firebase/firebaseConfig";
 import {
   Paper,
   makeStyles,
@@ -14,16 +14,20 @@ import {
   FormLabel,
 } from "@material-ui/core";
 import Select from "react-select";
-import Groupbox from "../../components/controls/GroupBox/GroupBox";
+import Groupbox from "../../../components/controls/GroupBox/GroupBox";
 import { Person } from "@material-ui/icons";
 import { useHistory } from "react-router-dom";
-import ImageUpload from "../../components/controls/ImageUpload";
-import { createGiay } from "./../../redux/actions/giayAction";
+import ImageUpload from "../../../components/controls/ImageUpload";
+import { createGiay } from "../../../redux/actions/giayAction";
 import { useDispatch, useSelector } from "react-redux";
-import { ToastContainer } from "react-toastify";
-import ConfirmDialog from "../../components/controls/ConfirmDialog";
-import "react-toastify/dist/ReactToastify.css";
+import ConfirmDialog from "../../../components/controls/ConfirmDialog";
 import _ from "lodash";
+import {
+  defaultGioiTinh,
+  initialSanPham,
+  QuanLySanPhamTab,
+} from "../ThongTinQuanLySanPham";
+
 const useStyles = makeStyles((theme) => ({
   title: {
     fontSize: 32,
@@ -52,6 +56,10 @@ const useStyles = makeStyles((theme) => ({
   imageCard: {
     padding: "0px 10px 0px 0px",
     margin: "0px 20px 0px 0px",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    flexDirection: "column",
   },
   informationCard: {
     padding: "30px 0px 0px 50px",
@@ -66,29 +74,20 @@ const useStyles = makeStyles((theme) => ({
     marginTop: "20px",
   },
 }));
-const defaultGioiTinh = [
-  { GioiTinh: "Nam" },
-  { GioiTinh: "Nu" },
-  { GioiTinh: "Unisex" },
-];
 
 const ThemSanPham = (props) => {
+  //regex
+  const phoneRegex = /^[0-9\b]+$/;
+
+  const { UpdateData, SwitchTab } = props;
+
   //hooks
   const classes = useStyles();
   const dispatch = useDispatch();
   const history = useHistory();
 
   // State of component
-  const [values, setValues] = useState({
-    TenGiay: "",
-    MaHangSanXuat: "",
-    MaMau: 0,
-    MoTa: "",
-    GioiTinh: "",
-    TyLeLoiNhuan: "",
-    DonGiaNhap: 0,
-    Size: [],
-  });
+  const [values, setValues] = useState(initialSanPham);
   const [confirmDialog, setConfirmDialog] = useState({
     isOpen: false,
     title: "",
@@ -106,6 +105,7 @@ const ThemSanPham = (props) => {
   const { listMau } = mauList;
 
   //Function to handle
+
   const handleQuanLyHangSanXuat = () => {
     history.push("/brands");
   };
@@ -157,6 +157,7 @@ const ThemSanPham = (props) => {
               [srcProperty]: fireBaseUrl,
             };
             createProduct(item);
+            SwitchTab(QuanLySanPhamTab.DanhSachSanPham);
           });
       }
     );
@@ -210,25 +211,16 @@ const ThemSanPham = (props) => {
             >
               <Grid xs={4} className={classes.imageCard}>
                 <ImageUpload className={classes.image} SaveFile={saveFile} />
-                <div
-                  style={{
-                    justifyContent: "center",
-                    display: "flex",
-                    marginTop: "20px",
-                    paddingRight: "80px",
-                  }}
+                <Button
+                  variant="contained"
+                  color="primary"
+                  size="small"
+                  style={{ textTransform: "none", marginTop: "30px" }}
+                  startIcon={<Person />}
+                  type="submit"
                 >
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    size="small"
-                    style={{ textTransform: "none" }}
-                    startIcon={<Person />}
-                    type="submit"
-                  >
-                    Thêm Mới
-                  </Button>
-                </div>
+                  Thêm Mới
+                </Button>
               </Grid>
               <Grid xs={6} className={classes.informationCard}>
                 <Groupbox
@@ -255,10 +247,20 @@ const ThemSanPham = (props) => {
                       {" "}
                       Hãng sản xuất:
                     </label>
+                    <label
+                      style={{
+                        marginLeft: 5,
+                        color: "Red",
+                      }}
+                    >
+                      *
+                    </label>
                     <Select
                       value={listHangSanXuat[values.MaHSX]}
                       onChange={(e) => handleSelect(e, "MaHangSanXuat")}
                       name="MaHangSanXuat"
+                      isSearchable="true"
+                      required="true"
                       options={_.map(listHangSanXuat, (value) => {
                         return value;
                       })}
@@ -291,6 +293,14 @@ const ThemSanPham = (props) => {
                       {" "}
                       Giới tính:
                     </label>
+                    <label
+                      style={{
+                        marginLeft: 5,
+                        color: "Red",
+                      }}
+                    >
+                      *
+                    </label>
                     <Select
                       default={defaultGioiTinh[0]}
                       onChange={(e) => handleSelect(e, "GioiTinh")}
@@ -314,6 +324,14 @@ const ThemSanPham = (props) => {
                     >
                       {" "}
                       Màu sắc:
+                    </label>
+                    <label
+                      style={{
+                        marginLeft: 5,
+                        color: "Red",
+                      }}
+                    >
+                      *
                     </label>
                     <Select
                       value={listMau[values.MaMau]}

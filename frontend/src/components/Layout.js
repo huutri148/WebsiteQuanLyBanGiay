@@ -6,7 +6,6 @@ import {
   makeStyles,
   Typography,
   Avatar,
-  Badge,
   CssBaseline,
   Drawer,
   Divider,
@@ -19,6 +18,9 @@ import { Link } from "react-router-dom";
 import MenuIcon from "@material-ui/icons/Menu";
 import clsx from "clsx";
 import { mainListItems, secondaryListItems } from "./Sidebar/listMenu";
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "../redux/actions/nguoiDungAction";
+import { withRouter } from "react-router-dom";
 import {
   ChevronLeft,
   Home,
@@ -108,10 +110,14 @@ const useStyles = makeStyles((theme) => ({
   container: {},
   appBarSpacer: theme.mixins.toolbar,
 }));
-export const Layout = (props) => {
+export const Layout = withRouter((props) => {
   const classes = useStyles();
+  const dispatch = useDispatch();
   const [open, setOpen] = React.useState(true);
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const userLogin = useSelector((state) => state.User);
+  const { userInfo } = userLogin;
+
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -125,6 +131,10 @@ export const Layout = (props) => {
 
   const handleCloseMenu = () => {
     setAnchorEl(null);
+  };
+  const handleLogout = () => {
+    dispatch(logout());
+    props.history.push("/login");
   };
 
   return (
@@ -165,10 +175,10 @@ export const Layout = (props) => {
           >
             <span>
               Hi,
-              <strong> Huu Tri</strong>
+              <strong> {userInfo.TenDangNhap}</strong>
             </span>
 
-            <Avatar className={classes.avatar}>T</Avatar>
+            <Avatar className={classes.avatar} src={userInfo.Avatar}></Avatar>
           </IconButton>
           <StyledMenu
             id="customized-menu"
@@ -196,7 +206,7 @@ export const Layout = (props) => {
               </ListItemIcon>
               <ListItemText primary="Settings" />
             </ListItem>
-            <ListItem>
+            <ListItem button onClick={handleLogout}>
               <ListItemIcon>
                 <ExitToApp fontSize="small" color="primary" />
               </ListItemIcon>
@@ -229,4 +239,4 @@ export const Layout = (props) => {
       </main>
     </div>
   );
-};
+});
