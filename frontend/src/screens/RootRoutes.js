@@ -1,5 +1,6 @@
 import quanLySanPhamRoute from "./QuanLySanPham/QuanLySanPhamRoute";
 import quanLyBanHangRoute from "./QuanLyBanHang/QuanLyBanHangRoute";
+import quanLyNhapKhoRoute from "./QuanLyNhapKho/QuanLyNhapKhoRoute";
 import quanLyPhieuDatHangRoute from "./QuanLyPhieuDatHang/QuanLyPhieuDatHangRoute";
 import quanLyNhaCungCapRoute from "./QuanLyNhaCungCap/QuanLyNhaCungCapRoute";
 import quanLyHangSanXuatRoute from "./QuanLyHangSanXuat/QuanLyHangSanXuatRoute";
@@ -10,6 +11,7 @@ const routes = [
   ...quanLySanPhamRoute,
   ...loginRoute,
   ...quanLyBanHangRoute,
+  ...quanLyNhapKhoRoute,
   ...quanLyPhieuDatHangRoute,
   ...quanLyNhaCungCapRoute,
   ...quanLyHangSanXuatRoute,
