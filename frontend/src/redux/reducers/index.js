@@ -7,6 +7,7 @@ import * as nguoiDungReducer from "./nguoiDungReducer";
 import * as phieuBanHangReducer from "./phieuBanHangReducer";
 import * as phieuDatHangReducer from "./phieuDatHangReducer";
 import * as chucVuReducer from "./chucVuReducer";
+import * as gioHangReducer from "./gioHangReducer";
 import mauReducer from "./mauReducer";
 const rootReducer = combineReducers({
   //giay size mau
@@ -46,6 +47,10 @@ const rootReducer = combineReducers({
   User: nguoiDungReducer.setUserReducer,
   //ChucVu
   ListChucVu: chucVuReducer.listChucVuReducer,
+  //Gio Hang
+  ListGioHang: gioHangReducer.cartListReducer,
+  UpdateGioHang: gioHangReducer.cartUpdateReducer,
+  DeleteGioHang: gioHangReducer.cartDeleteReducer,
 });
 
 export default rootReducer;

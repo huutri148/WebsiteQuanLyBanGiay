@@ -230,6 +230,8 @@ CREATE TABLE GIOHANG
     MaGioHang int auto_increment PRIMARY KEY,
     MaNguoiDung int not null,
     NgayLap DATETIME default CURRENT_TIMESTAMP,
+    TongTien DECIMAL(17,0) default 0,
+    TrangThai varchar(100),
     IsDeleted BOOLEAN DEFAULT false
 );
 
@@ -1108,16 +1110,14 @@ DELIMITER $$
 create procedure USP_ThemGioHang(
     p_MaKhachHang int)
 BEGIN
-INSERT INTO ShoesStoreManagement.GIOHANG(MaNguoiDung 
-    )
-VALUES (
-    p_MaKhachHang );
+INSERT INTO ShoesStoreManagement.GIOHANG(MaNguoiDung,TrangThai)
+VALUES (p_MaKhachHang,"Đang xử lý");
 END; $$
 DELIMITER ;
 
 DELIMITER $$
 create procedure USP_ThemChiTietGioHang(p_MaChiTietGiay int,
-        p_SoLuongMua int)
+        p_SoLuongMua int, p_ThanhTien DECIMAL(17,0))
 BEGIN
     declare gioHangID int;
     set gioHangID= (select max(MaGioHang) from ShoesStoreManagement.GIOHANG);
@@ -1125,6 +1125,9 @@ BEGIN
         SoLuongMua)
     VALUES ( gioHangID,p_MaChiTietGiay ,
         p_SoLuongMua );
+    UPDATE GIOHANG
+    SET GIOHANG.TongTien = GIOHANG.TongTien + p_ThanhTien
+    WHERE GIOHANG.MaGioHang = gioHangID;
 END; $$
 DELIMITER ;
 
@@ -1139,7 +1142,20 @@ DELIMITER ;
 DELIMITER $$
 create procedure USP_XoaGioHang(p_MaGioHang int)
 BEGIN
-    DELETE FROM GIOHANG WHERE MaGioHang= p_MaGioHang;
+    UPDATE GIOHANG
+   SET GIOHANG.IsDeleted = true,
+        GIOHANG.TrangThai = "Đã hủy"
+   where GIOHANG.MaGioHang = p_MaGioHang;
+END; $$
+DELIMITER ;
+
+
+DELIMITER $$
+create procedure USP_CapNhatGioHang(p_MaGioHang int)
+BEGIN
+    UPDATE GIOHANG
+    SET GIOHANG.TrangThai = "Đã giao hàng"
+     where GIOHANG.MaGioHang = p_MaGioHang;
 END; $$
 DELIMITER ;
 
@@ -1460,8 +1476,7 @@ insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa ,TongSo
     "https://firebasestorage.googleapis.com/v0/b/shoesstoremanagement.appspot.com/o/images%2FYeezySlides'Resin'2021.jpg?alt=media&token=643a4b30-6e3a-4ad1-8aaf-018d7ac190ee",
     "white/black/university red",
     160,
-    6375000,
-    true
+    6375000
 );
    
 insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (1,1,50);
@@ -1683,3 +1698,34 @@ insert into NGUOIDUNG(MaChucVu,TenNguoiDung,TenDangNhap,MatKhau,SDT,DiaChi,Email
 
 
 
+CALL USP_ThemGioHang(3);
+CALL USP_ThemChiTietGioHang(1,10,3200000);
+CALL USP_ThemChiTietGioHang(2,10,3200000);
+CALL USP_ThemChiTietGioHang(3,10,3200000);
+CALL USP_ThemChiTietGioHang(4,10,3200000);
+
+
+
+CALL USP_ThemGioHang(4);
+CALL USP_ThemChiTietGioHang(1,10,3200000);
+CALL USP_ThemChiTietGioHang(2,10,3200000);
+CALL USP_ThemChiTietGioHang(3,10,3200000);
+CALL USP_ThemChiTietGioHang(4,10,3200000);
+
+CALL USP_ThemGioHang(5);
+CALL USP_ThemChiTietGioHang(1,10,3200000);
+CALL USP_ThemChiTietGioHang(2,10,3200000);
+CALL USP_ThemChiTietGioHang(3,10,3200000);
+CALL USP_ThemChiTietGioHang(4,10,3200000);
+
+CALL USP_ThemGioHang(6);
+CALL USP_ThemChiTietGioHang(1,10,3200000);
+CALL USP_ThemChiTietGioHang(2,10,3200000);
+CALL USP_ThemChiTietGioHang(3,10,3200000);
+CALL USP_ThemChiTietGioHang(4,10,3200000);
+
+CALL USP_ThemGioHang(7);
+CALL USP_ThemChiTietGioHang(1,10,3200000);
+CALL USP_ThemChiTietGioHang(2,10,3200000);
+CALL USP_ThemChiTietGioHang(3,10,3200000);
+CALL USP_ThemChiTietGioHang(4,10,3200000);

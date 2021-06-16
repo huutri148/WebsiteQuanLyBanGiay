@@ -160,16 +160,20 @@ const DanhSachSanPham = (props) => {
                           backgroundColor:
                             //Note: Fix hardcode 100
                             (item.IsDeleted === 0 &&
-                              item.TongSoLuong > 100 &&
-                              "green") ||
+                              item.TongSoLuong > 150 &&
+                              "#08ad6c ") ||
                             (item.IsDeleted === 0 &&
-                              item.TongSoLuong <= 100 &&
-                              "blue") ||
-                            (item.IsDeleted === 1 && "red"),
+                              item.TongSoLuong <= 150 &&
+                              "#FFAF38") ||
+                            (item.IsDeleted === 1 && "#FF3D57 "),
                           boxShadow: " 0 2px 2px 1px rgba(0,0,0,0.24)",
                         }}
                       >
-                        {item.IsDeleted === 0 ? "Avaiable" : "IsDeleted"}
+                        {item.IsDeleted === 0
+                          ? item.TongSoLuong > 150
+                            ? "Còn hàng"
+                            : "Chờ hàng"
+                          : "Hết hàng"}
                       </Typography>
                     </TableCell>
 
