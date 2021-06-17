@@ -39,6 +39,7 @@ import Popup from "../../../components/controls/Popup";
 import Detail from "../../QuanLyBanHang/Detail";
 import { detailsHeadCells } from "../ThongTinQuanLyGioHang";
 import Loading from "../../../components/Loadable/Loading";
+import BillToPrint from "../BillToPrint";
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -111,6 +112,7 @@ const DanhSachGioHang = (props) => {
   const [groupBoxes, setGroupBoxes] = useState([]);
   const [selectedItem, setSelectedItem] = useState();
   const [openDetailPopup, setOpenDetailPopup] = useState(false);
+  const [openPrintPopup, setOpenPrintPopup] = useState(false);
   const { TblContainer, TblHead, TblPagination, recordsAfterPagingAndSorting } =
     useTable(tableData, DSGHHeadCell, filterFn);
 
@@ -216,6 +218,11 @@ const DanhSachGioHang = (props) => {
     });
     dispatch(updateGioHang(item.MaGioHang));
     setUpdateData(!updateData);
+  };
+
+  const handlePrintClick = (item) => {
+    setOpenPrintPopup(true);
+    setOpenDetailPopup(false);
   };
   return (
     <>
@@ -374,7 +381,15 @@ const DanhSachGioHang = (props) => {
                 header="Giỏ hàng"
                 headCells={detailsHeadCells}
                 groupBoxes={groupBoxes}
+                Print={handlePrintClick}
               />
+            </Popup>
+            <Popup
+              title="In Phiếu Bán Hàng"
+              openPopup={openPrintPopup}
+              setOpenPopup={setOpenPrintPopup}
+            >
+              <BillToPrint id={selectedItem} groupBoxes={groupBoxes} />
             </Popup>
           </Paper>
         </div>

@@ -8,6 +8,7 @@ import {
   TableRow,
   TableCell,
   Table,
+  Button,
 } from "@material-ui/core";
 import { useDispatch, useSelector } from "react-redux";
 import GroupBox from "../../components/controls/GroupBox/GroupBox";
@@ -52,7 +53,7 @@ const Detail = (props) => {
   // CSS class
   const classes = useStyles();
   //props
-  const { type, id, header, groupBoxes, headCells } = props;
+  const { type, id, header, groupBoxes, headCells, Print } = props;
   //hooks
   const [details, setDetails] = useState([]);
   //data TODO: add optional later
@@ -130,6 +131,9 @@ const Detail = (props) => {
             value={item.value}
           />
         ))}
+        <Button onClick={() => Print()} color="primary" variant="contained">
+          In Phiếu
+        </Button>
       </Paper>
       <Paper className={classes.paper} style={{ width: "72%", margin: 0 }}>
         <label className={classes.cardHeader}>Chi Tiết Phiếu</label>

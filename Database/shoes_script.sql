@@ -1714,6 +1714,7 @@ insert into NGUOIDUNG(MaChucVu,TenNguoiDung,TenDangNhap,MatKhau,SDT,DiaChi,Email
 
 
 
+
 CALL USP_ThemGioHang(3);
 CALL USP_ThemChiTietGioHang(1,10,6375000,63750000);
 CALL USP_ThemChiTietGioHang(2,10,6375000,63750000);
@@ -1739,3 +1740,40 @@ CALL USP_ThemChiTietGioHang(1,10,6375000,63750000);
 CALL USP_ThemChiTietGioHang(2,10,6375000,63750000);
 CALL USP_ThemChiTietGioHang(3,10,6375000,63750000);
 CALL USP_ThemChiTietGioHang(4,10,6375000,63750000);
+
+
+
+INSERT INTO ShoesStoreManagement.PHIEUDATHANG(MaNhaCungCap ,MaNguoiDung ,NgayLap , TrangThai)
+VALUES (1 ,2 , STR_TO_DATE('17-06-2021', '%d-%m-%Y') ,"Chờ");
+CALL USP_ThemChiTietPhieuDatHang(1,10);
+CALL USP_ThemChiTietPhieuDatHang(10,10);
+CALL USP_ThemChiTietPhieuDatHang(20,10);
+CALL USP_ThemChiTietPhieuDatHang(30,10);
+CALL USP_ThemChiTietPhieuDatHang(40,10);
+
+
+
+INSERT INTO ShoesStoreManagement.PHIEUDATHANG(MaNhaCungCap ,MaNguoiDung ,NgayLap , TrangThai)
+VALUES (2 ,3 , STR_TO_DATE('18-06-2021', '%d-%m-%Y') ,"Chờ");
+CALL USP_ThemChiTietPhieuDatHang(1,10);
+CALL USP_ThemChiTietPhieuDatHang(10,10);
+CALL USP_ThemChiTietPhieuDatHang(20,10);
+CALL USP_ThemChiTietPhieuDatHang(30,10);
+CALL USP_ThemChiTietPhieuDatHang(40,10);
+
+INSERT INTO ShoesStoreManagement.PHIEUDATHANG(MaNhaCungCap ,MaNguoiDung ,NgayLap , TrangThai)
+VALUES (3 ,3 , STR_TO_DATE('16-06-2021', '%d-%m-%Y') ,"Chờ");
+CALL USP_ThemChiTietPhieuDatHang(1,10);
+CALL USP_ThemChiTietPhieuDatHang(10,10);
+CALL USP_ThemChiTietPhieuDatHang(20,10);
+CALL USP_ThemChiTietPhieuDatHang(30,10);
+CALL USP_ThemChiTietPhieuDatHang(40,10);
+
+INSERT INTO ShoesStoreManagement.PHIEUDATHANG(MaNhaCungCap ,MaNguoiDung ,NgayLap , TrangThai)
+VALUES (4 ,3 , STR_TO_DATE('15-06-2021', '%d-%m-%Y') ,"Chờ");
+CALL USP_ThemChiTietPhieuDatHang(1,10);
+CALL USP_ThemChiTietPhieuDatHang(10,10);
+CALL USP_ThemChiTietPhieuDatHang(20,10);
+CALL USP_ThemChiTietPhieuDatHang(30,10);
+CALL USP_ThemChiTietPhieuDatHang(40,10);
+
