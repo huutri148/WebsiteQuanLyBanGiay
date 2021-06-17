@@ -3,7 +3,6 @@ import { makeStyles, Grid, CircularProgress } from "@material-ui/core";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchGiaySize } from "../../redux/actions/giayAction";
 import GroupBox from "../../components/controls/GroupBox/GroupBox";
-import * as _ from "lodash";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -101,7 +100,7 @@ const ProductDetail = (props) => {
           <Grid item xs={6}>
             <img src={item.Anh} alt={item.TenGiay} className={classes.image} />
             <div className={classes.price}>
-              <label style={{ margin: "8px 8px" }}>Giá nhập:</label>
+              <label style={{ margin: "8px 8px" }}>Giá Bán:</label>
               <div
                 style={{
                   margin: "4px 0px",
@@ -110,7 +109,7 @@ const ProductDetail = (props) => {
                   fontSize: 24,
                 }}
               >
-                {Number(item.DonGiaNhap).toLocaleString("it-IT") + " VNĐ"}
+                {Number(item.DonGiaBan).toLocaleString("it-IT") + " VNĐ"}
               </div>
             </div>
           </Grid>

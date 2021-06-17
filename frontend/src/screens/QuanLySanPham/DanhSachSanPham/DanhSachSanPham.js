@@ -21,14 +21,8 @@ import Popup from "../../../components/controls/Popup";
 import ProductDetail from "../ProductDetail";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchListGiay } from "../../../redux/actions/giayAction";
-const headCells = [
-  { id: "TenGiay", label: "Tên sản phẩm" },
-  { id: "TenMau", label: "Tên màu", disableSorting: true },
-  { id: "GioiTinh", label: "Giới tính", disableSorting: true },
-  { id: "SoLuong", label: "Số lượng" },
-  { id: "IsDeleted", label: "Trạng Thái" },
-  { id: "actions" },
-];
+import { DSSPHeadCells } from "../ThongTinQuanLySanPham";
+
 const DanhSachSanPham = (props) => {
   // CSS class
   const { classes } = props;
@@ -54,7 +48,7 @@ const DanhSachSanPham = (props) => {
     },
   });
   const { TblContainer, TblHead, TblPagination, recordsAfterPagingAndSorting } =
-    useTable(tableData, headCells, filterFn);
+    useTable(tableData, DSSPHeadCells, filterFn);
 
   // Fetch data from API
   useEffect(() => {
@@ -89,6 +83,7 @@ const DanhSachSanPham = (props) => {
 
   const handleDetail = (index, data) => {
     setSelectedItem(data);
+    console.log(data);
     setOpenPopup(true);
   };
   const handleSearch = (e) => {
@@ -97,9 +92,9 @@ const DanhSachSanPham = (props) => {
       fn: (items) => {
         if (target.value === "") return items;
         else
-          return items.filter((x) =>
-            x.fullName.toLowerCase().includes(target.value)
-          );
+          return items.filter((x) => {
+            return x.TenGiay.toLowerCase().includes(target.value);
+          });
       },
     });
   };
@@ -165,16 +160,20 @@ const DanhSachSanPham = (props) => {
                           backgroundColor:
                             //Note: Fix hardcode 100
                             (item.IsDeleted === 0 &&
-                              item.TongSoLuong > 100 &&
-                              "green") ||
+                              item.TongSoLuong > 150 &&
+                              "#08ad6c ") ||
                             (item.IsDeleted === 0 &&
-                              item.TongSoLuong <= 100 &&
-                              "blue") ||
-                            (item.IsDeleted === 1 && "red"),
+                              item.TongSoLuong <= 150 &&
+                              "#FFAF38") ||
+                            (item.IsDeleted === 1 && "#FF3D57 "),
                           boxShadow: " 0 2px 2px 1px rgba(0,0,0,0.24)",
                         }}
                       >
-                        {item.IsDeleted === 0 ? "Avaiable" : "IsDeleted"}
+                        {item.IsDeleted === 0
+                          ? item.TongSoLuong > 150
+                            ? "Còn hàng"
+                            : "Chờ hàng"
+                          : "Hết hàng"}
                       </Typography>
                     </TableCell>
 

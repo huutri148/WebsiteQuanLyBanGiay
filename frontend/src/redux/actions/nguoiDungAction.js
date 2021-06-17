@@ -47,7 +47,7 @@ export const login = (item) => async (dispatch) => {
 };
 
 export const logout = () => async (dispatch) => {
-  localStorage.removeItem("access_token");
+  localStorageService.removeItem("access_token");
 };
 export const register = (item) => async (dispatch) => {
   try {
@@ -86,6 +86,48 @@ export const setUser = (item) => (dispatch) => {
   } catch (error) {
     dispatch({
       type: nguoiDungConstants.NGUOIDUNG_INFO_FAIL,
+      payload:
+        error.response && error.response.message
+          ? error.response.data.data.message
+          : error.messagge,
+    });
+  }
+};
+
+export const fetchListKhachHang = () => async (dispatch) => {
+  try {
+    dispatch({ type: nguoiDungConstants.KHACHHANG_LIST_REQUEST });
+
+    const { data } = await nguoiDungAPI.getListKhachHang();
+
+    dispatch({
+      type: nguoiDungConstants.KHACHHANG_LIST_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: nguoiDungConstants.KHACHHANG_LIST_FAIL,
+      payload:
+        error.response && error.response.message
+          ? error.response.data.data.message
+          : error.messagge,
+    });
+  }
+};
+
+export const fetchListNhanVien = () => async (dispatch) => {
+  try {
+    dispatch({ type: nguoiDungConstants.NHANVIEN_LIST_REQUEST });
+
+    const { data } = await nguoiDungAPI.getListNhanVien();
+
+    dispatch({
+      type: nguoiDungConstants.NHANVIEN_LIST_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: nguoiDungConstants.NHANVIEN_LIST_FAIL,
       payload:
         error.response && error.response.message
           ? error.response.data.data.message

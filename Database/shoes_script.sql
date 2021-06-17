@@ -33,8 +33,7 @@ CREATE TABLE GIAY
     GioiTinh varchar(100) DEFAULT "Unisex",
     Anh VARCHAR(1000),
     MoTa NVARCHAR(1000),
-    TyLeLoiNhuan FLOAT DEFAULT 0 ,
-    DonGiaNhap DECIMAL(17,0) DEFAULT 0,
+    DonGiaBan DECIMAL(17,0) DEFAULT 0,
     TongSoLuong int default 0,
     IsDeleted BOOLEAN DEFAULT false
 );
@@ -231,6 +230,8 @@ CREATE TABLE GIOHANG
     MaGioHang int auto_increment PRIMARY KEY,
     MaNguoiDung int not null,
     NgayLap DATETIME default CURRENT_TIMESTAMP,
+    TongTien DECIMAL(17,0) default 0,
+    TrangThai varchar(100),
     IsDeleted BOOLEAN DEFAULT false
 );
 
@@ -244,7 +245,9 @@ CREATE TABLE CHITIETGIOHANG
 (
     MaGioHang int not null,
     MaChiTietGiay int not null,
-    SoLuongMua int DEFAULT 1, 
+    SoLuongMua int DEFAULT 0, 
+    GiaBan Decimal(17,0) default 0,
+    ThanhTien DECIMAL(17,0) default 0,
     CONSTRAINT PK_CHITIETGIOHANG PRIMARY KEY (MaGioHang, MaChiTietGiay)
 );
 
@@ -408,6 +411,20 @@ END; $$
 DELIMITER ;
 
 DELIMITER $$
+create procedure USP_GetListKhachHang()
+BEGIN
+select * from ShoesStoreManagement.NGUOIDUNG where NGUOIDUNG.MaChucVu = 5 ;
+END; $$
+DELIMITER ;
+
+DELIMITER $$
+create procedure USP_GetListNhanVien()
+BEGIN
+select * from ShoesStoreManagement.NGUOIDUNG where NGUOIDUNG.MaChucVu <> 5 ;
+END; $$
+DELIMITER ;
+
+DELIMITER $$
 create procedure USP_GetNguoiDung(p_MaNguoiDung int )
 BEGIN
 select * from ShoesStoreManagement.NGUOIDUNG where NGUOIDUNG.MaNguoiDung = p_MaNguoiDung;
@@ -494,16 +511,14 @@ DELIMITER ;
 DELIMITER $$
 create procedure USP_ThemSanPham(p_TenGiay NVARCHAR(1000),
     p_MaHangSanXuat int,p_MaMau int ,p_GioiTinh NVARCHAR(1000),
-    p_Anh NVARCHAR(1000),p_MoTa NVARCHAR(1000),
-    p_TyLeLoiNhuan FLOAT, p_DonGiaNhap DECIMAL(17,0))
+    p_Anh NVARCHAR(1000),p_MoTa NVARCHAR(1000), p_DonGiaBan DECIMAL(17,0))
 BEGIN
 INSERT INTO ShoesStoreManagement.GIAY(TenGiay,
-    MaHangSanXuat,MaMau,GioiTinh,Anh,MoTa,TyLeLoiNhuan, 
-    DonGiaNhap)
+    MaHangSanXuat,MaMau,GioiTinh,Anh,MoTa,
+    DonGiaBan)
 VALUES (
     p_TenGiay ,
-    p_MaHangSanXuat ,p_MaMau ,p_GioiTinh,p_Anh ,p_MoTa ,
-    p_TyLeLoiNhuan , p_DonGiaNhap);
+    p_MaHangSanXuat ,p_MaMau ,p_GioiTinh,p_Anh ,p_MoTa, p_DonGiaBan);
 END; $$
 DELIMITER ;
 
@@ -531,14 +546,12 @@ DELIMITER $$
 create procedure USP_CapNhatThongTinGiay(p_MaGiay int,
     p_TenGiay NVARCHAR(1000),
     p_MaHangSanXuat int,p_MaMau int ,p_GioiTinh NVARCHAR(1000),
-    p_Anh NVARCHAR(1000),p_MoTa NVARCHAR(1000),
-    p_TyLeLoiNhuan FLOAT, p_DonGiaNhap DECIMAL(17,0))
+    p_Anh NVARCHAR(1000),p_MoTa NVARCHAR(1000), p_DonGiaBan DECIMAL(17,0))
 BEGIN
  UPDATE GIAY  
  SET GIAY.TenGiay = p_TenGiay, GIAY.MaHangSanXuat = p_MaHangSanXuat,
     GIAY.MaMau= p_MaMau,GIAY.GioiTinh= p_GioiTinh,GIAY.Anh= p_Anh,
-    GIAY.MoTa= p_MoTa,GIAY.TyLeLoiNhuan= p_TyLeLoiNhuan, 
-    GIAY.DonGiaNhap =  p_DonGiaNhap
+    GIAY.DonGiaBan =  p_DonGiaBan
 WHERE GIAY.MaGiay =p_MaGiay;
 END; $$
 DELIMITER ;
@@ -546,6 +559,12 @@ DELIMITER ;
 
 
 
+DELIMITER $$
+create procedure USP_GetListChucVu()
+BEGIN
+    Select * from ShoesStoreManagement.CHUCVU;
+END; $$
+DELIMITER ;
 
 DELIMITER $$
 create procedure USP_GetListMau()
@@ -1093,23 +1112,24 @@ DELIMITER $$
 create procedure USP_ThemGioHang(
     p_MaKhachHang int)
 BEGIN
-INSERT INTO ShoesStoreManagement.GIOHANG(MaNguoiDung 
-    )
-VALUES (
-    p_MaKhachHang );
+INSERT INTO ShoesStoreManagement.GIOHANG(MaNguoiDung,TrangThai)
+VALUES (p_MaKhachHang,"Đang xử lý");
 END; $$
 DELIMITER ;
 
 DELIMITER $$
 create procedure USP_ThemChiTietGioHang(p_MaChiTietGiay int,
-        p_SoLuongMua int)
+        p_SoLuongMua int, p_GiaBan DECIMAL(17,0), p_ThanhTien DECIMAL(17,0))
 BEGIN
     declare gioHangID int;
     set gioHangID= (select max(MaGioHang) from ShoesStoreManagement.GIOHANG);
     INSERT INTO ShoesStoreManagement.CHITIETGIOHANG(MaGioHang,MaChiTietGiay ,
-        SoLuongMua)
+        SoLuongMua,GiaBan, ThanhTien)
     VALUES ( gioHangID,p_MaChiTietGiay ,
-        p_SoLuongMua );
+        p_SoLuongMua,p_GiaBan,p_ThanhTien);
+    UPDATE GIOHANG
+    SET GIOHANG.TongTien = GIOHANG.TongTien + p_ThanhTien
+    WHERE GIOHANG.MaGioHang = gioHangID;
 END; $$
 DELIMITER ;
 
@@ -1124,7 +1144,20 @@ DELIMITER ;
 DELIMITER $$
 create procedure USP_XoaGioHang(p_MaGioHang int)
 BEGIN
-    DELETE FROM GIOHANG WHERE MaGioHang= p_MaGioHang;
+    UPDATE GIOHANG
+   SET GIOHANG.IsDeleted = true,
+        GIOHANG.TrangThai = "Đã hủy"
+   where GIOHANG.MaGioHang = p_MaGioHang;
+END; $$
+DELIMITER ;
+
+
+DELIMITER $$
+create procedure USP_CapNhatGioHang(p_MaGioHang int)
+BEGIN
+    UPDATE GIOHANG
+    SET GIOHANG.TrangThai = "Đã giao hàng"
+     where GIOHANG.MaGioHang = p_MaGioHang;
 END; $$
 DELIMITER ;
 
@@ -1139,6 +1172,20 @@ BEGIN
 END; $$
 DELIMITER ;
 
+DELIMITER $$
+create procedure USP_GetChiTietGioHangByID(p_MaGioHang int)
+BEGIN
+    Select C.Anh, C.TenGiay, C.GioiTinh, A.GiaBan , D.TenSize, A.SoLuongMua, A.ThanhTien, A.MaGioHang
+    from ShoesStoreManagement.CHITIETGIOHANG A 
+    left join ShoesStoreManagement.CHITIETGIAY B 
+    on A.MaChiTietGiay = B.MaChiTietGiay
+    left join ShoesStoreManagement.GIAY C
+    on C.MaGiay = B.MaGiay
+    left join ShoesStoreManagement.SIZE D
+    on D.MaSize = B.MaSize 
+    where A.MaGioHang = p_MaGioHang;
+END; $$
+DELIMITER ;
 
 
 
@@ -1238,235 +1285,214 @@ insert into SIZE(TenSize)values ("42");
 insert into SIZE(TenSize)values ("43");
 
 
-insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa, TyLeLoiNhuan ,TongSoLuong, DonGiaNhap) values (
+insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa ,TongSoLuong, DonGiaBan) values (
     "Air Jordan 1 KO 'Chicago' 2021", 
     10,
     4,
     "Unisex",
     "https://firebasestorage.googleapis.com/v0/b/shoesstoremanagement.appspot.com/o/images%2FAirJordan1KO'Chicago'2021.jpg?alt=media&token=b63a412c-2e41-4f55-a707-2e24e7656216",
     "white/black/university red",
-    0.1, 
     160,
     6375000
 );
 
 
-insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa, TyLeLoiNhuan ,TongSoLuong, DonGiaNhap) values (
+insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa ,TongSoLuong, DonGiaBan) values (
     "Air Jordan 1 Mid 'Banned'", 
     10,
     4,
     "Unisex",
     "https://firebasestorage.googleapis.com/v0/b/shoesstoremanagement.appspot.com/o/images%2FAirJordan1Mid'Banned'.jpg?alt=media&token=417af690-b73d-4d9b-92f3-74f1a606b8a9",
     "black/university red",
-    0.1, 
     100,
     6375000
 );
-insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa, TyLeLoiNhuan ,TongSoLuong, DonGiaNhap) values (
+insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa ,TongSoLuong, DonGiaBan) values (
     "Air Jordan 1 Mid 'Hyper Royal'", 
     10,
     4,
     "Unisex",
     "https://firebasestorage.googleapis.com/v0/b/shoesstoremanagement.appspot.com/o/images%2FAirJordan1Mid'HyperRoyal'.jpg?alt=media&token=23e5b4f2-f33c-47a3-994b-27829dbf4779",
     "white/black/university red",
-    0.5, 
     160,
     6005000 
 );
-insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa, TyLeLoiNhuan ,TongSoLuong, DonGiaNhap) values (
+insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa ,TongSoLuong, DonGiaBan) values (
     "Air Jordan 1 Retro High OG 'Hyper Royal''", 
     10,
     3,
     "Unisex",
     "https://firebasestorage.googleapis.com/v0/b/shoesstoremanagement.appspot.com/o/images%2FAirJordan1RetroHighOG'HyperRoyal'.jpg?alt=media&token=56cde7c3-94e7-43e1-a445-cba0a564294a",
     "white/black/university red",
-    0.1, 
     160,
     6375000
 );
-insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa, TyLeLoiNhuan ,TongSoLuong, DonGiaNhap) values (
+insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa ,TongSoLuong, DonGiaBan) values (
     "Air Jordan 1 Retro High OG 'Shadow 2.0'", 
     10,
     5,
     "Unisex",
     "https://firebasestorage.googleapis.com/v0/b/shoesstoremanagement.appspot.com/o/images%2FAirJordan1RetroHighOG'Shadow2.0'.jpg?alt=media&token=1f2c376e-d296-4de3-a9a6-d18f449b9718",
     "white/black/university red",
-    0.2, 
     160,
     6375000
 );
-insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa, TyLeLoiNhuan ,TongSoLuong, DonGiaNhap) values (
+insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa ,TongSoLuong, DonGiaBan) values (
     "Air Jordan 5 Retro GS 'Raging Bull' 2021", 
     10,
     4,
     "Unisex",
     "https://firebasestorage.googleapis.com/v0/b/shoesstoremanagement.appspot.com/o/images%2FAirJordan5RetroGS'RagingBull'2021.jpg?alt=media&token=ea070343-69d0-44ab-b3be-90cbb24cf061",
     "white/black/university red",
-    0.4, 
     160,
     6555000
 );
-insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa, TyLeLoiNhuan ,TongSoLuong, DonGiaNhap) values (
+insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa ,TongSoLuong, DonGiaBan) values (
     "Air Jordan 5 Retro 'Raging Bull' 2021", 
     10,
     4,
     "Unisex",
     "https://firebasestorage.googleapis.com/v0/b/shoesstoremanagement.appspot.com/o/images%2FAirJordan5RetroGS'RagingBull'2021.jpg?alt=media&token=ea070343-69d0-44ab-b3be-90cbb24cf061",
     "black/university red",
-    0.3, 
     160,
     6375000 
 );
-insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa, TyLeLoiNhuan ,TongSoLuong, DonGiaNhap) values (
+insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa ,TongSoLuong, DonGiaBan) values (
     "Air Jordan 6 Retro OG 'Carmine' 2021", 
     10,
     5,
     "Unisex",
     "https://firebasestorage.googleapis.com/v0/b/shoesstoremanagement.appspot.com/o/images%2FAirJordan6RetroOG'Carmine'2021.jpg?alt=media&token=8e9a5495-691c-4def-bfdb-9b8fe478642f",
     "white/black/university red",
-    0.2, 
     160,
     6375000
 );
-insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa, TyLeLoiNhuan ,TongSoLuong, DonGiaNhap) values (
+insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa ,TongSoLuong, DonGiaBan) values (
     "Air Jordan 7 Retro 'Flint' 2021", 
     10,
     1,
     "Unisex",
     "https://firebasestorage.googleapis.com/v0/b/shoesstoremanagement.appspot.com/o/images%2FAirJordan7Retro'Flint'2021.jpg?alt=media&token=7f61c7b9-02e6-4946-84ec-8efe2e09a4ce",
     "white/black/university red",
-    0.1, 
     160,
     6375000
 );
-insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa, TyLeLoiNhuan ,TongSoLuong, DonGiaNhap) values (
+insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa ,TongSoLuong, DonGiaBan) values (
     "Air Jordan 11 Retro Low GS 'Legend Blue'", 
     10,
     1,
     "Unisex",
     "https://firebasestorage.googleapis.com/v0/b/shoesstoremanagement.appspot.com/o/images%2FAirJordan11RetroLowGS'LegendBlue'.jpg?alt=media&token=1eb33d8b-fe7d-4a87-8ad5-9b84bca50cc3",
     "white/black/university red",
-    0.1, 
     160,
     5005000
 );
-insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa, TyLeLoiNhuan ,TongSoLuong, DonGiaNhap) values (
+insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa ,TongSoLuong, DonGiaBan) values (
     "Air Jordan 11 Retro Low 'Legend Blue'", 
     10,
     1,
     "Unisex",
     "https://firebasestorage.googleapis.com/v0/b/shoesstoremanagement.appspot.com/o/images%2FAirJordan11RetroLow'LegendBlue'.jpg?alt=media&token=7fcb259a-5be9-4b90-8c91-4ea4fffd3333",
     "white/black/university red",
-    0, 
     160,
     6375000
 );
-insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa, TyLeLoiNhuan ,TongSoLuong, DonGiaNhap) values (
+insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa ,TongSoLuong, DonGiaBan) values (
     "Stingwater x Dunk Low SB 'Magic Mushroom'", 
     10,
     4,
     "Unisex",
     "https://firebasestorage.googleapis.com/v0/b/shoesstoremanagement.appspot.com/o/images%2FStingwaterxDunkLowSB'MagicMushroom'.jpg?alt=media&token=b358a832-0c69-4114-9640-86cce8c5199b",
     "white/black/university red",
-    0.2, 
     160,
     6375000
 );
-insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa, TyLeLoiNhuan ,TongSoLuong, DonGiaNhap) values (
+insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa ,TongSoLuong, DonGiaBan) values (
     "Travis Scott x Air Jordan 6 Retro 'British Khaki'", 
     10,
     6,
     "Unisex",
     "https://firebasestorage.googleapis.com/v0/b/shoesstoremanagement.appspot.com/o/images%2FTravisScottxAirJordan6Retro'BritishKhaki'.jpg?alt=media&token=d6baffc0-4cdc-4b7c-84d1-0e31b5900ddd",
     "white/black/university red",
-    0.2, 
     160,
     6375000
 );
 
-insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa, TyLeLoiNhuan ,TongSoLuong, DonGiaNhap) values (
+insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa ,TongSoLuong, DonGiaBan) values (
     "Yeezy 500 'Enflame'", 
     9,
     6,
     "Unisex",
     "https://firebasestorage.googleapis.com/v0/b/shoesstoremanagement.appspot.com/o/images%2FYeezy500'Enflame'.jpg?alt=media&token=58fbb08c-c8df-4225-8329-3893798fc33a",
     "white/black/university red",
-    0.2, 
     160,
     6375000
 );
 
-insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa, TyLeLoiNhuan ,TongSoLuong, DonGiaNhap) values (
+insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa ,TongSoLuong, DonGiaBan) values (
     "Yeezy 700 V3 'Kyanite'", 
     9,
     3,
     "Unisex",
     "https://firebasestorage.googleapis.com/v0/b/shoesstoremanagement.appspot.com/o/images%2FYeezy700V3'Kyanite'.jpg?alt=media&token=177d827f-fc00-42fd-a9c2-95db90293693",
     "white/black/university red",
-    0.2, 
     160,
     6375000
 );
 
-insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa, TyLeLoiNhuan ,TongSoLuong, DonGiaNhap) values (
+insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa ,TongSoLuong, DonGiaBan) values (
     "Yeezy Boost 700 'Bright Blue'", 
     9,
     3,
     "Unisex",
     "https://firebasestorage.googleapis.com/v0/b/shoesstoremanagement.appspot.com/o/images%2FYeezyBoost700'BrightBlue'.jpg?alt=media&token=df4fcc3d-19ab-4b76-8ec5-6e54e84989d3",
     "white/black/university red",
-    0.2, 
     160,
     6375000
 );
 
-insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa, TyLeLoiNhuan ,TongSoLuong, DonGiaNhap) values (
+insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa ,TongSoLuong, DonGiaBan) values (
     "Yeezy Boost 700 V2 'Cream'", 
     9,
     1,
     "Unisex",
     "https://firebasestorage.googleapis.com/v0/b/shoesstoremanagement.appspot.com/o/images%2FYeezyBoost700V2'Cream'.jpg?alt=media&token=9f932453-76cc-4bd3-9763-fb4e951dc2c2",
     "white/black/university red",
-    0.2, 
     160,
     6375000
 );
 
-insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa, TyLeLoiNhuan ,TongSoLuong, DonGiaNhap) values (
+insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa ,TongSoLuong, DonGiaBan) values (
     "Yeezy Slides 'Core' 2021", 
     9,
     6,
     "Unisex",
     "https://firebasestorage.googleapis.com/v0/b/shoesstoremanagement.appspot.com/o/images%2FYeezySlides'Core'%202021.jpg?alt=media&token=1f3cdbeb-1559-40ec-b5d9-04f6ca4961e3",
     "white/black/university red",
-    0.2, 
     160,
     6375000
 );
 
-insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa, TyLeLoiNhuan ,TongSoLuong, DonGiaNhap) values (
+insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa ,TongSoLuong, DonGiaBan) values (
     "Yeezy Slides 'Pure'", 
     9,
     6,
     "Unisex",
     "https://firebasestorage.googleapis.com/v0/b/shoesstoremanagement.appspot.com/o/images%2FYeezySlides'Pure'.jpg?alt=media&token=8944a917-3be7-4575-a649-ee0317a924f1",
     "white/black/university red",
-    0.2, 
     100,
     6375000
 );
 
-insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa, TyLeLoiNhuan ,TongSoLuong, DonGiaNhap, IsDeleted) values (
+insert into GIAY( TenGiay , MaHangSanXuat , MaMau ,GioiTinh , Anh , MoTa ,TongSoLuong, DonGiaBan) values (
     "Yeezy Slides 'Resin' 2021", 
     9,
     6,
     "Unisex",
     "https://firebasestorage.googleapis.com/v0/b/shoesstoremanagement.appspot.com/o/images%2FYeezySlides'Resin'2021.jpg?alt=media&token=643a4b30-6e3a-4ad1-8aaf-018d7ac190ee",
     "white/black/university red",
-    0.2, 
     160,
-    6375000,
-    true
+    6375000
 );
    
 insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (1,1,50);
@@ -1654,15 +1680,62 @@ insert into CHITIETGIAY(MaSize,MaGiay,SoLuong) values (6,20,0);
 
 
 
-INSERT INTO NHACUNGCAP(TenNhaCungCap, SDT, DiaChi, Email) VALUES ("Giay dep", "19006074", "Dia chi van phong: 3 Thep Moi, phuong 12, quan Tan Binh, TP Ho Chi Minh", "lienhe@thitruongsi.com");
-INSERT INTO NHACUNGCAP(TenNhaCungCap, SDT, DiaChi, Email) VALUES ("Kho giay pho", "0866074947", "737/10 Lac Long Quan, P10 - Quan Tan Binh", "lienhe@thitruongsi.com");
-INSERT INTO NHACUNGCAP(TenNhaCungCap, SDT, DiaChi, Email) VALUES ("Giay dep Viet Thuy", "0866074947", "Dia chi van phong: 3 Thep Moi, phuong 12, quan Tan Binh, TP Ho Chi Minh", "lienhe@thitruongsi.com");
-INSERT INTO NHACUNGCAP(TenNhaCungCap, SDT, DiaChi, Email) VALUES ("GS", "0866074947", "Dia chi van phong: 3 Thep Moi, phuong 12, quan Tan Binh, TP Ho Chi Minh", "lienhe@thitruongsi.com");
-INSERT INTO NHACUNGCAP(TenNhaCungCap, SDT, DiaChi, Email) VALUES ("Siviet", "0866074947", "Dia chi van phong: 3 Thep Moi, phuong 12, quan Tan Binh, TP Ho Chi Minh", "lienhe@thitruongsi.com");
+INSERT INTO NHACUNGCAP(TenNhaCungCap, SDT, DiaChi, Email) VALUES ("Giày dép", "19006074", "3 Thép Mới, phường 12, quận Tân Bình, TP Hồ Chí Minh", "lienhe@thitruongsi.com");
+INSERT INTO NHACUNGCAP(TenNhaCungCap, SDT, DiaChi, Email) VALUES ("Kho giày phố", "0866074947", "737/10 Lạc Long Quân, P10 - Quận Tân Bình", "lienhe@thitruongsi.com");
+INSERT INTO NHACUNGCAP(TenNhaCungCap, SDT, DiaChi, Email) VALUES ("Giày dép Việt Thủy", "0866074947", "3 Thép Mới, phường 12, quận Tân Bình, TP Hồ Chí Minh", "lienhe@thitruongsi.com");
+INSERT INTO NHACUNGCAP(TenNhaCungCap, SDT, DiaChi, Email) VALUES ("GS", "0866074947", "3 Thép Mới, phường 12, quận Tân Bình, TP Hồ Chí Minh", "lienhe@thitruongsi.com");
+INSERT INTO NHACUNGCAP(TenNhaCungCap, SDT, DiaChi, Email) VALUES ("Siviet", "0866074947", "3 Thép Mới, phường 12, quận Tân Bình, TP Hồ Chí Minh", "lienhe@thitruongsi.com");
 -- delete later
 -- SET NAMES utf8;
--- insert into NGUOIDUNG(MaChucVu,TenNguoiDung,TenDangNhap,MatKhau,SDT,DiaChi,Email,Avatar,IsDeleted) values (5,"Khách Vãng Lai","khachvanglai","123","01212801223","SG","khachvanglai@khachvanglai","khachvanglai.jpg",false);
--- insert into NGUOIDUNG(MaChucVu,TenNguoiDung,TenDangNhap,MatKhau,SDT,DiaChi,Email,Avatar,IsDeleted) values (1,"At Min","admin","123","01212801223","SG","admin@admin","admin.jpg",false);
--- insert into NGUOIDUNG(MaChucVu,TenNguoiDung,TenDangNhap,MatKhau,SDT,DiaChi,Email,Avatar,IsDeleted) values (5,"Trần Duy Khánh","duykhanh","123","01212801223","SG","duykhanh@duykhanh","duykhanh.jpg",false);
+insert into NGUOIDUNG(MaChucVu,TenNguoiDung,TenDangNhap,MatKhau,SDT,DiaChi,Email,Avatar,IsDeleted) values (5,"Khách Vãng Lai","khachvanglai","$2b$10$djNGrIGniLagvoO7hVF71OLwHWeljTGAiaWrEsPNe54EKR0Q.Ypz6","01212801223","SG","khachvanglai@khachvanglai","khachvanglai.jpg",false);
+insert into NGUOIDUNG(MaChucVu,TenNguoiDung,TenDangNhap,MatKhau,SDT,DiaChi,Email,Avatar,IsDeleted) values (1,"At Min","admin","$2b$10$djNGrIGniLagvoO7hVF71OLwHWeljTGAiaWrEsPNe54EKR0Q.Ypz6","01212801223","SG","admin@admin","https://firebasestorage.googleapis.com/v0/b/shoesstoremanagement.appspot.com/o/images%2F118208340_161368465576969_9020412137873354949_n.jpg?alt=media&token=8c5cde54-9cf1-4c1f-9b86-388f30eb53fb",false);
+insert into NGUOIDUNG(MaChucVu,TenNguoiDung,TenDangNhap,MatKhau,SDT,DiaChi,Email,Avatar,IsDeleted) values (5,"Trần Duy Khánh","duykhanh","$2b$10$djNGrIGniLagvoO7hVF71OLwHWeljTGAiaWrEsPNe54EKR0Q.Ypz6","01212801223","SG","duykhanh@duykhanh","https://firebasestorage.googleapis.com/v0/b/shoesstoremanagement.appspot.com/o/images%2Favatar.jpg?alt=media&token=f4541838-9024-4859-b287-4cdbbebcf181",false);
+insert into NGUOIDUNG(MaChucVu,TenNguoiDung,TenDangNhap,MatKhau,SDT,DiaChi,Email,Avatar,IsDeleted) values (5,"Nguyễn Yến Linh","yenlinh","$2b$10$djNGrIGniLagvoO7hVF71OLwHWeljTGAiaWrEsPNe54EKR0Q.Ypz6","01212801223","SG","duykhanh@duykhanh","https://firebasestorage.googleapis.com/v0/b/shoesstoremanagement.appspot.com/o/images%2F188286131_2948428975446369_1822736670446303283_n.jpg?alt=media&token=3c34762b-f2c7-40a8-b3b7-7e081dc7b7d5",false);
+insert into NGUOIDUNG(MaChucVu,TenNguoiDung,TenDangNhap,MatKhau,SDT,DiaChi,Email,Avatar,IsDeleted) values (5,"Lê Nguyên","lenguyen","$2b$10$djNGrIGniLagvoO7hVF71OLwHWeljTGAiaWrEsPNe54EKR0Q.Ypz6","01212801223","SG","duykhanh@duykhanh","https://firebasestorage.googleapis.com/v0/b/shoesstoremanagement.appspot.com/o/images%2F190160691_1194075634366693_3734862780601815562_n.jpg?alt=media&token=eef14f76-f939-4e87-8e29-1ddbe38ec07a",false);
+insert into NGUOIDUNG(MaChucVu,TenNguoiDung,TenDangNhap,MatKhau,SDT,DiaChi,Email,Avatar,IsDeleted) values (5,"Trương Trung Hiếu","trunghieu","$2b$10$djNGrIGniLagvoO7hVF71OLwHWeljTGAiaWrEsPNe54EKR0Q.Ypz6","01212801223","SG","duykhanh@duykhanh","https://firebasestorage.googleapis.com/v0/b/shoesstoremanagement.appspot.com/o/images%2F190160691_1194075634366693_3734862780601815562_n.jpg?alt=media&token=eef14f76-f939-4e87-8e29-1ddbe38ec07a",false);
+insert into NGUOIDUNG(MaChucVu,TenNguoiDung,TenDangNhap,MatKhau,SDT,DiaChi,Email,Avatar,IsDeleted) values (5,"Trung Anh","trunganh","$2b$10$djNGrIGniLagvoO7hVF71OLwHWeljTGAiaWrEsPNe54EKR0Q.Ypz6","01212801223","SG","duykhanh@duykhanh","https://firebasestorage.googleapis.com/v0/b/shoesstoremanagement.appspot.com/o/images%2F190160691_1194075634366693_3734862780601815562_n.jpg?alt=media&token=eef14f76-f939-4e87-8e29-1ddbe38ec07a",false);
+insert into NGUOIDUNG(MaChucVu,TenNguoiDung,TenDangNhap,MatKhau,SDT,DiaChi,Email,Avatar,IsDeleted) values (5,"Đồng Quang Quý","quangquy","$2b$10$djNGrIGniLagvoO7hVF71OLwHWeljTGAiaWrEsPNe54EKR0Q.Ypz6","01212801223","SG","duykhanh@duykhanh","https://firebasestorage.googleapis.com/v0/b/shoesstoremanagement.appspot.com/o/images%2F69407774_2474952812736423_2986662640652124160_n.jpg?alt=media&token=06b45d66-34ba-4168-adf5-b0696d9eddbf",false);
+insert into NGUOIDUNG(MaChucVu,TenNguoiDung,TenDangNhap,MatKhau,SDT,DiaChi,Email,Avatar,IsDeleted) values (5,"Nhật Mai","nhatmai","$2b$10$djNGrIGniLagvoO7hVF71OLwHWeljTGAiaWrEsPNe54EKR0Q.Ypz6","01212801223","SG","duykhanh@duykhanh","https://firebasestorage.googleapis.com/v0/b/shoesstoremanagement.appspot.com/o/images%2F51793332_1189477627883198_6184842722596093952_n.jpg?alt=media&token=d513c8b6-5a25-4d82-8888-67ef8f58a839",false);
+insert into NGUOIDUNG(MaChucVu,TenNguoiDung,TenDangNhap,MatKhau,SDT,DiaChi,Email,Avatar,IsDeleted) values (5,"Nguyễn Đức","nguyenduc","$2b$10$djNGrIGniLagvoO7hVF71OLwHWeljTGAiaWrEsPNe54EKR0Q.Ypz6","01212801223","SG","duykhanh@duykhanh","https://firebasestorage.googleapis.com/v0/b/shoesstoremanagement.appspot.com/o/images%2F188286131_2948428975446369_1822736670446303283_n.jpg?alt=media&token=3c34762b-f2c7-40a8-b3b7-7e081dc7b7d5",false);
+insert into NGUOIDUNG(MaChucVu,TenNguoiDung,TenDangNhap,MatKhau,SDT,DiaChi,Email,Avatar,IsDeleted) values (5,"Phạm Vân","vanity","$2b$10$djNGrIGniLagvoO7hVF71OLwHWeljTGAiaWrEsPNe54EKR0Q.Ypz6","01212801223","SG","duykhanh@duykhanh","https://firebasestorage.googleapis.com/v0/b/shoesstoremanagement.appspot.com/o/images%2F168487901_474023713948558_4222180796742609075_n.jpg?alt=media&token=d35310db-fce3-4bb2-9252-22c88e8698d7",false);
+insert into NGUOIDUNG(MaChucVu,TenNguoiDung,TenDangNhap,MatKhau,SDT,DiaChi,Email,Avatar,IsDeleted) values (5,"Nguyễn Yến Nhi","yennhi","$2b$10$djNGrIGniLagvoO7hVF71OLwHWeljTGAiaWrEsPNe54EKR0Q.Ypz6","01212801223","SG","duykhanh@duykhanh","https://firebasestorage.googleapis.com/v0/b/shoesstoremanagement.appspot.com/o/images%2F190160691_1194075634366693_3734862780601815562_n.jpg?alt=media&token=eef14f76-f939-4e87-8e29-1ddbe38ec07a",false);
+insert into NGUOIDUNG(MaChucVu,TenNguoiDung,TenDangNhap,MatKhau,SDT,DiaChi,Email,Avatar,IsDeleted) values (5,"Hoàng Minh Hồng","minhhong","$2b$10$djNGrIGniLagvoO7hVF71OLwHWeljTGAiaWrEsPNe54EKR0Q.Ypz6","01212801223","SG","duykhanh@duykhanh","https://firebasestorage.googleapis.com/v0/b/shoesstoremanagement.appspot.com/o/images%2F148018031_1132030403935257_6646384093719174886_n.jpg?alt=media&token=11bf3454-3416-4152-a126-3964262d3399",false);
+insert into NGUOIDUNG(MaChucVu,TenNguoiDung,TenDangNhap,MatKhau,SDT,DiaChi,Email,Avatar,IsDeleted) values (5,"Nguyễn Đức Khang","duckhang","$2b$10$djNGrIGniLagvoO7hVF71OLwHWeljTGAiaWrEsPNe54EKR0Q.Ypz6","01212801223","SG","duykhanh@duykhanh","https://firebasestorage.googleapis.com/v0/b/shoesstoremanagement.appspot.com/o/images%2F20157883_103460747002518_7485964106418503445_o.jpg?alt=media&token=4bc043e3-4a9d-4774-9763-144e28e7fb81",false);
+insert into NGUOIDUNG(MaChucVu,TenNguoiDung,TenDangNhap,MatKhau,SDT,DiaChi,Email,Avatar,IsDeleted) values (5,"Nguyễn Phạm Đức Duy","ducduy","$2b$10$djNGrIGniLagvoO7hVF71OLwHWeljTGAiaWrEsPNe54EKR0Q.Ypz6","01212801223","SG","duykhanh@duykhanh","https://firebasestorage.googleapis.com/v0/b/shoesstoremanagement.appspot.com/o/images%2F157566076_2957257811222535_4002746213970945575_n.jpg?alt=media&token=7047b471-93c6-4cfd-a0cb-21c2af559e33",false);
+insert into NGUOIDUNG(MaChucVu,TenNguoiDung,TenDangNhap,MatKhau,SDT,DiaChi,Email,Avatar,IsDeleted) values (5,"Nguyễn Văn Lương","vanluong","$2b$10$djNGrIGniLagvoO7hVF71OLwHWeljTGAiaWrEsPNe54EKR0Q.Ypz6","01212801223","SG","duykhanh@duykhanh","https://firebasestorage.googleapis.com/v0/b/shoesstoremanagement.appspot.com/o/images%2F79969209_1411511955697531_4629445665246674944_n.jpg?alt=media&token=11e71678-bdf6-4d8e-9448-64d5cd2b6e3a",false);
+insert into NGUOIDUNG(MaChucVu,TenNguoiDung,TenDangNhap,MatKhau,SDT,DiaChi,Email,Avatar,IsDeleted) values (5,"Nguyễn Long","nguyenlong","$2b$10$djNGrIGniLagvoO7hVF71OLwHWeljTGAiaWrEsPNe54EKR0Q.Ypz6","01212801223","SG","duykhanh@duykhanh","https://firebasestorage.googleapis.com/v0/b/shoesstoremanagement.appspot.com/o/images%2F16299301_1808288959412643_3352524105234288532_n.jpg?alt=media&token=84b389ab-a0e2-46d0-b61f-2a932a3a744a",false);
+insert into NGUOIDUNG(MaChucVu,TenNguoiDung,TenDangNhap,MatKhau,SDT,DiaChi,Email,Avatar,IsDeleted) values (5,"Trần Hậu Đạt","haudat","$2b$10$djNGrIGniLagvoO7hVF71OLwHWeljTGAiaWrEsPNe54EKR0Q.Ypz6","01212801223","SG","duykhanh@duykhanh","duykhanh.jpg",false);
+insert into NGUOIDUNG(MaChucVu,TenNguoiDung,TenDangNhap,MatKhau,SDT,DiaChi,Email,Avatar,IsDeleted) values (5,"Nguyễn Minh Quang","minhquang","$2b$10$djNGrIGniLagvoO7hVF71OLwHWeljTGAiaWrEsPNe54EKR0Q.Ypz6","01212801223","SG","duykhanh@duykhanh","https://firebasestorage.googleapis.com/v0/b/shoesstoremanagement.appspot.com/o/images%2F139600674_2808250096062393_1449070949158698948_n.jpg?alt=media&token=90037adc-1789-4595-ae8c-94eb94388ffe",false);
+insert into NGUOIDUNG(MaChucVu,TenNguoiDung,TenDangNhap,MatKhau,SDT,DiaChi,Email,Avatar,IsDeleted) values (5,"Đào Duy Nam","namdao","$2b$10$djNGrIGniLagvoO7hVF71OLwHWeljTGAiaWrEsPNe54EKR0Q.Ypz6","01212801223","SG","duykhanh@duykhanh","https://firebasestorage.googleapis.com/v0/b/shoesstoremanagement.appspot.com/o/images%2F151614612_426987318586683_5772247639823668052_n.jpg?alt=media&token=f19409d0-6185-4c52-9b15-781b37437e3f",false);
+insert into NGUOIDUNG(MaChucVu,TenNguoiDung,TenDangNhap,MatKhau,SDT,DiaChi,Email,Avatar,IsDeleted) values (2,"Nguyễn Hữu Trí","nhanvienbanhang","$2b$10$djNGrIGniLagvoO7hVF71OLwHWeljTGAiaWrEsPNe54EKR0Q.Ypz6","01212801223","SG","duykhanh@duykhanh","https://firebasestorage.googleapis.com/v0/b/shoesstoremanagement.appspot.com/o/images%2F118208340_161368465576969_9020412137873354949_n.jpg?alt=media&token=8c5cde54-9cf1-4c1f-9b86-388f30eb53fb",false);
+insert into NGUOIDUNG(MaChucVu,TenNguoiDung,TenDangNhap,MatKhau,SDT,DiaChi,Email,Avatar,IsDeleted) values (3,"Trần Duy Khánh","nhanvienketoan","$2b$10$djNGrIGniLagvoO7hVF71OLwHWeljTGAiaWrEsPNe54EKR0Q.Ypz6","01212801223","SG","duykhanh@duykhanh","https://firebasestorage.googleapis.com/v0/b/shoesstoremanagement.appspot.com/o/images%2F101851419_1624396714409946_119877887734633891_n.jpg?alt=media&token=6571513c-4935-4acb-8c05-f26d6a70a9b4",false);
+insert into NGUOIDUNG(MaChucVu,TenNguoiDung,TenDangNhap,MatKhau,SDT,DiaChi,Email,Avatar,IsDeleted) values (4,"PapaSuke","nhanvienkho","$2b$10$djNGrIGniLagvoO7hVF71OLwHWeljTGAiaWrEsPNe54EKR0Q.Ypz6","01212801223","SG","duykhanh@duykhanh","https://firebasestorage.googleapis.com/v0/b/shoesstoremanagement.appspot.com/o/images%2F190160691_1194075634366693_3734862780601815562_n.jpg?alt=media&token=eef14f76-f939-4e87-8e29-1ddbe38ec07a",false);
 
 
+
+
+CALL USP_ThemGioHang(3);
+CALL USP_ThemChiTietGioHang(1,10,6375000,63750000);
+CALL USP_ThemChiTietGioHang(2,10,6375000,63750000);
+CALL USP_ThemChiTietGioHang(3,10,6375000,63750000);
+CALL USP_ThemChiTietGioHang(4,10,6375000,63750000);
+
+
+
+CALL USP_ThemGioHang(4);
+CALL USP_ThemChiTietGioHang(1,10,6375000,63750000);
+CALL USP_ThemChiTietGioHang(2,10,6375000,63750000);
+CALL USP_ThemChiTietGioHang(3,10,6375000,63750000);
+CALL USP_ThemChiTietGioHang(4,10,6375000,63750000);
+
+CALL USP_ThemGioHang(5);
+CALL USP_ThemChiTietGioHang(1,10,6375000,63750000);
+CALL USP_ThemChiTietGioHang(2,10,6375000,63750000);
+CALL USP_ThemChiTietGioHang(3,10,6375000,63750000);
+CALL USP_ThemChiTietGioHang(4,10,6375000,63750000);
+
+CALL USP_ThemGioHang(6);
+CALL USP_ThemChiTietGioHang(1,10,6375000,63750000);
+CALL USP_ThemChiTietGioHang(2,10,6375000,63750000);
+CALL USP_ThemChiTietGioHang(3,10,6375000,63750000);
+CALL USP_ThemChiTietGioHang(4,10,6375000,63750000);

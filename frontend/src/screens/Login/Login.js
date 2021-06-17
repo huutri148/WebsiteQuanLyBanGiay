@@ -15,7 +15,6 @@ import { makeStyles } from "@material-ui/core/styles";
 import { login } from "../../redux/actions/nguoiDungAction";
 import { useDispatch, useSelector } from "react-redux";
 import { isAuthenticated } from "../../services/jwtAuthService";
-//import { history } from "../../helper/history";
 import { withRouter, useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
@@ -51,20 +50,18 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const Login = withRouter(() => {
-  const [islogged, setIslogged] = useState(false);
+export const Login = withRouter((props) => {
   const [loginParams, setLoginParams] = useState({
     TenDangNhap: "huutri1480",
     MatKhau: "123456",
   });
   const dispatch = useDispatch();
   const classes = useStyles();
-  const history = useHistory();
   const userLogin = useSelector((state) => state.User);
   const { userInfo } = userLogin;
   useEffect(() => {
     if (isAuthenticated()) {
-      history.replace("/");
+      props.history.replace("/");
     }
   }, [userInfo]);
 

@@ -57,10 +57,10 @@ const headCells = [
   { id: "TenGiay", label: "Tên Giày" },
   { id: "GioiTinh", label: "Giới Tính" },
   { id: "Size", label: "Size" },
-  { id: "DonGia", label: "Đơn Giá" },
+  { id: "DonGiaBan", label: "Đơn Giá" },
   { id: "SoLuong", label: "Số Lượng" },
   { id: "ThanhTien", label: "Thành Tiền" },
-  { id: "HanhDong" },
+  { id: "HanhDong" ,disableSorting: true },
 ];
 const PhieuBanHang = (props) => {
   const [selectedProducts, setSelectedProducts] = useState([]);
@@ -176,7 +176,7 @@ const PhieuBanHang = (props) => {
           return {
             MaChiTietGiay: element.MaChiTietGiay,
             SoLuongMua: element.amount,
-            GiaBan: element.DonGia,
+            GiaBan: element.DonGiaBan,
             ThanhTien: element.total
           };
         })
@@ -198,7 +198,7 @@ const PhieuBanHang = (props) => {
       else
         if (tmp === 0 || phoneRegex.test(tmp)) {
           setAmount(Number(tmp));
-          setTotal(Number(tmp) * product.DonGia);
+          setTotal(Number(tmp) * product.DonGiaBan);
           if (Number(tmp) > 0 && Number(tmp) <= maxAmount)
             setAmountError(false);
           else
@@ -210,7 +210,7 @@ const PhieuBanHang = (props) => {
     setSize(size);
     setMaxAmount(e);
     setAmount(e);
-    setTotal(e * product.DonGia);
+    setTotal(e * product.DonGiaBan);
     product.MaChiTietGiay = MaChiTietGiay;
   };
   const resetField = () => {
@@ -370,7 +370,7 @@ const PhieuBanHang = (props) => {
                     value={
                       product === null
                         ? ""
-                        : product.DonGia.toLocaleString("it-IT")
+                        : product.DonGiaBan.toLocaleString("it-IT")
                     }
                     type="TextBox"
                     title={headCells[3].label}
@@ -450,7 +450,7 @@ const PhieuBanHang = (props) => {
                       {sizes[item.size].TenSize}
                     </TableCell>
                     <TableCell component="td" scope="row">
-                      {item.DonGia.toLocaleString("it-IT")}
+                      {item.DonGiaBan.toLocaleString("it-IT")}
                     </TableCell>
                     <TableCell component="td" scope="row">
                       {item.amount}

@@ -22,3 +22,10 @@ export const getList = () => {
   return axiosService.get(url);
 };
 
+export const getListKhachHang = () => {
+  return axiosService.get(`${url}/customers`);
+};
+
+export const getListNhanVien = () => {
+  return axiosService.get(`${url}/employees`);
+};

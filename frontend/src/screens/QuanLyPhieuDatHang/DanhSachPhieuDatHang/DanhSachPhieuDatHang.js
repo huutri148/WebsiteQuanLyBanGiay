@@ -25,13 +25,14 @@ import {
 } from "@material-ui/icons";
 import { useSelector, useDispatch } from "react-redux";
 import moment from "moment";
-import useTable from "../../components/useTable";
-import Input from "../../components/controls/Input";
+import useTable from "../../../components/useTable";
+import Input from "../../../components/controls/Input";
 import {
   updatePhieuDatHang,
   deletePhieuDatHang,
-} from "../../redux/actions/phieuDatHangAction";
-import { DSPDHHeadCell } from "./ThongTinPhieuDatHang";
+} from "../../../redux/actions/phieuDatHangAction";
+import { DSPDHHeadCell } from "../ThongTinPhieuDatHang";
+import ConfirmDialog from "../../../components/controls/ConfirmDialog";
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -99,6 +100,11 @@ const DanhSachPhieuDatHang = (props) => {
       return items;
     },
   });
+  const [confirmDialog, setConfirmDialog] = useState({
+    isOpen: false,
+    title: "",
+    subTitle: "",
+  });
 
   const { TblContainer, TblHead, TblPagination, recordsAfterPagingAndSorting } =
     useTable(tableData, DSPDHHeadCell, filterFn);
@@ -135,17 +141,45 @@ const DanhSachPhieuDatHang = (props) => {
         if (target.value === "") return items;
         else
           return items.filter((x) =>
-            x.fullName.toLowerCase().includes(target.value)
+            x.TenNhaCungCap.toLowerCase().includes(target.value)
           );
       },
     });
   };
   const handleDelete = (item) => {
-    dispatch(deletePhieuDatHang(item.SoPhieuDatHang));
-    UpdateData();
+    setConfirmDialog({
+      ...confirmDialog,
+      isOpen: true,
+      title: "Bạn có muốn xóa sản phẩm không?",
+      onConfirm: () => {
+        deletePhieu(item);
+      },
+    });
   };
 
   const handleConfirm = (item) => {
+    setConfirmDialog({
+      ...confirmDialog,
+      isOpen: true,
+      title: "Bạn có muốn xác nhận phiếu không?",
+      onConfirm: () => {
+        confirmPhieu(item);
+      },
+    });
+  };
+  const deletePhieu = (item) => {
+    setConfirmDialog({
+      ...confirmDialog,
+      isOpen: false,
+    });
+    dispatch(deletePhieuDatHang(item.SoPhieuDatHang));
+    UpdateData();
+  };
+  const confirmPhieu = (item) => {
+    setConfirmDialog({
+      ...confirmDialog,
+      isOpen: false,
+    });
     const updateItem = {
       ...item,
       TrangThai: "Đã xử lý",
@@ -244,13 +278,39 @@ const DanhSachPhieuDatHang = (props) => {
                       </TableCell>
                       <TableCell component="th" scope="row">
                         <Tooltip title="Xác nhận">
-                          <IconButton onClick={() => handleConfirm(item)}>
-                            <Check className={classes.checkButton} />
+                          <IconButton
+                            onClick={() => handleConfirm(item)}
+                            disabled={
+                              item.IsDeleted === true ||
+                              item.TrangThai === "Đã xử lý"
+                            }
+                          >
+                            <Check
+                              className={
+                                item.IsDeleted === true ||
+                                item.TrangThai === "Đã xử lý"
+                                  ? ""
+                                  : classes.checkButton
+                              }
+                            />
                           </IconButton>
                         </Tooltip>
                         <Tooltip title="Hủy đơn">
-                          <IconButton onClick={() => handleDelete(item)}>
-                            <Clear className={classes.cancelButton} />
+                          <IconButton
+                            onClick={() => handleDelete(item)}
+                            disabled={
+                              item.IsDeleted === true ||
+                              item.TrangThai === "Đã xử lý"
+                            }
+                          >
+                            <Clear
+                              className={
+                                item.IsDeleted === true ||
+                                item.TrangThai === "Đã xử lý"
+                                  ? ""
+                                  : classes.cancelButton
+                              }
+                            />
                           </IconButton>
                         </Tooltip>
                         <Tooltip title="Xem chi tiết">
@@ -265,6 +325,10 @@ const DanhSachPhieuDatHang = (props) => {
               </TblContainer>
               <TblPagination />
             </TableContainer>
+            <ConfirmDialog
+              confirmDialog={confirmDialog}
+              setConfirmDialog={setConfirmDialog}
+            />
           </Paper>
         </div>
       )}

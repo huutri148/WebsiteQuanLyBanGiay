@@ -25,6 +25,9 @@ class localStorageService {
       return null;
     }
   }
+  removeItem(key) {
+    this.ls.removeItem(key);
+  }
 }
 
 export default new localStorageService();

@@ -1,5 +1,5 @@
 import React from "react";
-import ListItem from "@material-ui/core/ListItem";
+import { ListItem } from "@material-ui/core";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import ListSubheader from "@material-ui/core/ListSubheader";
@@ -49,7 +49,7 @@ export const mainListItems = (
       </ListItemIcon>
       <ListItemText primary="Đặt hàng" />
     </ListItem>
-    <ListItem button component={Link} to="/users">
+    <ListItem button component={Link} to="/recdockets">
       <ListItemIcon>
         <HomeIcon />
       </ListItemIcon>

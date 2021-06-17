@@ -59,8 +59,7 @@ const createProduct = async (req, res) => {
     GioiTinh: req.body.GioiTinh,
     Anh: req.body.Anh,
     MoTa: req.body.MoTa,
-    TyLeLoiNhuan: req.body.TyLeLoiNhuan,
-    DonGiaNhap: req.body.DonGiaNhap,
+    DonGiaBan: req.body.DonGiaBan,
     Size: req.body.Size,
   };
 
@@ -86,8 +85,7 @@ const updateProduct = async (req, res) => {
     GioiTinh: req.body.GioiTinh,
     Anh: req.body.Anh,
     MoTa: req.body.MoTa,
-    TyLeLoiNhuan: req.body.TyLeLoiNhuan,
-    DonGiaNhap: req.body.DonGiaNhap,
+    DonGiaBan: req.body.DonGiaBan,
   };
 
   await Giay.Edit(product, (result) => {

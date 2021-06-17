@@ -114,11 +114,7 @@ const QuanLyBanHang = () => {
         });
         return result;
       }, []);
-      let tempData = productsData.map((item) => {
-        item.DonGia = item.DonGiaNhap * (100 + item.TyLeLoiNhuan * 100) / 100;
-        return item;
-      });
-      setProducts(tempData);
+      setProducts(productsData);
     }
   }, [listGiay,listHangSanXuat,listMau]);
   //fetch data

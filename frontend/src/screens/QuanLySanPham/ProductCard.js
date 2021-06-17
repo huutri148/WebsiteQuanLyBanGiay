@@ -1,5 +1,5 @@
 import React from "react";
-import { makeStyles, Typography, Grid } from "@material-ui/core";
+import { makeStyles, Typography } from "@material-ui/core";
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
@@ -30,10 +30,10 @@ const ProductCard = (props) => {
   const classes = useStyles();
   return (
     <div className={classes.container}>
-      <div >
+      <div>
         <img src={props.imgUrl} className={classes.image} alt={props.Primary} />
       </div>
-      <div >
+      <div>
         <Typography className={classes.title}>{props.PrimaryText}</Typography>
         <Typography color="textSecondary" variant="body2">
           {props.SecondaryText}
