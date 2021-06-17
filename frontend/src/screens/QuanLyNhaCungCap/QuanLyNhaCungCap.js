@@ -18,6 +18,7 @@ import ConfirmDialog from "../../components/controls/ConfirmDialog";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import NhaCungCapTable from "./NhaCungCapTable";
+import Loading from "../../components/Loadable/Loading";
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -156,7 +157,7 @@ const QuanLyNhaCungCap = () => {
   return (
     <>
       {listLoading ? (
-        <h1>Loading </h1>
+        <Loading />
       ) : (
         <div>
           <Typography component="h1" variant="h5" className={classes.title}>

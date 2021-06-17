@@ -16,11 +16,11 @@ import {
   Search,
   Check,
   Clear,
-  ArrowRightAlt,
   CloudDownload,
   Print,
   FilterList,
   PrintDisabledRounded,
+  Assignment,
   ViewColumn,
 } from "@material-ui/icons";
 import { useSelector, useDispatch } from "react-redux";
@@ -28,12 +28,18 @@ import moment from "moment";
 import useTable from "../../../components/useTable";
 import Input from "../../../components/controls/Input";
 import {
-  updatePhieuDatHang,
-  deletePhieuDatHang,
-} from "../../../redux/actions/phieuDatHangAction";
-import { DSPDHHeadCell } from "../ThongTinPhieuDatHang";
+  fetchListGioHang,
+  updateGioHang,
+  deleteGioHang,
+} from "../../../redux/actions/gioHangAction";
+import { fetchListNguoiDung } from "../../../redux/actions/nguoiDungAction";
+import { DSGHHeadCell } from "../ThongTinQuanLyGioHang";
 import ConfirmDialog from "../../../components/controls/ConfirmDialog";
+import Popup from "../../../components/controls/Popup";
+import Detail from "../../QuanLyBanHang/Detail";
+import { detailsHeadCells } from "../ThongTinQuanLyGioHang";
 import Loading from "../../../components/Loadable/Loading";
+import BillToPrint from "../BillToPrint";
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -80,22 +86,19 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const DanhSachPhieuDatHang = (props) => {
-  const { UpdateData } = props;
-
+const DanhSachGioHang = (props) => {
   // CSS class
   const classes = useStyles();
   const dispatch = useDispatch();
 
-  const supplierList = useSelector((state) => state.ListNhaCungCap);
   const userList = useSelector((state) => state.ListNguoiDung);
-  const orderList = useSelector((state) => state.ListPhieuDatHang);
-  const { loading: supplierLoading, listNhaCungCap } = supplierList;
+  const cartList = useSelector((state) => state.ListGioHang);
   const { loading: userLoading, listNguoiDung } = userList;
-  const { loading: orderLoading, listPhieuDatHang } = orderList;
+  const { loading: cartLoading, listGioHang } = cartList;
 
   // Props in Screens
   const [tableData, setTableData] = useState([]);
+  const [updateData, setUpdateData] = useState(false);
   const [filterFn, setFilterFn] = useState({
     fn: (items) => {
       return items;
@@ -106,24 +109,22 @@ const DanhSachPhieuDatHang = (props) => {
     title: "",
     subTitle: "",
   });
-
+  const [groupBoxes, setGroupBoxes] = useState([]);
+  const [selectedItem, setSelectedItem] = useState();
+  const [openDetailPopup, setOpenDetailPopup] = useState(false);
+  const [openPrintPopup, setOpenPrintPopup] = useState(false);
   const { TblContainer, TblHead, TblPagination, recordsAfterPagingAndSorting } =
-    useTable(tableData, DSPDHHeadCell, filterFn);
+    useTable(tableData, DSGHHeadCell, filterFn);
 
   useEffect(() => {
     const combineData = () => {
-      const data = Object.values(listPhieuDatHang).reduce((result, value) => {
+      const data = Object.values(listGioHang).reduce((result, value) => {
         let maNguoiDung = value.MaNguoiDung;
-        let maNhaCungCap = value.MaNhaCungCap;
         if (typeof listNguoiDung[maNguoiDung] === "undefined") return [];
-        if (typeof listNhaCungCap[maNhaCungCap] === "undefined") return [];
-        let { TenNhaCungCap } = listNhaCungCap[maNhaCungCap];
         let { TenNguoiDung } = listNguoiDung[maNguoiDung];
         const date = moment(value.NgayLap).format("DD/MM/YYYY");
-
         result.push({
           ...value,
-          TenNhaCungCap,
           TenNguoiDung,
           NgayLap: date,
         });
@@ -132,9 +133,43 @@ const DanhSachPhieuDatHang = (props) => {
       setTableData(data);
     };
     combineData();
-  }, [listNhaCungCap, listNguoiDung, listPhieuDatHang]);
+  }, [listNguoiDung, listGioHang]);
 
-  const handleDetail = (data) => {};
+  useEffect(() => {
+    const fetchData = async () => {
+      await dispatch(fetchListGioHang());
+    };
+    fetchData();
+  }, [updateData]);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      await dispatch(fetchListNguoiDung());
+    };
+    if (typeof userLoading === "undefined") fetchUserData();
+  }, []);
+
+  const handleDetail = (item) => {
+    setGroupBoxes([
+      {
+        type: "Label",
+        title: "Tên Khách Hàng",
+        value: item.TenNguoiDung,
+      },
+      {
+        type: "Label",
+        title: "Tổng Tiền",
+        value: item.TongTien.toLocaleString("it-IT"),
+      },
+      {
+        type: "Label",
+        title: "Ngày Lập",
+        value: moment(item.NgayBan).format("DD/MM/YYYY"),
+      },
+    ]);
+    setSelectedItem(item.MaGioHang);
+    setOpenDetailPopup(true);
+  };
   const handleSearch = (e) => {
     let target = e.target;
     setFilterFn({
@@ -142,7 +177,7 @@ const DanhSachPhieuDatHang = (props) => {
         if (target.value === "") return items;
         else
           return items.filter((x) =>
-            x.TenNhaCungCap.toLowerCase().includes(target.value)
+            x.TenNguoiDung.toLowerCase().includes(target.value)
           );
       },
     });
@@ -151,7 +186,7 @@ const DanhSachPhieuDatHang = (props) => {
     setConfirmDialog({
       ...confirmDialog,
       isOpen: true,
-      title: "Bạn có muốn xóa sản phẩm không?",
+      title: "Bạn có muốn xóa đơn hàng không?",
       onConfirm: () => {
         deletePhieu(item);
       },
@@ -162,9 +197,9 @@ const DanhSachPhieuDatHang = (props) => {
     setConfirmDialog({
       ...confirmDialog,
       isOpen: true,
-      title: "Bạn có muốn xác nhận phiếu không?",
+      title: "Bạn có muốn xác nhận đơn hàng không?",
       onConfirm: () => {
-        confirmPhieu(item);
+        confirmDonHang(item);
       },
     });
   };
@@ -173,29 +208,30 @@ const DanhSachPhieuDatHang = (props) => {
       ...confirmDialog,
       isOpen: false,
     });
-    dispatch(deletePhieuDatHang(item.SoPhieuDatHang));
-    UpdateData();
+    dispatch(deleteGioHang(item.MaGioHang));
+    setUpdateData(!updateData);
   };
-  const confirmPhieu = (item) => {
+  const confirmDonHang = (item) => {
     setConfirmDialog({
       ...confirmDialog,
       isOpen: false,
     });
-    const updateItem = {
-      ...item,
-      TrangThai: "Đã xử lý",
-    };
-    UpdateData();
-    dispatch(updatePhieuDatHang(item.SoPhieuDatHang, updateItem));
+    dispatch(updateGioHang(item.MaGioHang));
+    setUpdateData(!updateData);
+  };
+
+  const handlePrintClick = (item) => {
+    setOpenPrintPopup(true);
+    setOpenDetailPopup(false);
   };
   return (
     <>
-      {supplierLoading || userLoading || orderLoading ? (
+      {userLoading || cartLoading ? (
         <Loading />
       ) : (
         <div>
           <Typography component="h1" variant="h5" className={classes.title}>
-            Quản lý phiếu đặt hàng
+            Quản lý giỏ hàng
           </Typography>
           <Paper>
             <Toolbar className={classes.toolbar}>
@@ -251,23 +287,23 @@ const DanhSachPhieuDatHang = (props) => {
                       }
                     >
                       <TableCell component="th" scope="row">
-                        {item.SoPhieuDatHang}
-                      </TableCell>
-                      <TableCell component="th" scope="row">
-                        {item.TenNhaCungCap}
+                        {item.MaGioHang}
                       </TableCell>
                       <TableCell component="th" scope="row">
                         {item.TenNguoiDung}
                       </TableCell>
                       <TableCell component="th" scope="row">
+                        {item.NgayLap}
+                      </TableCell>
+                      <TableCell component="th" scope="row">
                         <Typography
                           className={classes.status}
                           style={{
-                            backgroundColor:
-                              //Note: Fix hardcode 100
-                              (item.TrangThai === "Đã xử lý" &&
-                                "rgba(9,182,109,1)") ||
-                              (item.TrangThai === "Chờ" && "#FF3D57"),
+                            backgroundColor: item.IsDeleted
+                              ? "#FF3D57"
+                              : (item.TrangThai === "Đã giao hàng" &&
+                                  "rgba(9,182,109,1)") ||
+                                (item.TrangThai === "Đang xử lý" && "#FFAF38"),
                             boxShadow: " 0 2px 2px 1px rgba(0,0,0,0.24)",
                           }}
                         >
@@ -275,7 +311,7 @@ const DanhSachPhieuDatHang = (props) => {
                         </Typography>
                       </TableCell>
                       <TableCell component="th" scope="row">
-                        {item.NgayLap}
+                        {item.TongTien.toLocaleString("it-IT")}
                       </TableCell>
                       <TableCell component="th" scope="row">
                         <Tooltip title="Xác nhận">
@@ -283,13 +319,15 @@ const DanhSachPhieuDatHang = (props) => {
                             onClick={() => handleConfirm(item)}
                             disabled={
                               item.IsDeleted === true ||
-                              item.TrangThai === "Đã xử lý"
+                              item.TrangThai === "Đã giao hàng" ||
+                              item.TrangThai === "Đã hủy"
                             }
                           >
                             <Check
                               className={
                                 item.IsDeleted === true ||
-                                item.TrangThai === "Đã xử lý"
+                                item.TrangThai === "Đã giao hàng" ||
+                                item.TrangThai === "Đã hủy"
                                   ? ""
                                   : classes.checkButton
                               }
@@ -301,13 +339,15 @@ const DanhSachPhieuDatHang = (props) => {
                             onClick={() => handleDelete(item)}
                             disabled={
                               item.IsDeleted === true ||
-                              item.TrangThai === "Đã xử lý"
+                              item.TrangThai === "Đã giao hàng" ||
+                              item.TrangThai === "Đã hủy"
                             }
                           >
                             <Clear
                               className={
                                 item.IsDeleted === true ||
-                                item.TrangThai === "Đã xử lý"
+                                item.TrangThai === "Đã giao hàng" ||
+                                item.TrangThai === "Đã hủy"
                                   ? ""
                                   : classes.cancelButton
                               }
@@ -316,7 +356,7 @@ const DanhSachPhieuDatHang = (props) => {
                         </Tooltip>
                         <Tooltip title="Xem chi tiết">
                           <IconButton onClick={() => handleDetail(item)}>
-                            <ArrowRightAlt />
+                            <Assignment color="primary" />
                           </IconButton>
                         </Tooltip>
                       </TableCell>
@@ -330,6 +370,27 @@ const DanhSachPhieuDatHang = (props) => {
               confirmDialog={confirmDialog}
               setConfirmDialog={setConfirmDialog}
             />
+            <Popup
+              title="Thông Tin Phiếu Bán Hàng"
+              openPopup={openDetailPopup}
+              setOpenPopup={setOpenDetailPopup}
+            >
+              <Detail
+                type="cart"
+                id={selectedItem}
+                header="Giỏ hàng"
+                headCells={detailsHeadCells}
+                groupBoxes={groupBoxes}
+                Print={handlePrintClick}
+              />
+            </Popup>
+            <Popup
+              title="In Phiếu Bán Hàng"
+              openPopup={openPrintPopup}
+              setOpenPopup={setOpenPrintPopup}
+            >
+              <BillToPrint id={selectedItem} groupBoxes={groupBoxes} />
+            </Popup>
           </Paper>
         </div>
       )}
@@ -337,4 +398,4 @@ const DanhSachPhieuDatHang = (props) => {
   );
 };
 
-export default DanhSachPhieuDatHang;
+export default DanhSachGioHang;
