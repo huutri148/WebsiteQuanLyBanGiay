@@ -38,6 +38,7 @@ import ConfirmDialog from "../../../components/controls/ConfirmDialog";
 import Popup from "../../../components/controls/Popup";
 import Detail from "../../QuanLyBanHang/Detail";
 import { detailsHeadCells } from "../ThongTinQuanLyGioHang";
+import Loading from "../../../components/Loadable/Loading";
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -219,7 +220,7 @@ const DanhSachGioHang = (props) => {
   return (
     <>
       {userLoading || cartLoading ? (
-        <h1>Loading</h1>
+        <Loading />
       ) : (
         <div>
           <Typography component="h1" variant="h5" className={classes.title}>

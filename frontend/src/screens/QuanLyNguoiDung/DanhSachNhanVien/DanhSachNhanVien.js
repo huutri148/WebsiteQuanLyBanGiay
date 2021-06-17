@@ -9,7 +9,6 @@ import {
   TableCell,
   IconButton,
   Typography,
-  CircularProgress,
   makeStyles,
   Tooltip,
 } from "@material-ui/core";
@@ -29,6 +28,7 @@ import * as _ from "lodash";
 import { fetchListNhanVien } from "../../../redux/actions/nguoiDungAction";
 import { fetchListChucVu } from "../../../redux/actions/chucVuAction";
 import { KHHeadCell } from "../ThongTinQuanLyNguoiDung";
+import Loading from "../../../components/Loadable/Loading";
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -141,90 +141,98 @@ const DanhSachNhanVien = (props) => {
   };
 
   return (
-    <div>
-      <Typography component="h1" variant="h5" className={classes.title}>
-        Danh sách nhân viên
-      </Typography>
-      <Paper>
-        <Toolbar className={classes.toolbar}>
-          <div className={classes.searchInput}>
-            <Input
-              label="Search"
-              style={{ marginTop: "30px" }}
-              fullWidth="true"
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <Search />
-                  </InputAdornment>
-                ),
-              }}
-              onChange={handleSearch}
-            />
-          </div>
-          <div className={classes.actions}>
-            <Tooltip title="Tải file csv">
-              <IconButton className={classes.actionsButton}>
-                <CloudDownload />
-              </IconButton>
-            </Tooltip>
-            <Tooltip title="In">
-              <IconButton className={classes.actionsButton}>
-                <Print />
-              </IconButton>
-            </Tooltip>
-            <Tooltip title="Chọn cột">
-              <IconButton className={classes.actionsButton}>
-                <ViewColumn />
-              </IconButton>
-            </Tooltip>
-            <Tooltip title="Lọc">
-              <IconButton className={classes.actionsButton}>
-                <FilterList />
-              </IconButton>
-            </Tooltip>
-          </div>
-        </Toolbar>
-        <TableContainer className={classes.table}>
-          <TblContainer>
-            <TblHead />
-            <TableBody>
-              {recordsAfterPagingAndSorting().map((item, index) => (
-                <TableRow
-                  key={item.MaNguoiDung}
-                  style={
-                    index % 2 ? { background: "#eee" } : { background: "white" }
-                  }
-                >
-                  <TableCell component="th" scope="row">
-                    <UserCard
-                      imgUrl={item.Avatar}
-                      PrimaryText={item.TenNguoiDung}
-                      SecondaryText={item.TenChucVu}
-                    />
-                  </TableCell>
-                  <TableCell component="th" scope="row">
-                    {item.SDT}
-                  </TableCell>
-                  <TableCell component="th" scope="row">
-                    {item.Email}
-                  </TableCell>
+    <>
+      {employeeLoading || dutiesLoading ? (
+        <Loading />
+      ) : (
+        <div>
+          <Typography component="h1" variant="h5" className={classes.title}>
+            Danh sách nhân viên
+          </Typography>
+          <Paper>
+            <Toolbar className={classes.toolbar}>
+              <div className={classes.searchInput}>
+                <Input
+                  label="Search"
+                  style={{ marginTop: "30px" }}
+                  fullWidth="true"
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <Search />
+                      </InputAdornment>
+                    ),
+                  }}
+                  onChange={handleSearch}
+                />
+              </div>
+              <div className={classes.actions}>
+                <Tooltip title="Tải file csv">
+                  <IconButton className={classes.actionsButton}>
+                    <CloudDownload />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title="In">
+                  <IconButton className={classes.actionsButton}>
+                    <Print />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title="Chọn cột">
+                  <IconButton className={classes.actionsButton}>
+                    <ViewColumn />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title="Lọc">
+                  <IconButton className={classes.actionsButton}>
+                    <FilterList />
+                  </IconButton>
+                </Tooltip>
+              </div>
+            </Toolbar>
+            <TableContainer className={classes.table}>
+              <TblContainer>
+                <TblHead />
+                <TableBody>
+                  {recordsAfterPagingAndSorting().map((item, index) => (
+                    <TableRow
+                      key={item.MaNguoiDung}
+                      style={
+                        index % 2
+                          ? { background: "#eee" }
+                          : { background: "white" }
+                      }
+                    >
+                      <TableCell component="th" scope="row">
+                        <UserCard
+                          imgUrl={item.Avatar}
+                          PrimaryText={item.TenNguoiDung}
+                          SecondaryText={item.TenChucVu}
+                        />
+                      </TableCell>
+                      <TableCell component="th" scope="row">
+                        {item.SDT}
+                      </TableCell>
+                      <TableCell component="th" scope="row">
+                        {item.Email}
+                      </TableCell>
 
-                  <TableCell component="th" scope="row">
-                    <Tooltip title="Chi tiết">
-                      <IconButton color="primary">
-                        <Assignment onClick={() => handleDetail(item)} />
-                      </IconButton>
-                    </Tooltip>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </TblContainer>
-          <TblPagination />
-        </TableContainer>
-      </Paper>
-    </div>
+                      <TableCell component="th" scope="row">
+                        <Tooltip title="Chi tiết">
+                          <IconButton color="primary">
+                            <Assignment onClick={() => handleDetail(item)} />
+                          </IconButton>
+                        </Tooltip>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </TblContainer>
+              <TblPagination />
+            </TableContainer>
+          </Paper>
+        </div>
+      )}
+    </>
   );
 };
 

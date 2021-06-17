@@ -22,6 +22,7 @@ import ProductDetail from "../ProductDetail";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchListGiay } from "../../../redux/actions/giayAction";
 import { DSSPHeadCells } from "../ThongTinQuanLySanPham";
+import Loading from "../../../components/Loadable/Loading";
 
 const DanhSachSanPham = (props) => {
   // CSS class
@@ -120,7 +121,7 @@ const DanhSachSanPham = (props) => {
           />
         </Toolbar>
         {productLoading ? (
-          <CircularProgress disableShrink style={{ margin: "0px 16px" }} />
+          <Loading />
         ) : giayError ? (
           <h1>Error</h1>
         ) : (

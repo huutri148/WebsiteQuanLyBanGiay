@@ -33,6 +33,7 @@ import {
 } from "../../../redux/actions/phieuDatHangAction";
 import { DSPDHHeadCell } from "../ThongTinPhieuDatHang";
 import ConfirmDialog from "../../../components/controls/ConfirmDialog";
+import Loading from "../../../components/Loadable/Loading";
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -190,7 +191,7 @@ const DanhSachPhieuDatHang = (props) => {
   return (
     <>
       {supplierLoading || userLoading || orderLoading ? (
-        <h1>Loading</h1>
+        <Loading />
       ) : (
         <div>
           <Typography component="h1" variant="h5" className={classes.title}>

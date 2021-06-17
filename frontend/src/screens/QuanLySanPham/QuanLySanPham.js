@@ -7,6 +7,7 @@ import { fetchListHangSanXuat } from "../../redux/actions/hangSanXuatAction";
 import { fetchListSize } from "../../redux/actions/sizeAction";
 import { fetchListMau } from "../../redux/actions/mauAction";
 import { QuanLySanPhamTab } from "./ThongTinQuanLySanPham";
+import Loading from "../../components/Loadable/Loading";
 
 function TabPanel(props) {
   const classes = useStyles();
@@ -71,7 +72,7 @@ const QuanLySanPham = () => {
   return (
     <>
       {sizeLoading || brandLoading || mauLoading ? (
-        <h1> Loading </h1>
+        <Loading />
       ) : (
         <div className={classes.root}>
           <CssBaseline />
