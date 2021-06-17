@@ -63,3 +63,24 @@ export const deleteGioHang = (id) => async (dispatch) => {
     toast.error("Error");
   }
 };
+
+export const fetchListChiTietGioHang = (id) => async (dispatch) => {
+  try {
+    dispatch({ type: gioHangConstants.GIOHANG_DETAIL_REQUEST });
+
+    const { data } = await gioHangAPI.getDetails(id);
+
+    dispatch({
+      type: gioHangConstants.GIOHANG_DETAIL_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: gioHangConstants.GIOHANG_DETAIL_FAIL,
+      payload:
+        error.response && error.response.message
+          ? error.response.data.data.message
+          : error.messagge,
+    });
+  }
+};

@@ -82,4 +82,19 @@ GioHang.Edit = async function (maGioHang, result) {
     }
   });
 };
+
+GioHang.GetDetails = function (maGioHang, callBack) {
+  var conn = db.getConnection();
+  var queryString = sqlString.format(
+    `CALL USP_GetChiTietGioHangByID(${maGioHang});`
+  );
+  conn.query(queryString, (err, res) => {
+    if (err) {
+      throw err;
+    }
+    if (res[0]) {
+      callBack(res[0]);
+    }
+  });
+};
 module.exports = GioHang;

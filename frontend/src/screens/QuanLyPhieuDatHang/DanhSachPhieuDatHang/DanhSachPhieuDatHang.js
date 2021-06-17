@@ -278,13 +278,39 @@ const DanhSachPhieuDatHang = (props) => {
                       </TableCell>
                       <TableCell component="th" scope="row">
                         <Tooltip title="Xác nhận">
-                          <IconButton onClick={() => handleConfirm(item)}>
-                            <Check className={classes.checkButton} />
+                          <IconButton
+                            onClick={() => handleConfirm(item)}
+                            disabled={
+                              item.IsDeleted === true ||
+                              item.TrangThai === "Đã xử lý"
+                            }
+                          >
+                            <Check
+                              className={
+                                item.IsDeleted === true ||
+                                item.TrangThai === "Đã xử lý"
+                                  ? ""
+                                  : classes.checkButton
+                              }
+                            />
                           </IconButton>
                         </Tooltip>
                         <Tooltip title="Hủy đơn">
-                          <IconButton onClick={() => handleDelete(item)}>
-                            <Clear className={classes.cancelButton} />
+                          <IconButton
+                            onClick={() => handleDelete(item)}
+                            disabled={
+                              item.IsDeleted === true ||
+                              item.TrangThai === "Đã xử lý"
+                            }
+                          >
+                            <Clear
+                              className={
+                                item.IsDeleted === true ||
+                                item.TrangThai === "Đã xử lý"
+                                  ? ""
+                                  : classes.cancelButton
+                              }
+                            />
                           </IconButton>
                         </Tooltip>
                         <Tooltip title="Xem chi tiết">

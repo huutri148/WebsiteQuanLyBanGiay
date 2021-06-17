@@ -73,4 +73,25 @@ const removeCart = async (req, res) => {
   });
 };
 
-module.exports = { getList, createCart, removeCart, updateCart, getByID };
+// @desc    get cart detail
+// @route   Get /api/carts/details/:id
+// @access  Public
+const getDetails = async (req, res) => {
+  const cartID = req.params.id;
+  await GioHang.GetDetails(cartID, (result) => {
+    if (result) {
+      res.status(200).send(JSON.stringify(result));
+    } else {
+      res.status(404);
+    }
+  });
+};
+
+module.exports = {
+  getList,
+  createCart,
+  removeCart,
+  updateCart,
+  getByID,
+  getDetails,
+};

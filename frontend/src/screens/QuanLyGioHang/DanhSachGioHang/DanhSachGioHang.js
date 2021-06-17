@@ -35,6 +35,9 @@ import {
 import { fetchListNguoiDung } from "../../../redux/actions/nguoiDungAction";
 import { DSGHHeadCell } from "../ThongTinQuanLyGioHang";
 import ConfirmDialog from "../../../components/controls/ConfirmDialog";
+import Popup from "../../../components/controls/Popup";
+import Detail from "../../QuanLyBanHang/Detail";
+import { detailsHeadCells } from "../ThongTinQuanLyGioHang";
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -104,7 +107,9 @@ const DanhSachGioHang = (props) => {
     title: "",
     subTitle: "",
   });
-
+  const [groupBoxes, setGroupBoxes] = useState([]);
+  const [selectedItem, setSelectedItem] = useState();
+  const [openDetailPopup, setOpenDetailPopup] = useState(false);
   const { TblContainer, TblHead, TblPagination, recordsAfterPagingAndSorting } =
     useTable(tableData, DSGHHeadCell, filterFn);
 
@@ -141,7 +146,27 @@ const DanhSachGioHang = (props) => {
     if (typeof userLoading === "undefined") fetchUserData();
   }, []);
 
-  const handleDetail = (data) => {};
+  const handleDetail = (item) => {
+    setGroupBoxes([
+      {
+        type: "Label",
+        title: "Tên Khách Hàng",
+        value: item.TenNguoiDung,
+      },
+      {
+        type: "Label",
+        title: "Tổng Tiền",
+        value: item.TongTien.toLocaleString("it-IT"),
+      },
+      {
+        type: "Label",
+        title: "Ngày Lập",
+        value: moment(item.NgayBan).format("DD/MM/YYYY"),
+      },
+    ]);
+    setSelectedItem(item.MaGioHang);
+    setOpenDetailPopup(true);
+  };
   const handleSearch = (e) => {
     let target = e.target;
     setFilterFn({
@@ -296,7 +321,7 @@ const DanhSachGioHang = (props) => {
                                 item.TrangThai === "Đã giao hàng" ||
                                 item.TrangThai === "Đã hủy"
                                   ? ""
-                                  : classes.cancelButton
+                                  : classes.checkButton
                               }
                             />
                           </IconButton>
@@ -337,6 +362,19 @@ const DanhSachGioHang = (props) => {
               confirmDialog={confirmDialog}
               setConfirmDialog={setConfirmDialog}
             />
+            <Popup
+              title="Thông Tin Phiếu Bán Hàng"
+              openPopup={openDetailPopup}
+              setOpenPopup={setOpenDetailPopup}
+            >
+              <Detail
+                type="cart"
+                id={selectedItem}
+                header="Giỏ hàng"
+                headCells={detailsHeadCells}
+                groupBoxes={groupBoxes}
+              />
+            </Popup>
           </Paper>
         </div>
       )}

@@ -10,3 +10,13 @@ export const DSGHHeadCell = [
   { id: "TongTien", label: "Tổng tiền" },
   { id: "actions" },
 ];
+
+export const detailsHeadCells = [
+  { id: "TenGiay", label: "Tên Giày" },
+  { id: "GioiTinh", label: "Giới Tính" },
+  { id: "Size", label: "Size" },
+  { id: "DonGia", label: "Đơn Giá" },
+  { id: "SoLuong", label: "Số Lượng" },
+  { id: "ThanhTien", label: "Thành Tiền" },
+  { id: "HanhDong", disableSorting: true },
+];

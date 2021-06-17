@@ -245,7 +245,9 @@ CREATE TABLE CHITIETGIOHANG
 (
     MaGioHang int not null,
     MaChiTietGiay int not null,
-    SoLuongMua int DEFAULT 1, 
+    SoLuongMua int DEFAULT 0, 
+    GiaBan Decimal(17,0) default 0,
+    ThanhTien DECIMAL(17,0) default 0,
     CONSTRAINT PK_CHITIETGIOHANG PRIMARY KEY (MaGioHang, MaChiTietGiay)
 );
 
@@ -1117,14 +1119,14 @@ DELIMITER ;
 
 DELIMITER $$
 create procedure USP_ThemChiTietGioHang(p_MaChiTietGiay int,
-        p_SoLuongMua int, p_ThanhTien DECIMAL(17,0))
+        p_SoLuongMua int, p_GiaBan DECIMAL(17,0), p_ThanhTien DECIMAL(17,0))
 BEGIN
     declare gioHangID int;
     set gioHangID= (select max(MaGioHang) from ShoesStoreManagement.GIOHANG);
     INSERT INTO ShoesStoreManagement.CHITIETGIOHANG(MaGioHang,MaChiTietGiay ,
-        SoLuongMua)
+        SoLuongMua,GiaBan, ThanhTien)
     VALUES ( gioHangID,p_MaChiTietGiay ,
-        p_SoLuongMua );
+        p_SoLuongMua,p_GiaBan,p_ThanhTien);
     UPDATE GIOHANG
     SET GIOHANG.TongTien = GIOHANG.TongTien + p_ThanhTien
     WHERE GIOHANG.MaGioHang = gioHangID;
@@ -1170,6 +1172,20 @@ BEGIN
 END; $$
 DELIMITER ;
 
+DELIMITER $$
+create procedure USP_GetChiTietGioHangByID(p_MaGioHang int)
+BEGIN
+    Select C.Anh, C.TenGiay, C.GioiTinh, A.GiaBan , D.TenSize, A.SoLuongMua, A.ThanhTien, A.MaGioHang
+    from ShoesStoreManagement.CHITIETGIOHANG A 
+    left join ShoesStoreManagement.CHITIETGIAY B 
+    on A.MaChiTietGiay = B.MaChiTietGiay
+    left join ShoesStoreManagement.GIAY C
+    on C.MaGiay = B.MaGiay
+    left join ShoesStoreManagement.SIZE D
+    on D.MaSize = B.MaSize 
+    where A.MaGioHang = p_MaGioHang;
+END; $$
+DELIMITER ;
 
 
 
@@ -1699,33 +1715,27 @@ insert into NGUOIDUNG(MaChucVu,TenNguoiDung,TenDangNhap,MatKhau,SDT,DiaChi,Email
 
 
 CALL USP_ThemGioHang(3);
-CALL USP_ThemChiTietGioHang(1,10,3200000);
-CALL USP_ThemChiTietGioHang(2,10,3200000);
-CALL USP_ThemChiTietGioHang(3,10,3200000);
-CALL USP_ThemChiTietGioHang(4,10,3200000);
+CALL USP_ThemChiTietGioHang(1,10,6375000,63750000);
+CALL USP_ThemChiTietGioHang(2,10,6375000,63750000);
+CALL USP_ThemChiTietGioHang(3,10,6375000,63750000);
+CALL USP_ThemChiTietGioHang(4,10,6375000,63750000);
 
 
 
 CALL USP_ThemGioHang(4);
-CALL USP_ThemChiTietGioHang(1,10,3200000);
-CALL USP_ThemChiTietGioHang(2,10,3200000);
-CALL USP_ThemChiTietGioHang(3,10,3200000);
-CALL USP_ThemChiTietGioHang(4,10,3200000);
+CALL USP_ThemChiTietGioHang(1,10,6375000,63750000);
+CALL USP_ThemChiTietGioHang(2,10,6375000,63750000);
+CALL USP_ThemChiTietGioHang(3,10,6375000,63750000);
+CALL USP_ThemChiTietGioHang(4,10,6375000,63750000);
 
 CALL USP_ThemGioHang(5);
-CALL USP_ThemChiTietGioHang(1,10,3200000);
-CALL USP_ThemChiTietGioHang(2,10,3200000);
-CALL USP_ThemChiTietGioHang(3,10,3200000);
-CALL USP_ThemChiTietGioHang(4,10,3200000);
+CALL USP_ThemChiTietGioHang(1,10,6375000,63750000);
+CALL USP_ThemChiTietGioHang(2,10,6375000,63750000);
+CALL USP_ThemChiTietGioHang(3,10,6375000,63750000);
+CALL USP_ThemChiTietGioHang(4,10,6375000,63750000);
 
 CALL USP_ThemGioHang(6);
-CALL USP_ThemChiTietGioHang(1,10,3200000);
-CALL USP_ThemChiTietGioHang(2,10,3200000);
-CALL USP_ThemChiTietGioHang(3,10,3200000);
-CALL USP_ThemChiTietGioHang(4,10,3200000);
-
-CALL USP_ThemGioHang(7);
-CALL USP_ThemChiTietGioHang(1,10,3200000);
-CALL USP_ThemChiTietGioHang(2,10,3200000);
-CALL USP_ThemChiTietGioHang(3,10,3200000);
-CALL USP_ThemChiTietGioHang(4,10,3200000);
+CALL USP_ThemChiTietGioHang(1,10,6375000,63750000);
+CALL USP_ThemChiTietGioHang(2,10,6375000,63750000);
+CALL USP_ThemChiTietGioHang(3,10,6375000,63750000);
+CALL USP_ThemChiTietGioHang(4,10,6375000,63750000);
