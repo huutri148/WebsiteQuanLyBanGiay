@@ -12,13 +12,12 @@ import {
 import { React, useState, useEffect } from "react";
 import GroupBox from "../../components/controls/GroupBox/GroupBox";
 import ProductSelector from "../../components/controls/Selector/ProductSelector";
-import "./QuanLyBanHang.css";
 import { AddCircle, Edit, HighlightOff } from "@material-ui/icons";
 import useTable from "../../components/useTable";
 import ProductCard from "../QuanLySanPham/ProductCard";
 import InfoField from "../../components/controls/InfoField";
 import { useDispatch, useSelector } from "react-redux";
-import { createPhieuBanHang, updatePhieuBanHang } from "../../redux/actions/phieuBanHangAction";
+import { createPhieuNhapKho, updatePhieuNhapKho } from "../../redux/actions/phieuNhapKhoAction";
 import SizeSelector from "../../components/controls/Selector/SizeSelector";
 
 const useStyles = makeStyles((theme) => ({
@@ -57,29 +56,30 @@ const headCells = [
   { id: "TenGiay", label: "Tên Giày" },
   { id: "GioiTinh", label: "Giới Tính" },
   { id: "Size", label: "Size" },
-  { id: "DonGiaBan", label: "Đơn Giá" },
+  { id: "DonGiaNhap", label: "Giá Nhập" },
   { id: "SoLuong", label: "Số Lượng" },
   { id: "ThanhTien", label: "Thành Tiền" },
   { id: "HanhDong" ,disableSorting: true },
 ];
-const PhieuBanHang = (props) => {
+const PhieuNhapKho = (props) => {
   const [selectedProducts, setSelectedProducts] = useState([]);
   //styles
   const classes = useStyles();
   //fetch
   const dispatch = useDispatch();
   //props
-  const { products, sizes, users, isLoading } = props;
+  const { products, sizes, suppliers, isLoading } = props;
   //variables
   const [ignored, forceUpdate] = useState(false);
   const [editing, setEditing] = useState(false);
   const [amount, setAmount] = useState(0);
-  const [maxAmount, setMaxAmount] = useState(0);
   const [product, setProduct] = useState(null);
   const [total, setTotal] = useState(0);
+  const [price, setPrice] = useState(0);
   const [sumTotal, setSumTotal] = useState(0);
   const [size, setSize] = useState(0);
   const [amountError, setAmountError] = useState(false);
+  const [priceError, setPriceError] = useState(false);
   const [openPopup, setOpenPopup] = useState(false);
   const [filterFn, setFilterFn] = useState({
     fn: (items) => {
@@ -98,8 +98,16 @@ const PhieuBanHang = (props) => {
   };
   //handle Button click
   const handleAddClick = () => {
-    if (amount === 0) {
-      setAmountError(true);
+    if (amount === 0 || price == 0) 
+    {    
+      if (price === 0)
+        setPriceError(true);
+      if (amount === 0)
+        setAmountError(true);
+      return;
+    }
+    if (price === 0) {
+      setPriceError(true);
       return;
     }
     if (!editing) 
@@ -109,7 +117,7 @@ const PhieuBanHang = (props) => {
       let tmp = sumTotal + total;
       setSumTotal(tmp);
       groupBoxes[1].value = tmp.toLocaleString("it-IT");
-      let shoe = { ...product, total, amount, size, maxAmount };
+      let shoe = { ...product, total, amount, size, price};
       selectedProducts.push(shoe);
       resetField();
     }
@@ -120,6 +128,7 @@ const PhieuBanHang = (props) => {
       groupBoxes[1].value = tmp.toLocaleString("it-IT");
       product.total = total;
       product.amount = amount;
+      product.price = price;
       product.size = size;
       resetField();
     }
@@ -137,7 +146,7 @@ const PhieuBanHang = (props) => {
     setEditing(true);
     setAmount(item.amount);
     setTotal(item.total);
-    setMaxAmount(item.maxAmount);
+    setPrice(item.price);
     setOpenPopup(true);
   };
   //handle submit
@@ -150,41 +159,38 @@ const PhieuBanHang = (props) => {
       if (element.error === true)
         isAbleToSubmit = true;
     });
-    console.log(groupBoxes);
     if (isAbleToSubmit === true)
       forceUpdate(!ignored);
     else 
     {
       //set default date
-      if (groupBoxes[4].value === undefined) 
+      if (groupBoxes[3].value === undefined) 
       {
         let date = new Date().getDate();
         if (date < 10) date = '0' + date;
         let month = new Date().getMonth() + 1;
         if (month < 10) month = '0' + month;
-        groupBoxes[4].value = new Date().getFullYear() + "-" + month + "-" + date;
+        groupBoxes[3].value = new Date().getFullYear() + "-" + month + "-" + date;
       }
       //get record
       let record = {
+        MaNhaCungCap: groupBoxes[0].value === undefined ? groupBoxes[0].options[0].value : groupBoxes[0].value.value,
         MaNguoiDung: 2,
-        MaKhachHang: groupBoxes[0].value === undefined ? 1 : groupBoxes[0].value.value,
         TongTien: sumTotal,
-        PhuongThucThanhToan: groupBoxes[2].value === undefined ? "Thanh toán trực tiếp" : groupBoxes[2].value.label,
-        NgayBan: groupBoxes[4].value,
-        GhiChu: groupBoxes[5].value === undefined ? null : groupBoxes[5].value,
-        ChiTietPhieuBanHang: selectedProducts.map(element => {
+        NgayNhapKho: groupBoxes[3].value,
+        GhiChu: groupBoxes[4].value === undefined ? null : groupBoxes[4].value,
+        ChiTietPhieuNhapKho: selectedProducts.map(element => {
           return {
             MaChiTietGiay: element.MaChiTietGiay,
-            SoLuongMua: element.amount,
-            GiaBan: element.DonGiaBan,
+            SoLuongNhap: element.amount,
+            GiaNhap: element.price,
             ThanhTien: element.total
           };
         })
       }
       console.log(record);
-      dispatch(createPhieuBanHang(record));
       //to do: Add success later
-      //item.SoPhieuBanHang === null ? dispatch(createPhieuBanHang(item)) : dispatch(updatePhieuBanHang(item.SoPhieuBanHang, item));
+      record.SoPhieuNhapKho === undefined ? dispatch(createPhieuNhapKho(record)) : dispatch(updatePhieuNhapKho(record.SoPhieuNhapKho, record));
     }
   };
   //handle Change
@@ -198,39 +204,62 @@ const PhieuBanHang = (props) => {
       else
         if (tmp === 0 || phoneRegex.test(tmp)) {
           setAmount(Number(tmp));
-          setTotal(Number(tmp) * product.DonGiaBan);
-          if (Number(tmp) > 0 && Number(tmp) <= maxAmount)
+          setTotal(Number(tmp) * price);
+          if (Number(tmp) > 0)
             setAmountError(false);
           else
             setAmountError(true);
         }
     }
   };
+  const onPriceChange = (e) => {
+    if (product != null) {
+      let val = e.target.value.split(".");
+      let tmp = "";
+      val.forEach(element => {
+        tmp += element;
+      });
+      if (tmp === "") 
+      {
+        setPrice(0);
+        setTotal(0);
+      }
+      else if (tmp === 0 || phoneRegex.test(tmp)) 
+      {
+        console.log("[IN]");
+        setPrice(Number(tmp));
+        setTotal(Number(tmp) * amount);
+        Number(tmp) > 0 ? setPriceError(false) : setPriceError(true);
+      }
+    }
+  };
   const onSizeChange = (e, size, MaChiTietGiay) => {
     setSize(size);
-    setMaxAmount(e);
-    setAmount(e);
-    setTotal(e * product.DonGiaBan);
+    setAmount(0);
+    setTotal(0);
+    setPrice(0);
+    setPriceError(false);
     setAmountError(false);
     product.MaChiTietGiay = MaChiTietGiay;
   };
   const resetField = () => {
     setProduct(null);
     setAmount(0);
-    setMaxAmount(0);
     setTotal(0);
     setSize(0);
+    setPrice(0);
+    setPriceError(false);
     setAmountError(false);
     setEditing(false);
   }
   const [groupBoxes,setGroupBoxes] = useState([
     {
       type: "Select",
-      title: "Tên Khách Hàng",
+      title: "Nhà Cung Cấp",
       required: true,
       onChange: (e) => {groupBoxes[0].value = e; groupBoxes[0].error = false;},
-      options: users.map(element => { return { value: element.MaNguoiDung, label: element.TenNguoiDung } }),
-      validationTip: "Tên Khách Hàng không được trống",
+      options: suppliers.map(element => { return { value: element.MaNhaCungCap, label: element.TenNhaCungCap } }),
+      validationTip: "Nhà Cung Cấp không được trống",
       error: false,
       checkValidation: (val) => false,
     },
@@ -248,18 +277,6 @@ const PhieuBanHang = (props) => {
       },
     },
     {
-      type: "Select",
-      title: "Phương Thức Thanh Toán",
-      required: true,
-      options: [
-        { value: "Thanh toán trực tiếp", label: "Thanh toán trực tiếp" },
-        { value: "Thanh toán online", label: "Thanh toán online" },
-      ],
-      error: false,
-      onChange: (e) => (groupBoxes[2].value = e),
-      checkValidation: (val) => false,
-    },
-    {
       type: "TextBox",
       title: "Người Lập",
       required: true,
@@ -269,21 +286,21 @@ const PhieuBanHang = (props) => {
     {
       type: "Picker",
       title: "Ngày Lập",
-      onChange: (e) => (groupBoxes[4].value = e.target.value),
+      onChange: (e) => (groupBoxes[3].value = e.target.value),
       required: true,
       checkValidation: (val) => false,
     },
     {
       type: "TextBox",
       title: "Ghi Chú",
-      onChange: (e) => (groupBoxes[5].value = e.target.value),
+      onChange: (e) => (groupBoxes[4].value = e.target.value),
       required: false,
       checkValidation: (val) => false,
     },
   ]);
   return (
     <div>
-      {groupBoxes === [] || users === [] || products === [] || sizes === [] ?
+      {groupBoxes === [] || suppliers === [] || products === [] || sizes === [] ?
       (<h1>Loading</h1>)
       :
       (
@@ -367,16 +384,17 @@ const PhieuBanHang = (props) => {
                   )}
                 </td>
                 <td width="15%">
-                  <GroupBox
+                <GroupBox
                     key={3}
-                    value={
-                      product === null
-                        ? ""
-                        : product.DonGiaBan.toLocaleString("it-IT")
-                    }
-                    type="TextBox"
+                    value={price.toLocaleString("it-IT")}
+                    type="Number"
                     title={headCells[3].label}
-                    disabled="disabled"
+                    onChange={onPriceChange}
+                    error={priceError}
+                    validationTip={
+                      "Giá Nhập phải lớn hơn 0"
+                    }
+                    disabled={product === null ? "disabled" : ""}
                   />
                 </td>
                 <td width="15%">
@@ -388,7 +406,7 @@ const PhieuBanHang = (props) => {
                     onChange={onAmountChange}
                     error={amountError}
                     validationTip={
-                      "Số Lượng phải lớn hơn 0 và nhỏ hơn " + maxAmount
+                      "Số Lượng phải lớn hơn 0"
                     }
                     disabled={product === null ? "disabled" : ""}
                   />
@@ -452,7 +470,7 @@ const PhieuBanHang = (props) => {
                       {sizes[item.size].TenSize}
                     </TableCell>
                     <TableCell component="td" scope="row">
-                      {item.DonGiaBan.toLocaleString("it-IT")}
+                      {item.price.toLocaleString("it-IT")}
                     </TableCell>
                     <TableCell component="td" scope="row">
                       {item.amount}
@@ -485,4 +503,4 @@ const PhieuBanHang = (props) => {
   );
 };
 
-export default PhieuBanHang;
+export default PhieuNhapKho;

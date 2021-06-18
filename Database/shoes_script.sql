@@ -341,7 +341,7 @@ CREATE TABLE PHIEUNHAPKHO
     MaNguoiDung int not null,
     MaNhaCungCap int not null,
     NgayNhapKho DATETIME DEFAULT CURRENT_TIMESTAMP,
-    GhiChu nvarchar(1000) not null,
+    GhiChu nvarchar(1000),
     TongTien Decimal(17,0) default 0,
     IsDeleted boolean  default false
 );
@@ -650,9 +650,7 @@ create procedure USP_ThemPhieuNhapKho(
     p_NgayNhapKho DATETIME, 
     p_TongTien DECIMAL(17,0), p_GhiChu NVARCHAR(1000))
 BEGIN
-INSERT INTO ShoesStoreManagement.PHIEUNHAPKHO(MaNhaCungCap,MaNguoiDung ,
-    NgayNhapKho,
-    TongTien , GhiChu )
+INSERT INTO ShoesStoreManagement.PHIEUNHAPKHO(MaNhaCungCap,MaNguoiDung,NgayNhapKho,TongTien , GhiChu )
 VALUES (
     p_MaNhaCungCap,p_MaNguoiDung ,
     p_NgayNhapKho,
@@ -661,13 +659,16 @@ END; $$
 DELIMITER ;
 
 
-
 DELIMITER $$
 create procedure USP_ThemChiTietPhieuNhapKho(p_MaChiTietGiay int,
         p_SoLuongNhap int, p_GiaNhap Decimal(17,0), p_ThanhTien Decimal(17,0))
 BEGIN
+    declare giayID int;
     declare phieuNhapKhoID int;
     set phieuNhapKhoID = (select max(SoPhieuNhapKho) from ShoesStoreManagement.PHIEUNHAPKHO);
+    set giayID = (select MaGiay 
+                  from ShoesStoreManagement.CHITIETGIAY 
+                  where CHITIETGIAY.MaChiTietGiay = p_MaChiTietGiay);
     INSERT INTO ShoesStoreManagement.CHITIETPHIEUNHAPKHO(MaChiTietGiay ,SoPhieuNhapKho, 
         SoLuongNhap, GiaNhap, ThanhTien)
     VALUES ( p_MaChiTietGiay ,phieuNhapKhoID,
@@ -675,6 +676,9 @@ BEGIN
     Update ShoesStoreManagement.CHITIETGIAY 
     set CHITIETGIAY.SoLuong = CHITIETGIAY.SoLuong +  p_SoLuongNhap
     where CHITIETGIAY.MaChiTietGiay = p_MaChiTietGiay;
+    Update ShoesStoreManagement.GIAY 
+    set GIAY.TongSoLuong = GIAY.TongSoLuong + p_SoLuongNhap 
+    where GIAY.MaGiay = giayID;
 END; $$
 DELIMITER ;
 

@@ -5,15 +5,15 @@ import {
     Tabs,
   } from "@material-ui/core";
   import { React, useState, useEffect } from "react";
-  import "./QuanLyBanHang/QuanLyBanHang.css";
-  import PhieuBanHang from "./QuanLyBanHang/PhieuBanHang"
+  import "../QuanLyBanHang/QuanLyBanHang.css";
+  import PhieuNhapKho from "./PhieuNhapKho"
   import { useDispatch, useSelector } from "react-redux";
-  import { fetchListGiay } from "../redux/actions/giayAction";
-  import { fetchListHangSanXuat } from "../redux/actions/hangSanXuatAction";
-  import { fetchListSize } from "../redux/actions/sizeAction";
-  import { fetchListMau } from "../redux/actions/mauAction";
-  import { fetchListNguoiDung } from "../redux/actions/nguoiDungAction";
-  import DanhSachPhieuBanHang from "./QuanLyBanHang/DanhSachPhieuBanHang/DanhSachPhieuBanHang";
+  import { fetchListGiay } from "../../redux/actions/giayAction";
+  import { fetchListHangSanXuat } from "../../redux/actions/hangSanXuatAction";
+  import { fetchListSize } from "../../redux/actions/sizeAction";
+  import { fetchListMau } from "../../redux/actions/mauAction";
+  import { fetchListNhaCungCap } from "../../redux/actions/nhaCungCapAction";
+  import DanhSachPhieuNhapKho from "./DanhSachPhieuNhapKho/DanhSachPhieuNhapKho";
   
   function TabPanel(props) {
     const classes = useStyles();
@@ -48,17 +48,17 @@ import {
     const brandList = useSelector((state) => state.ListHangSanXuat);
     const sizeList = useSelector((state) => state.ListSize);
     const colorList = useSelector((state) => state.ListMau);
-    const userList = useSelector((state) => state.ListNguoiDung);
+    const supplierList = useSelector((state) => state.ListNhaCungCap);
     //passing value
     const { loading: hangSanXuatLoading, error: hangSanXuatError, listHangSanXuat } = brandList;
     const { loading: giayLoading, error: giayError, listGiay } = productList;
     const { loading: sizeLoading, error: sizeError, listSize } = sizeList;
     const { loading: mauLoading, error: mauError, listMau } = colorList;
-    const { loading: nguoidungLoading, error: nguoidungError, listNguoiDung } = userList;
+    const { loading: nhacungcapLoading, error: nhacungcapError, listNhaCungCap } = supplierList;
     //data
     const [products, setProducts] = useState([]);
     const [sizes, setSizes] = useState([]);
-    const [users, setUsers] = useState([]);
+    const [suppliers, setSuppliers] = useState([]);
     //variables
     const [value,setValue] = useState(0);
     //handle change
@@ -77,21 +77,21 @@ import {
         setSizes(sizesData);
       }
     }, [listSize]);
-    // set Users
+    // set Suppliers
     useEffect(() => {
-      if (listNguoiDung != undefined) {
-        const usersData = Object.values(listNguoiDung).reduce((result, value) => {
+      if (listNhaCungCap != undefined) {
+        const suppliersData = Object.values(listNhaCungCap).reduce((result, value) => {
           result.push({
             ...value,
           });
           return result;
         }, []);
-        setUsers(usersData);
+        setSuppliers(suppliersData);
       }
-    }, [listNguoiDung]);
+    }, [listNhaCungCap]);
     useEffect(() => {
       const fetchData = async () => {
-        await dispatch(fetchListNguoiDung());
+        await dispatch(fetchListNhaCungCap());
       };
       fetchData();
     }, []);
@@ -141,24 +141,24 @@ import {
             value={value}
             onChange={handleTabChange}
           >
-            <Tab className={classes.tabHeader} label="Danh Sách Phiếu Bán Hàng" />
-            <Tab className={classes.tabHeader} label="Lập Phiếu Bán Hàng" />
+            <Tab className={classes.tabHeader} label="Danh Sách Phiếu Nhập Kho" />
+            <Tab className={classes.tabHeader} label="Lập Phiếu Nhập Kho" />
           </Tabs>
         </div>
         <label className={classes.titleHeader}>
-          {value === 1 ? "Lập Phiếu Bán Hàng" : "Danh Sách Phiếu Bán Hàng"}
+          {value === 1 ? "Lập Phiếu Nhập Kho" : "Danh Sách Phiếu Nhập Kho"}
         </label>
         <TabPanel value={value} index={0}>
-          <DanhSachPhieuBanHang />
+          <DanhSachPhieuNhapKho />
         </TabPanel>
         <TabPanel value={value} index={1}>
-          <PhieuBanHang 
-            key={"PhieuBanHang"}
+          <PhieuNhapKho 
+            key={"PhieuNhapKho"}
             index={0}
-            users = {users}
+            suppliers = {suppliers}
             sizes = {sizes}
             products = {products}
-            isLoading = {!nguoidungLoading && !nguoidungLoading && !giayLoading ? false : true}
+            isLoading = {!nhacungcapLoading && !sizeLoading && !giayLoading ? false : true}
           />
         </TabPanel>
         <TabPanel value={value} index={2}>

@@ -1,5 +1,5 @@
 import { Layout } from "../../components/Layout";
-import QuanLyNhapKho from "../QuanLyNhapKho";
+import QuanLyNhapKho from "./QuanLyNhapKho";
 const quanLyNhapKho = () => (
   <Layout>
     <QuanLyNhapKho />

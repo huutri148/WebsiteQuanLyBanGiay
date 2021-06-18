@@ -5,15 +5,15 @@ import {
   Tabs,
 } from "@material-ui/core";
 import { React, useState, useEffect } from "react";
-import "./QuanLyBanHang/QuanLyBanHang.css";
-import PhieuBanHang from "./QuanLyBanHang/PhieuBanHang"
+import "./QuanLyBanHang.css";
+import PhieuBanHang from "./PhieuBanHang"
 import { useDispatch, useSelector } from "react-redux";
-import { fetchListGiay } from "../redux/actions/giayAction";
-import { fetchListHangSanXuat } from "../redux/actions/hangSanXuatAction";
-import { fetchListSize } from "../redux/actions/sizeAction";
-import { fetchListMau } from "../redux/actions/mauAction";
-import { fetchListNguoiDung } from "../redux/actions/nguoiDungAction";
-import DanhSachPhieuBanHang from "./QuanLyBanHang/DanhSachPhieuBanHang/DanhSachPhieuBanHang";
+import { fetchListGiay } from "../../redux/actions/giayAction";
+import { fetchListHangSanXuat } from "../../redux/actions/hangSanXuatAction";
+import { fetchListSize } from "../../redux/actions/sizeAction";
+import { fetchListMau } from "../../redux/actions/mauAction";
+import { fetchListNguoiDung } from "../../redux/actions/nguoiDungAction";
+import DanhSachPhieuBanHang from "./DanhSachPhieuBanHang/DanhSachPhieuBanHang";
 
 function TabPanel(props) {
   const classes = useStyles();
@@ -154,7 +154,7 @@ const QuanLyBanHang = () => {
           users = {users}
           sizes = {sizes}
           products = {products}
-          isLoading = {!nguoidungLoading && !nguoidungLoading && !giayLoading ? false : true}
+          isLoading = {!nguoidungLoading && !sizeLoading && !giayLoading ? false : true}
         />
       </TabPanel>
       <TabPanel value={value} index={2}>
