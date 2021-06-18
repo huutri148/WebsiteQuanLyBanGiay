@@ -24,6 +24,7 @@ import {
   ViewColumn,
 } from "@material-ui/icons";
 import { useSelector, useDispatch } from "react-redux";
+import { CSVLink } from "react-csv";
 import moment from "moment";
 import useTable from "../../../components/useTable";
 import Input from "../../../components/controls/Input";
@@ -216,9 +217,11 @@ const DanhSachPhieuDatHang = (props) => {
               </div>
               <div className={classes.actions}>
                 <Tooltip title="Tải file csv">
-                  <IconButton className={classes.actionsButton}>
-                    <CloudDownload />
-                  </IconButton>
+                  <CSVLink data={tableData} filename={"DS-PhieuDatHang.csv"}>
+                    <IconButton className={classes.actionsButton}>
+                      <CloudDownload />
+                    </IconButton>
+                  </CSVLink>
                 </Tooltip>
                 <Tooltip title="In">
                   <IconButton className={classes.actionsButton}>
