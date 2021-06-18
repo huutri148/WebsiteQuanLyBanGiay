@@ -36,7 +36,7 @@ import { fetchListNguoiDung } from "../../../redux/actions/nguoiDungAction";
 import { DSGHHeadCell } from "../ThongTinQuanLyGioHang";
 import ConfirmDialog from "../../../components/controls/ConfirmDialog";
 import Popup from "../../../components/controls/Popup";
-import Detail from "../../QuanLyBanHang/Detail";
+import Detail from "../../../components/controls/Detail";
 import { detailsHeadCells } from "../ThongTinQuanLyGioHang";
 import Loading from "../../../components/Loadable/Loading";
 import BillToPrint from "../BillToPrint";

@@ -11,10 +11,11 @@ import {
   Button,
 } from "@material-ui/core";
 import { useDispatch, useSelector } from "react-redux";
-import GroupBox from "../../components/controls/GroupBox/GroupBox";
-import useTable from "../../components/useTable";
-import ProductCard from "../QuanLySanPham/ProductCard";
+import GroupBox from "./GroupBox/GroupBox";
+import useTable from "../useTable";
+import ProductCard from "../../screens/QuanLySanPham/ProductCard";
 import { fetchListChiTietPhieuBanHang } from "../../redux/actions/phieuBanHangAction";
+import { fetchListChiTietPhieuNhapKho } from "../../redux/actions/phieuNhapKhoAction";
 import { fetchListChiTietGioHang } from "../../redux/actions/gioHangAction";
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -58,18 +59,28 @@ const Detail = (props) => {
   const [details, setDetails] = useState([]);
   //data TODO: add optional later
   const dispatch = useDispatch();
-  const detailList = useSelector((state) => state.ListChiTietPhieuBanHang);
+  const billDetailList = useSelector((state) => state.ListChiTietPhieuBanHang);
+  const recdocketDetailList = useSelector((state) => state.ListChiTietPhieuNhapKho);
   const cartDetailList = useSelector((state) => state.ListChiTietGioHang);
+  //passing value
   const {
     loading: chitietphieubanhangLoading,
     error: chitietphieubanhangError,
-    listChiTietPhieuBanHang: listDetails,
-  } = detailList;
+    listChiTietPhieuBanHang,
+  } = billDetailList;
+  const {
+    loading: chitietphieunhapkhoLoading,
+    error: chitietphieunhapkhoError,
+    listChiTietPhieuNhapKho,
+  } = recdocketDetailList;
   const {
     loading: gioHangLoading,
     error: gioHangError,
     listChiTietGioHang,
   } = cartDetailList;
+  const listDetails = type=="bill" ? listChiTietPhieuBanHang : 
+  type =="recdocket" ? listChiTietPhieuNhapKho :
+  type == "cart" ? listChiTietGioHang : [];
   //table
   const [filterFn, setFilterFn] = useState({
     fn: (items) => {
@@ -80,46 +91,30 @@ const Detail = (props) => {
     useTable(details, headCells, filterFn);
   //fetch data
   useEffect(() => {
-    if (type === "bill") {
-      if (listDetails != undefined) {
-        const detailsData = Object.values(listDetails).reduce(
-          (result, value) => {
-            result.push({
-              ...value,
-            });
-            return result;
-          },
-          []
-        );
-        setDetails(detailsData);
-      }
+    if (listDetails != undefined) {
+      const detailsData = Object.values(listDetails).reduce(
+        (result, value) => {
+          result.push({
+            ...value,
+          });
+          return result;
+        },
+        []
+      );
+      setDetails(detailsData);
     }
-    if (type === "cart") {
-      if (listChiTietGioHang != undefined) {
-        const detailsData = Object.values(listChiTietGioHang).reduce(
-          (result, value) => {
-            result.push({
-              ...value,
-            });
-            return result;
-          },
-          []
-        );
-        setDetails(detailsData);
-      }
-    }
-  }, [listDetails, listChiTietGioHang]);
+  }, [listDetails]);
   //fetch data
   useEffect(() => {
     const fetchData = async () => {
       if (type === "cart") await dispatch(fetchListChiTietGioHang(id));
       if (type === "bill") await dispatch(fetchListChiTietPhieuBanHang(id));
+      if (type === "recdocket") await dispatch(fetchListChiTietPhieuNhapKho(id));
     };
     fetchData();
   }, [dispatch]);
   return (
     <Grid container spacing={0}>
-      {console.log(details)}
       <Paper className={classes.paper} style={{ width: "20%" }}>
         <label className={classes.cardHeader}>{header}</label>
         <hr className={classes.hr} />

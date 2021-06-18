@@ -26,7 +26,7 @@ import { useDispatch, useSelector } from "react-redux";
 import useTable from "../../../components/useTable";
 import moment from 'moment'
 import Popup from "../../../components/controls/Popup";
-import Detail from "../Detail";
+import Detail from "../../../components/controls/Detail";
 import { fetchListPhieuNhapKho , fetchListChiTietPhieuNhapKho} from "../../../redux/actions/phieuNhapKhoAction";
 //import recdocketToPrint from "../recdocketToPrint";
 const useStyles = makeStyles((theme) => ({
