@@ -2,7 +2,7 @@ import { Login } from "./Login";
 
 const loginRoute = [
   {
-    path: "/login",
+    path: "/admin/login",
     exact: true,
     component: Login,
     private: false,

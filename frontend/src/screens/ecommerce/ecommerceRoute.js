@@ -57,6 +57,13 @@ const dashBoardRoute = [
     role: "NguoiDung",
   },
   {
+    path: "/",
+    exact: true,
+    component: home,
+    private: false,
+    role: "NguoiDung",
+  },
+  {
     path: "/shop",
     exact: true,
     component: shop,

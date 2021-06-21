@@ -8,7 +8,7 @@ const quanLySanPham = () => (
 
 const quanLySanPhamRoutes = [
   {
-    path: "/products",
+    path: "/admin/products",
     exact: true,
     component: quanLySanPham,
     private: true,
