@@ -60,6 +60,7 @@ const rootReducer = combineReducers({
   DeleteGioHang: gioHangReducer.cartDeleteReducer,
   ListChiTietGioHang: gioHangReducer.cartDetailListReducer,
   Cart: gioHangReducer.cartReducer,
+  CreateGioHang: gioHangReducer.cartCreateReducer,
 });
 
 export default rootReducer;

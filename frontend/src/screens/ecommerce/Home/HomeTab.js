@@ -3,6 +3,7 @@ import "../../../components/App/App.css";
 import HomeTabContent from "./HomeTabContent.js";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchListGiay } from "../../../redux/actions/giayAction";
+import { fetchListSize } from "../../../redux/actions/sizeAction";
 export default function HomeTab() {
   const dispatch = useDispatch();
   const [currentTab, setCurrentTab] = useState(1);
@@ -15,6 +16,7 @@ export default function HomeTab() {
   useEffect(() => {
     const fetchData = async () => {
       await dispatch(fetchListGiay());
+      await dispatch(fetchListSize());
     };
     if (typeof productLoading === "undefined") fetchData();
   }, []);

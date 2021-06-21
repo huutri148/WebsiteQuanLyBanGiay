@@ -1,10 +1,32 @@
 import React, { useState } from "react";
 import "../../../components/App/App.css";
 import Product from "../Product/Product.js";
+import { makeStyles } from "@material-ui/core/styles";
+import Modal from "@material-ui/core/Modal";
+import Backdrop from "@material-ui/core/Backdrop";
+import Fade from "@material-ui/core/Fade";
+import PopupProduct from "../Product/PopupProduct";
+
+const useStyles = makeStyles((theme) => ({
+  modal: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  paper: {
+    backgroundColor: theme.palette.background.paper,
+    border: "2px solid #000",
+    boxShadow: theme.shadows[5],
+    padding: theme.spacing(2, 4, 3),
+  },
+}));
 
 export default function HomeTabContent(props) {
+  const classes = useStyles();
   const [limit, setLimit] = useState(10);
   const [loading, setLoading] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [chosenProduct, setChosenProduct] = useState({});
   const products = props.products;
   const height = props.height;
 
@@ -18,12 +40,27 @@ export default function HomeTabContent(props) {
 
   //Limit products
   const limitProducts = products.slice(0, limit);
+  const handleOpen = (item) => {
+    setChosenProduct(item);
+    setOpen(true);
+  };
 
+  const handleClose = () => {
+    setOpen(false);
+  };
   return (
     <div>
       <div className="BestSeller" style={{ minHeight: `${height}px` }}>
         {limitProducts.map(function (item, index) {
-          return <Product key={index} product={item} index={index} />;
+          return (
+            <Product
+              key={index}
+              product={item}
+              index={index}
+              OpenPopup={handleOpen}
+              ClosePopup={handleClose}
+            />
+          );
         })}
         {limitProducts.length === 0 && (
           <div
@@ -50,6 +87,25 @@ export default function HomeTabContent(props) {
           )}
         </div>
       )}
+
+      <Modal
+        aria-labelledby="transition-modal-title"
+        aria-describedby="transition-modal-description"
+        className={classes.modal}
+        open={open}
+        onClose={handleClose}
+        closeAfterTransition
+        BackdropComponent={Backdrop}
+        BackdropProps={{
+          timeout: 500,
+        }}
+      >
+        <Fade in={open}>
+          <div className={classes.paper}>
+            <PopupProduct item={chosenProduct} />
+          </div>
+        </Fade>
+      </Modal>
     </div>
   );
 }

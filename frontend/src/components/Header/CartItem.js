@@ -109,7 +109,7 @@ export default function CartItem(props) {
                     <div className="count-cart noselect">
                       <div
                         className="count-cart-item left flex-center"
-                        id={item.MaGiay}
+                        id={item.MaChiTietGiay}
                         onClick={() => minusCount(item)}
                       >
                         <FontAwesomeIcon
@@ -129,7 +129,7 @@ export default function CartItem(props) {
                             }}
                             type="text"
                             value={item.SoLuongMua}
-                            id={item.MaGiay}
+                            id={item.MaChiTietGiay}
                             onChange={(e) => updateCount(e, item)}
                           />
                         </form>
@@ -167,8 +167,8 @@ export default function CartItem(props) {
                   </div>
                   <div
                     className="cart-product-delete"
-                    onClick={() => deleteFromCart(item.MaGiay)}
-                    id={item.MaGiay}
+                    onClick={() => deleteFromCart(item.MaChiTietGiay)}
+                    id={item.MaChiTietGiay}
                   >
                     <FontAwesomeIcon
                       style={{ pointerEvents: "none" }}

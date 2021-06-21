@@ -6,14 +6,36 @@ import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import CartItem from "./CartItem";
 import WishListItem from "./WishListItem";
 import { withRouter } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { createCart as taoGioHang } from "../../redux/actions/gioHangAction";
 
 function Account(props) {
+  const dispatch = useDispatch();
   const [tabID, setTabID] = useState(0);
   const Cart = useSelector((state) => state.Cart);
+  const user = useSelector((state) => state.User);
   const { cartItems } = Cart;
+  const { userInfo } = user;
 
   const total = cartItems.reduce((result, item) => result + item.ThanhTien, 0);
+
+  const createCart = () => {
+    const chiTiet = cartItems.reduce((result, item) => {
+      result.push({
+        MaChiTietGiay: item.MaChiTietGiay,
+        SoLuongMua: item.SoLuongMua,
+        GiaBan: item.DonGiaBan,
+        ThanhTien: item.ThanhTien,
+      });
+      return result;
+    }, []);
+    const cart = {
+      MaNguoiDung: userInfo.MaNguoiDung,
+      ChiTietGioHang: chiTiet,
+    };
+    dispatch(taoGioHang(cart));
+    window.location.reload(false);
+  };
   return (
     <div className={props.cartOpen === false ? "Cart displayNone" : "Cart"}>
       <div className="search-header flex">
@@ -61,12 +83,10 @@ function Account(props) {
           </div>
           <div
             className="cart-checkout-btn btn"
-            onClick={() => {
-              if (total > 0) {
-                props.history.push(`/checkout`);
-                window.location.reload(false);
-              }
-            }}
+            onClick={
+              //props.history.push(`/checkout`);
+              createCart
+            }
           >
             Buy
           </div>

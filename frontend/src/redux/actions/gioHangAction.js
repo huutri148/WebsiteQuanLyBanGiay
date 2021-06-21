@@ -108,3 +108,27 @@ export const removeFromCart = (id) => (dispatch, getState) => {
 
   localStorage.setItem("cartItems", JSON.stringify(getState().Cart.cartItems));
 };
+
+export const createCart = (item) => (dispatch) => {
+  try {
+    dispatch({ type: gioHangConstants.GIOHANG_CREATE_REQUEST });
+
+    const { data } = gioHangAPI.createItem(item);
+
+    dispatch({
+      type: gioHangConstants.GIOHANG_CREATE_SUCCESS,
+      payload: data,
+    });
+    toast.success("Created Successfully");
+    localStorage.removeItem("cartItems");
+  } catch (error) {
+    dispatch({
+      type: gioHangConstants.GIOHANG_CREATE_FAIL,
+      payload:
+        error.response && error.response.message
+          ? error.response.data.data.message
+          : error.messagge,
+    });
+    toast.error("Created Failed");
+  }
+};

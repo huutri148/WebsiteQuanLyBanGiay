@@ -18,3 +18,7 @@ export const deleteItem = (id) => {
 export const getDetails = (id) => {
   return axiosService.get(`${url}/details/${id}`);
 };
+
+export const createItem = (item) => {
+  return axiosService.post(`${url}`, item);
+};

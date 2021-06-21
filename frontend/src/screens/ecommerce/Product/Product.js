@@ -74,7 +74,12 @@ function Product(props) {
             alt=""
           ></img> */}
         </div>
-        <ProductOverlay product={product} openView={openView} />
+        <ProductOverlay
+          product={product}
+          openView={openView}
+          OpenPopup={props.OpenPopup}
+          ClosePopup={props.ClosePopup}
+        />
       </div>
       <div className="product-title">{product.TenGiay}</div>
       {/* {product.productFinalPrice < product.productPrice && (
