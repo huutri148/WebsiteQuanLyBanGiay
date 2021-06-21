@@ -84,3 +84,27 @@ export const fetchListChiTietGioHang = (id) => async (dispatch) => {
     });
   }
 };
+
+export const addToCart = (item, qty) => async (dispatch, getState) => {
+  const ThanhTien = item.DonGiaBan * qty;
+
+  dispatch({
+    type: gioHangConstants.GIOHANG_ADD_ITEM,
+    payload: {
+      ...item,
+      ThanhTien: ThanhTien,
+      SoLuongMua: qty,
+    },
+  });
+
+  localStorage.setItem("cartItems", JSON.stringify(getState().Cart.cartItems));
+};
+
+export const removeFromCart = (id) => (dispatch, getState) => {
+  dispatch({
+    type: gioHangConstants.GIOHANG_REMOVE_ITEM,
+    payload: id,
+  });
+
+  localStorage.setItem("cartItems", JSON.stringify(getState().Cart.cartItems));
+};

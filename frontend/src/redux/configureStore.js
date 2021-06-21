@@ -9,11 +9,25 @@ const composeEnhancers =
         shouldHotReload: false,
       })
     : compose;
+
+const cartItemsFromStorage = localStorage.getItem("cartItems")
+  ? JSON.parse(localStorage.getItem("cartItems"))
+  : [];
+
+const initialState = {
+  Cart: {
+    cartItems: cartItemsFromStorage,
+  },
+};
 const configureStore = () => {
   const middlewares = [thunk];
   const enhancers = [applyMiddleware(...middlewares)];
 
-  const store = createStore(rootReducer, composeEnhancers(...enhancers));
+  const store = createStore(
+    rootReducer,
+    initialState,
+    composeEnhancers(...enhancers)
+  );
 
   return store;
 };

@@ -6,13 +6,14 @@ import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import CartItem from "./CartItem";
 import WishListItem from "./WishListItem";
 import { withRouter } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 function Account(props) {
   const [tabID, setTabID] = useState(0);
-  //     const {
-  //         total
-  //     } = useContext(CartContext)
+  const Cart = useSelector((state) => state.Cart);
+  const { cartItems } = Cart;
 
+  const total = cartItems.reduce((result, item) => result + item.ThanhTien, 0);
   return (
     <div className={props.cartOpen === false ? "Cart displayNone" : "Cart"}>
       <div className="search-header flex">
@@ -51,20 +52,23 @@ function Account(props) {
         <div className="cart-checkout-box flex-center">
           <div className="cart-checkout-text flex">
             <p>Total: </p>
-            {/* {total &&
-                            <p> {total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")} đ</p>
-                        } */}
+            {total && (
+              <p>
+                {" "}
+                {total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")} VNĐ
+              </p>
+            )}
           </div>
           <div
             className="cart-checkout-btn btn"
             onClick={() => {
-              //     if (total > 0) {
-              //         props.history.push(`/checkout`);
-              //         window.location.reload(false);
-              //     }
+              if (total > 0) {
+                props.history.push(`/checkout`);
+                window.location.reload(false);
+              }
             }}
           >
-            Checkout
+            Buy
           </div>
         </div>
       )}

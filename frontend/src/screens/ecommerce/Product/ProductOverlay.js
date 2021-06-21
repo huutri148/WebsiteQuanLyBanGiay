@@ -1,11 +1,12 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import "../../../components/App/App.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCartPlus, faEye, faHeart } from "@fortawesome/free-solid-svg-icons";
-
 import { withRouter } from "react-router-dom";
-
+import { addToCart } from "../../../redux/actions/gioHangAction";
+import { useDispatch } from "react-redux";
 function ProductOverlay(props) {
+  const dispatch = useDispatch();
   const [loading, setLoading] = useState(0);
 
   //const { addToCart, addToWishList } = useContext(CartContext);
@@ -14,7 +15,7 @@ function ProductOverlay(props) {
     setLoading(1);
     setTimeout(() => {
       setLoading(0);
-      //addToCart(props.product);
+      dispatch(addToCart(props.product, 1));
     }, 500);
   };
 

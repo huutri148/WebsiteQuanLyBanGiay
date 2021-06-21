@@ -109,3 +109,34 @@ export const cartDetailListReducer = (state = initalState, action) => {
       return state;
   }
 };
+
+export const cartReducer = (state = { cartItems: [] }, action) => {
+  switch (action.type) {
+    case gioHangConstant.GIOHANG_ADD_ITEM:
+      const item = action.payload;
+      const existItem = state.cartItems.find((x) => x.MaGiay === item.MaGiay);
+      console.log(item);
+
+      if (existItem) {
+        return {
+          ...state,
+          cartItems: state.cartItems.map((x) =>
+            x.MaGiay === existItem.MaGiay ? item : x
+          ),
+        };
+      } else {
+        return {
+          ...state,
+          cartItems: [...state.cartItems, item],
+          TongTien: state.TongTien + item.ThanhTien,
+        };
+      }
+    case gioHangConstant.GIOHANG_REMOVE_ITEM:
+      return {
+        ...state,
+        cartItems: state.cartItems.filter((x) => x.MaGiay !== action.payload),
+      };
+    default:
+      return state;
+  }
+};

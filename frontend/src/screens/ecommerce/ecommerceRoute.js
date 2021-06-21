@@ -84,6 +84,20 @@ const dashBoardRoute = [
     private: false,
     role: "NguoiDung",
   },
+  {
+    path: "/women",
+    exact: true,
+    component: shop,
+    private: false,
+    role: "NguoiDung",
+  },
+  {
+    path: "/men",
+    exact: true,
+    component: shop,
+    private: false,
+    role: "NguoiDung",
+  },
   // {
   //   path: "/products/:id",
   //   exact: true,
