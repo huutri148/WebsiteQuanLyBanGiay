@@ -98,6 +98,9 @@ export const addToCart = (item, qty) => async (dispatch, getState) => {
   });
 
   localStorage.setItem("cartItems", JSON.stringify(getState().Cart.cartItems));
+  if (qty === 1) {
+    toast.success("Đã thêm vào giỏ hàng");
+  }
 };
 
 export const removeFromCart = (id) => (dispatch, getState) => {

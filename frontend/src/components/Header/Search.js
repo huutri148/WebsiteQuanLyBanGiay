@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../App/App.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -7,7 +7,7 @@ import {
   faSearch,
   faTimes,
 } from "@fortawesome/free-solid-svg-icons";
-import axios from "axios";
+import { useSelector } from "react-redux";
 
 export default function Search(props) {
   const [products, setProducts] = useState([]);
@@ -15,53 +15,37 @@ export default function Search(props) {
   const [searchInput, setSearchInput] = useState("");
   const [toast, setToast] = useState(false);
 
+  const { listGiay } = useSelector((state) => state.ListGiay);
+
   useEffect(() => {
-    // axios.get(`http://pe.heromc.net:4000/products`)
-    //     .then(res => {
-    //         setProducts(res.data)
-    //         setConstProducts(res.data)
-    //     }
-    // )
-  }, []);
+    const data = Object.values(listGiay).reduce((result, value) => {
+      result.push({
+        ...value,
+      });
+      return result;
+    }, []);
+    setProducts(data);
+    setConstProducts(data);
+  }, [listGiay]);
 
   const search = (event) => {
     const value = event.target.value;
     setSearchInput(value);
     const search = [];
     for (let i in constProducts) {
-      if (constProducts[i].productName.toLowerCase().includes(searchInput)) {
+      if (constProducts[i].TenGiay.toLowerCase().includes(searchInput)) {
         search.push(constProducts[i]);
       }
     }
     setProducts(search);
   };
 
-  //const { removeFromWishList, addToCart } = useContext(CartContext)
-
-  const cartClick = (event) => {
-    const id = event.target.id;
-    // axios.get(`http://pe.heromc.net:4000/products/${id}`)
-    //     .then(res => {
-    //         addToCart(res.data)
-    //     }
-    // )
-    setToast(true);
-    setTimeout(() => {
-      setToast(false);
-    }, 2000);
-  };
+  const cartClick = (event) => {};
 
   return (
     <div
       className={props.searchOpen === false ? "Search displayNone" : "Search"}
     >
-      <div
-        className={toast ? "toast toast-show" : "toast"}
-        style={{ top: "20px" }}
-      >
-        <FontAwesomeIcon icon={faCheckCircle} className="icon" />
-        Product is added to cart successfully
-      </div>
       <div className="search-header flex">
         <div className="search-title">Search</div>
         <div className="search-close" onClick={props.clickToClose}>
@@ -82,12 +66,7 @@ export default function Search(props) {
             return (
               <div className="cart-item flex" key={index}>
                 <div className="cart-product-img">
-                  <img
-                    src={item.productImg[0]}
-                    width="80px"
-                    height="100%"
-                    alt=""
-                  ></img>
+                  <img src={item.Anh} width="80px" height="100%" alt=""></img>
                 </div>
                 <div className="cart-product-mobile flex">
                   <div
@@ -97,7 +76,7 @@ export default function Search(props) {
                       justifyContent: "flex-start",
                     }}
                   >
-                    {item.productName}
+                    {item.TenGiay}
                   </div>
                   <div
                     className="cart-product-price wl-mb-price flex"
@@ -106,9 +85,10 @@ export default function Search(props) {
                       justifyContent: "flex-start",
                     }}
                   >
-                    {item.productFinalPrice
-                      .toString()
-                      .replace(/\B(?=(\d{3})+(?!\d))/g, ".")}{" "}
+                    {item.DonGiaBan.toString().replace(
+                      /\B(?=(\d{3})+(?!\d))/g,
+                      "."
+                    )}{" "}
                     đ
                   </div>
 
@@ -118,7 +98,7 @@ export default function Search(props) {
                       cartClick(event);
                       //removeFromWishList(event)
                     }}
-                    id={item._id}
+                    id={item.MaGiay}
                   >
                     <FontAwesomeIcon
                       style={{ pointerEvents: "none" }}

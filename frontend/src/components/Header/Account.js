@@ -3,6 +3,7 @@ import "../App/App.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes, faCheck } from "@fortawesome/free-solid-svg-icons";
 import { withRouter } from "react-router-dom";
+import AccountInfo from "./AccountInfo";
 import { isAuthenticated } from "../../services/jwtAuthService";
 import jwt_decode from "jwt-decode";
 import {
@@ -103,9 +104,7 @@ function Account(props) {
           </div>
         </div>
 
-        {/* {login === true && 
-                    <AccountInfo/>
-                } */}
+        {login === true && <AccountInfo />}
 
         {login === false && (
           <div className={props.accountOpen === false ? "" : "fadeIn"}>
