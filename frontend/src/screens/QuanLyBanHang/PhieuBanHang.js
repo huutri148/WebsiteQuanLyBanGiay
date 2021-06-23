@@ -211,6 +211,7 @@ const PhieuBanHang = (props) => {
     setMaxAmount(e);
     setAmount(e);
     setTotal(e * product.DonGiaBan);
+    setAmountError(false);
     product.MaChiTietGiay = MaChiTietGiay;
   };
   const resetField = () => {
@@ -219,6 +220,7 @@ const PhieuBanHang = (props) => {
     setMaxAmount(0);
     setTotal(0);
     setSize(0);
+    setAmountError(false);
     setEditing(false);
   }
   const [groupBoxes,setGroupBoxes] = useState([
@@ -337,7 +339,7 @@ const PhieuBanHang = (props) => {
                     disabled="disabled"
                   />
                 </td>
-                <td width="15%">
+                <td width="12%">
                   {product === null ? (
                     <GroupBox
                       key={2}
@@ -377,7 +379,7 @@ const PhieuBanHang = (props) => {
                     disabled="disabled"
                   />
                 </td>
-                <td width="12%">
+                <td width="15%">
                   <GroupBox
                     key={4}
                     value={amount}

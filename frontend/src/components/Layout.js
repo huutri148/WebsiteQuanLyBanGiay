@@ -188,7 +188,7 @@ export const Layout = withRouter((props) => {
             onClose={handleCloseMenu}
             className={classes.menu}
           >
-            <ListItem button component={Link} to="/">
+            <ListItem button component={Link} to="/admin/dashboard">
               <ListItemIcon>
                 <Home fontSize="small" color="primary" />
               </ListItemIcon>

@@ -8,7 +8,7 @@ const quanLyHangSanXuat = () => (
 
 const quanLyHangSanXuatRoute = [
   {
-    path: "/brands",
+    path: "/admin/brands",
     exact: true,
     component: quanLyHangSanXuat,
     private: true,

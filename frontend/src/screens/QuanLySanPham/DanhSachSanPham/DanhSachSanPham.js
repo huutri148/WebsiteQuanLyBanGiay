@@ -10,18 +10,30 @@ import {
   TableCell,
   IconButton,
   Typography,
-  CircularProgress,
+  Tooltip,
 } from "@material-ui/core";
+
 import styles from "./styles";
 import useTable from "../../../components/useTable";
 import Input from "../../../components/controls/Input";
-import { Search, Assignment, Edit } from "@material-ui/icons";
+import {
+  Search,
+  Assignment,
+  Edit,
+  CloudDownload,
+  Print,
+  FilterList,
+  PrintDisabledRounded,
+  ViewColumn,
+} from "@material-ui/icons";
+import { CSVLink } from "react-csv";
 import ProductCard from "../ProductCard";
 import Popup from "../../../components/controls/Popup";
 import ProductDetail from "../ProductDetail";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchListGiay } from "../../../redux/actions/giayAction";
 import { DSSPHeadCells } from "../ThongTinQuanLySanPham";
+import Loading from "../../../components/Loadable/Loading";
 
 const DanhSachSanPham = (props) => {
   // CSS class
@@ -105,22 +117,49 @@ const DanhSachSanPham = (props) => {
         Quản lý sản phẩm
       </Typography>
       <Paper>
-        <Toolbar className={classes.searchInput}>
-          <Input
-            label="Search"
-            style={{ marginTop: "30px" }}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <Search />
-                </InputAdornment>
-              ),
-            }}
-            onChange={handleSearch}
-          />
+        <Toolbar className={classes.toolbar}>
+          <div className={classes.searchInput}>
+            <Input
+              label="Search"
+              style={{ marginTop: "30px" }}
+              fullWidth="true"
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <Search />
+                  </InputAdornment>
+                ),
+              }}
+              onChange={handleSearch}
+            />
+          </div>
+          <div className={classes.actions}>
+            <Tooltip title="Tải file csv">
+              <CSVLink data={tableData} filename={"DS-SanPham.csv"}>
+                <IconButton className={classes.actionsButton}>
+                  <CloudDownload />
+                </IconButton>
+              </CSVLink>
+            </Tooltip>
+            <Tooltip title="In">
+              <IconButton className={classes.actionsButton}>
+                <Print />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Chọn cột">
+              <IconButton className={classes.actionsButton}>
+                <ViewColumn />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Lọc">
+              <IconButton className={classes.actionsButton}>
+                <FilterList />
+              </IconButton>
+            </Tooltip>
+          </div>
         </Toolbar>
         {productLoading ? (
-          <CircularProgress disableShrink style={{ margin: "0px 16px" }} />
+          <Loading />
         ) : giayError ? (
           <h1>Error</h1>
         ) : (

@@ -341,7 +341,7 @@ CREATE TABLE PHIEUNHAPKHO
     MaNguoiDung int not null,
     MaNhaCungCap int not null,
     NgayNhapKho DATETIME DEFAULT CURRENT_TIMESTAMP,
-    GhiChu nvarchar(1000) not null,
+    GhiChu nvarchar(1000),
     TongTien Decimal(17,0) default 0,
     IsDeleted boolean  default false
 );
@@ -650,9 +650,7 @@ create procedure USP_ThemPhieuNhapKho(
     p_NgayNhapKho DATETIME, 
     p_TongTien DECIMAL(17,0), p_GhiChu NVARCHAR(1000))
 BEGIN
-INSERT INTO ShoesStoreManagement.PHIEUNHAPKHO(MaNhaCungCap,MaNguoiDung ,
-    NgayNhapKho,
-    TongTien , GhiChu )
+INSERT INTO ShoesStoreManagement.PHIEUNHAPKHO(MaNhaCungCap,MaNguoiDung,NgayNhapKho,TongTien , GhiChu )
 VALUES (
     p_MaNhaCungCap,p_MaNguoiDung ,
     p_NgayNhapKho,
@@ -661,13 +659,16 @@ END; $$
 DELIMITER ;
 
 
-
 DELIMITER $$
 create procedure USP_ThemChiTietPhieuNhapKho(p_MaChiTietGiay int,
         p_SoLuongNhap int, p_GiaNhap Decimal(17,0), p_ThanhTien Decimal(17,0))
 BEGIN
+    declare giayID int;
     declare phieuNhapKhoID int;
     set phieuNhapKhoID = (select max(SoPhieuNhapKho) from ShoesStoreManagement.PHIEUNHAPKHO);
+    set giayID = (select MaGiay 
+                  from ShoesStoreManagement.CHITIETGIAY 
+                  where CHITIETGIAY.MaChiTietGiay = p_MaChiTietGiay);
     INSERT INTO ShoesStoreManagement.CHITIETPHIEUNHAPKHO(MaChiTietGiay ,SoPhieuNhapKho, 
         SoLuongNhap, GiaNhap, ThanhTien)
     VALUES ( p_MaChiTietGiay ,phieuNhapKhoID,
@@ -675,6 +676,9 @@ BEGIN
     Update ShoesStoreManagement.CHITIETGIAY 
     set CHITIETGIAY.SoLuong = CHITIETGIAY.SoLuong +  p_SoLuongNhap
     where CHITIETGIAY.MaChiTietGiay = p_MaChiTietGiay;
+    Update ShoesStoreManagement.GIAY 
+    set GIAY.TongSoLuong = GIAY.TongSoLuong + p_SoLuongNhap 
+    where GIAY.MaGiay = giayID;
 END; $$
 DELIMITER ;
 
@@ -1714,6 +1718,7 @@ insert into NGUOIDUNG(MaChucVu,TenNguoiDung,TenDangNhap,MatKhau,SDT,DiaChi,Email
 
 
 
+
 CALL USP_ThemGioHang(3);
 CALL USP_ThemChiTietGioHang(1,10,6375000,63750000);
 CALL USP_ThemChiTietGioHang(2,10,6375000,63750000);
@@ -1739,3 +1744,40 @@ CALL USP_ThemChiTietGioHang(1,10,6375000,63750000);
 CALL USP_ThemChiTietGioHang(2,10,6375000,63750000);
 CALL USP_ThemChiTietGioHang(3,10,6375000,63750000);
 CALL USP_ThemChiTietGioHang(4,10,6375000,63750000);
+
+
+
+INSERT INTO ShoesStoreManagement.PHIEUDATHANG(MaNhaCungCap ,MaNguoiDung ,NgayLap , TrangThai)
+VALUES (1 ,2 , STR_TO_DATE('17-06-2021', '%d-%m-%Y') ,"Chờ");
+CALL USP_ThemChiTietPhieuDatHang(1,10);
+CALL USP_ThemChiTietPhieuDatHang(10,10);
+CALL USP_ThemChiTietPhieuDatHang(20,10);
+CALL USP_ThemChiTietPhieuDatHang(30,10);
+CALL USP_ThemChiTietPhieuDatHang(40,10);
+
+
+
+INSERT INTO ShoesStoreManagement.PHIEUDATHANG(MaNhaCungCap ,MaNguoiDung ,NgayLap , TrangThai)
+VALUES (2 ,3 , STR_TO_DATE('18-06-2021', '%d-%m-%Y') ,"Chờ");
+CALL USP_ThemChiTietPhieuDatHang(1,10);
+CALL USP_ThemChiTietPhieuDatHang(10,10);
+CALL USP_ThemChiTietPhieuDatHang(20,10);
+CALL USP_ThemChiTietPhieuDatHang(30,10);
+CALL USP_ThemChiTietPhieuDatHang(40,10);
+
+INSERT INTO ShoesStoreManagement.PHIEUDATHANG(MaNhaCungCap ,MaNguoiDung ,NgayLap , TrangThai)
+VALUES (3 ,3 , STR_TO_DATE('16-06-2021', '%d-%m-%Y') ,"Chờ");
+CALL USP_ThemChiTietPhieuDatHang(1,10);
+CALL USP_ThemChiTietPhieuDatHang(10,10);
+CALL USP_ThemChiTietPhieuDatHang(20,10);
+CALL USP_ThemChiTietPhieuDatHang(30,10);
+CALL USP_ThemChiTietPhieuDatHang(40,10);
+
+INSERT INTO ShoesStoreManagement.PHIEUDATHANG(MaNhaCungCap ,MaNguoiDung ,NgayLap , TrangThai)
+VALUES (4 ,3 , STR_TO_DATE('15-06-2021', '%d-%m-%Y') ,"Chờ");
+CALL USP_ThemChiTietPhieuDatHang(1,10);
+CALL USP_ThemChiTietPhieuDatHang(10,10);
+CALL USP_ThemChiTietPhieuDatHang(20,10);
+CALL USP_ThemChiTietPhieuDatHang(30,10);
+CALL USP_ThemChiTietPhieuDatHang(40,10);
+

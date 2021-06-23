@@ -19,43 +19,43 @@ export const mainListItems = (
       Quản lý
     </ListSubheader>
 
-    <ListItem button component={Link} to="/products">
+    <ListItem button component={Link} to="/admin/products">
       <ListItemIcon>
         <DashboardIcon />
       </ListItemIcon>
       <ListItemText primary="Sản Phẩm" />
     </ListItem>
-    <ListItem button component={Link} to="/bills">
+    <ListItem button component={Link} to="/admin/bills">
       <ListItemIcon>
         <ReceiptIcon />
       </ListItemIcon>
       <ListItemText primary="Bán Hàng" />
     </ListItem>
-    <ListItem button component={Link} to="/users">
+    <ListItem button component={Link} to="/admin/users">
       <ListItemIcon>
         <PeopleIcon />
       </ListItemIcon>
       <ListItemText primary="Người Dùng" />
     </ListItem>
-    <ListItem button component={Link} to="/suppliers">
+    <ListItem button component={Link} to="/admin/suppliers">
       <ListItemIcon>
         <HomeIcon />
       </ListItemIcon>
       <ListItemText primary="Nhà Cung Cấp" />
     </ListItem>
-    <ListItem button component={Link} to="/orders">
+    <ListItem button component={Link} to="/admin/orders">
       <ListItemIcon>
         <FolderIcon />
       </ListItemIcon>
       <ListItemText primary="Đặt hàng" />
     </ListItem>
-    <ListItem button component={Link} to="/recdockets">
+    <ListItem button component={Link} to="/admin/recdockets">
       <ListItemIcon>
         <HomeIcon />
       </ListItemIcon>
       <ListItemText primary="Nhập Kho" />
     </ListItem>
-    <ListItem button component={Link} to="/carts">
+    <ListItem button component={Link} to="/admin/carts">
       <ListItemIcon>
         <ShoppingCartIcon />
       </ListItemIcon>
@@ -69,19 +69,19 @@ export const secondaryListItems = (
     <ListSubheader style={{ marginRight: 60 }} inset>
       Báo cáo
     </ListSubheader>
-    <ListItem button component={Link} to="/products">
+    <ListItem button component={Link} to="/admin/products">
       <ListItemIcon>
         <BarChartIcon />
       </ListItemIcon>
       <ListItemText primary="Lợi nhuận" />
     </ListItem>
-    <ListItem button component={Link} to="/products">
+    <ListItem button component={Link} to="/admin/products">
       <ListItemIcon>
         <AssignmentIcon />
       </ListItemIcon>
       <ListItemText primary="Tồn kho" />
     </ListItem>
-    <ListItem button component={Link} to="/products">
+    <ListItem button component={Link} to="/admin/products">
       <ListItemIcon>
         <MoneyIcon />
       </ListItemIcon>

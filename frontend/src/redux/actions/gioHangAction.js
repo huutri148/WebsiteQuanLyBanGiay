@@ -84,3 +84,54 @@ export const fetchListChiTietGioHang = (id) => async (dispatch) => {
     });
   }
 };
+
+export const addToCart = (item, qty) => async (dispatch, getState) => {
+  const ThanhTien = item.DonGiaBan * qty;
+
+  dispatch({
+    type: gioHangConstants.GIOHANG_ADD_ITEM,
+    payload: {
+      ...item,
+      ThanhTien: ThanhTien,
+      SoLuongMua: qty,
+    },
+  });
+
+  localStorage.setItem("cartItems", JSON.stringify(getState().Cart.cartItems));
+  if (qty === 1) {
+    toast.success("Đã thêm vào giỏ hàng");
+  }
+};
+
+export const removeFromCart = (id) => (dispatch, getState) => {
+  dispatch({
+    type: gioHangConstants.GIOHANG_REMOVE_ITEM,
+    payload: id,
+  });
+
+  localStorage.setItem("cartItems", JSON.stringify(getState().Cart.cartItems));
+};
+
+export const createCart = (item) => (dispatch) => {
+  try {
+    dispatch({ type: gioHangConstants.GIOHANG_CREATE_REQUEST });
+
+    const { data } = gioHangAPI.createItem(item);
+
+    dispatch({
+      type: gioHangConstants.GIOHANG_CREATE_SUCCESS,
+      payload: data,
+    });
+    toast.success("Created Successfully");
+    localStorage.removeItem("cartItems");
+  } catch (error) {
+    dispatch({
+      type: gioHangConstants.GIOHANG_CREATE_FAIL,
+      payload:
+        error.response && error.response.message
+          ? error.response.data.data.message
+          : error.messagge,
+    });
+    toast.error("Created Failed");
+  }
+};

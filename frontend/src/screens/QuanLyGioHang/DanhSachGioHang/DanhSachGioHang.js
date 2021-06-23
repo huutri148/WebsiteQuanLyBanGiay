@@ -33,11 +33,14 @@ import {
   deleteGioHang,
 } from "../../../redux/actions/gioHangAction";
 import { fetchListNguoiDung } from "../../../redux/actions/nguoiDungAction";
-import { DSGHHeadCell } from "../ThongTinQuanLyGioHang";
+import { DSGHHeadCell, DSGHHeaderCSV } from "../ThongTinQuanLyGioHang";
 import ConfirmDialog from "../../../components/controls/ConfirmDialog";
 import Popup from "../../../components/controls/Popup";
-import Detail from "../../QuanLyBanHang/Detail";
+import Detail from "../../../components/controls/Detail";
 import { detailsHeadCells } from "../ThongTinQuanLyGioHang";
+import Loading from "../../../components/Loadable/Loading";
+import BillToPrint from "../BillToPrint";
+import { CSVLink } from "react-csv";
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -110,6 +113,7 @@ const DanhSachGioHang = (props) => {
   const [groupBoxes, setGroupBoxes] = useState([]);
   const [selectedItem, setSelectedItem] = useState();
   const [openDetailPopup, setOpenDetailPopup] = useState(false);
+  const [openPrintPopup, setOpenPrintPopup] = useState(false);
   const { TblContainer, TblHead, TblPagination, recordsAfterPagingAndSorting } =
     useTable(tableData, DSGHHeadCell, filterFn);
 
@@ -216,10 +220,15 @@ const DanhSachGioHang = (props) => {
     dispatch(updateGioHang(item.MaGioHang));
     setUpdateData(!updateData);
   };
+
+  const handlePrintClick = (item) => {
+    setOpenPrintPopup(true);
+    setOpenDetailPopup(false);
+  };
   return (
     <>
       {userLoading || cartLoading ? (
-        <h1>Loading</h1>
+        <Loading />
       ) : (
         <div>
           <Typography component="h1" variant="h5" className={classes.title}>
@@ -244,9 +253,15 @@ const DanhSachGioHang = (props) => {
               </div>
               <div className={classes.actions}>
                 <Tooltip title="Tải file csv">
-                  <IconButton className={classes.actionsButton}>
-                    <CloudDownload />
-                  </IconButton>
+                  <CSVLink
+                    data={tableData}
+                    filename={"DS-GioHang.csv"}
+                    headers={DSGHHeaderCSV}
+                  >
+                    <IconButton className={classes.actionsButton}>
+                      <CloudDownload />
+                    </IconButton>
+                  </CSVLink>
                 </Tooltip>
                 <Tooltip title="In">
                   <IconButton className={classes.actionsButton}>
@@ -373,7 +388,15 @@ const DanhSachGioHang = (props) => {
                 header="Giỏ hàng"
                 headCells={detailsHeadCells}
                 groupBoxes={groupBoxes}
+                Print={handlePrintClick}
               />
+            </Popup>
+            <Popup
+              title="In Phiếu Bán Hàng"
+              openPopup={openPrintPopup}
+              setOpenPopup={setOpenPrintPopup}
+            >
+              <BillToPrint id={selectedItem} groupBoxes={groupBoxes} />
             </Popup>
           </Paper>
         </div>

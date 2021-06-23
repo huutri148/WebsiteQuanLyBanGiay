@@ -1,5 +1,5 @@
 import { Layout } from "../../components/Layout";
-import QuanLyBanHang from "../QuanLyBanHang";
+import QuanLyBanHang from "./QuanLyBanHang";
 const quanLyBanHang = () => (
   <Layout>
     <QuanLyBanHang />
@@ -8,7 +8,7 @@ const quanLyBanHang = () => (
 
 const quanLyBanHangRoute = [
   {
-    path: "/bills",
+    path: "/admin/bills",
     exact: true,
     component: quanLyBanHang,
     private: true,

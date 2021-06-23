@@ -1,5 +1,5 @@
 import { Layout } from "../../components/Layout";
-import QuanLyNhapKho from "../QuanLyNhapKho";
+import QuanLyNhapKho from "./QuanLyNhapKho";
 const quanLyNhapKho = () => (
   <Layout>
     <QuanLyNhapKho />
@@ -8,7 +8,7 @@ const quanLyNhapKho = () => (
 
 const quanLyNhapKhoRoute = [
   {
-    path: "/recdockets",
+    path: "/admin/recdockets",
     exact: true,
     component: quanLyNhapKho,
     private: true,

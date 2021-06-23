@@ -8,7 +8,7 @@ const dashboard = () => (
 
 const dashBoardRoute = [
   {
-    path: "/",
+    path: "/admin/dashboard",
     exact: true,
     component: dashboard,
     private: true,

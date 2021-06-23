@@ -14,10 +14,9 @@ GioHang.Create = async function (data, result) {
     } else {
       console.log(`Create GioHang successfully`);
       data.ChiTietGioHang.map(function await(chiTietGioHang) {
-        console.log(chiTietGioHang);
         let qr = sqlString.format(
           `CALL USP_ThemChiTietGioHang(${chiTietGioHang.MaChiTietGiay},
-                            ${chiTietGioHang.SoLuongMua},${chiTietGioHang.ThanhTien});`
+                            ${chiTietGioHang.SoLuongMua},${chiTietGioHang.GiaBan},${chiTietGioHang.ThanhTien});`
         );
         conn.query(qr, (error, response) => {
           if (error) {

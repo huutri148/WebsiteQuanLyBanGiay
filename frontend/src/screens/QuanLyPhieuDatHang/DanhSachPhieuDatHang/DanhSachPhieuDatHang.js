@@ -24,6 +24,7 @@ import {
   ViewColumn,
 } from "@material-ui/icons";
 import { useSelector, useDispatch } from "react-redux";
+import { CSVLink } from "react-csv";
 import moment from "moment";
 import useTable from "../../../components/useTable";
 import Input from "../../../components/controls/Input";
@@ -33,6 +34,7 @@ import {
 } from "../../../redux/actions/phieuDatHangAction";
 import { DSPDHHeadCell } from "../ThongTinPhieuDatHang";
 import ConfirmDialog from "../../../components/controls/ConfirmDialog";
+import Loading from "../../../components/Loadable/Loading";
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -190,7 +192,7 @@ const DanhSachPhieuDatHang = (props) => {
   return (
     <>
       {supplierLoading || userLoading || orderLoading ? (
-        <h1>Loading</h1>
+        <Loading />
       ) : (
         <div>
           <Typography component="h1" variant="h5" className={classes.title}>
@@ -215,9 +217,11 @@ const DanhSachPhieuDatHang = (props) => {
               </div>
               <div className={classes.actions}>
                 <Tooltip title="Tải file csv">
-                  <IconButton className={classes.actionsButton}>
-                    <CloudDownload />
-                  </IconButton>
+                  <CSVLink data={tableData} filename={"DS-PhieuDatHang.csv"}>
+                    <IconButton className={classes.actionsButton}>
+                      <CloudDownload />
+                    </IconButton>
+                  </CSVLink>
                 </Tooltip>
                 <Tooltip title="In">
                   <IconButton className={classes.actionsButton}>

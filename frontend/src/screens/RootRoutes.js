@@ -9,6 +9,7 @@ import sessionRoute from "./session/sessionRoute";
 import dashboarRoute from "./Dashboard/DashboardRoute";
 import quanLyNguoiDungRoute from "./QuanLyNguoiDung/QuanLyNguoiDungRoute";
 import quanLyGioHangRoute from "./QuanLyGioHang/QuanLyGioHangRoute";
+import ecommerceRoute from "./ecommerce/ecommerceRoute";
 const routes = [
   ...quanLySanPhamRoute,
   ...loginRoute,
@@ -21,6 +22,7 @@ const routes = [
   ...dashboarRoute,
   ...sessionRoute,
   ...quanLyGioHangRoute,
+  ...ecommerceRoute,
 ];
 
 export default routes;

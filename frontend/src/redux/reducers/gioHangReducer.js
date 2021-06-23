@@ -109,3 +109,61 @@ export const cartDetailListReducer = (state = initalState, action) => {
       return state;
   }
 };
+
+export const cartReducer = (state = { cartItems: [] }, action) => {
+  switch (action.type) {
+    case gioHangConstant.GIOHANG_ADD_ITEM:
+      const item = action.payload;
+      const existItem = state.cartItems.find(
+        (x) => x.MaChiTietGiay === item.MaChiTietGiay
+      );
+
+      if (existItem) {
+        return {
+          ...state,
+          cartItems: state.cartItems.map((x) =>
+            x.MaChiTietGiay === existItem.MaChiTietGiay ? item : x
+          ),
+        };
+      } else {
+        return {
+          ...state,
+          cartItems: [...state.cartItems, item],
+          TongTien: state.TongTien + item.ThanhTien,
+        };
+      }
+    case gioHangConstant.GIOHANG_REMOVE_ITEM:
+      return {
+        ...state,
+        cartItems: state.cartItems.filter(
+          (x) => x.MaChiTietGiay !== action.payload
+        ),
+      };
+    default:
+      return state;
+  }
+};
+
+export const cartCreateReducer = (state = initalState, action) => {
+  switch (action.type) {
+    case gioHangConstant.GIOHANG_CREATE_REQUEST: {
+      return {
+        //note: add loading
+        loading: true,
+      };
+    }
+    case gioHangConstant.GIOHANG_CREATE_SUCCESS: {
+      return {
+        loading: false,
+      };
+    }
+    case gioHangConstant.GIOHANG_CREATE_FAIL: {
+      return {
+        loading: false,
+        error: action.payload,
+      };
+    }
+    default:
+      return state;
+  }
+};

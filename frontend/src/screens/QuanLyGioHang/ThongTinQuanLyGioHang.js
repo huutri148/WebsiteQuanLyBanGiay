@@ -20,3 +20,13 @@ export const detailsHeadCells = [
   { id: "ThanhTien", label: "Thành Tiền" },
   { id: "HanhDong", disableSorting: true },
 ];
+
+export const DSGHHeaderCSV = [
+  { label: "Mã giỏ hàng", key: "MaGioHang" },
+  { label: "Mã người dùng", key: "MaNguoiDung" },
+  { label: "Tên người dùng", key: "TenNguoiDung" },
+  { label: "Ngày lập", key: "NgayLap" },
+  { label: "Trạng thái", key: "TrangThai" },
+  { label: "Tổng tiền", key: "TongTien" },
+  { label: "Đã hủy", key: "IsDeleted" },
+];

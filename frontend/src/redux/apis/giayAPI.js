@@ -8,7 +8,7 @@ export const getList = () => {
 
 // GET /api/products/:id
 export const getGiayByID = (id) => {
-  return axiosService.get(`url/${id}`);
+  return axiosService.get(`${url}/${id}`);
 };
 
 // GET /api/products/:id/sizes
