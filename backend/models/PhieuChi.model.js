@@ -21,6 +21,29 @@ PhieuChi.Create = async function (data, result) {
       //Todo: Handle error
       throw err;
     } else {
+      var deltailsQueryString = sqlString.format(
+        `CALL USP_GetChiTietPhieuNhapKhoByID(${data.SoPhieuNhapKho});`
+      );
+      conn.query(deltailsQueryString, (derr, dres) => {
+        if (derr) {
+          throw derr;
+        }
+        if (dres[0]) {
+          const updateProduct = async item => {
+            let qr = sqlString.format(
+                  `CALL USP_CapNhatSanPhamNhapKho(${data.SoPhieuNhapKho},${item.MaChiTietGiay},
+                ${item.SoLuongNhap});`
+                );
+                conn.query(qr, (error, response) => {
+                  if (error) console.log(error);
+                });
+          }
+          const updateProducts = async () => {
+            return Promise.all(dres[0].map(item => updateProduct(item)))
+          }
+          updateProducts();
+        }
+      });
       result(res[0]);
     }
   });

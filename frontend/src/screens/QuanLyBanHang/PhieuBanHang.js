@@ -372,7 +372,7 @@ const PhieuBanHang = (props) => {
                     value={
                       product === null
                         ? ""
-                        : product.DonGiaBan.toLocaleString("it-IT")
+                        : Number(product.DonGiaBan).toLocaleString("it-IT")
                     }
                     type="TextBox"
                     title={headCells[3].label}
@@ -452,7 +452,7 @@ const PhieuBanHang = (props) => {
                       {sizes[item.size].TenSize}
                     </TableCell>
                     <TableCell component="td" scope="row">
-                      {item.DonGiaBan.toLocaleString("it-IT")}
+                      {Number(item.DonGiaBan).toLocaleString("it-IT")}
                     </TableCell>
                     <TableCell component="td" scope="row">
                       {item.amount}

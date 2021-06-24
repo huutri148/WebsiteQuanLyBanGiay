@@ -343,6 +343,7 @@ CREATE TABLE PHIEUNHAPKHO
     NgayNhapKho DATETIME DEFAULT CURRENT_TIMESTAMP,
     GhiChu nvarchar(1000),
     TongTien Decimal(17,0) default 0,
+    IsPaid boolean  default false,
     IsDeleted boolean  default false
 );
 alter table PHIEUNHAPKHO 
@@ -620,10 +621,11 @@ DELIMITER ;
 DELIMITER $$
 create procedure USP_GetListPhieuNhapKho()
 BEGIN
-Select C.SoPhieuNhapKho,C.TenNguoiDung, C.NgayNhapKho, C.TongTien, D.TenNhaCungCap from (
-Select A.SoPhieuNhapKho, A.TongTien, A.NgayNhapKho, B.TenNguoiDung, A.MaNhaCungCap
-from (Select *  from ShoesStoreManagement.PHIEUNHAPKHO) A 
-left join  ShoesStoreManagement.NGUOIDUNG B USING (MaNguoiDung)) C
+Select C.SoPhieuNhapKho,C.TenNguoiDung, C.NgayNhapKho, C.TongTien, C.GhiChu, D.TenNhaCungCap, C.MaNhaCungCap, C.IsPaid 
+from (
+    Select A.SoPhieuNhapKho, A.TongTien, A.NgayNhapKho, B.TenNguoiDung, A.MaNhaCungCap, A.GhiChu, A.IsPaid
+    from (Select *  from ShoesStoreManagement.PHIEUNHAPKHO where IsDeleted = false) A 
+    left join  ShoesStoreManagement.NGUOIDUNG B USING (MaNguoiDung)) C
 left join ShoesStoreManagement.NHACUNGCAP D on 
 D.MaNhaCungCap= C.MaNhaCungCap;
 END; $$
@@ -634,7 +636,7 @@ DELIMITER ;
 DELIMITER $$
 create procedure USP_GetPhieuNhapKhoByID(p_SoPhieuNhapKho int)
 BEGIN
-Select C.SoPhieuNhapKho,C.TenNguoiDung, C.NgayNhapKho, C.TongTien, D.TenNhaCungCap from (
+Select C.SoPhieuNhapKho,C.TenNguoiDung, C.NgayNhapKho, C.TongTien, C.MaNhaCungCap, D.TenNhaCungCap from (
 Select A.SoPhieuNhapKho, A.TongTien, A.NgayNhapKho, B.TenNguoiDung, A.MaNhaCungCap
 from (Select *  from ShoesStoreManagement.PHIEUNHAPKHO where PHIEUNHAPKHO.SoPhieuNhapKho = p_SoPhieuNhapKho) A 
 left join  ShoesStoreManagement.NGUOIDUNG B USING (MaNguoiDung)) C
@@ -663,22 +665,73 @@ DELIMITER $$
 create procedure USP_ThemChiTietPhieuNhapKho(p_MaChiTietGiay int,
         p_SoLuongNhap int, p_GiaNhap Decimal(17,0), p_ThanhTien Decimal(17,0))
 BEGIN
-    declare giayID int;
     declare phieuNhapKhoID int;
     set phieuNhapKhoID = (select max(SoPhieuNhapKho) from ShoesStoreManagement.PHIEUNHAPKHO);
-    set giayID = (select MaGiay 
-                  from ShoesStoreManagement.CHITIETGIAY 
-                  where CHITIETGIAY.MaChiTietGiay = p_MaChiTietGiay);
     INSERT INTO ShoesStoreManagement.CHITIETPHIEUNHAPKHO(MaChiTietGiay ,SoPhieuNhapKho, 
         SoLuongNhap, GiaNhap, ThanhTien)
     VALUES ( p_MaChiTietGiay ,phieuNhapKhoID,
         p_SoLuongNhap, p_GiaNhap, p_ThanhTien);
+END; $$
+DELIMITER ;
+
+DELIMITER $$
+create procedure USP_ThemChiTietPhieuNhapKhoByID(p_SoPhieuNhapKho int, p_MaChiTietGiay int,
+        p_SoLuongNhap int, p_GiaNhap Decimal(17,0), p_ThanhTien Decimal(17,0))
+BEGIN
+    INSERT INTO ShoesStoreManagement.CHITIETPHIEUNHAPKHO(MaChiTietGiay ,SoPhieuNhapKho, 
+        SoLuongNhap, GiaNhap, ThanhTien)
+    VALUES ( p_MaChiTietGiay ,p_SoPhieuNhapKho,
+        p_SoLuongNhap, p_GiaNhap, p_ThanhTien);
+END; $$
+DELIMITER ;
+
+
+DELIMITER $$
+create procedure USP_CapNhatChiTietPhieuNhapKho(p_SoPhieuNhapKho int, p_MaChiTietGiay int,
+        p_SoLuongNhap int, p_GiaNhap Decimal(17,0), p_ThanhTien Decimal(17,0))
+BEGIN
+    declare giayID int;
+    set giayID = (select MaGiay 
+                  from ShoesStoreManagement.CHITIETGIAY 
+                  where CHITIETGIAY.MaChiTietGiay = p_MaChiTietGiay);
+
+    INSERT INTO ShoesStoreManagement.CHITIETPHIEUNHAPKHO(MaChiTietGiay ,SoPhieuNhapKho, SoLuongNhap, GiaNhap, ThanhTien)
+    VALUES ( p_MaChiTietGiay ,p_SoPhieuNhapKho, p_SoLuongNhap, p_GiaNhap, p_ThanhTien);
+END; $$
+DELIMITER ;
+
+DELIMITER $$
+create procedure USP_CapNhatSanPhamNhapKho(p_SoPhieuNhapKho int, p_MaChiTietGiay int,
+        p_SoLuongNhap int)
+BEGIN
+    declare giayID int;
+    set giayID = (select MaGiay 
+                  from ShoesStoreManagement.CHITIETGIAY 
+                  where CHITIETGIAY.MaChiTietGiay = p_MaChiTietGiay);
+
     Update ShoesStoreManagement.CHITIETGIAY 
-    set CHITIETGIAY.SoLuong = CHITIETGIAY.SoLuong +  p_SoLuongNhap
-    where CHITIETGIAY.MaChiTietGiay = p_MaChiTietGiay;
+        set CHITIETGIAY.SoLuong = CHITIETGIAY.SoLuong +  p_SoLuongNhap
+        where CHITIETGIAY.MaChiTietGiay = p_MaChiTietGiay;
+
     Update ShoesStoreManagement.GIAY 
-    set GIAY.TongSoLuong = GIAY.TongSoLuong + p_SoLuongNhap 
-    where GIAY.MaGiay = giayID;
+        set GIAY.TongSoLuong = GIAY.TongSoLuong + p_SoLuongNhap 
+        where GIAY.MaGiay = giayID;
+END; $$
+DELIMITER ;
+
+
+DELIMITER $$
+create procedure USP_GetChiTietPhieuNhapKhoByID(p_SoPhieuNhapKho int)
+BEGIN
+    Select C.Anh, C.TenGiay, C.GioiTinh, D.TenSize, D.MaSize, A.GiaNhap, A.SoLuongNhap, A.ThanhTien, A.SoPhieuNhapKho, A.MaChiTietGiay
+    from ShoesStoreManagement.CHITIETPHIEUNHAPKHO A 
+    left join ShoesStoreManagement.CHITIETGIAY B 
+    on A.MaChiTietGiay = B.MaChiTietGiay
+    left join ShoesStoreManagement.GIAY C
+    on C.MaGiay = B.MaGiay
+    left join ShoesStoreManagement.SIZE D
+    on D.MaSize = B.MaSize 
+    where A.SoPhieuNhapKho = p_SoPhieuNhapKho;
 END; $$
 DELIMITER ;
 
@@ -707,26 +760,6 @@ BEGIN
 END; $$
 DELIMITER ;
 
-
-
-DELIMITER $$
-create procedure USP_CapNhatChiTietPhieuNhapKho(
-        p_SoPhieuNhapKho int,p_MaChiTietGiay int,
-        p_SoLuongNhap int, p_GiaNhap Decimal(17,0), p_ThanhTien Decimal(17,0)
-)
-BEGIN
-    INSERT INTO ShoesStoreManagement.CHITIETPHIEUNHAPKHO(
-        SoPhieuNhapKho ,MaChiTietGiay ,
-        SoLuongNhap , GiaNhap , ThanhTien 
-    )
-    VALUES (
-        p_SoPhieuNhapKho ,p_MaChiTietGiay ,
-        p_SoLuongNhap , p_GiaNhap , p_ThanhTien 
-    );
-END; $$
-DELIMITER ;
-
-
 DELIMITER $$
 create procedure USP_XoaPhieuNhapKho(
         p_SoPhieuNhapKho int)
@@ -741,12 +774,13 @@ DELIMITER ;
 DELIMITER $$
 create procedure USP_GetListPhieuChi()
 BEGIN
-Select C.SoPhieuNhapKho,C.TenNguoiDung, C.NgayLap,C.SoPhieuChi, C.TongTien, D.TenNhaCungCap from (
-Select A.SoPhieuChi, A.TongTien, A.NgayNhapKho, B.TenNguoiDung, A.MaNhaCungCap, A.SoPhieuNhapKho
-from (Select *  from ShoesStoreManagement.PHIEUCHI) A 
-left join  ShoesStoreManagement.NGUOIDUNG B USING (MaNguoiDung)) C
-left join ShoesStoreManagement.NHACUNGCAP on 
-D.MaNhaCungCap= C.MaNhaCungCap;
+Select C.SoPhieuNhapKho,C.TenNguoiDung, C.NgayLap,C.SoPhieuChi, C.TongTien, E.TenNhaCungCap
+from (
+    Select A.SoPhieuChi, A.TongTien, A.NgayLap, B.TenNguoiDung, D.MaNhaCungCap, A.SoPhieuNhapKho
+    from (Select *  from ShoesStoreManagement.PHIEUCHI where IsDeleted = false) A 
+    left join  ShoesStoreManagement.NGUOIDUNG B USING (MaNguoiDung)
+    left join ShoesStoreManagement.PHIEUNHAPKHO D USING (SoPhieuNhapKho)) C
+left join ShoesStoreManagement.NHACUNGCAP E USING (MaNhaCungCap) ;
 END; $$
 DELIMITER ;
 
@@ -754,12 +788,13 @@ DELIMITER ;
 DELIMITER $$
 create procedure USP_GetPhieuChiByID(p_SoPhieuChi int)
 BEGIN
-Select C.SoPhieuNhapKho,C.TenNguoiDung, C.NgayLap,C.SoPhieuChi, C.TongTien, D.TenNhaCungCap from (
-Select A.SoPhieuChi, A.TongTien, A.NgayNhapKho, B.TenNguoiDung, A.MaNhaCungCap, A.SoPhieuNhapKho
-from (Select *  from ShoesStoreManagement.PHIEUCHI where SoPhieuChi = p_SoPhieuChi) A 
-left join  ShoesStoreManagement.NGUOIDUNG B USING (MaNguoiDung)) C
-left join ShoesStoreManagement.NHACUNGCAP on 
-D.MaNhaCungCap= C.MaNhaCungCap;
+Select C.SoPhieuNhapKho,C.TenNguoiDung, C.NgayLap,C.SoPhieuChi, C.TongTien, E.TenNhaCungCap
+from (
+    Select A.SoPhieuChi, A.TongTien, A.NgayLap, B.TenNguoiDung, D.MaNhaCungCap, A.SoPhieuNhapKho
+    from (Select *  from ShoesStoreManagement.PHIEUCHI where IsDeleted = false and SoPhieuChi = p_SoPhieuChi) A 
+    left join  ShoesStoreManagement.NGUOIDUNG B USING (MaNguoiDung)
+    left join ShoesStoreManagement.PHIEUNHAPKHO D USING (SoPhieuNhapKho)) C
+left join ShoesStoreManagement.NHACUNGCAP E USING (MaNhaCungCap) ;
 END; $$
 DELIMITER ;
 
@@ -769,17 +804,20 @@ create procedure USP_ThemPhieuChi(
     p_NgayLap DATETIME, 
     p_TongTien DECIMAL(17,0), p_GhiChu NVARCHAR(1000))
 BEGIN
-    INSERT INTO ShoesStoreManagement.PHIEUNHAPKHO(
+    INSERT INTO ShoesStoreManagement.PHIEUCHI(
     SoPhieuNhapKho,MaNguoiDung ,
     NgayLap , 
     TongTien , GhiChu )
-VALUES (
+    VALUES (
     p_SoPhieuNhapKho,
     p_MaNguoiDung ,
     p_NgayLap , 
     p_TongTien , 
     p_GhiChu 
-);
+    );
+    Update ShoesStoreManagement.PHIEUNHAPKHO 
+    set PHIEUNHAPKHO.IsPaid = true
+    where PHIEUNHAPKHO.SoPhieuNhapKho = p_SoPhieuNhapKho;
 END; $$
 DELIMITER ;
 
@@ -902,10 +940,11 @@ DELIMITER ;
 DELIMITER $$
 create procedure USP_GetListPhieuBanHang()
 BEGIN
-Select C.SoPhieuBanHang,C.TenNguoiDung, C.NgayBan, C.PhuongThucThanhToan, C.TongTien, D.TenNguoiDung as TenKhachHang, D.SDT from (
-Select A.SoPhieuBanHang, A.TongTien, A.NgayBan, B.TenNguoiDung, A.MaKhachHang, A.PhuongThucThanhToan
-from (Select *  from ShoesStoreManagement.PHIEUBANHANG ) A 
-left join  ShoesStoreManagement.NGUOIDUNG B USING (MaNguoiDung)) C
+Select C.SoPhieuBanHang,C.TenNguoiDung, C.NgayBan, C.PhuongThucThanhToan, C.TongTien, C.GhiChu, D.TenNguoiDung as TenKhachHang, D.SDT, C.MaKhachHang
+from (
+    Select A.SoPhieuBanHang, A.TongTien, A.NgayBan, B.TenNguoiDung, A.MaKhachHang, A.PhuongThucThanhToan, A.GhiChu
+    from (Select *  from ShoesStoreManagement.PHIEUBANHANG ) A 
+    left join  ShoesStoreManagement.NGUOIDUNG B USING (MaNguoiDung)) C
 left join ShoesStoreManagement.NGUOIDUNG D on 
 D.MaNguoiDung = C.MaKhachHang;
 END; $$
@@ -994,7 +1033,7 @@ DELIMITER ;
 DELIMITER $$
 create procedure USP_GetChiTietPhieuBanHangByID(p_SoPhieuBanHang int)
 BEGIN
-    Select C.Anh, C.TenGiay, C.GioiTinh, D.TenSize, A.GiaBan, A.SoLuongMua, A.ThanhTien, A.SoPhieuBanHang
+    Select C.Anh, C.TenGiay, C.GioiTinh, D.TenSize, A.GiaBan, A.SoLuongMua, A.ThanhTien, A.SoPhieuBanHang, A.MaChiTietGiay
     from ShoesStoreManagement.CHITIETPHIEUBANHANG A 
     left join ShoesStoreManagement.CHITIETGIAY B 
     on A.MaChiTietGiay = B.MaChiTietGiay
@@ -1179,7 +1218,7 @@ DELIMITER ;
 DELIMITER $$
 create procedure USP_GetChiTietGioHangByID(p_MaGioHang int)
 BEGIN
-    Select C.Anh, C.TenGiay, C.GioiTinh, A.GiaBan , D.TenSize, A.SoLuongMua, A.ThanhTien, A.MaGioHang
+    Select C.Anh, C.TenGiay, C.GioiTinh, A.GiaBan , D.TenSize, A.SoLuongMua, A.ThanhTien, A.MaGioHang , A.MaChiTietGiay
     from ShoesStoreManagement.CHITIETGIOHANG A 
     left join ShoesStoreManagement.CHITIETGIAY B 
     on A.MaChiTietGiay = B.MaChiTietGiay

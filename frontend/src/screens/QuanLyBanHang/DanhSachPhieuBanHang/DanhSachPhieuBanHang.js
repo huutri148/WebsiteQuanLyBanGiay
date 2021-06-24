@@ -128,7 +128,7 @@ const DanhSachPhieuBanHang = (props) => {
       {
         type: "Label",
         title: "Tổng Tiền",
-        value: item.TongTien.toLocaleString("it-IT"),
+        value: Number(item.TongTien).toLocaleString("it-IT"),
       },
       {
         type: "Label",
@@ -321,6 +321,7 @@ const DanhSachPhieuBanHang = (props) => {
               type = "bill" 
               id = {id}
               header = "Phiếu Bán Hàng"
+              detailHeader = "Chi Tiết Phiếu Bán Hàng"
               headCells = {detailsHeadCells}
               groupBoxes = {groupBoxes}/>
           </Popup>

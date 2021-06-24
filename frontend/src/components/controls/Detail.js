@@ -54,7 +54,7 @@ const Detail = (props) => {
   // CSS class
   const classes = useStyles();
   //props
-  const { type, id, header, groupBoxes, headCells, Print } = props;
+  const { type, id, header,detailHeader, groupBoxes, headCells } = props;
   //hooks
   const [details, setDetails] = useState([]);
   //data TODO: add optional later
@@ -126,12 +126,9 @@ const Detail = (props) => {
             value={item.value}
           />
         ))}
-        <Button onClick={() => Print()} color="primary" variant="contained">
-          In Phiếu
-        </Button>
       </Paper>
       <Paper className={classes.paper} style={{ width: "72%", margin: 0 }}>
-        <label className={classes.cardHeader}>Chi Tiết Phiếu</label>
+        <label className={classes.cardHeader}>{detailHeader}</label>
         <hr className={classes.hr} />
         <TableContainer className={classes.table}>
           <TblContainer>
@@ -160,13 +157,49 @@ const Detail = (props) => {
                       {item.TenSize}
                     </TableCell>
                     <TableCell component="td" scope="row">
-                      {item.GiaBan.toLocaleString("it-IT")}
+                      {Number(item.GiaBan).toLocaleString("it-IT")}
                     </TableCell>
                     <TableCell component="td" scope="row">
                       {item.SoLuongMua}
                     </TableCell>
                     <TableCell component="td" scope="row">
-                      {item.ThanhTien.toLocaleString("it-IT")}
+                      {Number(item.ThanhTien).toLocaleString("it-IT")}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            )}
+            {(type === "recdocket") && (
+              <TableBody>
+                {recordsAfterPagingAndSorting().map((item, index) => (
+                  <TableRow
+                    key={item.MaChiTietGiay}
+                    style={
+                      index % 2
+                        ? { background: "#eee" }
+                        : { background: "white" }
+                    }
+                  >
+                    <TableCell component="td" width="40%" scope="row">
+                      <ProductCard
+                        imgUrl={item.Anh}
+                        PrimaryText={item.TenGiay}
+                      />
+                    </TableCell>
+                    <TableCell component="td" scope="row">
+                      {item.GioiTinh}
+                    </TableCell>
+                    <TableCell component="td" scope="row">
+                      {item.TenSize}
+                    </TableCell>
+                    <TableCell component="td" scope="row">
+                      {Number(item.GiaNhap).toLocaleString("it-IT")}
+                    </TableCell>
+                    <TableCell component="td" scope="row">
+                      {item.SoLuongNhap}
+                    </TableCell>
+                    <TableCell component="td" scope="row">
+                      {Number(item.ThanhTien).toLocaleString("it-IT")}
                     </TableCell>
                   </TableRow>
                 ))}

@@ -33,14 +33,13 @@ import {
   deleteGioHang,
 } from "../../../redux/actions/gioHangAction";
 import { fetchListNguoiDung } from "../../../redux/actions/nguoiDungAction";
-import { DSGHHeadCell, DSGHHeaderCSV } from "../ThongTinQuanLyGioHang";
+import { DSGHHeadCell } from "../ThongTinQuanLyGioHang";
 import ConfirmDialog from "../../../components/controls/ConfirmDialog";
 import Popup from "../../../components/controls/Popup";
 import Detail from "../../../components/controls/Detail";
 import { detailsHeadCells } from "../ThongTinQuanLyGioHang";
 import Loading from "../../../components/Loadable/Loading";
 import BillToPrint from "../BillToPrint";
-import { CSVLink } from "react-csv";
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -253,15 +252,9 @@ const DanhSachGioHang = (props) => {
               </div>
               <div className={classes.actions}>
                 <Tooltip title="Tải file csv">
-                  <CSVLink
-                    data={tableData}
-                    filename={"DS-GioHang.csv"}
-                    headers={DSGHHeaderCSV}
-                  >
-                    <IconButton className={classes.actionsButton}>
-                      <CloudDownload />
-                    </IconButton>
-                  </CSVLink>
+                  <IconButton className={classes.actionsButton}>
+                    <CloudDownload />
+                  </IconButton>
                 </Tooltip>
                 <Tooltip title="In">
                   <IconButton className={classes.actionsButton}>
