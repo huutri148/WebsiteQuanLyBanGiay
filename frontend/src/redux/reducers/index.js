@@ -58,6 +58,9 @@ const rootReducer = combineReducers({
   User: nguoiDungReducer.setUserReducer,
   //ChucVu
   ListChucVu: chucVuReducer.listChucVuReducer,
+  ListPhanQuyen: chucVuReducer.listDutyPermissionsReducer,
+  ListQuyen: chucVuReducer.listPermissionsReducer,
+  AddPhanQuyen: chucVuReducer.addDutyPermissionsReducer,
   //Gio Hang
   ListGioHang: gioHangReducer.cartListReducer,
   UpdateGioHang: gioHangReducer.cartUpdateReducer,
