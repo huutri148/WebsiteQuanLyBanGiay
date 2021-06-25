@@ -464,19 +464,47 @@ WHERE NGUOIDUNG.TenDangNhap=p_TenDangNhap;
 end; $$
 DELIMITER ;
 
+DELIMITER $$
+create procedure USP_ThemChucVu(p_TenChucVu VARCHAR(255))
+BEGIN
+INSERT INTO ShoesStoreManagement.CHUCVU(TenChucVu) values (p_TenChucVu);
+END; $$
+DELIMITER ;
 
--- DELIMITER $$
--- create procedure USP_GetListGiay()
--- BEGIN
--- Select E.TenGiay, F.TenHangSanXuat, E.TenMau, E.GioiTinh, E.SoLuong from (
--- Select C.TenGiay, C.MaHangSanXuat, C.GioiTinh, C.SoLuong, D.TenMau from (
--- Select A.TenGiay, A.MaMau, A.MaHangSanXuat, A.GioiTinh, B.SoLuong
--- from (Select MaGiay, Sum(SoLuong) as SoLuong from ShoesStoreManagement.CHITIETGIAY GROUP BY MaGiay) B
--- LEFT JOIN ShoesStoreManagement.GIAY A USING (MaGiay)) C left join ShoesStoreManagement.MAU D using (MaMau)) E 
--- LEFT JOIN ShoesStoreManagement.HANGSANXUAT F using (MaHangSanXuat);
--- END; $$
--- DELIMITER ;
+DELIMITER $$
+create procedure USP_GetListQuyen()
+BEGIN
+SELECT * from ShoesStoreManagement.QUYEN;
+END; $$
+DELIMITER ;
 
+DELIMITER $$
+create procedure USP_GetListPhanQuyen()
+BEGIN
+SELECT * from ShoesStoreManagement.PHANQUYEN;
+END; $$
+DELIMITER ;
+
+DELIMITER $$
+create procedure USP_GetListPhanQuyenById(p_MaChucVu int)
+BEGIN
+SELECT MaQuyen from ShoesStoreManagement.PHANQUYEN where PHANQUYEN.MaChucVu = p_MaChucVu;
+END; $$
+DELIMITER ;
+
+DELIMITER $$
+create procedure USP_ThemPhanQuyen(p_MaChucVu int, p_MaQuyen int)
+BEGIN
+INSERT INTO ShoesStoreManagement.PHANQUYEN(MaChucVu,MaQuyen) values (p_MaChucVu,p_MaQuyen);
+END; $$
+DELIMITER ;
+
+DELIMITER $$
+create procedure USP_XoaTrangPhanQuyen(p_MaChucVu int)
+BEGIN
+DELETE from ShoesStoreManagement.PHANQUYEN where PHANQUYEN.MaChucVu = p_MaChucVu;
+END; $$
+DELIMITER ;
 
 
 DELIMITER $$
@@ -1754,8 +1782,38 @@ insert into NGUOIDUNG(MaChucVu,TenNguoiDung,TenDangNhap,MatKhau,SDT,DiaChi,Email
 insert into NGUOIDUNG(MaChucVu,TenNguoiDung,TenDangNhap,MatKhau,SDT,DiaChi,Email,Avatar,IsDeleted) values (3,"Trần Duy Khánh","nhanvienketoan","$2b$10$djNGrIGniLagvoO7hVF71OLwHWeljTGAiaWrEsPNe54EKR0Q.Ypz6","01212801223","SG","duykhanh@duykhanh","https://firebasestorage.googleapis.com/v0/b/shoesstoremanagement.appspot.com/o/images%2F101851419_1624396714409946_119877887734633891_n.jpg?alt=media&token=6571513c-4935-4acb-8c05-f26d6a70a9b4",false);
 insert into NGUOIDUNG(MaChucVu,TenNguoiDung,TenDangNhap,MatKhau,SDT,DiaChi,Email,Avatar,IsDeleted) values (4,"PapaSuke","nhanvienkho","$2b$10$djNGrIGniLagvoO7hVF71OLwHWeljTGAiaWrEsPNe54EKR0Q.Ypz6","01212801223","SG","duykhanh@duykhanh","https://firebasestorage.googleapis.com/v0/b/shoesstoremanagement.appspot.com/o/images%2F190160691_1194075634366693_3734862780601815562_n.jpg?alt=media&token=eef14f76-f939-4e87-8e29-1ddbe38ec07a",false);
 
+insert into QUYEN(MaQuyen,TenQuyen) values (1,"Quản Lý Sản Phẩm");
+insert into QUYEN(MaQuyen,TenQuyen) values (2,"Quản Lý Bán Hàng");
+insert into QUYEN(MaQuyen,TenQuyen) values (3,"Quản Lý Người Dùng");
+insert into QUYEN(MaQuyen,TenQuyen) values (4,"Quản Lý Nhà Cung Cấp");
+insert into QUYEN(MaQuyen,TenQuyen) values (5,"Quản Lý Đặt Hàng");
+insert into QUYEN(MaQuyen,TenQuyen) values (6,"Quản Lý Nhập Kho");
+insert into QUYEN(MaQuyen,TenQuyen) values (7,"Quản Lý Giỏ Hàng");
+insert into QUYEN(MaQuyen,TenQuyen) values (8,"Báo Cáo Lợi Nhuận");
+insert into QUYEN(MaQuyen,TenQuyen) values (9,"Báo Cáo Tồn Kho");
+insert into QUYEN(MaQuyen,TenQuyen) values (10,"Báo Cáo Bán Hàng");
 
-
+-- admin toan quyen
+insert into PHANQUYEN(MaChucVu,MaQuyen) values (1,1);
+insert into PHANQUYEN(MaChucVu,MaQuyen) values (1,2);
+insert into PHANQUYEN(MaChucVu,MaQuyen) values (1,3);
+insert into PHANQUYEN(MaChucVu,MaQuyen) values (1,4);
+insert into PHANQUYEN(MaChucVu,MaQuyen) values (1,5);
+insert into PHANQUYEN(MaChucVu,MaQuyen) values (1,6);
+insert into PHANQUYEN(MaChucVu,MaQuyen) values (1,7);
+insert into PHANQUYEN(MaChucVu,MaQuyen) values (1,8);
+insert into PHANQUYEN(MaChucVu,MaQuyen) values (1,9);
+insert into PHANQUYEN(MaChucVu,MaQuyen) values (1,10);
+-- ban hang: ban hang + gio hang
+insert into PHANQUYEN(MaChucVu,MaQuyen) values (2,2);
+insert into PHANQUYEN(MaChucVu,MaQuyen) values (2,7);
+-- ke toan: bao cao loi nhuan + bao cao ban hang
+insert into PHANQUYEN(MaChucVu,MaQuyen) values (3,8);
+insert into PHANQUYEN(MaChucVu,MaQuyen) values (3,10);
+-- kho: dat hang, nhap kho, ton kho
+insert into PHANQUYEN(MaChucVu,MaQuyen) values (4,5);
+insert into PHANQUYEN(MaChucVu,MaQuyen) values (4,6);
+insert into PHANQUYEN(MaChucVu,MaQuyen) values (4,9);
 
 
 CALL USP_ThemGioHang(3);

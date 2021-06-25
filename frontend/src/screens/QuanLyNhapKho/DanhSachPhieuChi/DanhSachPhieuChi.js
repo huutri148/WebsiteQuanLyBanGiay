@@ -30,9 +30,7 @@ import { useDispatch, useSelector } from "react-redux";
 import useTable from "../../../components/useTable";
 import moment from 'moment'
 import Popup from "../../../components/controls/Popup";
-import Detail from "../../../components/controls/Detail";
 import { fetchListPhieuChi} from "../../../redux/actions/phieuChiAction";
-//import paymentToPrint from "../paymentToPrint";
 const useStyles = makeStyles((theme) => ({
   title: {
     padding: theme.spacing(4, 0),
@@ -126,7 +124,8 @@ const DanhSachPhieuChi = (props) => {
       },
     });
   };
-  const print = () => {
+  const print = (item) => {
+    setPayment(item);
     var toPrint = document.getElementById('content');
 
     var popupWin = window.open('', '_blank', 'width=500,height=1000'); //create new page     
@@ -242,7 +241,7 @@ const DanhSachPhieuChi = (props) => {
                       </TableCell>
                       <TableCell component="th" scope="row">
                         <Tooltip title="In Phiếu">
-                          <IconButton onClick = {() => handlePrintClick(item)}>
+                          <IconButton onClick = {() => print(item)}>
                             <Print style={{ color: green[500] }}/>
                           </IconButton>
                         </Tooltip>
@@ -254,46 +253,36 @@ const DanhSachPhieuChi = (props) => {
               <TblPagination />
             </TableContainer>
           </Paper>
-          <Popup
-            title="In Phiếu Nhập Kho"
-            openPopup={openPrintPopup}
-            setOpenPopup={setOpenPrintPopup}>
-                          <div id="content">
-                <div style={{ display: 'inline-block' }}>
-                    <li><b>Cửa Hàng Giày SneakerLand</b></li>
-                    <li>Địa chỉ: 29N1, Tân Lập, Đông Hoà, Dĩ An, Bình Dương</li>
-                    <li>Số Điện Thoại: 01212801223</li>
+          <div style = {{display: "none"}}>
+            <div id="content">
+              <div style={{ display: 'inline-block' }}>
+                <li><b>Cửa Hàng Giày SneakerLand</b></li>
+                <li>Địa chỉ: 29N1, Tân Lập, Đông Hoà, Dĩ An, Bình Dương</li>
+                <li>Số Điện Thoại: 01212801223</li>
                 </div>
                 <div>
-                    <h1 style={{ flexGrow: 1, textAlign: "center" }}>Phiếu Chi</h1>
-                    <table style={{ borderCollapse: "collapse", width: "100%" }}>
-                        <tr>
-                            <td><b>Số Phiếu Chi:&nbsp;&nbsp;</b>{payment.SoPhieuChi}</td>
-                        </tr>
-                        <tr>
-                            <td><b>Số Phiếu Nhập Kho:&nbsp;&nbsp;</b>{payment.SoPhieuNhapKho}</td>
-                            <td><b>Nhà Cung Cấp:&nbsp;&nbsp;</b>{payment.TenNhaCungCap}</td>
-                        </tr>
-                        <tr>
-                            <td><b>Tổng Tiền:&nbsp;&nbsp;</b>{Number(payment.TongTien).toLocaleString("it-IT")}</td>
-                            <td><b>Người Lập:&nbsp;&nbsp;</b>{payment.TenNguoiDung}</td>
-                        </tr>
-                        <tr>
-                            <td><b>Ngày Lập:&nbsp;&nbsp;</b>{moment(payment.NgayLap).format("DD/MM/YYYY")}</td>
-                            <td><b>Ghi Chú:&nbsp;&nbsp;</b>{payment.GhiChu}</td>
-                        </tr>
-                    </table>
+                  <h1 style={{ flexGrow: 1, textAlign: "center" }}>Phiếu Chi</h1>
+                  <table style={{ borderCollapse: "collapse", width: "100%" }}>
+                    <tr>
+                        <td><b>Số Phiếu Chi:&nbsp;&nbsp;</b>{payment.SoPhieuChi}</td>
+                    </tr>
+                    <tr>
+                        <td><b>Số Phiếu Nhập Kho:&nbsp;&nbsp;</b>{payment.SoPhieuNhapKho}</td>
+                        <td><b>Nhà Cung Cấp:&nbsp;&nbsp;</b>{payment.TenNhaCungCap}</td>
+                    </tr>
+                    <tr>
+                        <td><b>Tổng Tiền:&nbsp;&nbsp;</b>{Number(payment.TongTien).toLocaleString("it-IT")}</td>
+                        <td><b>Người Lập:&nbsp;&nbsp;</b>{payment.TenNguoiDung}</td>
+                    </tr>
+                    <tr>
+                        <td><b>Ngày Lập:&nbsp;&nbsp;</b>{moment(payment.NgayLap).format("DD/MM/YYYY")}</td>
+                        <td><b>Ghi Chú:&nbsp;&nbsp;</b>{payment.GhiChu}</td>
+                    </tr>
+                  </table>
                 </div>
                 <br />
-            </div>
-            <div>
-                <Tooltip title="In">
-                    <IconButton onClick = {() => print()}>
-                        <Print style={{ color: green[500] }}/>
-                    </IconButton>
-                </Tooltip>
-            </div>
-          </Popup>
+              </div>
+          </div>
         </div>
       )}
     </>
