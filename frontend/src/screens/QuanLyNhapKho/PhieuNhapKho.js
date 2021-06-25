@@ -63,7 +63,6 @@ const headCells = [
   { id: "HanhDong", disableSorting: true },
 ];
 const PhieuNhapKho = (props) => {
-  const [selectedProducts, setSelectedProducts] = useState([]);
   //styles
   const classes = useStyles();
   //fetch
@@ -83,7 +82,7 @@ const PhieuNhapKho = (props) => {
   const [size, setSize] = useState(0);
   const [amountError, setAmountError] = useState(false);
   const [priceError, setPriceError] = useState(false);
-  const [openPopup, setOpenPopup] = useState(false);
+  const [selectedProducts, setSelectedProducts] = useState([]);
   const [filterFn, setFilterFn] = useState({
     fn: (items) => {
       return items;
@@ -148,7 +147,6 @@ const PhieuNhapKho = (props) => {
     setAmount(item.amount);
     setTotal(item.total);
     setPrice(item.price);
-    setOpenPopup(true);
   };
   //handle submit
   const handleSubmitClick = () => {

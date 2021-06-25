@@ -5,8 +5,8 @@ const PhieuChi = {};
 PhieuChi.Create = async function (data, result) {
   var conn = db.getConnection();
   var dataPhieuChi = [
-    data.MaNguoiDung,
     data.SoPhieuNhapKho,
+    data.MaNguoiDung,
     data.NgayLap,
     data.TongTien,
     data.GhiChu,

@@ -11,6 +11,7 @@ import {
   makeStyles,
   Tooltip,
   Button,
+  Typography
 } from "@material-ui/core";
 import { green } from '@material-ui/core/colors';
 import {
@@ -19,6 +20,7 @@ import {
   FilterList,
   ViewColumn,
   Edit,
+  Check,
   Print,
   Assignment,
   Delete,
@@ -28,6 +30,7 @@ import { useDispatch, useSelector } from "react-redux";
 import useTable from "../../../components/useTable";
 import moment from 'moment'
 import Popup from "../../../components/controls/Popup";
+import XacNhanThanhToan from "../XacNhanThanhToan";
 import Detail from "../../../components/controls/Detail";
 import { fetchListPhieuNhapKho, deletePhieuNhapKho} from "../../../redux/actions/phieuNhapKhoAction";
 import RecdocketToPrint from "../RecdocketToPrint";
@@ -83,6 +86,7 @@ const headCells = [
   { id: "TenNhaCungCap", label: "Tên Nhà Cung Cấp" },
   { id: "TongTien", label: "Tổng Tiền" },
   { id: "TenNguoiDung", label: "Người lập", disableSorting: true },
+  { id: "ThanhToan", label: "Thanh Toán", disableSorting: true },
   { id: "actions", disableSorting: true  },
 ];
 const detailsHeadCells = [
@@ -103,13 +107,14 @@ const DanhSachPhieuNhapKho = (props) => {
   //passing value
   const { loading: phieuNhapKhoLoading, error: phieuNhapKhoError, listPhieuNhapKho } = recdocketList;
   //data
-  const [recdockets, setrecdockets] = useState([]);
-  const [recdocket, setrecdocket] = useState({});
+  const [recdockets, setRecdockets] = useState([]);
+  const [recdocket, setRecdocket] = useState({});
   //hooks
   const [id, setId] = useState(0);
   const [openPrintPopup, setOpenPrintPopup] = useState(false);
   const [openDetailPopup, setOpenDetailPopup] = useState(false);
   const [openDeletePopup, setOpenDeletePopup] = useState(false);
+  const [openPayPopup, setOpenPayPopup] = useState(false);
   const [ignored, forceUpdate] = useState(false);
   // Props in Screens
   const [filterFn, setFilterFn] = useState({
@@ -198,9 +203,13 @@ const DanhSachPhieuNhapKho = (props) => {
   const handleEditClick = (item) => {
     if(item.IsPaid === 0)
       {
-        props.setValue(2);
+        props.setValue(3);
         props.setRecdocket(item);
       }
+  }
+  const handlePayClick = (item) => {
+    setOpenPayPopup(true);
+    setRecdocket(item);
   }
   const handleSearch = (e) => {
     let target = e.target;
@@ -225,7 +234,7 @@ const DanhSachPhieuNhapKho = (props) => {
         });
         return result;
       }, []);
-      setrecdockets(recdocketsData);
+      setRecdockets(recdocketsData);
     }
   }, [listPhieuNhapKho]);
   //fetch data
@@ -299,17 +308,28 @@ const DanhSachPhieuNhapKho = (props) => {
                         {item.TenNhaCungCap}
                       </TableCell>
                       <TableCell component="th" scope="row">
-                        {item.TongTien.toLocaleString("it-IT")}
+                        {Number(item.TongTien).toLocaleString("it-IT")}
                       </TableCell>
                       <TableCell component="th" scope="row">
                         {item.TenNguoiDung}
                       </TableCell>
                       <TableCell component="th" scope="row">
-                      <Tooltip title="Sửa phiếu">
-                          <IconButton onClick = {() => handleEditClick(item)} disabled = {item.IsPaid === 1 ? 'disabled' : ''}>
-                            <Edit color={item.IsPaid === 0 ? "primary" : "disabled"}/>
-                          </IconButton>
-                        </Tooltip>
+                        <Typography
+                        onClick = {()=>handlePayClick(item)}
+                          className={classes.status}
+                          style={{
+                            backgroundColor: item.IsDeleted
+                              ? "#FF3D57"
+                              : (item.IsPaid === 1 &&
+                                  "rgba(9,182,109,1)") ||
+                                (item.IsPaid === 0 && "#FFAF38"),
+                            boxShadow: " 0 2px 2px 1px rgba(0,0,0,0.24)",
+                          }}
+                        >
+                          {item.IsPaid === 1 ? "Đã thanh toán" : "Chưa thanh toán"}
+                        </Typography>
+                      </TableCell>
+                      <TableCell component="th" scope="row">
                         <Tooltip title="Xem chi tiết">
                           <IconButton onClick = {() => handleDetailClick(item)}>
                             <Assignment color="primary"/>
@@ -320,11 +340,24 @@ const DanhSachPhieuNhapKho = (props) => {
                             <Print style={{ color: green[500] }}/>
                           </IconButton>
                         </Tooltip>
-                        <Tooltip title="Xoá Phiếu">
-                        <IconButton onClick = {() => handleDeleteClick(item)} disabled = {item.IsPaid === 1 ? 'disabled' : ''}>
-                            <Delete  color={item.IsPaid === 0 ? "secondary" : "disabled"}/>
+                        {item.IsPaid === 0 && 
+                        <Tooltip title="Sửa phiếu">
+                          <IconButton onClick = {() => handleEditClick(item)}>
+                            <Edit color= "primary"/>
                           </IconButton>
-                        </Tooltip>
+                        </Tooltip>}
+                        {item.IsPaid === 0 && 
+                        <Tooltip title="Thanh toán">
+                          <IconButton onClick = {() => handlePayClick(item)}>
+                            <Check color= "primary"/>
+                          </IconButton>
+                        </Tooltip>}
+                        {item.IsPaid === 0 && 
+                        <Tooltip title="Xoá Phiếu">
+                        <IconButton onClick = {() => handleDeleteClick(item)} >
+                            <Delete  color="secondary"/>
+                          </IconButton>
+                        </Tooltip>}
                       </TableCell>
                     </TableRow>
                   ))}
@@ -363,6 +396,14 @@ const DanhSachPhieuNhapKho = (props) => {
                 Xác Nhận
               </Button>
               </div>
+          </Popup>
+          <Popup
+            title={"Tạo Phiếu Chi Cho Phiếu Nhập Kho Số " + recdocket.SoPhieuNhapKho}
+            openPopup={openPayPopup}
+            setOpenPopup={setOpenPayPopup}>
+              <XacNhanThanhToan
+                recdocket = {recdocket}
+              />
           </Popup>
         </div>
       )}

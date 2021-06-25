@@ -6,6 +6,7 @@ import * as nhaCungCapReducer from "./nhaCungCapReducer";
 import * as nguoiDungReducer from "./nguoiDungReducer";
 import * as phieuBanHangReducer from "./phieuBanHangReducer";
 import * as phieuNhapKhoReducer from "./phieuNhapKhoReducer";
+import * as phieuChiReducer from "./phieuChiReducer";
 import * as phieuDatHangReducer from "./phieuDatHangReducer";
 import * as chucVuReducer from "./chucVuReducer";
 import * as gioHangReducer from "./gioHangReducer";
@@ -41,6 +42,9 @@ const rootReducer = combineReducers({
   UpdatePhieuNhapKho: phieuNhapKhoReducer.recdocketUpdateReducer,
   DeletePhieuNhapKho: phieuNhapKhoReducer.recdocketDeleteReducer,
   ListChiTietPhieuNhapKho: phieuNhapKhoReducer.recdocketDetailListReducer,
+  //phieu chi
+  ListPhieuChi: phieuChiReducer.paymentvoucherListReducer,
+  CreatePhieuChi: phieuChiReducer.paymentvoucherCreateReducer,
   //phieu dat hang
   ListPhieuDatHang: phieuDatHangReducer.orderListReducer,
   CreatePhieuDatHang: phieuDatHangReducer.orderCreateReducer,

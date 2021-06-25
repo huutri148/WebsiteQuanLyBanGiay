@@ -14,6 +14,7 @@ import {
   import { fetchListMau } from "../../redux/actions/mauAction";
   import { fetchListNhaCungCap } from "../../redux/actions/nhaCungCapAction";
   import DanhSachPhieuNhapKho from "./DanhSachPhieuNhapKho/DanhSachPhieuNhapKho";
+import DanhSachPhieuChi from "./DanhSachPhieuChi/DanhSachPhieuChi";
   
   function TabPanel(props) {
     const classes = useStyles();
@@ -76,8 +77,13 @@ import {
            setRecdocket(null);
            break;
          case 2:
+            _setValue(2);
+            setTabHeader("Danh Sách Phiếu Chi");
+            break;
+         case 3:
           _setValue(1);
            setTabHeader("Sửa Phiếu Nhập Kho");
+           break;
       }
     }
     //handle change
@@ -162,6 +168,7 @@ import {
           >
             <Tab className={classes.tabHeader} label="Danh Sách Phiếu Nhập Kho" />
             <Tab className={classes.tabHeader} label={"Phiếu Nhập Kho"} />
+            <Tab className={classes.tabHeader} label={"Danh Sách Phiếu Chi"} />
           </Tabs>
         </div>
         <label className={classes.titleHeader}>
@@ -186,6 +193,7 @@ import {
           />
         </TabPanel>
         <TabPanel value={value} index={2}>
+          <DanhSachPhieuChi />
         </TabPanel>
       </div>
     );

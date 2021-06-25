@@ -83,6 +83,7 @@ export default function GroupBox(props) {
             {type === 'Label' &&
                 <input
                     value={value}
+                    disabled={disabled}
                     defaultValue={defaultValue}
                     readOnly={true} />
             }
