@@ -12,6 +12,7 @@ import BarChartIcon from "@material-ui/icons/BarChart";
 import FolderIcon from "@material-ui/icons/Folder";
 import MoneyIcon from "@material-ui/icons/Money";
 import AssignmentIcon from "@material-ui/icons/Assignment";
+import QuestionAnswerIcon from "@material-ui/icons/QuestionAnswer";
 import { Link } from "react-router-dom";
 export const mainListItems = (
   <div>
@@ -48,6 +49,12 @@ export const mainListItems = (
         <FolderIcon />
       </ListItemIcon>
       <ListItemText primary="Đặt hàng" />
+    </ListItem>
+    <ListItem button component={Link} to="/admin/inbox">
+      <ListItemIcon>
+        <QuestionAnswerIcon />
+      </ListItemIcon>
+      <ListItemText primary="Tư vấn" />
     </ListItem>
     <ListItem button component={Link} to="/admin/recdockets">
       <ListItemIcon>

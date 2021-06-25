@@ -134,7 +134,7 @@ export const Layout = withRouter((props) => {
   };
   const handleLogout = () => {
     dispatch(logout());
-    props.history.push("/login");
+    props.history.push("/admin/login");
   };
 
   return (

@@ -10,6 +10,7 @@ import dashboarRoute from "./Dashboard/DashboardRoute";
 import quanLyNguoiDungRoute from "./QuanLyNguoiDung/QuanLyNguoiDungRoute";
 import quanLyGioHangRoute from "./QuanLyGioHang/QuanLyGioHangRoute";
 import ecommerceRoute from "./ecommerce/ecommerceRoute";
+import inboxRoute from "./Inbox/InboxRoute";
 const routes = [
   ...quanLySanPhamRoute,
   ...loginRoute,
@@ -23,6 +24,7 @@ const routes = [
   ...sessionRoute,
   ...quanLyGioHangRoute,
   ...ecommerceRoute,
+  ...inboxRoute,
 ];
 
 export default routes;

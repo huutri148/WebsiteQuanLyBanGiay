@@ -1,4 +1,4 @@
-import { Dashboard } from "./Dashboard";
+import Dashboard from "./Dashboard";
 import { Layout } from "../../components/Layout";
 const dashboard = () => (
   <Layout>

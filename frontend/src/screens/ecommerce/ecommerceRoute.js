@@ -48,7 +48,7 @@ const detail = () => {
     </div>
   );
 };
-const dashBoardRoute = [
+const ecommerceRoute = [
   {
     path: "/home",
     exact: true,
@@ -107,4 +107,4 @@ const dashBoardRoute = [
   // },
 ];
 
-export default dashBoardRoute;
+export default ecommerceRoute;

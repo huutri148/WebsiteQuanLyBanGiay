@@ -392,6 +392,75 @@ add constraint PHIEUCHI_PHIEUNHAPKHO_FK
 foreign key(SoPhieuNhapKho) references PHIEUNHAPKHO(SoPhieuNhapKho);
 
 
+CREATE TABLE TODO
+(
+    MaTODO int auto_increment PRIMARY KEY,
+    NoiDung nvarchar(1000),
+    NgayLap DATETIME DEFAULT CURRENT_TIMESTAMP,
+    isDone boolean default false,
+    IsDeleted BOOLEAN DEFAULT false
+);
+
+
+
+CREATE TABLE CHAT
+(
+    sessionId int auto_increment PRIMARY key,
+    MaNguoiDung int,
+    chatText nvarchar(1000),
+    chatTime DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+alter table CHAT
+add constraint CHAT_NGUOIDUNG_FK
+foreign key(MaNguoiDung) references NGUOIDUNG(MaNguoiDung);
+
+
+DELIMITER $$
+create procedure USP_GetListTODO()
+BEGIN
+select * from ShoesStoreManagement.TODO where TODO.IsDeleted = false;
+END; $$
+DELIMITER ;
+
+
+DELIMITER $$
+create procedure USP_GetTODOByID(p_MaTODO int)
+BEGIN
+select * from ShoesStoreManagement.TODO where TODO.MaTODO = p_MaTODO and TODO.IsDeleted = false;
+END; $$
+DELIMITER ; 
+
+DELIMITER $$
+create procedure USP_ThemTODO(p_NoiDung NVARCHAR(1000))
+BEGIN
+INSERT INTO ShoesStoreManagement.TODO (NoiDung)
+VALUES (p_NoiDung );
+END; $$
+DELIMITER ;
+
+
+DELIMITER $$
+create procedure USP_CapNhatTODO(p_MaTODO int, p_NoiDung NVARCHAR(1000), p_isDone boolean)
+BEGIN
+ UPDATE TODO 
+ SET TODO.NoiDung=p_NoiDung,
+ TODO.isDone=p_isDone
+WHERE TODO.MaTODO=p_MaTODO;
+end; $$
+DELIMITER ;
+
+
+DELIMITER $$
+create procedure USP_XoaTODO(p_MaTODO int)
+BEGIN
+ UPDATE TODO 
+ SET TODO.IsDeleted=true
+WHERE TODO.MaTODO=p_MaTODO;
+end; $$
+DELIMITER ;
+
+
 
 
 

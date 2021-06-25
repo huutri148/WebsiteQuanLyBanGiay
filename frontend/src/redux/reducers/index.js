@@ -3,6 +3,7 @@ import * as GiayReducer from "./giayReducer";
 import { listSizeReducer } from "./sizeReducer";
 import * as hangSanXuatReducer from "./hangSanXuatReducer";
 import * as nhaCungCapReducer from "./nhaCungCapReducer";
+import * as TodoReducer from "./todoReducer";
 import * as nguoiDungReducer from "./nguoiDungReducer";
 import * as phieuBanHangReducer from "./phieuBanHangReducer";
 import * as phieuNhapKhoReducer from "./phieuNhapKhoReducer";
@@ -61,6 +62,12 @@ const rootReducer = combineReducers({
   ListChiTietGioHang: gioHangReducer.cartDetailListReducer,
   Cart: gioHangReducer.cartReducer,
   CreateGioHang: gioHangReducer.cartCreateReducer,
+
+  //todo
+  ListTodo: TodoReducer.todoListReducer,
+  CreateTodo: TodoReducer.todoCreateReducer,
+  UpdateTodo: TodoReducer.todoUpdateReducer,
+  DeleteTodo: TodoReducer.todoDeleteReducer,
 });
 
 export default rootReducer;

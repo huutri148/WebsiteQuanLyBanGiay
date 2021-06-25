@@ -5,7 +5,7 @@ import { addToCart } from "../../../redux/actions/gioHangAction";
 import { fetchGiaySize } from "../../../redux/actions/giayAction";
 import GroupBox from "../../../components/controls/GroupBox/GroupBox";
 import AddShoppingCartIcon from "@material-ui/icons/AddShoppingCart";
-
+import { toast } from "react-toastify";
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
@@ -73,6 +73,8 @@ const PopupProduct = (props) => {
   const dispatch = useDispatch();
   const sizeGiay = useSelector((state) => state.SizeGiay);
   const sizeList = useSelector((state) => state.ListSize);
+  const user = useSelector((state) => state.User);
+  const { userInfo } = user;
   const { loading: sizeLoading, error: sizeError, giaySize } = sizeGiay;
   const { listSize } = sizeList;
 
@@ -97,11 +99,15 @@ const PopupProduct = (props) => {
     }
   };
   const addClick = () => {
-    const chiTiet = {
-      ...chosenSize,
-      ...item,
-    };
-    dispatch(addToCart(chiTiet, 1));
+    if (userInfo.MaNguoiDung) {
+      const chiTiet = {
+        ...chosenSize,
+        ...item,
+      };
+      dispatch(addToCart(chiTiet, 1));
+    } else {
+      toast.warning("Please login first!");
+    }
   };
   return (
     <div className={classes.root}>

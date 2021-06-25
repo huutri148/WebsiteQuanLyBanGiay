@@ -15,6 +15,7 @@ import Account from "./Account.js";
 import Cart from "./Cart.js";
 import MenuItemDropdown from "./MenuItemDropdown";
 import Div100vh from "react-div-100vh";
+import { useSelector } from "react-redux";
 
 function Header(props) {
   const [scrolled, setScrolled] = useState(false);
@@ -32,6 +33,7 @@ function Header(props) {
   const path = props.history.location.pathname.slice(12);
 
   const subHeight = useRef();
+  const { cartItems } = useSelector((state) => state.Cart);
 
   function clickToClose() {
     document.body.style.overflow = "unset";
@@ -161,13 +163,16 @@ function Header(props) {
     }
 
     let totalCartVirtual = 0;
+    for (let i in cartItems) {
+      totalCartVirtual += cartItems[i].SoLuongMua;
+    }
 
     setTotalCart(totalCartVirtual);
     window.addEventListener("scroll", onScroll);
     return () => {
       window.removeEventListener("scroll", onScroll);
     };
-  }, [location, dropdownHover, props.match.params.cate, path]);
+  }, [cartItems, location, dropdownHover, props.match.params.cate, path]);
 
   if (searchOpen || accountOpen || cartOpen) {
     document.body.style.overflow = "hidden";

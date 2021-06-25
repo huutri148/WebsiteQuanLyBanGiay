@@ -174,8 +174,8 @@ function Account(props) {
               <div className="search-form login-form fadeToRight">
                 <form className="flex-col" onSubmit={handleOnSubmit}>
                   <input
-                    type="email"
-                    placeholder="Email"
+                    type="text"
+                    placeholder="Username"
                     name="loginEmail"
                     onChange={handleOnChange}
                   />
@@ -230,8 +230,8 @@ function Account(props) {
                     onChange={handleOnChange}
                   />
                   <input
-                    type="email"
-                    placeholder="Email"
+                    type="text"
+                    placeholder="Username"
                     name="registerEmail"
                     onChange={handleOnChange}
                   />

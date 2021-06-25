@@ -14,6 +14,7 @@ const supplierRoutes = require("./routes/NhaCungCap.routes");
 const baoCaoBanHangRoutes = require("./routes/BaoCaoBanHang.routes");
 const sizeRoutes = require("./routes/Size.routes");
 const colorRoutes = require("./routes/Mau.routes");
+const todoRoutes = require("./routes/Todo.routes");
 const dutyRoutes = require("./routes/ChucVu.routes");
 
 var app = express();
@@ -42,6 +43,7 @@ app.use("/api/brands", brandRoutes);
 app.use("/api/baocaobanhangs", baoCaoBanHangRoutes);
 app.use("/api/sizes", sizeRoutes);
 app.use("/api/colors", colorRoutes);
+app.use("/api/todos", todoRoutes);
 app.use("/api/duties", dutyRoutes);
 const PORT = process.env.PORT || 5000;
 
