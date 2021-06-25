@@ -159,8 +159,10 @@ const DanhSachPhieuNhapKho = (props) => {
   }
   const handleConfirmDeleteClick = () => {
     dispatch(deletePhieuNhapKho(id));
+    let it = recdockets.findIndex(i => i.SoPhieuNhapKho === id);
+    if(it >= 0)
+      recdockets[it].IsDeleted = true;
     setOpenDeletePopup(false);
-    forceUpdate(!ignored);
   }
   const handlePrintClick = (item) => {
     setGroupBoxes ([
@@ -219,6 +221,7 @@ const DanhSachPhieuNhapKho = (props) => {
       const recdocketsData = Object.values(listPhieuNhapKho).reduce((result, value) => {
         result.push({
           ...value,
+          IsDeleted: false
         });
         return result;
       }, []);
@@ -231,7 +234,7 @@ const DanhSachPhieuNhapKho = (props) => {
       await dispatch(fetchListPhieuNhapKho());
     };
     fetchData();
-  }, [dispatch, ignored]);
+  }, [dispatch]);
     return (
     <>
       {recdockets === [] || recdockets === undefined ? (<h1>Loading</h1>) 
@@ -276,9 +279,9 @@ const DanhSachPhieuNhapKho = (props) => {
             <TableContainer className={classes.table}>
               <TblContainer>
                 <TblHead />
-                <TableBody ignored = {ignored}>
+                <TableBody>
                   {recordsAfterPagingAndSorting().map((item, index) => (
-                    <TableRow
+                    item.IsDeleted === false && <TableRow
                       key={item.SoPhieuNhapKho}
                       style={
                         index % 2
