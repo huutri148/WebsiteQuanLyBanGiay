@@ -35,6 +35,7 @@ CREATE TABLE GIAY
     MoTa NVARCHAR(1000),
     DonGiaBan DECIMAL(17,0) DEFAULT 0,
     TongSoLuong int default 0,
+    DaBan INT default 0,
     IsDeleted BOOLEAN DEFAULT false
 );
 
@@ -230,6 +231,7 @@ CREATE TABLE GIOHANG
     MaGioHang int auto_increment PRIMARY KEY,
     MaNguoiDung int not null,
     NgayLap DATETIME default CURRENT_TIMESTAMP,
+    PhuongThucThanhToan NVARCHAR(100),
     TongTien DECIMAL(17,0) default 0,
     TrangThai varchar(100),
     IsDeleted BOOLEAN DEFAULT false
@@ -1055,7 +1057,8 @@ BEGIN
     set CHITIETGIAY.SoLuong = CHITIETGIAY.SoLuong - p_SoLuongMua 
     where CHITIETGIAY.MaChiTietGiay = p_MaChiTietGiay;
     Update ShoesStoreManagement.GIAY 
-    set GIAY.TongSoLuong = GIAY.TongSoLuong - p_SoLuongMua 
+    set GIAY.TongSoLuong = GIAY.TongSoLuong - p_SoLuongMua,
+        GIAY.DaBan = GIAY.DaBan + p_SoLuongMua 
     where GIAY.MaGiay = giayID;
 END; $$
 DELIMITER ;
@@ -1183,10 +1186,10 @@ DELIMITER ;
 
 DELIMITER $$
 create procedure USP_ThemGioHang(
-    p_MaKhachHang int)
+    p_MaKhachHang int, p_PhuongThucThanhToan nvarchar(1000))
 BEGIN
-INSERT INTO ShoesStoreManagement.GIOHANG(MaNguoiDung,TrangThai)
-VALUES (p_MaKhachHang,"Đang xử lý");
+INSERT INTO ShoesStoreManagement.GIOHANG(MaNguoiDung,TrangThai,PhuongThucThanhToan)
+VALUES (p_MaKhachHang,"Đang xử lý",p_PhuongThucThanhToan);
 END; $$
 DELIMITER ;
 
@@ -1202,7 +1205,7 @@ BEGIN
         p_SoLuongMua,p_GiaBan,p_ThanhTien);
     UPDATE GIOHANG
     SET GIOHANG.TongTien = GIOHANG.TongTien + p_ThanhTien
-    WHERE GIOHANG.MaGioHang = gioHangID;
+    WHERE GIOHANG.MaGioHang = gioHangID;    
 END; $$
 DELIMITER ;
 
@@ -1248,7 +1251,7 @@ DELIMITER ;
 DELIMITER $$
 create procedure USP_GetChiTietGioHangByID(p_MaGioHang int)
 BEGIN
-    Select C.Anh, C.TenGiay, C.GioiTinh, A.GiaBan , D.TenSize, A.SoLuongMua, A.ThanhTien, A.MaGioHang
+    Select C.Anh, C.TenGiay, C.GioiTinh, A.GiaBan , D.TenSize, A.SoLuongMua, A.ThanhTien, A.MaGioHang, A.MaChiTietGiay
     from ShoesStoreManagement.CHITIETGIOHANG A 
     left join ShoesStoreManagement.CHITIETGIAY B 
     on A.MaChiTietGiay = B.MaChiTietGiay
@@ -1788,7 +1791,7 @@ insert into NGUOIDUNG(MaChucVu,TenNguoiDung,TenDangNhap,MatKhau,SDT,DiaChi,Email
 
 
 
-CALL USP_ThemGioHang(3);
+CALL USP_ThemGioHang(3,"Trả tiền mặt khi nhận hàng");
 CALL USP_ThemChiTietGioHang(1,10,6375000,63750000);
 CALL USP_ThemChiTietGioHang(2,10,6375000,63750000);
 CALL USP_ThemChiTietGioHang(3,10,6375000,63750000);
@@ -1796,19 +1799,19 @@ CALL USP_ThemChiTietGioHang(4,10,6375000,63750000);
 
 
 
-CALL USP_ThemGioHang(4);
+CALL USP_ThemGioHang(4, "Thanh toán qua MOMO");
 CALL USP_ThemChiTietGioHang(1,10,6375000,63750000);
 CALL USP_ThemChiTietGioHang(2,10,6375000,63750000);
 CALL USP_ThemChiTietGioHang(3,10,6375000,63750000);
 CALL USP_ThemChiTietGioHang(4,10,6375000,63750000);
 
-CALL USP_ThemGioHang(5);
+CALL USP_ThemGioHang(5, "Trả tiền mặt khi nhận hàng");
 CALL USP_ThemChiTietGioHang(1,10,6375000,63750000);
 CALL USP_ThemChiTietGioHang(2,10,6375000,63750000);
 CALL USP_ThemChiTietGioHang(3,10,6375000,63750000);
 CALL USP_ThemChiTietGioHang(4,10,6375000,63750000);
 
-CALL USP_ThemGioHang(6);
+CALL USP_ThemGioHang(6,"Trả tiền mặt khi nhận hàng");
 CALL USP_ThemChiTietGioHang(1,10,6375000,63750000);
 CALL USP_ThemChiTietGioHang(2,10,6375000,63750000);
 CALL USP_ThemChiTietGioHang(3,10,6375000,63750000);
@@ -1850,3 +1853,9 @@ CALL USP_ThemChiTietPhieuDatHang(20,10);
 CALL USP_ThemChiTietPhieuDatHang(30,10);
 CALL USP_ThemChiTietPhieuDatHang(40,10);
 
+
+CALL USP_ThemTODO("Check giỏ hàng");
+CALL USP_ThemTODO("Đặt hàng từ DuyKhanh");
+CALL USP_ThemTODO("Giao hàng");
+CALL USP_ThemTODO("Lập phiếu nhập kho");
+CALL USP_ThemTODO("Lập phiếu chi");

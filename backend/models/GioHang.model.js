@@ -4,9 +4,9 @@ const GioHang = {};
 
 GioHang.Create = async function (data, result) {
   var conn = db.getConnection();
-  var dataGioHang = [data.MaNguoiDung];
+  var dataGioHang = [data.MaNguoiDung, data.PhuongThucThanhToan];
 
-  var queryString = sqlString.format("CALL USP_ThemGioHang(?);", dataGioHang);
+  var queryString = sqlString.format("CALL USP_ThemGioHang(?,?);", dataGioHang);
   conn.query(queryString, (err, res) => {
     if (err) {
       //Todo: Handle error

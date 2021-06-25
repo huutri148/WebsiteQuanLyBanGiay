@@ -31,8 +31,10 @@ import {
   fetchListGioHang,
   updateGioHang,
   deleteGioHang,
+  fetchListChiTietGioHang,
 } from "../../../redux/actions/gioHangAction";
 import { fetchListNguoiDung } from "../../../redux/actions/nguoiDungAction";
+import { createPhieuBanHang } from "../../../redux/actions/phieuBanHangAction";
 import { DSGHHeadCell, DSGHHeaderCSV } from "../ThongTinQuanLyGioHang";
 import ConfirmDialog from "../../../components/controls/ConfirmDialog";
 import Popup from "../../../components/controls/Popup";
@@ -94,6 +96,11 @@ const DanhSachGioHang = (props) => {
 
   const userList = useSelector((state) => state.ListNguoiDung);
   const cartList = useSelector((state) => state.ListGioHang);
+  const { listChiTietGioHang } = useSelector(
+    (state) => state.ListChiTietGioHang
+  );
+
+  const { userInfo } = useSelector((state) => state.User);
   const { loading: userLoading, listNguoiDung } = userList;
   const { loading: cartLoading, listGioHang } = cartList;
 
@@ -111,7 +118,7 @@ const DanhSachGioHang = (props) => {
     subTitle: "",
   });
   const [groupBoxes, setGroupBoxes] = useState([]);
-  const [selectedItem, setSelectedItem] = useState();
+  const [selectedItem, setSelectedItem] = useState(null);
   const [openDetailPopup, setOpenDetailPopup] = useState(false);
   const [openPrintPopup, setOpenPrintPopup] = useState(false);
   const { TblContainer, TblHead, TblPagination, recordsAfterPagingAndSorting } =
@@ -149,6 +156,31 @@ const DanhSachGioHang = (props) => {
     };
     if (typeof userLoading === "undefined") fetchUserData();
   }, []);
+  useEffect(() => {
+    if (selectedItem !== null) {
+      const data = Object.values(listChiTietGioHang).reduce((result, value) => {
+        result.push({
+          ...value,
+        });
+        return result;
+      }, []);
+      if (data.length !== 0) {
+        const cart = listGioHang[selectedItem];
+        const PBH = {
+          MaNguoiDung: userInfo.MaNguoiDung,
+          MaKhachHang: cart.MaNguoiDung,
+          TongTien: cart.TongTien,
+          PhuongThucThanhToan: cart.PhuongThucThanhToan,
+          ChiTietPhieuBanHang: data,
+          NgayBan: moment(cart.NgayLap).format("YYYY-MM-DD") + "",
+          GhiChu: null,
+        };
+        dispatch(createPhieuBanHang(PBH));
+        setSelectedItem(null);
+        setUpdateData(!updateData);
+      }
+    }
+  }, [listChiTietGioHang]);
 
   const handleDetail = (item) => {
     setGroupBoxes([
@@ -218,7 +250,8 @@ const DanhSachGioHang = (props) => {
       isOpen: false,
     });
     dispatch(updateGioHang(item.MaGioHang));
-    setUpdateData(!updateData);
+    setSelectedItem(item.MaGioHang);
+    dispatch(fetchListChiTietGioHang(item.MaGioHang));
   };
 
   const handlePrintClick = (item) => {

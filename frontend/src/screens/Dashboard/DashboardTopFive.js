@@ -39,10 +39,10 @@ export default function DashboardTopFive(props) {
                       className="top-user flex"
                     >
                       <img src={item.Anh} className="top-user-avt" alt=""></img>
-                      <p className="top-user-name">{item.TenSanPham}</p>
+                      <p className="top-user-name">{item.TenGiay}</p>
                     </div>
                     <div style={{ width: "80px", textAlign: "center" }}>
-                      {item.SoLuongMua}
+                      {item.DaBan}
                     </div>
                   </div>
                 );

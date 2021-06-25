@@ -40,6 +40,7 @@ const createCart = async (req, res) => {
 
   const cart = {
     MaNguoiDung: req.body.MaNguoiDung,
+    PhuongThucThanhToan: req.body.PhuongThucThanhToan,
     ChiTietGioHang: req.body.ChiTietGioHang,
   };
 

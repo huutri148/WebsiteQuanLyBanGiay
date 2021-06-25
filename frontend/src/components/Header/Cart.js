@@ -27,6 +27,7 @@ function Account(props) {
           SoLuongMua: item.SoLuongMua,
           GiaBan: item.DonGiaBan,
           ThanhTien: item.ThanhTien,
+          PhuongThucThanhToan: "Trả tiền mặt khi nhận hàng",
         });
         return result;
       }, []);
