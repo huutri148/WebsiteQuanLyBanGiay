@@ -11,6 +11,7 @@ import * as phieuDatHangReducer from "./phieuDatHangReducer";
 import * as chucVuReducer from "./chucVuReducer";
 import * as gioHangReducer from "./gioHangReducer";
 import mauReducer from "./mauReducer";
+import * as chatReducer from "./chatReducer";
 const rootReducer = combineReducers({
   //giay size mau
   ListGiay: GiayReducer.listGiayReducer,
@@ -68,6 +69,10 @@ const rootReducer = combineReducers({
   CreateTodo: TodoReducer.todoCreateReducer,
   UpdateTodo: TodoReducer.todoUpdateReducer,
   DeleteTodo: TodoReducer.todoDeleteReducer,
+
+  //chat
+  Room: chatReducer.roomReducer,
+  DetailRooms: chatReducer.listDetailRoomReducer,
 });
 
 export default rootReducer;

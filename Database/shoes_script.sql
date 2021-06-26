@@ -405,17 +405,85 @@ CREATE TABLE TODO
 
 
 
-CREATE TABLE CHAT
+CREATE TABLE CHATROOM
 (
-    sessionId int auto_increment PRIMARY key,
+    MaPhong int auto_increment PRIMARY key,
     MaNguoiDung int,
-    chatText nvarchar(1000),
-    chatTime DATETIME DEFAULT CURRENT_TIMESTAMP
+    ChatText nvarchar(1000),
+    ChatTime DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
-alter table CHAT
-add constraint CHAT_NGUOIDUNG_FK
+alter table CHATROOM
+add constraint CHATROOM_NGUOIDUNG_FK
 foreign key(MaNguoiDung) references NGUOIDUNG(MaNguoiDung);
+
+
+CREATE TABLE NOIDUNGCHAT
+(
+    MessageID int auto_increment PRIMARY Key,
+    MessageTime DATETIME DEFAULT CURRENT_TIMESTAMP,
+    MessageContent nvarchar(1000),
+    IsFromAdmin BOOLEAN default false,
+    MaPhong int
+);
+
+
+alter table NOIDUNGCHAT
+add constraint NOIDUNGCHAT_CHATROOM_FK
+foreign key(MaPhong) references CHATROOM(MaPhong);
+
+
+
+DELIMITER $$
+create procedure USP_GetListChatRoom()
+BEGIN
+select * from ShoesStoreManagement.CHATROOM;
+END; $$
+DELIMITER ;
+
+
+DELIMITER $$
+create procedure USP_GetListDetailRoom()
+BEGIN
+select * from ShoesStoreManagement.NOIDUNGCHAT;
+END; $$
+DELIMITER ;
+
+
+
+DELIMITER $$
+create procedure USP_GetNoiDungChatRoom(p_RoomID int)
+BEGIN
+select * from ShoesStoreManagement.NOIDUNGCHAT where NOIDUNGCHAT.MaPhong = p_RoomID;
+END; $$
+DELIMITER ;
+
+
+
+DELIMITER $$
+create procedure USP_ThemChatRoom(p_MaNguoiDung int, p_ChatTime datetime, p_ChatText nvarchar(1000))
+BEGIN
+    Insert Into ShoesStoreManagement.CHATROOM(
+        MaNguoiDung, ChatTime, ChatText
+    ) VALUES (
+        p_MaNguoiDung, p_ChatTime, p_ChatText
+    );
+END; $$
+DELIMITER ;
+
+
+DELIMITER $$
+create procedure USP_ThemNoiDungChatRoom(p_RoomID int, p_time nvarchar(1000), p_NoiDung nvarchar(1000), p_IsFromAdmin boolean)
+BEGIN
+    insert into ShoesStoreManagement.NOIDUNGCHAT(
+        MaPhong, MessageTime, MessageContent, IsFromAdmin
+    ) values(
+        p_RoomID, STR_TO_DATE( p_time, '%d-%m-%Y %h:%i:%s'), p_NoiDung, p_IsFromAdmin
+    );
+END; $$
+DELIMITER ;
+
+
 
 
 DELIMITER $$
@@ -1859,3 +1927,6 @@ CALL USP_ThemTODO("Đặt hàng từ DuyKhanh");
 CALL USP_ThemTODO("Giao hàng");
 CALL USP_ThemTODO("Lập phiếu nhập kho");
 CALL USP_ThemTODO("Lập phiếu chi");
+
+
+

@@ -4,10 +4,19 @@ import "./App/App.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faComment, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import { withRouter } from "react-router-dom";
+import socketIOClient from "socket.io-client";
+import { useSelector, useDispatch } from "react-redux";
+import { fetchRoomChat } from "../redux/actions/chatAction";
+import * as moment from "moment";
 
+const ENDPOINT = "http://localhost:5000";
 function OpenChatBtn(props) {
+  const socket = socketIOClient(ENDPOINT);
+  const dispatch = useDispatch();
   const messageRef = useRef();
   const inputRef = useRef();
+  const { userInfo } = useSelector((state) => state.User);
+  const { room } = useSelector((state) => state.Room);
   const [openChat, setOpenChat] = useState(false);
   const [onHover, setOnHover] = useState(false);
   const [inputValue, setInputValue] = useState("");
@@ -19,41 +28,44 @@ function OpenChatBtn(props) {
   const [userInfoExist, setUserInfoExist] = useState(false);
 
   useEffect(() => {
-    // if (userInfo) {
-    //     setUserName(userInfo.userName)
-    //     setUserEmail(userInfo.userEmail)
-    //     setUserInfoExist(true)
-    //     sessionStorage.removeItem('chat-id')
-    //     sessionStorage.setItem('chat-id', userInfo._id);
-    // }
-    // if (!sessionStorage.getItem('chat-id')) {
-    //     sessionStorage.setItem('chat-id', Math.floor(Math.random() * 190000000) + 100000000);
-    // }
-    // axios.get(`http://pe.heromc.net:4000/chat/${sessionStorage.getItem('chat-id')}`)
-    //     .then(res => {
-    //         if (res.data.length > 0)
-    //             setChatList(res.data[0].chatContent)
-    //     }
-    // )
-  }, []);
+    if (userInfo.MaNguoiDung) {
+      setUserName(userInfo.TenNguoiDung);
+      setUserEmail(userInfo.Email);
+      setUserInfoExist(true);
+      sessionStorage.removeItem("chat-id");
+      sessionStorage.setItem("chat-id", userInfo.MaNguoiDung);
+    }
+    if (!sessionStorage.getItem("chat-id")) {
+      sessionStorage.setItem(
+        "chat-id",
+        Math.floor(Math.random() * 190000000) + 100000000
+      );
+    }
+    const id = sessionStorage.getItem("chat-id");
+    if (id != undefined) dispatch(fetchRoomChat(id));
+  }, [userInfo]);
 
   useEffect(() => {
-    // socket.emit('join', {
-    //     sessionId: sessionStorage.getItem('chat-id'),
-    //     isAdmin: false
-    // })
-    // socket.on('sendFirstInfo', (data)=> {
-    //     if (data.length > 0) setChatList(data[0].chatContent)
-    // })
-    // socket.on('thread', (data)=> {
-    //     setChatList(data.chatContent)
-    // })
-    // socket.on("admin-msg", function(data) {
-    //     setChatList(chatList=> [...chatList, data]);
-    //     setTimeout(()=>{
-    //         messageRef.current.scrollIntoView({ behavior: "smooth" })
-    //     }, 100)
-    // })
+    if (room.length > 0) setChatList(room);
+  }, [room]);
+
+  useEffect(() => {
+    socket.emit("join", {
+      sessionId: sessionStorage.getItem("chat-id"),
+      isAdmin: false,
+    });
+    socket.on("sendFirstInfo", (data) => {
+      if (data.length > 0) setChatList(data[0].chatContent);
+    });
+    socket.on("thread", (data) => {
+      setChatList(data.chatContent);
+    });
+    socket.on("admin-msg", (data) => {
+      setChatList((chatList) => [...chatList, data]);
+      setTimeout(() => {
+        messageRef.current.scrollIntoView({ behavior: "smooth" });
+      }, 100);
+    });
   }, []);
 
   const handleChange = (event) => {
@@ -63,42 +75,48 @@ function OpenChatBtn(props) {
 
   const sendFirstChatOnSubmit = (event) => {
     event.preventDefault();
-    //     socket.emit("firstMessage", {
-    //       userInfo: null,
-    //       sessionId: sessionStorage.getItem("chat-id"),
-    //       chatName: userName,
-    //       chatEmail: userEmail,
-    //       chatContent: [
-    //         {
-    //           text: inputValue.chatContent,
-    //           time: new Date(),
-    //         },
-    //       ],
-    //     });
-    //     setChatList((chatList) => [
-    //       ...chatList,
-    //       {
-    //         text: inputValue.chatContent,
-    //         time: new Date(),
-    //       },
-    //     ]);
+    socket.emit("firstMessage", {
+      userInfo: null,
+      sessionId: sessionStorage.getItem("chat-id"),
+      chatName: userName,
+      chatEmail: userEmail,
+      chatContent: [
+        {
+          text: inputValue.chatContent,
+          time: new Date(),
+        },
+      ],
+    });
+    setChatList((chatList) => [
+      ...chatList,
+      {
+        text: inputValue.chatContent,
+        time: new Date(),
+      },
+    ]);
   };
 
   const sendChatOnSubmit = (event) => {
     event.preventDefault();
-    //     socket.emit("messageSend", {
-    //       sessionId: sessionStorage.getItem("chat-id"),
-    //       text: inputValue.messageSend,
-    //       time: new Date(),
-    //     });
-    //     setChatList((chatList) => [
-    //       ...chatList,
-    //       { text: inputValue.messageSend, time: new Date() },
-    //     ]);
-    //     setTimeout(() => {
-    //       messageRef.current.scrollIntoView({ behavior: "smooth" });
-    //     }, 100);
-    //     inputRef.current.value = "";
+    const today = new Date();
+    socket.emit("messageSend", {
+      MaPhong: sessionStorage.getItem("chat-id"),
+      MessageContent: inputValue.messageSend,
+      MessageTime: moment(today).format("DD-MM-YYYY h:mm:ss"),
+      IsFromAdmin: false,
+    });
+
+    setChatList((chatList) => [
+      ...chatList,
+      {
+        MessageContent: inputValue.messageSend,
+        MessageTime: moment(today).format("DD-MM-YYYY h:mm:ss"),
+      },
+    ]);
+    setTimeout(() => {
+      messageRef.current.scrollIntoView({ behavior: "smooth" });
+    }, 100);
+    inputRef.current.value = "";
   };
 
   return (
@@ -234,12 +252,12 @@ function OpenChatBtn(props) {
                     <div key={index} ref={messageRef} className="chat-list">
                       {item.fromAdmin !== true && (
                         <div className="clienttext">
-                          <p>{item.text}</p>
+                          <p>{item.MessageContent}</p>
                         </div>
                       )}
                       {item.fromAdmin === true && (
                         <div className="admintext">
-                          <p>{item.text}</p>
+                          <p>{item.MessageContent}</p>
                         </div>
                       )}
                     </div>

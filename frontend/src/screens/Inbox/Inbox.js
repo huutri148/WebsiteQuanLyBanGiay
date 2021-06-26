@@ -7,8 +7,7 @@ import socketIOClient from "socket.io-client";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
-
-const ENDPOINT = "http://pe.heromc.net:4000";
+const ENDPOINT = "http://localhost:5000";
 
 export default function DashboardInbox(props) {
   const [allChatData, setAllChatData] = useState([]);
@@ -21,27 +20,28 @@ export default function DashboardInbox(props) {
   const socket = socketIOClient(ENDPOINT);
 
   useEffect(() => {
-    //     socket.emit("join", {
-    //       sessionId: "admin",
-    //       isAdmin: true,
-    //     });
-    //     socket.on("send-all-chat", (data) => {
-    //       setAllChatData(data);
-    //       setConstAllChatData(data);
-    //       if (window.innerWidth > 700) {
-    //         if (data.length > 0) {
-    //           setRoomId(data[0].sessionId);
-    //           if (messageRef.current)
-    //             messageRef.current.scrollIntoView({ behavior: "smooth" });
-    //         }
-    //       }
-    //     });
-    //     socket.on("client-msg", function (data) {
-    //       setAllChatData(data.allchat);
-    //       setConstAllChatData(data.allchat);
-    //       if (messageRef.current)
-    //         messageRef.current.scrollIntoView({ behavior: "smooth" });
-    //     });
+    socket.emit("join", {
+      sessionId: "admin",
+      isAdmin: true,
+    });
+    socket.on("send-all-chat", (data) => {
+      setAllChatData(data);
+      setConstAllChatData(data);
+      if (window.innerWidth > 700) {
+        if (data.length > 0) {
+          setRoomId(data[0].sessionId);
+          if (messageRef.current)
+            messageRef.current.scrollIntoView({ behavior: "smooth" });
+        }
+      }
+    });
+    socket.on("client-msg", function (data) {
+      console.log(data);
+      //setAllChatData(data.allchat);
+      //setConstAllChatData(data.allchat);
+      // if (messageRef.current)
+      //   messageRef.current.scrollIntoView({ behavior: "smooth" });
+    });
     if (window.innerWidth <= 700) {
       setRoomIndex(null);
     }
@@ -119,9 +119,7 @@ export default function DashboardInbox(props) {
           <div className="boxchat-list">
             {sortDateChat.length > 0 &&
               sortDateChat.map((item, index) => {
-                const date = new Date(
-                  item.chatContent[item.chatContent.length - 1].time
-                );
+                const date = new Date(item.ChatTime);
                 const toDay = new Date();
                 const day = date.getDay();
                 const dayInMonth = date.getDate();
@@ -166,7 +164,7 @@ export default function DashboardInbox(props) {
                         : "boxchat-item flex"
                     }
                     onClick={() => {
-                      setRoomId(item.sessionId);
+                      setRoomId(item.MaPhong);
                       setRoomIndex(index);
                       setTimeout(() => {
                         if (messageRef.current)

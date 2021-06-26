@@ -119,6 +119,7 @@ const DanhSachGioHang = (props) => {
   });
   const [groupBoxes, setGroupBoxes] = useState([]);
   const [selectedItem, setSelectedItem] = useState(null);
+  const [selectedForCreate, setSelectedForCreate] = useState(null);
   const [openDetailPopup, setOpenDetailPopup] = useState(false);
   const [openPrintPopup, setOpenPrintPopup] = useState(false);
   const { TblContainer, TblHead, TblPagination, recordsAfterPagingAndSorting } =
@@ -157,7 +158,7 @@ const DanhSachGioHang = (props) => {
     if (typeof userLoading === "undefined") fetchUserData();
   }, []);
   useEffect(() => {
-    if (selectedItem !== null) {
+    if (selectedForCreate !== null) {
       const data = Object.values(listChiTietGioHang).reduce((result, value) => {
         result.push({
           ...value,
@@ -165,7 +166,7 @@ const DanhSachGioHang = (props) => {
         return result;
       }, []);
       if (data.length !== 0) {
-        const cart = listGioHang[selectedItem];
+        const cart = listGioHang[selectedForCreate];
         const PBH = {
           MaNguoiDung: userInfo.MaNguoiDung,
           MaKhachHang: cart.MaNguoiDung,
@@ -176,7 +177,7 @@ const DanhSachGioHang = (props) => {
           GhiChu: null,
         };
         dispatch(createPhieuBanHang(PBH));
-        setSelectedItem(null);
+        setSelectedForCreate(null);
         setUpdateData(!updateData);
       }
     }
@@ -250,7 +251,7 @@ const DanhSachGioHang = (props) => {
       isOpen: false,
     });
     dispatch(updateGioHang(item.MaGioHang));
-    setSelectedItem(item.MaGioHang);
+    setSelectedForCreate(item.MaGioHang);
     dispatch(fetchListChiTietGioHang(item.MaGioHang));
   };
 
