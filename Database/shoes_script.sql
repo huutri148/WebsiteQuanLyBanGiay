@@ -35,6 +35,7 @@ CREATE TABLE GIAY
     MoTa NVARCHAR(1000),
     DonGiaBan DECIMAL(17,0) DEFAULT 0,
     TongSoLuong int default 0,
+    DaBan INT default 0,
     IsDeleted BOOLEAN DEFAULT false
 );
 
@@ -230,6 +231,7 @@ CREATE TABLE GIOHANG
     MaGioHang int auto_increment PRIMARY KEY,
     MaNguoiDung int not null,
     NgayLap DATETIME default CURRENT_TIMESTAMP,
+    PhuongThucThanhToan NVARCHAR(100),
     TongTien DECIMAL(17,0) default 0,
     TrangThai varchar(100),
     IsDeleted BOOLEAN DEFAULT false
@@ -391,6 +393,143 @@ foreign key(MaNguoiDung) references NGUOIDUNG(MaNguoiDung);
 alter table PHIEUCHI
 add constraint PHIEUCHI_PHIEUNHAPKHO_FK
 foreign key(SoPhieuNhapKho) references PHIEUNHAPKHO(SoPhieuNhapKho);
+
+
+CREATE TABLE TODO
+(
+    MaTODO int auto_increment PRIMARY KEY,
+    NoiDung nvarchar(1000),
+    NgayLap DATETIME DEFAULT CURRENT_TIMESTAMP,
+    isDone boolean default false,
+    IsDeleted BOOLEAN DEFAULT false
+);
+
+
+
+CREATE TABLE CHATROOM
+(
+    MaPhong int auto_increment PRIMARY key,
+    MaNguoiDung int,
+    ChatText nvarchar(1000),
+    ChatTime DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+alter table CHATROOM
+add constraint CHATROOM_NGUOIDUNG_FK
+foreign key(MaNguoiDung) references NGUOIDUNG(MaNguoiDung);
+
+
+CREATE TABLE NOIDUNGCHAT
+(
+    MessageID int auto_increment PRIMARY Key,
+    MessageTime DATETIME DEFAULT CURRENT_TIMESTAMP,
+    MessageContent nvarchar(1000),
+    IsFromAdmin BOOLEAN default false,
+    MaPhong int
+);
+
+
+alter table NOIDUNGCHAT
+add constraint NOIDUNGCHAT_CHATROOM_FK
+foreign key(MaPhong) references CHATROOM(MaPhong);
+
+
+
+DELIMITER $$
+create procedure USP_GetListChatRoom()
+BEGIN
+select * from ShoesStoreManagement.CHATROOM;
+END; $$
+DELIMITER ;
+
+
+DELIMITER $$
+create procedure USP_GetListDetailRoom()
+BEGIN
+select * from ShoesStoreManagement.NOIDUNGCHAT;
+END; $$
+DELIMITER ;
+
+
+
+DELIMITER $$
+create procedure USP_GetNoiDungChatRoom(p_RoomID int)
+BEGIN
+select * from ShoesStoreManagement.NOIDUNGCHAT where NOIDUNGCHAT.MaPhong = p_RoomID;
+END; $$
+DELIMITER ;
+
+
+
+DELIMITER $$
+create procedure USP_ThemChatRoom(p_MaNguoiDung int, p_ChatTime datetime, p_ChatText nvarchar(1000))
+BEGIN
+    Insert Into ShoesStoreManagement.CHATROOM(
+        MaNguoiDung, ChatTime, ChatText
+    ) VALUES (
+        p_MaNguoiDung, p_ChatTime, p_ChatText
+    );
+END; $$
+DELIMITER ;
+
+
+DELIMITER $$
+create procedure USP_ThemNoiDungChatRoom(p_RoomID int, p_time nvarchar(1000), p_NoiDung nvarchar(1000), p_IsFromAdmin boolean)
+BEGIN
+    insert into ShoesStoreManagement.NOIDUNGCHAT(
+        MaPhong, MessageTime, MessageContent, IsFromAdmin
+    ) values(
+        p_RoomID, STR_TO_DATE( p_time, '%d-%m-%Y %h:%i:%s'), p_NoiDung, p_IsFromAdmin
+    );
+END; $$
+DELIMITER ;
+
+
+
+
+DELIMITER $$
+create procedure USP_GetListTODO()
+BEGIN
+select * from ShoesStoreManagement.TODO where TODO.IsDeleted = false;
+END; $$
+DELIMITER ;
+
+
+DELIMITER $$
+create procedure USP_GetTODOByID(p_MaTODO int)
+BEGIN
+select * from ShoesStoreManagement.TODO where TODO.MaTODO = p_MaTODO and TODO.IsDeleted = false;
+END; $$
+DELIMITER ; 
+
+DELIMITER $$
+create procedure USP_ThemTODO(p_NoiDung NVARCHAR(1000))
+BEGIN
+INSERT INTO ShoesStoreManagement.TODO (NoiDung)
+VALUES (p_NoiDung );
+END; $$
+DELIMITER ;
+
+
+DELIMITER $$
+create procedure USP_CapNhatTODO(p_MaTODO int, p_NoiDung NVARCHAR(1000), p_isDone boolean)
+BEGIN
+ UPDATE TODO 
+ SET TODO.NoiDung=p_NoiDung,
+ TODO.isDone=p_isDone
+WHERE TODO.MaTODO=p_MaTODO;
+end; $$
+DELIMITER ;
+
+
+DELIMITER $$
+create procedure USP_XoaTODO(p_MaTODO int)
+BEGIN
+ UPDATE TODO 
+ SET TODO.IsDeleted=true
+WHERE TODO.MaTODO=p_MaTODO;
+end; $$
+DELIMITER ;
 
 
 
@@ -1072,7 +1211,8 @@ BEGIN
     set CHITIETGIAY.SoLuong = CHITIETGIAY.SoLuong - p_SoLuongMua 
     where CHITIETGIAY.MaChiTietGiay = p_MaChiTietGiay;
     Update ShoesStoreManagement.GIAY 
-    set GIAY.TongSoLuong = GIAY.TongSoLuong - p_SoLuongMua 
+    set GIAY.TongSoLuong = GIAY.TongSoLuong - p_SoLuongMua,
+        GIAY.DaBan = GIAY.DaBan + p_SoLuongMua 
     where GIAY.MaGiay = giayID;
 END; $$
 DELIMITER ;
@@ -1200,10 +1340,10 @@ DELIMITER ;
 
 DELIMITER $$
 create procedure USP_ThemGioHang(
-    p_MaKhachHang int)
+    p_MaKhachHang int, p_PhuongThucThanhToan nvarchar(1000))
 BEGIN
-INSERT INTO ShoesStoreManagement.GIOHANG(MaNguoiDung,TrangThai)
-VALUES (p_MaKhachHang,"Đang xử lý");
+INSERT INTO ShoesStoreManagement.GIOHANG(MaNguoiDung,TrangThai,PhuongThucThanhToan)
+VALUES (p_MaKhachHang,"Đang xử lý",p_PhuongThucThanhToan);
 END; $$
 DELIMITER ;
 
@@ -1219,7 +1359,7 @@ BEGIN
         p_SoLuongMua,p_GiaBan,p_ThanhTien);
     UPDATE GIOHANG
     SET GIOHANG.TongTien = GIOHANG.TongTien + p_ThanhTien
-    WHERE GIOHANG.MaGioHang = gioHangID;
+    WHERE GIOHANG.MaGioHang = gioHangID;    
 END; $$
 DELIMITER ;
 
@@ -1835,7 +1975,7 @@ insert into PHANQUYEN(MaChucVu,MaQuyen) values (4,6);
 insert into PHANQUYEN(MaChucVu,MaQuyen) values (4,9);
 
 
-CALL USP_ThemGioHang(3);
+CALL USP_ThemGioHang(3,"Trả tiền mặt khi nhận hàng");
 CALL USP_ThemChiTietGioHang(1,10,6375000,63750000);
 CALL USP_ThemChiTietGioHang(2,10,6375000,63750000);
 CALL USP_ThemChiTietGioHang(3,10,6375000,63750000);
@@ -1843,19 +1983,19 @@ CALL USP_ThemChiTietGioHang(4,10,6375000,63750000);
 
 
 
-CALL USP_ThemGioHang(4);
+CALL USP_ThemGioHang(4, "Thanh toán qua MOMO");
 CALL USP_ThemChiTietGioHang(1,10,6375000,63750000);
 CALL USP_ThemChiTietGioHang(2,10,6375000,63750000);
 CALL USP_ThemChiTietGioHang(3,10,6375000,63750000);
 CALL USP_ThemChiTietGioHang(4,10,6375000,63750000);
 
-CALL USP_ThemGioHang(5);
+CALL USP_ThemGioHang(5, "Trả tiền mặt khi nhận hàng");
 CALL USP_ThemChiTietGioHang(1,10,6375000,63750000);
 CALL USP_ThemChiTietGioHang(2,10,6375000,63750000);
 CALL USP_ThemChiTietGioHang(3,10,6375000,63750000);
 CALL USP_ThemChiTietGioHang(4,10,6375000,63750000);
 
-CALL USP_ThemGioHang(6);
+CALL USP_ThemGioHang(6,"Trả tiền mặt khi nhận hàng");
 CALL USP_ThemChiTietGioHang(1,10,6375000,63750000);
 CALL USP_ThemChiTietGioHang(2,10,6375000,63750000);
 CALL USP_ThemChiTietGioHang(3,10,6375000,63750000);
@@ -1896,4 +2036,13 @@ CALL USP_ThemChiTietPhieuDatHang(10,10);
 CALL USP_ThemChiTietPhieuDatHang(20,10);
 CALL USP_ThemChiTietPhieuDatHang(30,10);
 CALL USP_ThemChiTietPhieuDatHang(40,10);
+
+
+CALL USP_ThemTODO("Check giỏ hàng");
+CALL USP_ThemTODO("Đặt hàng từ DuyKhanh");
+CALL USP_ThemTODO("Giao hàng");
+CALL USP_ThemTODO("Lập phiếu nhập kho");
+CALL USP_ThemTODO("Lập phiếu chi");
+
+
 

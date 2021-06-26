@@ -8,7 +8,7 @@ const quanLyNhapKho = () => (
 
 const quanLyNhapKhoRoute = [
   {
-    path: "/recdockets",
+    path: "/admin/recdockets",
     exact: true,
     component: quanLyNhapKho,
     private: true,

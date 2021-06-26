@@ -8,7 +8,7 @@ const quanLyNguoiDung = () => (
 
 const quanLyNguoiDungRoute = [
   {
-    path: "/users",
+    path: "/admin/users",
     exact: true,
     component: quanLyNguoiDung,
     private: true,

@@ -8,7 +8,7 @@ const quanLyBanHang = () => (
 
 const quanLyBanHangRoute = [
   {
-    path: "/bills",
+    path: "/admin/bills",
     exact: true,
     component: quanLyBanHang,
     private: true,

@@ -8,7 +8,7 @@ const quanLyGioHang = () => (
 
 const quanLyGioHangRoute = [
   {
-    path: "/carts",
+    path: "/admin/carts",
     exact: true,
     component: quanLyGioHang,
     private: true,

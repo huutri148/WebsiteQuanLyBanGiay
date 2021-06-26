@@ -44,7 +44,7 @@ Giay.GetByID = (maGiay, callBack) => {
     }
     if (res[0]) {
       console.log("Found Product:".yellow.bold, res[0]);
-      callBack(res[0]);
+      callBack(res[0][0]);
       return;
     }
   });

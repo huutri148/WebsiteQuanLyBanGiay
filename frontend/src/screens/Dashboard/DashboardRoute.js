@@ -1,4 +1,4 @@
-import { Dashboard } from "./Dashboard";
+import Dashboard from "./Dashboard";
 import { Layout } from "../../components/Layout";
 const dashboard = () => (
   <Layout>
@@ -8,7 +8,7 @@ const dashboard = () => (
 
 const dashBoardRoute = [
   {
-    path: "/",
+    path: "/admin/dashboard",
     exact: true,
     component: dashboard,
     private: true,

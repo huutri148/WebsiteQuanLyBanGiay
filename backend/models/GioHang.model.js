@@ -4,9 +4,9 @@ const GioHang = {};
 
 GioHang.Create = async function (data, result) {
   var conn = db.getConnection();
-  var dataGioHang = [data.MaNguoiDung];
+  var dataGioHang = [data.MaNguoiDung, data.PhuongThucThanhToan];
 
-  var queryString = sqlString.format("CALL USP_ThemGioHang(?);", dataGioHang);
+  var queryString = sqlString.format("CALL USP_ThemGioHang(?,?);", dataGioHang);
   conn.query(queryString, (err, res) => {
     if (err) {
       //Todo: Handle error
@@ -14,10 +14,9 @@ GioHang.Create = async function (data, result) {
     } else {
       console.log(`Create GioHang successfully`);
       data.ChiTietGioHang.map(function await(chiTietGioHang) {
-        console.log(chiTietGioHang);
         let qr = sqlString.format(
           `CALL USP_ThemChiTietGioHang(${chiTietGioHang.MaChiTietGiay},
-                            ${chiTietGioHang.SoLuongMua},${chiTietGioHang.ThanhTien});`
+                            ${chiTietGioHang.SoLuongMua},${chiTietGioHang.GiaBan},${chiTietGioHang.ThanhTien});`
         );
         conn.query(qr, (error, response) => {
           if (error) {

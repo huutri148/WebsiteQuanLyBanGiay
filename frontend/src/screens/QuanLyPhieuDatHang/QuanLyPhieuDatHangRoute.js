@@ -8,7 +8,7 @@ const quanLyPhieuDatHang = () => (
 
 const quanLyPhieuDatHangRoute = [
   {
-    path: "/orders",
+    path: "/admin/orders",
     exact: true,
     component: quanLyPhieuDatHang,
     private: true,

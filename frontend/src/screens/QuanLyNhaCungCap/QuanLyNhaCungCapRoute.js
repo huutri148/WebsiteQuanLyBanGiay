@@ -8,7 +8,7 @@ const quanLyNhaCungCap = () => (
 
 const quanLyNhaCungCapRoute = [
   {
-    path: "/suppliers",
+    path: "/admin/suppliers",
     exact: true,
     component: quanLyNhaCungCap,
     private: true,

@@ -52,7 +52,7 @@ const useStyles = makeStyles((theme) => ({
 
 export const Login = withRouter((props) => {
   const [loginParams, setLoginParams] = useState({
-    TenDangNhap: "huutri1480",
+    TenDangNhap: "admin",
     MatKhau: "123456",
   });
   const dispatch = useDispatch();
@@ -61,7 +61,7 @@ export const Login = withRouter((props) => {
   const { userInfo } = userLogin;
   useEffect(() => {
     if (isAuthenticated()) {
-      props.history.replace("/");
+      props.history.replace("/admin/dashboard");
     }
   }, [userInfo]);
 
