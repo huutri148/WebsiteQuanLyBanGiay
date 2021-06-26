@@ -10,6 +10,8 @@ import {
   IconButton,
   makeStyles,
   Tooltip,
+  Button,
+  Typography
 } from "@material-ui/core";
 import { green } from '@material-ui/core/colors';
 import {
@@ -18,17 +20,17 @@ import {
   FilterList,
   ViewColumn,
   Edit,
+  Check,
   Print,
   Assignment,
+  Delete,
 } from "@material-ui/icons";
 import Input from "../../../components/controls/Input";
 import { useDispatch, useSelector } from "react-redux";
 import useTable from "../../../components/useTable";
 import moment from 'moment'
 import Popup from "../../../components/controls/Popup";
-import Detail from "../../../components/controls/Detail";
-import { fetchListPhieuBanHang , fetchListChiTietPhieuBanHang} from "../../../redux/actions/phieuBanHangAction";
-import BillToPrint from "../BillToPrint";
+import { fetchListPhieuChi} from "../../../redux/actions/phieuChiAction";
 const useStyles = makeStyles((theme) => ({
   title: {
     padding: theme.spacing(4, 0),
@@ -75,38 +77,27 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const headCells = [
-  { id: "SoPhieuBanHang", label: "Số phiếu" },
-  { id: "TenKhachHang", label: "Người mua", disableSorting: true },
-  { id: "NgayBan", label: "Ngày lập" },
-  { id: "TenNguoiDung", label: "Người lập", disableSorting: true },
+  { id: "SoPhieuChi", label: "Số phiếu chi" },
+  { id: "NgayChi", label: "Ngày Lập" },
+  { id: "TenNhaCungCap", label: "Tên Nhà Cung Cấp" },
   { id: "TongTien", label: "Tổng Tiền" },
-  { id: "PhuongThucThanhToan", label: "Phương Thức Thanh Toán" },
+  { id: "TenNguoiDung", label: "Người lập"},
+  { id: "SoPhieuNhapKho", label: "Số phiếu nhập kho" },
   { id: "actions", disableSorting: true  },
 ];
-const detailsHeadCells = [
-  { id: "TenGiay", label: "Tên Giày" },
-  { id: "GioiTinh", label: "Giới Tính" },
-  { id: "Size", label: "Size" },
-  { id: "DonGia", label: "Đơn Giá" },
-  { id: "SoLuong", label: "Số Lượng" },
-  { id: "ThanhTien", label: "Thành Tiền" },
-  { id: "HanhDong", disableSorting: true  },
-];
-const DanhSachPhieuBanHang = (props) => {
+const DanhSachPhieuChi = (props) => {
   // CSS class
   const classes = useStyles();
   //Fetched data
   const dispatch = useDispatch();
-  const billList = useSelector((state) => state.ListPhieuBanHang);
+  const paymentList = useSelector((state) => state.ListPhieuChi);
   //passing value
-  const { loading: phieubanhangLoading, error: phieubanhangError, listPhieuBanHang } = billList;
+  const { loading: phieuChiLoading, error: phieuChiError, listPhieuChi } = paymentList;
   //data
-  const [bills, setBills] = useState([]);
-  const [bill, setBill] = useState({});
+  const [payments, setPayments] = useState([]);
+  const [payment, setPayment] = useState({});
   //hooks
-  const [id, setId] = useState(0);
   const [openPrintPopup, setOpenPrintPopup] = useState(false);
-  const [openDetailPopup, setOpenDetailPopup] = useState(false);
   // Props in Screens
   const [filterFn, setFilterFn] = useState({
     fn: (items) => {
@@ -115,79 +106,10 @@ const DanhSachPhieuBanHang = (props) => {
   });
   
   const { TblContainer, TblHead, TblPagination, recordsAfterPagingAndSorting } =
-    useTable(bills, headCells, filterFn);
-  const [groupBoxes, setGroupBoxes] = useState([]) ;
+    useTable(payments, headCells, filterFn);
   //handle click
-  const handleDetailClick = (item) => {
-    setGroupBoxes ([
-      {
-        type: "Label",
-        title: "Tên Khách Hàng",
-        value: item.TenKhachHang,
-      },
-      {
-        type: "Label",
-        title: "Tổng Tiền",
-        value: Number(item.TongTien).toLocaleString("it-IT"),
-      },
-      {
-        type: "Label",
-        title: "Phương Thức Thanh Toán",
-        value: item.PhuongThucThanhToan,
-      },
-      {
-        type: "Label",
-        title: "Người Lập",
-        value: item.TenNguoiDung,
-      },
-      {
-        type: "Label",
-        title: "Ngày Lập",
-        value: moment(item.NgayBan).format("DD/MM/YYYY"),
-      },
-      {
-        type: "Label",
-        title: "Ghi Chú",
-        value: item.GhiChu,
-      },
-    ]);
-    setId(item.SoPhieuBanHang);
-    setOpenDetailPopup(true);
-  }
   const handlePrintClick = (item) => {
-    setGroupBoxes ([
-      {
-        type: "Label",
-        title: "Tên Khách Hàng",
-        value: item.TenKhachHang,
-      },
-      {
-        type: "Label",
-        title: "Tổng Tiền",
-        value: item.TongTien.toLocaleString("it-IT"),
-      },
-      {
-        type: "Label",
-        title: "Phương Thức Thanh Toán",
-        value: item.PhuongThucThanhToan,
-      },
-      {
-        type: "Label",
-        title: "Người Lập",
-        value: item.TenNguoiDung,
-      },
-      {
-        type: "Label",
-        title: "Ngày Lập",
-        value: moment(item.NgayBan).format("DD/MM/YYYY"),
-      },
-      {
-        type: "Label",
-        title: "Ghi Chú",
-        value: item.GhiChu,
-      },
-    ]);
-    setId(item.SoPhieuBanHang);
+    setPayment(item);
     setOpenPrintPopup(true);
   }
   const handleSearch = (e) => {
@@ -202,29 +124,52 @@ const DanhSachPhieuBanHang = (props) => {
       },
     });
   };
-  // set Bills
+  const print = (item) => {
+    setPayment(item);
+    var toPrint = document.getElementById('content');
+
+    var popupWin = window.open('', '_blank', 'width=500,height=1000'); //create new page     
+    popupWin.document.open(); //open new page
+    popupWin.document.write('<html><body onload="window.print()">')
+
+    popupWin.document.write(toPrint.innerHTML);
+    popupWin.document.write('')
+    popupWin.document.write('<p style="text-align:right; padding-right: 50px">')
+    popupWin.document.write(', Ngày .... Tháng .... Năm ....')
+    popupWin.document.write('<br>')
+    popupWin.document.write('</p>')
+    popupWin.document.write('<p style="text-align:center;float: right;margin-right: 125px;margin-top: -10px;">')
+    popupWin.document.write('Nhân viên')
+    popupWin.document.write('<br>')
+    popupWin.document.write('(Ký tên)')
+    popupWin.document.write('</p>')
+    popupWin.document.write('</body></html>');
+    popupWin.document.close();
+}
+  // set payments
   useEffect(() => {
-    if (listPhieuBanHang != undefined) 
+    if (listPhieuChi != undefined) 
     {
-      const billsData = Object.values(listPhieuBanHang).reduce((result, value) => {
+      const paymentsData = Object.values(listPhieuChi).reduce((result, value) => {
         result.push({
           ...value,
+          IsDeleted: false
         });
         return result;
       }, []);
-      setBills(billsData);
+      setPayments(paymentsData);
     }
-  }, [listPhieuBanHang]);
+  }, [listPhieuChi]);
   //fetch data
   useEffect(() => {
     const fetchData = async () => {
-      await dispatch(fetchListPhieuBanHang());
+      await dispatch(fetchListPhieuChi());
     };
     fetchData();
   }, [dispatch]);
     return (
     <>
-      {bills === [] || bills === undefined ? (<h1>Loading</h1>) 
+      {payments === [] || payments === undefined ? (<h1>Loading</h1>) 
         : 
         (
         <div>
@@ -269,7 +214,7 @@ const DanhSachPhieuBanHang = (props) => {
                 <TableBody>
                   {recordsAfterPagingAndSorting().map((item, index) => (
                     <TableRow
-                      key={item.SoPhieuBanHang}
+                      key={item.SoPhieuChi}
                       style={
                         index % 2
                           ? { background: "#eee" }
@@ -277,31 +222,26 @@ const DanhSachPhieuBanHang = (props) => {
                       }
                     >
                       <TableCell component="th" scope="row">
-                        {item.SoPhieuBanHang}
+                        {item.SoPhieuChi}
                       </TableCell>
                       <TableCell component="th" scope="row">
-                        {item.TenNguoiDung}
+                        {moment(item.NgayLap).format("DD/MM/YYYY")}
                       </TableCell>
                       <TableCell component="th" scope="row">
-                        {moment(item.NgayBan).format("DD/MM/YYYY")}
-                      </TableCell>
-                      <TableCell component="th" scope="row">
-                        {item.TenKhachHang}
+                        {item.TenNhaCungCap}
                       </TableCell>
                       <TableCell component="th" scope="row">
                         {item.TongTien.toLocaleString("it-IT")}
                       </TableCell>
                       <TableCell component="th" scope="row">
-                        {item.PhuongThucThanhToan}
+                        {item.TenNguoiDung}
                       </TableCell>
                       <TableCell component="th" scope="row">
-                        <Tooltip title="Xem chi tiết">
-                          <IconButton onClick = {() => handleDetailClick(item)}>
-                            <Assignment color="primary"/>
-                          </IconButton>
-                        </Tooltip>
+                        {item.SoPhieuNhapKho}
+                      </TableCell>
+                      <TableCell component="th" scope="row">
                         <Tooltip title="In Phiếu">
-                          <IconButton onClick = {() => handlePrintClick(item)}>
+                          <IconButton onClick = {() => print(item)}>
                             <Print style={{ color: green[500] }}/>
                           </IconButton>
                         </Tooltip>
@@ -313,31 +253,40 @@ const DanhSachPhieuBanHang = (props) => {
               <TblPagination />
             </TableContainer>
           </Paper>
-          <Popup
-            title="Thông Tin Phiếu Bán Hàng"
-            openPopup={openDetailPopup}
-            setOpenPopup={setOpenDetailPopup}>
-            <Detail 
-              type = "bill" 
-              id = {id}
-              header = "Phiếu Bán Hàng"
-              detailHeader = "Chi Tiết Phiếu Bán Hàng"
-              headCells = {detailsHeadCells}
-              groupBoxes = {groupBoxes}/>
-          </Popup>
-          <Popup
-            title="In Phiếu Bán Hàng"
-            openPopup={openPrintPopup}
-            setOpenPopup={setOpenPrintPopup}>
-              <BillToPrint 
-                 id = {id}
-                 groupBoxes = {groupBoxes}
-              />
-          </Popup>
+          <div style = {{display: "none"}}>
+            <div id="content">
+              <div style={{ display: 'inline-block' }}>
+                <li><b>Cửa Hàng Giày SneakerLand</b></li>
+                <li>Địa chỉ: 29N1, Tân Lập, Đông Hoà, Dĩ An, Bình Dương</li>
+                <li>Số Điện Thoại: 01212801223</li>
+                </div>
+                <div>
+                  <h1 style={{ flexGrow: 1, textAlign: "center" }}>Phiếu Chi</h1>
+                  <table style={{ borderCollapse: "collapse", width: "100%" }}>
+                    <tr>
+                        <td><b>Số Phiếu Chi:&nbsp;&nbsp;</b>{payment.SoPhieuChi}</td>
+                    </tr>
+                    <tr>
+                        <td><b>Số Phiếu Nhập Kho:&nbsp;&nbsp;</b>{payment.SoPhieuNhapKho}</td>
+                        <td><b>Nhà Cung Cấp:&nbsp;&nbsp;</b>{payment.TenNhaCungCap}</td>
+                    </tr>
+                    <tr>
+                        <td><b>Tổng Tiền:&nbsp;&nbsp;</b>{Number(payment.TongTien).toLocaleString("it-IT")}</td>
+                        <td><b>Người Lập:&nbsp;&nbsp;</b>{payment.TenNguoiDung}</td>
+                    </tr>
+                    <tr>
+                        <td><b>Ngày Lập:&nbsp;&nbsp;</b>{moment(payment.NgayLap).format("DD/MM/YYYY")}</td>
+                        <td><b>Ghi Chú:&nbsp;&nbsp;</b>{payment.GhiChu}</td>
+                    </tr>
+                  </table>
+                </div>
+                <br />
+              </div>
+          </div>
         </div>
       )}
     </>
   );
 };
 
-export default DanhSachPhieuBanHang;
+export default DanhSachPhieuChi;

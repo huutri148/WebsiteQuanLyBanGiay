@@ -22,19 +22,37 @@ export default function Selector(props) {
         margin: '0px',
       }),
   };
+  const {placeholder, onChange,options, defaultValue} = props;
   return (
-    props.options.length > 0 ? <Select
-        placeholder = {props.placeholder}
-        onChange={props.onChange}
-        options={props.options}
-        defaultValue = {props.options[0]}
+    defaultValue === undefined ?
+    (
+      options.length > 0 
+      ? 
+      <Select
+        placeholder = {placeholder}
+        onChange={onChange}
+        options={options}
+        defaultValue = {options[0]}
         styles={styles}
-    /> : <Select
-    placeholder = {props.placeholder}
-    onChange={props.onChange}
-    options={props.options}
-    isDisabled = {true}
-    styles={styles}
-/>
+      /> 
+      : 
+      <Select
+        placeholder = {placeholder}
+        onChange={onChange}
+        options={options}
+        isDisabled = {true}
+        styles={styles}
+      />
+    )
+    :
+    (
+      <Select
+        placeholder = {placeholder}
+        onChange={onChange}
+        options={options}
+        defaultValue = {defaultValue}
+        styles={styles}
+      /> 
+    )
   );
 }

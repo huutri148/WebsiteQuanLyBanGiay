@@ -15,15 +15,16 @@ const useStyles = makeStyles((theme) => ({
   }));
 const InfoField = (props) => {
     const classes = useStyles();
+    const {cardHeader,GroupBoxes,buttonContent,onClick,disabled} = props;
     return (
         <>
             <label
                 className={classes.cardHeader}
                 style={{ textAlign: "center" }}>
-                {props.cardHeader}
+                {cardHeader}
               </label>
               <hr className={classes.hr} />
-              {props.GroupBoxes.map((item,index) => (
+              {GroupBoxes.map((item,index) => (
                 <GroupBox
                     key = {index}
                     options = {item.options}
@@ -32,12 +33,14 @@ const InfoField = (props) => {
                     validationTip = {item.validationTip}
                     disabled={item.disabled}
                     value = {item.value}
+                    readOnly = {item.readOnly}
                     required={item.required}
+                    defaultValue = {item.defaultValue}
                     onChange = {item.onChange === undefined ? null : e => item.onChange(e)}
                     error = {item.error}/>
               ))}
-              <Button size="large" variant="contained" color="primary" onClick = {props.onClick} disabled = {props.disabled}>
-                {props.buttonContent}
+              <Button size="large" variant="contained" color="primary" onClick = {onClick} disabled = {disabled}>
+                {buttonContent}
               </Button>
               <hr className={classes.hr} />
               <label

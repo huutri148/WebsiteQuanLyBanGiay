@@ -10,6 +10,8 @@ import {
   IconButton,
   makeStyles,
   Tooltip,
+  Button,
+  Typography
 } from "@material-ui/core";
 import { green } from '@material-ui/core/colors';
 import {
@@ -18,16 +20,20 @@ import {
   FilterList,
   ViewColumn,
   Edit,
+  Check,
   Print,
   Assignment,
+  Delete,
 } from "@material-ui/icons";
 import Input from "../../../components/controls/Input";
 import { useDispatch, useSelector } from "react-redux";
 import useTable from "../../../components/useTable";
 import moment from 'moment'
 import Popup from "../../../components/controls/Popup";
+import XacNhanThanhToan from "../XacNhanThanhToan";
 import Detail from "../../../components/controls/Detail";
-import { fetchListPhieuNhapKho , fetchListChiTietPhieuNhapKho} from "../../../redux/actions/phieuNhapKhoAction";
+import { fetchListPhieuNhapKho, deletePhieuNhapKho} from "../../../redux/actions/phieuNhapKhoAction";
+import RecdocketToPrint from "../RecdocketToPrint";
 //import recdocketToPrint from "../recdocketToPrint";
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -77,16 +83,17 @@ const useStyles = makeStyles((theme) => ({
 const headCells = [
   { id: "SoPhieuNhapKho", label: "Số phiếu" },
   { id: "NgayNhapKho", label: "Ngày nhập kho" },
-  { id: "TenNguoiDung", label: "Người lập", disableSorting: true },
-  { id: "TongTien", label: "Tổng Tiền" },
   { id: "TenNhaCungCap", label: "Tên Nhà Cung Cấp" },
+  { id: "TongTien", label: "Tổng Tiền" },
+  { id: "TenNguoiDung", label: "Người lập", disableSorting: true },
+  { id: "ThanhToan", label: "Thanh Toán", disableSorting: true },
   { id: "actions", disableSorting: true  },
 ];
 const detailsHeadCells = [
   { id: "TenGiay", label: "Tên Giày" },
   { id: "GioiTinh", label: "Giới Tính" },
   { id: "Size", label: "Size" },
-  { id: "DonGia", label: "Đơn Giá" },
+  { id: "DonGiaNhap", label: "Đơn Giá Nhập" },
   { id: "SoLuong", label: "Số Lượng" },
   { id: "ThanhTien", label: "Thành Tiền" },
   { id: "HanhDong", disableSorting: true  },
@@ -100,12 +107,15 @@ const DanhSachPhieuNhapKho = (props) => {
   //passing value
   const { loading: phieuNhapKhoLoading, error: phieuNhapKhoError, listPhieuNhapKho } = recdocketList;
   //data
-  const [recdockets, setrecdockets] = useState([]);
-  const [recdocket, setrecdocket] = useState({});
+  const [recdockets, setRecdockets] = useState([]);
+  const [recdocket, setRecdocket] = useState({});
   //hooks
   const [id, setId] = useState(0);
   const [openPrintPopup, setOpenPrintPopup] = useState(false);
   const [openDetailPopup, setOpenDetailPopup] = useState(false);
+  const [openDeletePopup, setOpenDeletePopup] = useState(false);
+  const [openPayPopup, setOpenPayPopup] = useState(false);
+  const [ignored, forceUpdate] = useState(false);
   // Props in Screens
   const [filterFn, setFilterFn] = useState({
     fn: (items) => {
@@ -121,8 +131,8 @@ const DanhSachPhieuNhapKho = (props) => {
     setGroupBoxes ([
       {
         type: "Label",
-        title: "Tên Khách Hàng",
-        value: item.TenKhachHang,
+        title: "Tên Nhà Cung Cấp",
+        value: item.TenNhaCungCap,
       },
       {
         type: "Label",
@@ -131,18 +141,13 @@ const DanhSachPhieuNhapKho = (props) => {
       },
       {
         type: "Label",
-        title: "Phương Thức Thanh Toán",
-        value: item.PhuongThucThanhToan,
-      },
-      {
-        type: "Label",
         title: "Người Lập",
         value: item.TenNguoiDung,
       },
       {
         type: "Label",
-        title: "Ngày Lập",
-        value: moment(item.NgayBan).format("DD/MM/YYYY"),
+        title: "Ngày Nhập Kho",
+        value: moment(item.NgayNhapKho).format("DD/MM/YYYY"),
       },
       {
         type: "Label",
@@ -153,12 +158,23 @@ const DanhSachPhieuNhapKho = (props) => {
     setId(item.SoPhieuNhapKho);
     setOpenDetailPopup(true);
   }
+  const handleDeleteClick = (item) => {
+    setOpenDeletePopup(true);
+    setId(item.SoPhieuNhapKho);
+  }
+  const handleConfirmDeleteClick = () => {
+    dispatch(deletePhieuNhapKho(id));
+    let it = recdockets.findIndex(i => i.SoPhieuNhapKho === id);
+    if(it >= 0)
+      recdockets[it].IsDeleted = true;
+    setOpenDeletePopup(false);
+  }
   const handlePrintClick = (item) => {
     setGroupBoxes ([
       {
         type: "Label",
-        title: "Tên Khách Hàng",
-        value: item.TenKhachHang,
+        title: "Tên Nhà Cung Cấp",
+        value: item.TenNhaCungCap,
       },
       {
         type: "Label",
@@ -167,18 +183,13 @@ const DanhSachPhieuNhapKho = (props) => {
       },
       {
         type: "Label",
-        title: "Phương Thức Thanh Toán",
-        value: item.PhuongThucThanhToan,
-      },
-      {
-        type: "Label",
         title: "Người Lập",
         value: item.TenNguoiDung,
       },
       {
         type: "Label",
-        title: "Ngày Lập",
-        value: moment(item.NgayBan).format("DD/MM/YYYY"),
+        title: "Ngày Nhập Kho",
+        value: moment(item.NgayNhapKho).format("DD/MM/YYYY"),
       },
       {
         type: "Label",
@@ -188,6 +199,17 @@ const DanhSachPhieuNhapKho = (props) => {
     ]);
     setId(item.SoPhieuNhapKho);
     setOpenPrintPopup(true);
+  }
+  const handleEditClick = (item) => {
+    if(item.IsPaid === 0)
+      {
+        props.setValue(3);
+        props.setRecdocket(item);
+      }
+  }
+  const handlePayClick = (item) => {
+    setOpenPayPopup(true);
+    setRecdocket(item);
   }
   const handleSearch = (e) => {
     let target = e.target;
@@ -208,12 +230,12 @@ const DanhSachPhieuNhapKho = (props) => {
       const recdocketsData = Object.values(listPhieuNhapKho).reduce((result, value) => {
         result.push({
           ...value,
+          IsDeleted: false
         });
         return result;
       }, []);
-      setrecdockets(recdocketsData);
+      setRecdockets(recdocketsData);
     }
-    console.log(listPhieuNhapKho);
   }, [listPhieuNhapKho]);
   //fetch data
   useEffect(() => {
@@ -268,7 +290,7 @@ const DanhSachPhieuNhapKho = (props) => {
                 <TblHead />
                 <TableBody>
                   {recordsAfterPagingAndSorting().map((item, index) => (
-                    <TableRow
+                    item.IsDeleted === false && <TableRow
                       key={item.SoPhieuNhapKho}
                       style={
                         index % 2
@@ -283,13 +305,29 @@ const DanhSachPhieuNhapKho = (props) => {
                         {moment(item.NgayNhapKho).format("DD/MM/YYYY")}
                       </TableCell>
                       <TableCell component="th" scope="row">
+                        {item.TenNhaCungCap}
+                      </TableCell>
+                      <TableCell component="th" scope="row">
+                        {Number(item.TongTien).toLocaleString("it-IT")}
+                      </TableCell>
+                      <TableCell component="th" scope="row">
                         {item.TenNguoiDung}
                       </TableCell>
                       <TableCell component="th" scope="row">
-                        {item.TongTien.toLocaleString("it-IT")}
-                      </TableCell>
-                      <TableCell component="th" scope="row">
-                        {item.TenNhaCungCap}
+                        <Typography
+                        onClick = {()=>handlePayClick(item)}
+                          className={classes.status}
+                          style={{
+                            backgroundColor: item.IsDeleted
+                              ? "#FF3D57"
+                              : (item.IsPaid === 1 &&
+                                  "rgba(9,182,109,1)") ||
+                                (item.IsPaid === 0 && "#FFAF38"),
+                            boxShadow: " 0 2px 2px 1px rgba(0,0,0,0.24)",
+                          }}
+                        >
+                          {item.IsPaid === 1 ? "Đã thanh toán" : "Chưa thanh toán"}
+                        </Typography>
                       </TableCell>
                       <TableCell component="th" scope="row">
                         <Tooltip title="Xem chi tiết">
@@ -302,6 +340,24 @@ const DanhSachPhieuNhapKho = (props) => {
                             <Print style={{ color: green[500] }}/>
                           </IconButton>
                         </Tooltip>
+                        {item.IsPaid === 0 && 
+                        <Tooltip title="Sửa phiếu">
+                          <IconButton onClick = {() => handleEditClick(item)}>
+                            <Edit color= "primary"/>
+                          </IconButton>
+                        </Tooltip>}
+                        {item.IsPaid === 0 && 
+                        <Tooltip title="Thanh toán">
+                          <IconButton onClick = {() => handlePayClick(item)}>
+                            <Check color= "primary"/>
+                          </IconButton>
+                        </Tooltip>}
+                        {item.IsPaid === 0 && 
+                        <Tooltip title="Xoá Phiếu">
+                        <IconButton onClick = {() => handleDeleteClick(item)} >
+                            <Delete  color="secondary"/>
+                          </IconButton>
+                        </Tooltip>}
                       </TableCell>
                     </TableRow>
                   ))}
@@ -311,23 +367,42 @@ const DanhSachPhieuNhapKho = (props) => {
             </TableContainer>
           </Paper>
           <Popup
-            title="Thông Tin Phiếu Bán Hàng"
+            title="Thông Tin Phiếu Nhập Kho"
             openPopup={openDetailPopup}
             setOpenPopup={setOpenDetailPopup}>
             <Detail 
               type = "recdocket" 
               id = {id}
-              header = "Phiếu Bán Hàng"
+              header = "Phiếu Nhập Kho"
               headCells = {detailsHeadCells}
               groupBoxes = {groupBoxes}/>
           </Popup>
           <Popup
-            title="In Phiếu Bán Hàng"
+            title="In Phiếu Nhập Kho"
             openPopup={openPrintPopup}
             setOpenPopup={setOpenPrintPopup}>
-              <recdocketToPrint 
+              <RecdocketToPrint 
                  id = {id}
                  groupBoxes = {groupBoxes}
+              />
+          </Popup>
+          <Popup
+            title="Xoá Phiếu Nhập Kho"
+            openPopup={openDeletePopup}
+            setOpenPopup={setOpenDeletePopup}>
+              <div style = {{display: "block", fontSize: 24, textAlign: "center"}}>
+              <p>Bạn Có Chắc Muốn Xoá Phiếu Nhập Kho Này ?</p>
+              <Button size="large" variant="contained" color="primary" onClick = {() => handleConfirmDeleteClick()}>
+                Xác Nhận
+              </Button>
+              </div>
+          </Popup>
+          <Popup
+            title={"Tạo Phiếu Chi Cho Phiếu Nhập Kho Số " + recdocket.SoPhieuNhapKho}
+            openPopup={openPayPopup}
+            setOpenPopup={setOpenPayPopup}>
+              <XacNhanThanhToan
+                recdocket = {recdocket}
               />
           </Popup>
         </div>

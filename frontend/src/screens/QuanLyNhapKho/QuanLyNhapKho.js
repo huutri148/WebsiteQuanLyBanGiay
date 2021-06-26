@@ -14,6 +14,7 @@ import {
   import { fetchListMau } from "../../redux/actions/mauAction";
   import { fetchListNhaCungCap } from "../../redux/actions/nhaCungCapAction";
   import DanhSachPhieuNhapKho from "./DanhSachPhieuNhapKho/DanhSachPhieuNhapKho";
+import DanhSachPhieuChi from "./DanhSachPhieuChi/DanhSachPhieuChi";
   
   function TabPanel(props) {
     const classes = useStyles();
@@ -39,7 +40,7 @@ import {
       fontWeight: "Bold",
     },
   }));
-  const QuanLyBanHang = () => {
+  const QuanLyNhapKho = () => {
     //styles
     const classes = useStyles();
     //Fetched data
@@ -60,7 +61,31 @@ import {
     const [sizes, setSizes] = useState([]);
     const [suppliers, setSuppliers] = useState([]);
     //variables
-    const [value,setValue] = useState(0);
+    const [recdocket,setRecdocket] = useState(null);
+    const [tabHeader, setTabHeader] = useState("Danh Sách Phiếu Nhập Kho");
+    const [value,_setValue] = useState(0);
+    const setValue = (val) => {
+      switch(val)
+      {
+         case 0:
+          _setValue(0);
+           setTabHeader("Danh Sách Phiếu Nhập Kho");
+           break;
+         case 1:
+          _setValue(1);
+           setTabHeader("Lập Phiếu Nhập Kho");
+           setRecdocket(null);
+           break;
+         case 2:
+            _setValue(2);
+            setTabHeader("Danh Sách Phiếu Chi");
+            break;
+         case 3:
+          _setValue(1);
+           setTabHeader("Sửa Phiếu Nhập Kho");
+           break;
+      }
+    }
     //handle change
     const handleTabChange = (event, newValue) => {
       setValue(newValue);
@@ -142,30 +167,37 @@ import {
             onChange={handleTabChange}
           >
             <Tab className={classes.tabHeader} label="Danh Sách Phiếu Nhập Kho" />
-            <Tab className={classes.tabHeader} label="Lập Phiếu Nhập Kho" />
+            <Tab className={classes.tabHeader} label={"Phiếu Nhập Kho"} />
+            <Tab className={classes.tabHeader} label={"Danh Sách Phiếu Chi"} />
           </Tabs>
         </div>
         <label className={classes.titleHeader}>
-          {value === 1 ? "Lập Phiếu Nhập Kho" : "Danh Sách Phiếu Nhập Kho"}
+          {tabHeader}
         </label>
         <TabPanel value={value} index={0}>
-          <DanhSachPhieuNhapKho />
+          <DanhSachPhieuNhapKho 
+            setValue = {setValue} 
+            setRecdocket = {setRecdocket}
+            />
         </TabPanel>
         <TabPanel value={value} index={1}>
           <PhieuNhapKho 
             key={"PhieuNhapKho"}
+            setValue = {setValue}
             index={0}
             suppliers = {suppliers}
             sizes = {sizes}
             products = {products}
+            recdocket = {recdocket}
             isLoading = {!nhacungcapLoading && !sizeLoading && !giayLoading ? false : true}
           />
         </TabPanel>
         <TabPanel value={value} index={2}>
+          <DanhSachPhieuChi />
         </TabPanel>
       </div>
     );
   };
   
-  export default QuanLyBanHang;
+  export default QuanLyNhapKho;
   

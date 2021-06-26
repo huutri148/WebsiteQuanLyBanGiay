@@ -7,6 +7,7 @@ import * as TodoReducer from "./todoReducer";
 import * as nguoiDungReducer from "./nguoiDungReducer";
 import * as phieuBanHangReducer from "./phieuBanHangReducer";
 import * as phieuNhapKhoReducer from "./phieuNhapKhoReducer";
+import * as phieuChiReducer from "./phieuChiReducer";
 import * as phieuDatHangReducer from "./phieuDatHangReducer";
 import * as chucVuReducer from "./chucVuReducer";
 import * as gioHangReducer from "./gioHangReducer";
@@ -43,6 +44,9 @@ const rootReducer = combineReducers({
   UpdatePhieuNhapKho: phieuNhapKhoReducer.recdocketUpdateReducer,
   DeletePhieuNhapKho: phieuNhapKhoReducer.recdocketDeleteReducer,
   ListChiTietPhieuNhapKho: phieuNhapKhoReducer.recdocketDetailListReducer,
+  //phieu chi
+  ListPhieuChi: phieuChiReducer.paymentvoucherListReducer,
+  CreatePhieuChi: phieuChiReducer.paymentvoucherCreateReducer,
   //phieu dat hang
   ListPhieuDatHang: phieuDatHangReducer.orderListReducer,
   CreatePhieuDatHang: phieuDatHangReducer.orderCreateReducer,
@@ -56,6 +60,9 @@ const rootReducer = combineReducers({
   User: nguoiDungReducer.setUserReducer,
   //ChucVu
   ListChucVu: chucVuReducer.listChucVuReducer,
+  ListPhanQuyen: chucVuReducer.listDutyPermissionsReducer,
+  ListQuyen: chucVuReducer.listPermissionsReducer,
+  AddPhanQuyen: chucVuReducer.addDutyPermissionsReducer,
   //Gio Hang
   ListGioHang: gioHangReducer.cartListReducer,
   UpdateGioHang: gioHangReducer.cartUpdateReducer,

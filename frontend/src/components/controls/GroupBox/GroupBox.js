@@ -21,64 +21,70 @@ export default function GroupBox(props) {
         if (tmp === '' || phoneRegex.test(tmp))
             setNumberError(false);
     }
+    const { options, type, title, validationTip, disabled, value, required, defaultValue, onChange, error, readOnly } = props;
     return (
         <div>
             <span style={{
                 fontSize: 16,
                 fontWeight: 600,
             }}>
-                <label>{props.title}</label>
+                <label>{title}</label>
                 <label style={{
                     marginLeft: 5,
                     color: 'Red'
-                }}>{props.required ? '*' : ''}
+                }}>{required ? '*' : ''}
                 </label>
-                <ValidationTip placement="top" title={props.validationTip}>
-                    <ErrorOutline style={{ float: "right", margin: "5", width: "15", height: "15", display: props.error === true && numberError === false ? "block" : "none" }} color="secondary" />
+                <ValidationTip placement="top" title={validationTip}>
+                    <ErrorOutline style={{ float: "right", margin: "5", width: "15", height: "15", display: error === true && numberError === false ? "block" : "none" }} color="secondary" />
                 </ValidationTip>
-                <ValidationTip placement="top" title={props.title + " chỉ được nhập số"}>
+                <ValidationTip placement="top" title={title + " chỉ được nhập số"}>
                     <ErrorOutline style={{ float: "right", margin: "5", width: "15", height: "15", display: numberError === true ? "block" : "none" }} color="secondary" />
                 </ValidationTip>
             </span>
-            {props.type === 'Picker' &&
+            {type === 'Picker' &&
                 <input
-                    onChange={props.onChange}
-                    className={props.error === true ? "error" : ""}
-                    required={props.required}
-                    disabled={props.disabled}
+                    onChange={onChange}
+                    className={error === true ? "error" : ""}
+                    required={required}
+                    disabled={disabled}
                     type="date"
-                    readOnly={props.readOnly}
-                    value={props.value}
-                    defaultValue={new Date().getFullYear() + "-" + month + "-" + date} />
+                    readOnly={readOnly}
+                    value={value}
+                    defaultValue={defaultValue === null || defaultValue === undefined ? new Date().getFullYear() + "-" + month + "-" + date : defaultValue} />
             }
-            {props.type === 'TextBox' &&
+            {type === 'TextBox' &&
                 <input
-                    onChange={props.onChange}
-                    className={props.error === true ? "error" : ""}
-                    value={props.value}
-                    disabled={props.disabled}
-                    readOnly={props.readOnly}
-                    required={props.required} />
+                    onChange={onChange}
+                    className={error === true ? "error" : ""}
+                    value={value}
+                    defaultValue={defaultValue}
+                    disabled={disabled}
+                    readOnly={readOnly}
+                    required={required} />
             }
-            {props.type === 'Number' &&
+            {type === 'Number' &&
                 <input
-                    onChange={props.onChange}
+                    onChange={onChange}
                     onKeyPress={e => onlyNumbers(e)}
                     onInput={e => onInput(e)}
-                    className={(props.error === true || numberError === true) ? "error" : ""}
-                    value={props.value}
-                    disabled={props.disabled}
-                    readOnly={props.readOnly}
-                    required={props.required} />
+                    className={(error === true || numberError === true) ? "error" : ""}
+                    value={value}
+                    disabled={disabled}
+                    readOnly={readOnly}
+                    defaultValue={defaultValue}
+                    required={required} />
             }
-            {props.type === 'Select' &&
+            {type === 'Select' &&
                 <Selector
-                    options={props.options}
-                    onChange={props.onChange} />
+                    defaultValue={defaultValue}
+                    options={options}
+                    onChange={onChange} />
             }
-            {props.type === 'Label' &&
+            {type === 'Label' &&
                 <input
-                    value={props.value}
+                    value={value}
+                    disabled={disabled}
+                    defaultValue={defaultValue}
                     readOnly={true} />
             }
         </div>

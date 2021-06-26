@@ -42,7 +42,6 @@ import Detail from "../../../components/controls/Detail";
 import { detailsHeadCells } from "../ThongTinQuanLyGioHang";
 import Loading from "../../../components/Loadable/Loading";
 import BillToPrint from "../BillToPrint";
-import { CSVLink } from "react-csv";
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -287,15 +286,9 @@ const DanhSachGioHang = (props) => {
               </div>
               <div className={classes.actions}>
                 <Tooltip title="Tải file csv">
-                  <CSVLink
-                    data={tableData}
-                    filename={"DS-GioHang.csv"}
-                    headers={DSGHHeaderCSV}
-                  >
-                    <IconButton className={classes.actionsButton}>
-                      <CloudDownload />
-                    </IconButton>
-                  </CSVLink>
+                  <IconButton className={classes.actionsButton}>
+                    <CloudDownload />
+                  </IconButton>
                 </Tooltip>
                 <Tooltip title="In">
                   <IconButton className={classes.actionsButton}>

@@ -8,16 +8,16 @@ import {
 import { green } from '@material-ui/core/colors';
 import { React, useState, useEffect } from 'react'
 import { useDispatch, useSelector } from "react-redux";
-import { fetchListChiTietPhieuBanHang } from '../../redux/actions/phieuBanHangAction';
-const BillToPrint = (props) => {
+import { fetchListChiTietPhieuNhapKho } from '../../redux/actions/phieuNhapKhoAction';
+const RecdocketToPrint = (props) => {
     //props
     const { id, groupBoxes } = props;
     //hooks
     const [details, setDetails] = useState([]);
     //data TODO: add optional later
     const dispatch = useDispatch();
-    const detailList = useSelector((state) => state.ListChiTietPhieuBanHang);
-    const { loading: chitietphieubanhangLoading, error: chitietphieubanhangError, listChiTietPhieuBanHang: listDetails } = detailList;
+    const detailList = useSelector((state) => state.ListChiTietPhieuNhapKho);
+    const { loading: chitietphieunhapkhoLoading, error: chitietphieunhapkhoError, listChiTietPhieuNhapKho: listDetails } = detailList;
     //fetch data
     useEffect(() => {
         if (listDetails != undefined) {
@@ -33,12 +33,12 @@ const BillToPrint = (props) => {
     //fetch data
     useEffect(() => {
         const fetchData = async () => {
-            await dispatch(fetchListChiTietPhieuBanHang(id));
+            await dispatch(fetchListChiTietPhieuNhapKho(id));
         };
         fetchData();
     }, [dispatch]);
     const print = () => {
-        var toPrint = document.getElementById('bill');
+        var toPrint = document.getElementById('content');
 
         var popupWin = window.open('', '_blank', 'width=1000,height=1000'); //create new page     
         popupWin.document.open(); //open new page
@@ -60,17 +60,17 @@ const BillToPrint = (props) => {
     }
     return (
         <>
-            <div id="bill">
+            <div id="content">
                 <div style={{ display: 'inline-block' }}>
                     <li><b>Cửa Hàng Giày SneakerLand</b></li>
                     <li>Địa chỉ: 29N1, Tân Lập, Đông Hoà, Dĩ An, Bình Dương</li>
                     <li>Số Điện Thoại: 01212801223</li>
                 </div>
                 <div>
-                    <h1 style={{ flexGrow: 1, textAlign: "center" }}>Phiếu Bán Hàng</h1>
+                    <h1 style={{ flexGrow: 1, textAlign: "center" }}>Phiếu Nhập Kho</h1>
                     <table style={{ borderCollapse: "collapse", width: "100%" }}>
                         <tr>
-                            <td><b>Số Phiếu Bán Hàng:&nbsp;&nbsp;</b>{id}</td>
+                            <td><b>Số Phiếu Nhập Kho:&nbsp;&nbsp;</b>{id}</td>
                             <td><b>{groupBoxes[0].title}:&nbsp;&nbsp;</b>{groupBoxes[0].value}</td>
                         </tr>
                         <tr>
@@ -81,8 +81,6 @@ const BillToPrint = (props) => {
                             <td><b>{groupBoxes[3].title}:&nbsp;&nbsp;</b>{groupBoxes[3].value}</td>
                             <td><b>{groupBoxes[4].title}:&nbsp;&nbsp;</b>{groupBoxes[4].value}</td>
                         </tr>
-                        <tr>
-                            <td><b>{groupBoxes[5].title}:&nbsp;&nbsp;</b>{groupBoxes[5].value}</td>                    </tr>
                     </table>
                 </div>
                 <br />
@@ -100,7 +98,7 @@ const BillToPrint = (props) => {
                                     Size
                                 </th>
                                 <th style={{ padding: "0px 10px", border: "1px solid black" }} width="15%">
-                                    Giá Bán
+                                    Giá Nhập
                                 </th>
                                 <th style={{ padding: "0px 10px", border: "1px solid black" }} width="15%">
                                     Số Lượng
@@ -121,10 +119,10 @@ const BillToPrint = (props) => {
                                         {item.TenSize}
                                     </td>
                                     <td style={{ padding: "0px 10px", border: "1px solid black" }}>
-                                        {Number(item.GiaBan).toLocaleString("it-IT")}
+                                        {Number(item.GiaNhap).toLocaleString("it-IT")}
                                     </td>
                                     <td style={{ padding: "0px 10px", border: "1px solid black" }}>
-                                        {item.SoLuongMua}
+                                        {item.SoLuongNhap}
                                     </td>
                                     <td style={{ padding: "0px 10px", border: "1px solid black" }}>
                                         {Number(item.ThanhTien).toLocaleString("it-IT")}
@@ -148,4 +146,4 @@ const BillToPrint = (props) => {
     )
 }
 
-export default BillToPrint
+export default RecdocketToPrint
