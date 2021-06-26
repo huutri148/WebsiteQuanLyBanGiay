@@ -30,7 +30,6 @@ import Popup from "../../../components/controls/Popup";
 import useTable from "../../../components/useTable";
 import Input from "../../../components/controls/Input";
 import { fetchListChucVu, updateChucVu, createChucVu, deleteChucVu, fetchListPhanQuyen, addPermissions } from "../../../redux/actions/chucVuAction";
-import DanhSachPhanQuyen from "./DanhSachPhanQuyen";
 const useStyles = makeStyles((theme) => ({
     paper: {
         margin: theme.spacing(0, 4),
@@ -93,17 +92,18 @@ const DanhSachChucVu = () => {
     const permissionList = useSelector((state) => state.ListPhanQuyen);
     const { loading: permissionLoading, listPhanQuyen } = permissionList;
     //hooks
-    const [permissions, setPermissions] = useState([
-        { MaQuyen: 1, TenQuyen: "Quản Lý Sản Phẩm" },
-        { MaQuyen: 2, TenQuyen: "Quản Lý Bán Hàng" },
-        { MaQuyen: 3, TenQuyen: "Quản Lý Người Dùng" },
-        { MaQuyen: 4, TenQuyen: "Quản Lý Nhà Cung Cấp" },
-        { MaQuyen: 5, TenQuyen: "Quản Lý Đặt Hàng" },
-        { MaQuyen: 6, TenQuyen: "Quản Lý Nhập Kho" },
-        { MaQuyen: 7, TenQuyen: "Quản Lý Giỏ Hàng" },
-        { MaQuyen: 8, TenQuyen: "Báo Cáo Lợi Nhuận" },
-        { MaQuyen: 9, TenQuyen: "Báo Cáo Tồn Kho" },
-        { MaQuyen: 10, TenQuyen: "Báo Cáo Bán Hàng" }]);
+    const initPermissions = [
+        { MaQuyen: 1, TenQuyen: "Quản Lý Sản Phẩm", IsChecked: false },
+        { MaQuyen: 2, TenQuyen: "Quản Lý Bán Hàng", IsChecked: false },
+        { MaQuyen: 3, TenQuyen: "Quản Lý Người Dùng", IsChecked: false },
+        { MaQuyen: 4, TenQuyen: "Quản Lý Nhà Cung Cấp", IsChecked: false },
+        { MaQuyen: 5, TenQuyen: "Quản Lý Đặt Hàng", IsChecked: false },
+        { MaQuyen: 6, TenQuyen: "Quản Lý Nhập Kho", IsChecked: false },
+        { MaQuyen: 7, TenQuyen: "Quản Lý Giỏ Hàng", IsChecked: false },
+        { MaQuyen: 8, TenQuyen: "Báo Cáo Lợi Nhuận", IsChecked: false },
+        { MaQuyen: 9, TenQuyen: "Báo Cáo Tồn Kho", IsChecked: false },
+        { MaQuyen: 10, TenQuyen: "Báo Cáo Bán Hàng", IsChecked: false }];
+    const [permissions, setPermissions] = useState(initPermissions);
     const [duties, setDuties] = useState([]);
     const [openEditPopup, setOpenEditPopup] = useState(false);
     const [openAddPopup, setOpenAddPopup] = useState(false);
@@ -133,6 +133,7 @@ const DanhSachChucVu = () => {
     };
     const handleAdd = () => {
         setOpenAddPopup(true);
+        setPermissions(initPermissions);
     };
     const handleEdit = (item) => {
         setOpenEditPopup(true);
@@ -160,16 +161,17 @@ const DanhSachChucVu = () => {
     }, [listChucVu]);
     useEffect(() => {
         if (listPhanQuyen != undefined) {
+            const tempPermissions = initPermissions;
             const cvdata = Object.values(listPhanQuyen).reduce((result, value) => {
                 result.push({
                     ...value,
                 });
+                tempPermissions[value.MaQuyen - 1].IsChecked = true;
                 return result;
             }, []);
-            console.log(cvdata);
-            setPermissions(cvdata);
+            setPermissions(tempPermissions);
         }
-    }, [listPhanQuyen]);
+    }, [listPhanQuyen, duty]);
     useEffect(() => {
         const fetchData = async () => {
             await dispatch(fetchListChucVu());
@@ -260,17 +262,6 @@ const DanhSachChucVu = () => {
                 </TableContainer>
             </Paper>
             <Popup
-                title="Sửa Chức Vụ"
-                openPopup={openEditPopup}
-                setOpenPopup={setOpenEditPopup}
-            >
-                <GroupBox
-                    type="TextBox"
-                    title="Tên Chức Vụ"
-                    defaultValue={duty !== undefined && duty.TenChucVu}
-                />
-            </Popup>
-            <Popup
                 title="Thêm Chức Vụ"
                 openPopup={openAddPopup}
                 setOpenPopup={setOpenAddPopup}
@@ -279,23 +270,60 @@ const DanhSachChucVu = () => {
                     <GroupBox
                         type="TextBox"
                         title="Tên Chức Vụ"
+                        onChange = {(e) => duty.TenChucVu = e.target.value}
                     />
-                    <table>
-                        <tr><FormControlLabel disabled control={permissions.find(e => e.MaQuyen == 1) === undefined ? <Checkbox /> : <Checkbox checked />} label="Quản Lý Sản Phẩm" /></tr>
-                        <tr><FormControlLabel disabled control={permissions.find(e => e.MaQuyen == 2) === undefined ? <Checkbox /> : <Checkbox checked />} label="Quản Lý Bán Hàng" /></tr>
-                        <tr><FormControlLabel disabled control={permissions.find(e => e.MaQuyen == 3) === undefined ? <Checkbox /> : <Checkbox checked />} label="Quản Lý Người Dùng" /></tr>
-                        <tr><FormControlLabel disabled control={permissions.find(e => e.MaQuyen == 4) === undefined ? <Checkbox /> : <Checkbox checked />} label="Quản Lý Nhà Cung Cấp" /></tr>
-                        <tr><FormControlLabel disabled control={permissions.find(e => e.MaQuyen == 5) === undefined ? <Checkbox /> : <Checkbox checked />} label="Quản Lý Đặt Hàng" /></tr>
-                        <tr><FormControlLabel disabled control={permissions.find(e => e.MaQuyen == 6) === undefined ? <Checkbox /> : <Checkbox checked />} label="Quản Lý Nhập Kho" /></tr>
-                        <tr><FormControlLabel disabled control={permissions.find(e => e.MaQuyen == 7) === undefined ? <Checkbox /> : <Checkbox checked />} label="Quản Lý Giỏ Hàng" /></tr>
-                        <tr><FormControlLabel disabled control={permissions.find(e => e.MaQuyen == 9) === undefined ? <Checkbox /> : <Checkbox checked />} label="Báo Cáo Lợi Nhuận" /></tr>
-                        <tr><FormControlLabel disabled control={permissions.find(e => e.MaQuyen == 9) === undefined ? <Checkbox /> : <Checkbox checked />} label="Báo Cáo Tồn Kho" /></tr>
-                        <tr><FormControlLabel disabled control={permissions.find(e => e.MaQuyen == 10) === undefined ? <Checkbox /> : <Checkbox checked />} label="Báo Cáo Bán Hàng" /> </tr>
-                    </table>
-                    <Button size="large" variant="contained" color="primary" onClick={() => { }}>
+                    {/* <table>
+                    {
+                        permissions.map(item => (
+                        <tr><FormControlLabel 
+                        control={<Checkbox checked = {permissions[item.MaQuyen - 1].IsChecked} 
+                        onChange = {() =>{
+                            let tmp = [...permissions];
+                            tmp[item.MaQuyen - 1].IsChecked = !tmp[item.MaQuyen - 1].IsChecked; 
+                            setPermissions(tmp)} }/>} 
+                        label= {item.TenQuyen} /></tr>))
+                    }
+                    </table> */}
+                    <Button size="large" variant="contained" color="primary" onClick={() => {dispatch(createChucVu({TenChucVu: duty.TenChucVu})) }}>
                         Thêm Chức Vụ
                     </Button>
                 </div>
+            </Popup>
+            <Popup
+                title="Sửa Chức Vụ"
+                openPopup={openEditPopup}
+                setOpenPopup={setOpenEditPopup}
+            >
+                <GroupBox
+                    type="TextBox"
+                    title="Tên Chức Vụ"
+                    defaultValue={duty !== undefined && duty.TenChucVu}
+                    onChange = {(e) => duty.TenChucVu = e.target.value}
+                />
+                <table>
+                    {
+                        permissions.map(item => (
+                        <tr><FormControlLabel 
+                        control={<Checkbox checked = {permissions[item.MaQuyen - 1].IsChecked} 
+                        onChange = {() =>{
+                            let tmp = [...permissions];
+                            tmp[item.MaQuyen - 1].IsChecked = !tmp[item.MaQuyen - 1].IsChecked; 
+                            setPermissions(tmp)} }/>} 
+                        label= {item.TenQuyen} /></tr>))
+                    }
+                </table>
+                <Button size="large" variant="contained" color="primary" 
+                    onClick={() => {
+                        var tmpDuty = {...duty, ListPhanQuyen: []};
+                        permissions.forEach(element => {
+                            if(element.IsChecked === true)
+                                tmpDuty.ListPhanQuyen.push({MaQuyen: element.MaQuyen});
+                        });
+                        console.log(tmpDuty);
+                        dispatch(updateChucVu(tmpDuty.MaChucVu, tmpDuty))
+                        }}>
+                    Lưu Thay Đổi
+                </Button>
             </Popup>
             <Popup
                 title="Xoá Chức Vụ"
@@ -320,21 +348,9 @@ const DanhSachChucVu = () => {
                     title="Tên Chức Vụ"
                     value={duty !== undefined && duty.TenChucVu}
                 />
-                <DanhSachPhanQuyen permissions = {permissions} />
-                {/* <table>
-                    <tr><FormControlLabel ignored = {listPhanQuyen} disabled control={permissions.find(e => e.MaQuyen == 1) === undefined ? <Checkbox /> : <Checkbox checked />} label="Quản Lý Sản Phẩm" /></tr>
-                    <tr><FormControlLabel ignored = {listPhanQuyen} disabled control={permissions.find(e => e.MaQuyen == 2) === undefined ? <Checkbox /> : <Checkbox checked />} label="Quản Lý Bán Hàng" /></tr>
-                    <tr><FormControlLabel ignored = {listPhanQuyen} disabled control={permissions.find(e => e.MaQuyen == 3) === undefined ? <Checkbox /> : <Checkbox checked />} label="Quản Lý Người Dùng" /></tr>
-                    <tr><FormControlLabel ignored = {listPhanQuyen} disabled control={permissions.find(e => e.MaQuyen == 4) === undefined ? <Checkbox /> : <Checkbox checked />} label="Quản Lý Nhà Cung Cấp" /></tr>
-                    <tr><FormControlLabel ignored = {listPhanQuyen} disabled control={permissions.find(e => e.MaQuyen == 5) === undefined ? <Checkbox /> : <Checkbox checked />} label="Quản Lý Đặt Hàng" /></tr>
-                    <tr><FormControlLabel ignored = {listPhanQuyen} disabled control={permissions.find(e => e.MaQuyen == 6) === undefined ? <Checkbox /> : <Checkbox checked />} label="Quản Lý Nhập Kho" /></tr>
-                    <tr><FormControlLabel ignored = {listPhanQuyen} disabled control={permissions.find(e => e.MaQuyen == 7) === undefined ? <Checkbox /> : <Checkbox checked />} label="Quản Lý Giỏ Hàng" /></tr>
-                    <tr><FormControlLabel ignored = {listPhanQuyen} disabled control={permissions.find(e => e.MaQuyen == 9) === undefined ? <Checkbox /> : <Checkbox checked />} label="Báo Cáo Lợi Nhuận" /></tr>
-                    <tr><FormControlLabel ignored = {listPhanQuyen} disabled control={permissions.find(e => e.MaQuyen == 9) === undefined ? <Checkbox /> : <Checkbox checked />} label="Báo Cáo Tồn Kho" /></tr>
-                    <tr><FormControlLabel ignored = {listPhanQuyen} disabled control={permissions.find(e => e.MaQuyen == 10) === undefined ? <Checkbox /> : <Checkbox checked />} label="Báo Cáo Bán Hàng" /> </tr>
-                </table> */}
-
-
+                <table>
+                    {permissions.map(item => (<tr><FormControlLabel disabled control={<Checkbox checked = {item.IsChecked} />} label= {item.TenQuyen} /></tr>))}
+                </table>
             </Popup>
         </div >
     )

@@ -45,6 +45,7 @@ const updateDuty = async (req, res) => {
   const duty = {
     TenChucVu: req.body.TenChucVu,
     MaChucVu: Number(req.params.id),
+    ListPhanQuyen: req.body.ListPhanQuyen,
   };
   await ChucVu.Edit(duty, (result) => {
     res.status(200).send({ message: "Updated successfully" });

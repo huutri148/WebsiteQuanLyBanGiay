@@ -41,10 +41,26 @@ ChucVu.Edit = async function (data, result) {
     dataChucVu
   );
   conn.query(queryString, (err, res) => {
-    if (err) {
-      //Todo: Handle error
+    if (err)
       throw err;
-    } else {
+    else 
+    {
+      var xquery = `CALL USP_XoaTrangPhanQuyen(${data.MaChucVu})`;
+      conn.query(xquery, function await(xerr, xres) {
+        if (xerr)
+          console.log(xerr);
+        else 
+        {
+          data.ListPhanQuyen.map(function await(permision) {
+          var dataPhanQuyen = [data.MaChucVu, permision.MaQuyen];
+          let qr = sqlString.format("CALL USP_ThemPhanQuyen(?,?);",dataPhanQuyen);
+          conn.query(qr, (error, response) => {
+            if (error)
+              console.log(error); 
+            });
+          });
+        }
+      });
       console.log(`Updated duty ${data.MaChucVu} successfully`);
       result(res[0]);
     }
