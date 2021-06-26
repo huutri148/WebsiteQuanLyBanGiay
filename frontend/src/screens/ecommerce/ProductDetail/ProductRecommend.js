@@ -1,36 +1,39 @@
 import React, { useEffect, useState } from "react";
 import "../../../components/App/App.css";
 import Product from "../Product/Product.js";
-
+import { fetchListGiay } from "../../../redux/actions/giayAction";
+import { useSelector, useDispatch } from "react-redux";
 export default function ProductRecommend(props) {
+  const dispatch = useDispatch();
   const [products, setProducts] = useState([]);
+  const { listGiay } = useSelector((state) => state.ListGiay);
   let productInfo = [];
   if (props.product) {
     productInfo = props.product;
   }
 
   useEffect(() => {
-    // axios.get(`http://pe.heromc.net:4000/products`)
-    //     .then(res => {
-    //         setProducts(res.data)
-    //     }
-    // )
+    const fetchData = async () => {
+      await dispatch(fetchListGiay());
+    };
+    fetchData();
   }, []);
-
+  useEffect(() => {
+    if (listGiay != undefined) {
+      const data = Object.values(listGiay).reduce((result, value) => {
+        result.push({
+          ...value,
+        });
+        return result;
+      }, []);
+      setProducts(data);
+    }
+  }, [listGiay]);
   const recommendProducts = [];
   products.filter((item) => {
-    if (item._id !== productInfo._id) {
-      if (item.productSex === productInfo.productSex) {
-        if (
-          item.productCate === productInfo.productCate &&
-          item.productGroupCate === productInfo.productGroupCate
-        ) {
-          recommendProducts.push(item);
-        } else if (item.productGroupCate === productInfo.productGroupCate) {
-          recommendProducts.push(item);
-        } else {
-          recommendProducts.push(item);
-        }
+    if (item.MaGiay !== productInfo.MaGiay) {
+      if (item.GioiTinh === productInfo.GioiTinh) {
+        recommendProducts.push(item);
       }
     }
     return null;

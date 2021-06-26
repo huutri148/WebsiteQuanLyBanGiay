@@ -7,7 +7,11 @@ import HeaderV2 from "../../../components/Header/HeaderV2";
 import ProductRecommend from "./ProductRecommend.js";
 import { withRouter } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchGiayByID } from "../../../redux/actions/giayAction";
+import {
+  fetchGiayByID,
+  fetchGiaySize,
+} from "../../../redux/actions/giayAction";
+import { fetchListSize } from "../../../redux/actions/sizeAction";
 
 function ProductDetail(props) {
   const dispatch = useDispatch();
@@ -16,6 +20,7 @@ function ProductDetail(props) {
   const bRef = useRef(null);
 
   const sanpham = useSelector((state) => state.Giay);
+  const { listSize, loading } = useSelector((state) => state.ListSize);
 
   const { loading: productLoading, error: giayError, giay } = sanpham;
 
@@ -107,17 +112,16 @@ function ProductDetail(props) {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    document.body.style.overflow = "unset";
-    // axios
-    //   .get(`http://pe.heromc.net:4000/products/` + props.match.params.id)
-    //   .then((res) => {
-    //     setProduct(res.data);
-    //   });
+
     const id = props.match.params.id;
     const fetchData = async () => {
       await dispatch(fetchGiayByID(id));
+      if (loading) {
+        await dispatch(fetchListSize());
+      }
+      await dispatch(fetchGiaySize(id));
     };
-    if (typeof productLoading === "undefined") fetchData();
+    fetchData();
   }, [props.match.params.id]);
 
   useEffect(() => {
@@ -127,13 +131,6 @@ function ProductDetail(props) {
     <div className="ProductDetail">
       <HeaderV2 />
       <ProductBody product={product} scrollOnLick={handleClick} />
-      {/* <ProductReview
-        product={product}
-        bRef={bRef}
-        tabId={tabId}
-        setTab={setTab}
-        id={"review"}
-      /> */}
       <ProductRecommend product={product} />
       <Newsletter />
       <Footer />

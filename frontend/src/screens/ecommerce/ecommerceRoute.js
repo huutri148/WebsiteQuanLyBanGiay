@@ -98,13 +98,13 @@ const ecommerceRoute = [
     private: false,
     role: "NguoiDung",
   },
-  // {
-  //   path: "/products/:id",
-  //   exact: true,
-  //   component: detail,
-  //   private: true,
-  //   role: "NguoiDung",
-  // },
+  {
+    path: "/products/:id",
+    exact: true,
+    component: detail,
+    private: true,
+    role: "NguoiDung",
+  },
 ];
 
 export default ecommerceRoute;

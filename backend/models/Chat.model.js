@@ -28,7 +28,6 @@ Chat.GetRoomByID = (maPhong, callBack) => {
       throw err;
     }
     if (res[0]) {
-      console.log("Found Room:".yellow.bold, res[0]);
       callBack(res[0]);
     }
   });

@@ -1,6 +1,6 @@
-import React, { useContext, useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../../../styles/product.css";
-import "../../../components/App/App";
+import "../../../components/App/App.css";
 import {
   faCartPlus,
   faCheckCircle,
@@ -10,29 +10,30 @@ import {
   faTimes,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-//import ReactStars from "react-rating-stars-component";
 import { withRouter } from "react-router-dom";
-import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import { fetchGiaySize } from "../../../redux/actions/giayAction";
+import { useDispatch, useSelector } from "react-redux";
+import { addToCart } from "../../../redux/actions/gioHangAction";
 
 function ProductQuickView(props) {
+  const dispatch = useDispatch();
   const [countCart, setCountCart] = useState(1);
   const [toast, setToast] = useState(false);
   const product = props.product;
+  const [flag, setFlag] = useState(-1);
+  const [chosenSize, setChosenSize] = useState();
 
-  // let ratingList = product.productVote.map((a) => a.ratingStar); // get all rating
-  // const totalRating = ratingList.reduce((a, b) => a + b, 0);
-  // const averageRating = totalRating / ratingList.length;
+  const { listSize } = useSelector((state) => state.ListSize);
+  const { giaySize } = useSelector((state) => state.SizeGiay);
 
-  // const ratingStar = {
-  //   size: 12,
-  //   value: averageRating || 0,
-  //   edit: false,
-  //   activeColor: "#fda32a",
-  //   color: "#ddd",
-  //   isHalf: true,
-  // };
+  useEffect(() => {
+    const fetchData = async (id) => {
+      await dispatch(fetchGiaySize(id));
+    };
+    fetchData(product.MaGiay);
+  }, []);
 
   const settings = {
     infinite: true,
@@ -42,8 +43,24 @@ function ProductQuickView(props) {
     autoplaySpeed: 2000,
   };
 
+  const handleChange = (size) => {
+    if (flag < 0) {
+      setFlag(1);
+      setChosenSize(size);
+    } else if (chosenSize.MaSize === size.MaSize) {
+      setFlag(-1);
+      setChosenSize(null);
+    } else if (chosenSize.MaSize !== size.MaSize) {
+      setChosenSize(size);
+    }
+  };
+
   const cartClick = () => {
-    //addToCart(props.product, countCart);
+    const chiTiet = {
+      ...chosenSize,
+      ...product,
+    };
+    dispatch(addToCart(props.product, countCart));
     setToast(true);
     setTimeout(() => {
       setToast(false);
@@ -65,13 +82,6 @@ function ProductQuickView(props) {
       >
         <div className="productquickview-container flex" onClick={() => {}}>
           <div
-            className={toast ? "toast toast-show" : "toast"}
-            style={{ top: "20px" }}
-          >
-            <FontAwesomeIcon icon={faCheckCircle} className="icon" />
-            Product is added to cart successfully
-          </div>
-          <div
             className="view-close flex-center"
             onClick={() => {
               props.closeView();
@@ -80,27 +90,9 @@ function ProductQuickView(props) {
             <FontAwesomeIcon icon={faTimes} className="icon" />
           </div>
           <div className="productquickview-slide">
-            <div className="productquickview-tag">
-              {/* {product.productSale > 0 && (
-                <div className="productquickview-tag-item sale">
-                  {product.productSale}%
-                </div>
-              )}
-              {product.productSold >= 40 && (
-                <div className="productquickview-tag-item hot">HOT</div>
-              )}
-              {product.productSale > 0 && (
-                <div className="productquickview-tag-item new">NEW</div>
-              )} */}
-            </div>
+            <div className="productquickview-tag"></div>
             {props.view === true && (
-              <Slider {...settings}>
-                {/* {product.productImg.map((item, index) => {
-                  return ( */}
-                <img src={product.Anh} alt="" className="view-img" />
-                {/* );
-                })} */}
-              </Slider>
+              <img src={product.Anh} alt="" className="view-img" />
             )}
           </div>
 
@@ -127,44 +119,35 @@ function ProductQuickView(props) {
                 props.closeView();
                 redirect();
               }}
-            >
-              {/* //<ReactStars {...ratingStar} /> */}
-              {/* <p style={{ margin: "0" }}>
-                ({ratingList.length} customer reviews)
-              </p> */}
-            </div>
-            {/* {product.productFinalPrice < product.productPrice && (
-              <div className="product-info-price" style={{ marginTop: "30px" }}>
-                <span
-                  style={{
-                    textDecoration: "line-through",
-                    color: "#777",
-                    marginRight: "10px",
-                    fontSize: "12px",
-                  }}
-                >
-                  {product.productPrice
-                    .toString()
-                    .replace(/\B(?=(\d{3})+(?!\d))/g, ".")}{" "}
-                  Đ
-                </span>
-                <span>
-                  {product.productFinalPrice
-                    .toString()
-                    .replace(/\B(?=(\d{3})+(?!\d))/g, ".")}{" "}
-                  Đ
-                </span>
-              </div>
-            )} */}
-            {/* {product.productFinalPrice === product.productPrice && ( */}
+            ></div>
+
             <div className="product-info-price" style={{ marginTop: "30px" }}>
               {product.DonGiaBan.toString().replace(
                 /\B(?=(\d{3})+(?!\d))/g,
                 "."
               )}{" "}
-              đ
+              VND
             </div>
-            {/* )} */}
+            <div className="product-info-size flex">
+              {giaySize &&
+                Object.keys(giaySize).map((key) => {
+                  return (
+                    <div
+                      className={
+                        "product-info-chooseSize flex-center" +
+                        (chosenSize
+                          ? chosenSize.MaSize === giaySize[key].MaSize
+                            ? " product-info-chosenSize"
+                            : ""
+                          : "")
+                      }
+                      onClick={() => handleChange(giaySize[key])}
+                    >
+                      {listSize[key].TenSize}{" "}
+                    </div>
+                  );
+                })}
+            </div>
             <div className="product-info-cart flex">
               <div className="count-cart noselect">
                 <div
@@ -208,22 +191,6 @@ function ProductQuickView(props) {
                 <FontAwesomeIcon icon={faHeart}></FontAwesomeIcon>
               </div>
             </div>
-            <div className="product-info-line"></div>
-            <div className="product-info-cate flex">
-              <p>Category:</p>
-              {/* <p
-                onClick={() => {
-                  props.history.push(
-                    `/${
-                      product.productSex === "Man" ? "men" : "women"
-                    }/${product.productCate.toLowerCase().split(" ").join("-")}`
-                  );
-                }}
-              >
-                {product.productCate}
-              </p> */}
-            </div>
-            <div className="product-info-line"></div>
           </div>
         </div>
       </div>

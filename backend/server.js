@@ -75,7 +75,6 @@ app.options("*", cors());
 const PORT = process.env.PORT || 5000;
 
 io.on("connection", async (socket) => {
-  console.log(`New client connected ${socket.id}`);
   socket.on("join", async function (data) {
     if (data.isAdmin === true) {
       socket.join(data.sessionId);

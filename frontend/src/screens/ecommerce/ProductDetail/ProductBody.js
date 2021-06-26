@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "../../../components/App/App.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -11,9 +11,12 @@ import {
   faPlus,
 } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
-//import ReactStars from "react-rating-stars-component";
+import { useSelector, useDispatch } from "react-redux";
+import { addToCart as ThemGioHang } from "../../../redux/actions/gioHangAction";
+import { fetchGiaySize } from "../../../redux/actions/giayAction";
 
 export default function ProductBody(props) {
+  const dispatch = useDispatch();
   function slugify(str) {
     str = str.replace(/^\s+|\s+$/g, ""); // trim
     str = str.toLowerCase();
@@ -32,57 +35,26 @@ export default function ProductBody(props) {
 
     return str; // Trim - from end of text
   }
-  const handleMouseMove = (e) => {
-    const { left, top, width, height } = e.target.getBoundingClientRect();
-    const x = ((e.pageX - left) / width) * 100;
-    const y = ((e.pageY - top) / height) * 100;
-    setZoom(`${x}% ${y}%`);
-  };
 
-  const [imgIndex, setImgIndex] = useState(0);
   const [countCart, setCountCart] = useState(1);
-  const [hover, setHover] = useState(false);
-  const [zoom, setZoom] = useState(`0% 0%`);
-  const productSmall = useRef(null);
-
-  useEffect(() => {
-    console.log(hover);
-    // if (hover === false) {
-    //     var interval = setInterval(() => {
-    //         setImgIndex(imgIndex => imgIndex + 1);
-    //     }, 1000);
-    // }
-    // return() => {
-    //     clearInterval(interval);
-    // }
-  }, [hover]);
+  const [chosenSize, setChosenSize] = useState(null);
+  const [flag, setFlag] = useState(-1);
+  const { giaySize } = useSelector((state) => state.SizeGiay);
+  const { listSize } = useSelector((state) => state.ListSize);
 
   let slugSex = "";
-  let ratingList = "";
   let product = "";
-  let ratingStar = {};
   if (props.product) {
     product = props.product;
-    slugSex = "/" + slugify(product.productSex === "Woman" ? "Women" : "Men");
-    // if (imgIndex >= product.productImg.length) {
-    //infinity slider loop
-    // setProductImgBig(productImgBig.concat(props.productImg))
-    setImgIndex(0);
-    // }
-
-    if (window.innerWidth > 900) {
-      productSmall.current.style.transform = `translateY(0px)`;
-    }
+    slugSex = "/" + slugify(product.GioiTinh === "Woman" ? "Women" : "Men");
   }
 
-  const sliderWidth = useRef(null);
   const [loading, setLoading] = useState(0);
-  //   const { addToCart, addToWishList } = useContext(CartContext);
   const cartClick = () => {
     setLoading(1);
     setTimeout(() => {
       setLoading(0);
-      //addToCart(product, countCart);
+      addToCart();
     }, 500);
     setCountCart(1);
   };
@@ -90,8 +62,26 @@ export default function ProductBody(props) {
     setLoading(2);
     setTimeout(() => {
       setLoading(0);
-      //addToWishList(product);
+      //addToWishList(product)
     }, 500);
+  };
+  const handleChange = (size) => {
+    if (flag < 0) {
+      setFlag(1);
+      setChosenSize(size);
+    } else if (chosenSize.MaSize === size.MaSize) {
+      setFlag(-1);
+      setChosenSize(null);
+    } else if (chosenSize.MaSize !== size.MaSize) {
+      setChosenSize(size);
+    }
+  };
+  const addToCart = () => {
+    const chiTiet = {
+      ...chosenSize,
+      ...product,
+    };
+    dispatch(ThemGioHang(chiTiet, countCart));
   };
 
   return (
@@ -102,7 +92,7 @@ export default function ProductBody(props) {
         </Link>
         <FontAwesomeIcon icon={faAngleRight} className="breadcrumb-arrow" />
         <Link to={slugSex} className="breadcrumb-item breadcrumb-link">
-          {product.GioiTinh === "Nu" ? "Women" : "Men"}
+          {product.GioiTinh === "Woman" ? "Women" : "Men"}
         </Link>
         <FontAwesomeIcon icon={faAngleRight} className="breadcrumb-arrow" />
         <div className="breadcrumb-item breadcrumb-product">
@@ -111,54 +101,47 @@ export default function ProductBody(props) {
       </div>
 
       <div className="product-detail flex">
-        <div
-          className="product-gallery flex"
-          onMouseEnter={() => {
-            setHover(true);
-          }}
-          onMouseLeave={() => {
-            setHover(false);
-          }}
-        >
-          <div className="product-small" ref={productSmall}>
-            <div className={"product-small-item"}>
-              <img src={product.Anh} alt=""></img>
-            </div>
-          </div>
-          <div
-            className="product-slider flex"
-            onMouseMove={handleMouseMove}
-            ref={sliderWidth}
-          >
-            <div className="product-tag">
-              <div className="product-tag-item new">NEW</div>
-            </div>
-
-            <div className="change-product left">
-              <FontAwesomeIcon icon={faChevronLeft}></FontAwesomeIcon>
-            </div>
-            <div className="change-product right">
-              <FontAwesomeIcon icon={faChevronRight}></FontAwesomeIcon>
-            </div>
+        <div className="product-tag">
+          <div className="product-tag-item new">NEW</div>
+        </div>
+        <div className="product-big flex">
+          <div className="product-big-item">
+            <img src={product.Anh} alt=""></img>
           </div>
         </div>
         <div className="product-info-detail">
           <div className="product-info-title">{product.TenGiay}</div>
           <div className="product-info-des">{product.MoTa}</div>
-          {/* <div 
-                        className="product-info-vote"
-                        onClick={props.scrollOnLick}
-                        >
-                        <div style={{height: '40px'}}>
-                            {Object.keys(ratingStar).length !== 0 && <ReactStars {...ratingStar} />}
-                        </div>
-                        <p>
-                            ({ratingList.length} customer reviews)
-                        </p>
-                    </div> */}
 
-          <div className="product-info-price">
-            {` ${product.DonGiaBan}  VNĐ`}
+          {product.DonGiaBan && (
+            <div className="product-info-price">
+              {product.DonGiaBan.toString().replace(
+                /\B(?=(\d{3})+(?!\d))/g,
+                "."
+              )}{" "}
+              VNĐ
+            </div>
+          )}
+
+          <div className="product-info-size flex">
+            {giaySize &&
+              Object.keys(giaySize).map((key) => {
+                return (
+                  <div
+                    className={
+                      "product-info-chooseSize flex-center" +
+                      (chosenSize
+                        ? chosenSize.MaSize === giaySize[key].MaSize
+                          ? " product-info-chosenSize"
+                          : ""
+                        : "")
+                    }
+                    onClick={() => handleChange(giaySize[key])}
+                  >
+                    {listSize[key].TenSize}{" "}
+                  </div>
+                );
+              })}
           </div>
           <div className="product-info-cart flex">
             <div className="count-cart noselect">
@@ -201,7 +184,7 @@ export default function ProductBody(props) {
             {loading !== 1 && (
               <div
                 className="product-info-addtocart flex-center btn"
-                onClick={cartClick}
+                onClick={chosenSize ? addToCart : ""}
               >
                 <FontAwesomeIcon icon={faCartPlus} />
                 <p>Add to cart</p>
@@ -224,9 +207,6 @@ export default function ProductBody(props) {
               </div>
             )}
           </div>
-          <div className="product-info-line"></div>
-
-          <div className="product-info-line"></div>
         </div>
       </div>
       <div className="product-info-line mobile-disable-line"></div>
