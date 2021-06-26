@@ -105,6 +105,34 @@ const ecommerceRoute = [
     private: true,
     role: "NguoiDung",
   },
+  {
+    path: "/airjordan",
+    exact: true,
+    component: shop,
+    private: false,
+    role: "NguoiDung",
+  },
+  {
+    path: "/nike",
+    exact: true,
+    component: shop,
+    private: false,
+    role: "NguoiDung",
+  },
+  {
+    path: "/news",
+    exact: true,
+    component: shop,
+    private: false,
+    role: "NguoiDung",
+  },
+  {
+    path: "/adidas",
+    exact: true,
+    component: shop,
+    private: false,
+    role: "NguoiDung",
+  },
 ];
 
 export default ecommerceRoute;

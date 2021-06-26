@@ -345,7 +345,11 @@ const DanhSachGioHang = (props) => {
                         </Typography>
                       </TableCell>
                       <TableCell component="th" scope="row">
-                        {item.TongTien.toLocaleString("it-IT")}
+                        {item.TongTien.toString().replace(
+                          /\B(?=(\d{3})+(?!\d))/g,
+                          "."
+                        )}{" "}
+                        VNĐ
                       </TableCell>
                       <TableCell component="th" scope="row">
                         <Tooltip title="Xác nhận">

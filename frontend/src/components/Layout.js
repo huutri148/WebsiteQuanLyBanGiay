@@ -136,6 +136,10 @@ export const Layout = withRouter((props) => {
     dispatch(logout());
     props.history.push("/admin/login");
   };
+  const handleHome = () => {
+    props.history.push("/");
+    window.location.reload(false);
+  };
 
   return (
     <div className={classes.root}>
@@ -164,7 +168,10 @@ export const Layout = withRouter((props) => {
             noWrap
             className={classes.title}
           >
-            <Link style={{ textDecoration: "none", color: "inherit" }} to="/">
+            <Link
+              style={{ textDecoration: "none", color: "inherit" }}
+              to="/admin/dashboard"
+            >
               Sneaker Land
             </Link>
           </Typography>
@@ -188,7 +195,7 @@ export const Layout = withRouter((props) => {
             onClose={handleCloseMenu}
             className={classes.menu}
           >
-            <ListItem button component={Link} to="/admin/dashboard">
+            <ListItem button onClick={handleHome}>
               <ListItemIcon>
                 <Home fontSize="small" color="primary" />
               </ListItemIcon>

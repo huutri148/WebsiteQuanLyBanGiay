@@ -75,7 +75,7 @@ const PopupProduct = (props) => {
   const sizeList = useSelector((state) => state.ListSize);
   const user = useSelector((state) => state.User);
   const { userInfo } = user;
-  const { loading: sizeLoading, error: sizeError, giaySize } = sizeGiay;
+  const { giaySize } = sizeGiay;
   const { listSize } = sizeList;
 
   // Fetch data from API
