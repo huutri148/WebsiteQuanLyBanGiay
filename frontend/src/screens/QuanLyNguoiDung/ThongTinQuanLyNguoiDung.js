@@ -8,4 +8,5 @@ export const KHHeadCell = [
 export const QuanLyNguoiDungTab = {
   DanhSachKhachHang: 0,
   DanhSachNhanVien: 1,
+  ChucVu: 2,
 };

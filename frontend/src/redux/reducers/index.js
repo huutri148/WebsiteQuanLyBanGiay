@@ -61,6 +61,9 @@ const rootReducer = combineReducers({
   ListPhanQuyen: chucVuReducer.listDutyPermissionsReducer,
   ListQuyen: chucVuReducer.listPermissionsReducer,
   AddPhanQuyen: chucVuReducer.addDutyPermissionsReducer,
+  CreateChucVu: chucVuReducer.dutyCreateReducer,
+  UpdateChucVu: chucVuReducer.dutyUpdateReducer,
+  DeleteChucVu: chucVuReducer.dutyDeleteReducer,
   //Gio Hang
   ListGioHang: gioHangReducer.cartListReducer,
   UpdateGioHang: gioHangReducer.cartUpdateReducer,

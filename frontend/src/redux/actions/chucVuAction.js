@@ -20,6 +20,60 @@ export const fetchListChucVu = () => async (dispatch) => {
     });
   }
 };
+export const createChucVu = (item) => async (dispatch) => {
+  try {
+    dispatch({ type: chucVuConstants.CHUCVU_CREATE_REQUEST });
+    const { data } = await chucVuAPI.create(item);
+    dispatch({
+      type: chucVuConstants.CHUCVU_CREATE_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: chucVuConstants.CHUCVU_CREATE_FAIL,
+      payload:
+        error.response && error.response.message
+          ? error.response.data.data.message
+          : error.messagge,
+    });
+  }
+};
+export const updateChucVu = (id, item) => async (dispatch) => {
+  try {
+    dispatch({ type: chucVuConstants.CHUCVU_UPDATE_REQUEST });
+    const { data } = await chucVuAPI.update(id, item);
+    dispatch({
+      type: chucVuConstants.CHUCVU_UPDATE_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: chucVuConstants.CHUCVU_UPDATE_FAIL,
+      payload:
+        error.response && error.response.message
+          ? error.response.data.data.message
+          : error.messagge,
+    });
+  }
+};
+export const deleteChucVu = (id) => async (dispatch) => {
+  try {
+    dispatch({ type: chucVuConstants.CHUCVU_DELETE_REQUEST });
+    const { data } = await chucVuAPI.deleteItem(id);
+    dispatch({
+      type: chucVuConstants.CHUCVU_DELETE_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: chucVuConstants.CHUCVU_DELETE_FAIL,
+      payload:
+        error.response && error.response.message
+          ? error.response.data.data.message
+          : error.messagge,
+    });
+  }
+};
 export const fetchListQuyen = () => async (dispatch) => {
   try {
     dispatch({ type: chucVuConstants.CHUCVU_ALL_PERMISSIONS_REQUEST });

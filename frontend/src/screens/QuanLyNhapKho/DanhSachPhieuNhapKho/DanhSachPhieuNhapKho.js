@@ -36,6 +36,13 @@ import { fetchListPhieuNhapKho, deletePhieuNhapKho} from "../../../redux/actions
 import RecdocketToPrint from "../RecdocketToPrint";
 //import recdocketToPrint from "../recdocketToPrint";
 const useStyles = makeStyles((theme) => ({
+  paper: {
+    margin: theme.spacing(0, 4),
+    display: "flex",
+    flexDirection: "column",
+    textAlign: "left",
+    height: "fit-content",
+  },
   title: {
     padding: theme.spacing(4, 0),
     textTransform: "none",
@@ -50,7 +57,7 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(0, 8),
   },
   table: {
-    padding: theme.spacing(0, 8),
+    padding: theme.spacing(0, 2),
   },
   status: {
     fontWeight: "bold",
@@ -250,7 +257,7 @@ const DanhSachPhieuNhapKho = (props) => {
         : 
         (
         <div>
-          <Paper>
+          <Paper className = {classes.paper}>
             <Toolbar className={classes.toolbar}>
               <div className={classes.searchInput}>
                 <Input

@@ -465,9 +465,28 @@ end; $$
 DELIMITER ;
 
 DELIMITER $$
+create procedure USP_XoaChucVu(p_MaChucVu int)
+BEGIN
+    UPDATE ShoesStoreManagement.CHUCVU 
+    SET CHUCVU.IsDeleted = true
+    WHERE CHUCVU.MaChucVu=p_MaChucVu;
+END; $$
+DELIMITER ;
+
+
+DELIMITER $$
 create procedure USP_ThemChucVu(p_TenChucVu VARCHAR(255))
 BEGIN
 INSERT INTO ShoesStoreManagement.CHUCVU(TenChucVu) values (p_TenChucVu);
+END; $$
+DELIMITER ;
+
+DELIMITER $$
+create procedure USP_SuaChucVu(p_MaChucVu int, p_TenChucVu VARCHAR(255))
+BEGIN
+    UPDATE ShoesStoreManagement.CHUCVU 
+    SET CHUCVU.TenChucVu = p_TenChucVu
+    WHERE CHUCVU.MaChucVu=p_MaChucVu;
 END; $$
 DELIMITER ;
 
@@ -591,7 +610,7 @@ DELIMITER ;
 DELIMITER $$
 create procedure USP_GetListChucVu()
 BEGIN
-    Select * from ShoesStoreManagement.CHUCVU;
+    Select * from ShoesStoreManagement.CHUCVU where CHUCVU.IsDeleted = false ;
 END; $$
 DELIMITER ;
 
@@ -1316,11 +1335,11 @@ DELIMITER ;
 
 
 
-insert into CHUCVU(TenChucVu, IsDeleted)values ("Admin", false);
-insert into CHUCVU (TenChucVu, IsDeleted)values ("NhanVienBanHang", false );
-insert into CHUCVU (TenChucVu, IsDeleted)values ("NhanVienKeToan", false);
-insert into CHUCVU (TenChucVu, IsDeleted)values ("NhanVienKho", false);
-insert into CHUCVU (TenChucVu, IsDeleted)values ("KhachHang", false);
+insert into CHUCVU(TenChucVu, IsDeleted)values ("Quản Lý", false);
+insert into CHUCVU (TenChucVu, IsDeleted)values ("Nhân Viên Bán Hàng", false );
+insert into CHUCVU (TenChucVu, IsDeleted)values ("Nhân Viên Kế Toán", false);
+insert into CHUCVU (TenChucVu, IsDeleted)values ("Nhân Viên Kho", false);
+insert into CHUCVU (TenChucVu, IsDeleted)values ("Khách Hàng", false);
 
 
 
