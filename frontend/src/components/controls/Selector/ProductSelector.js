@@ -2,13 +2,13 @@ import React, { useState } from "react";
 import Select from "react-select";
 
 export default function ProductSelector(props) {
-  const [selectedValue, setSelectedValue] = useState(0);
+  const [selectedValue, setSelectedValue] = useState();
   const handleChange = (e) => {
     setSelectedValue(e.value);
-    sendData(e);
+    sendData(e.value);
   };
   const sendData = (e) => {
-    props.setSelectedId(e.value);
+    props.setSelectedId(e);
   };
   const options = props.products.map((item) => {
     let newObj = {};
@@ -20,7 +20,7 @@ export default function ProductSelector(props) {
       "-" +
       item.GioiTinh +
       "-" +
-      item.DonGia +
+      item.DonGiaBan +
       "-" +
       item.TongSoLuong;
     newObj.Anh = item.Anh;
@@ -71,12 +71,6 @@ export default function ProductSelector(props) {
       marginTop: 10,
     }),
   };
-  const filterOptions = (candidate, input) => {
-    if (input) {
-      return candidate.value === options[0].value;
-    }
-    return true;
-  };
   return (
     <div style={{ padding: "0px 10px", display: "block" }}>
       <label
@@ -88,6 +82,7 @@ export default function ProductSelector(props) {
         {props.title}
       </label>
       <Select
+        placeholder="Hàng Hoá ..."
         value={options.find((obj) => obj.value === selectedValue)}
         onChange={handleChange}
         formatOptionLabel={formatOptionLabel}

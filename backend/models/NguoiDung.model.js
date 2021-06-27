@@ -64,6 +64,34 @@ NguoiDung.getAll = function (callBack) {
   });
 };
 
+// Fetch all customers in DataBase
+NguoiDung.getCustomers = function (callBack) {
+  var conn = db.getConnection();
+  var queryString = sqlString.format("CALL USP_GetListKhachHang();");
+
+  conn.query(queryString, (err, results, fields) => {
+    if (err) {
+      throw err;
+    }
+
+    callBack(results[0]);
+  });
+};
+
+// Fetch all employees in DataBase
+NguoiDung.getEmployees = function (callBack) {
+  var conn = db.getConnection();
+  var queryString = sqlString.format("CALL USP_GetListNhanVien();");
+
+  conn.query(queryString, (err, results, fields) => {
+    if (err) {
+      throw err;
+    }
+
+    callBack(results[0]);
+  });
+};
+
 NguoiDung.login = async function (data, callBack) {
   var conn = db.getConnection();
 

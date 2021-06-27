@@ -18,8 +18,8 @@ const getList = async (req, res) => {
 // @route Get/api/orders/id
 // @access Public
 const getByID = async (req, res) => {
-  const sanPhamID = req.params.id;
-  await PhieuDatHang.GetByID(sanPhamID, (result) => {
+  const orderID = req.params.id;
+  await PhieuDatHang.GetByID(orderID, (result) => {
     if (result) {
       res.status(200).send(JSON.stringify(result));
     } else {
@@ -31,7 +31,7 @@ const getByID = async (req, res) => {
 // @desc    Add a  orders
 // @route   Post /api/orders
 // @access  Public
-const createOrder= async (req, res) => {
+const createOrder = async (req, res) => {
   if (!req.body) {
     res.status(400).send({
       message: "Content can not be empty",
@@ -42,7 +42,8 @@ const createOrder= async (req, res) => {
     MaNguoiDung: req.body.MaNguoiDung,
     MaNhaCungCap: req.body.MaNhaCungCap,
     NgayLap: req.body.NgayLap,
-    ChiTietPhieuDatHang: req.body.ChiTietPhieuDatHang
+    TrangThai: req.body.TrangThai,
+    ChiTietPhieuDatHang: req.body.ChiTietPhieuDatHang,
   };
 
   await PhieuDatHang.Create(order, (result) => {
@@ -50,26 +51,39 @@ const createOrder= async (req, res) => {
   });
 };
 
-// @desc    Update information of a order 
+// @desc    Update information of a order
 // @route   Patch /api/orders/id
 // @access  Public
-const updateOrder= async (req, res) => {
+const updateOrder = async (req, res) => {
   if (!req.body) {
     res.status(400).send({
       message: "Content can not be empty",
     });
   }
-  const order= {
+  const order = {
     SoPhieuDatHang: req.body.SoPhieuDatHang,
     MaNguoiDung: req.body.MaNguoiDung,
     MaNhaCungCap: req.body.MaNhaCungCap,
-    NgayLap: req.body.NgayLap,
-    ChiTietPhieuDatHang: req.body.ChiTietPhieuDatHang
+    TrangThai: req.body.TrangThai,
   };
 
-  await PhieuDatHang.Edit(Order, (result) => {
+  await PhieuDatHang.Edit(order, (result) => {
     res.status(200).send({ message: "Edited successfully" });
   });
 };
 
-module.exports = { getList, createOrder, updateOrder, getByID };
+// @desc    Remove a order
+// @route   Delete /api/orders/:id
+// @access  Public
+const removeOrder = async (req, res) => {
+  const orderID = req.params.id;
+  await PhieuDatHang.Delete(orderID, (result) => {
+    if (result) {
+      res.status(200).send({ message: "Deleted Successfully" });
+    } else {
+      res.status(404);
+    }
+  });
+};
+
+module.exports = { getList, createOrder, updateOrder, getByID, removeOrder };

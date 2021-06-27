@@ -10,35 +10,44 @@ import {
   TableCell,
   IconButton,
   Typography,
-  CircularProgress,
+  Tooltip,
 } from "@material-ui/core";
+
 import styles from "./styles";
 import useTable from "../../../components/useTable";
 import Input from "../../../components/controls/Input";
-import { Search, Assignment, Edit } from "@material-ui/icons";
+import {
+  Search,
+  Assignment,
+  Edit,
+  CloudDownload,
+  Print,
+  FilterList,
+  PrintDisabledRounded,
+  ViewColumn,
+} from "@material-ui/icons";
+import { CSVLink } from "react-csv";
 import ProductCard from "../ProductCard";
 import Popup from "../../../components/controls/Popup";
 import ProductDetail from "../ProductDetail";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchListGiay } from "../../../redux/actions/giayAction";
-const headCells = [
-  { id: "TenGiay", label: "Tên sản phẩm" },
-  { id: "TenMau", label: "Tên màu", disableSorting: true },
-  { id: "GioiTinh", label: "Giới tính", disableSorting: true },
-  { id: "SoLuong", label: "Số lượng" },
-  { id: "IsDeleted", label: "Trạng Thái" },
-  { id: "actions" },
-];
+import { DSSPHeadCells } from "../ThongTinQuanLySanPham";
+import Loading from "../../../components/Loadable/Loading";
+
 const DanhSachSanPham = (props) => {
   // CSS class
   const { classes } = props;
-  const { ListSize, ListMau, ListHSX } = props;
 
   //Fetched data
   const dispatch = useDispatch();
   const productList = useSelector((state) => state.ListGiay);
+  const brandList = useSelector((state) => state.ListHangSanXuat);
+  const mauList = useSelector((state) => state.ListMau);
 
   const { loading: productLoading, error: giayError, listGiay } = productList;
+  const { listHangSanXuat } = brandList;
+  const { listMau } = mauList;
 
   // Props in Screens
   const [tableData, setTableData] = useState([]);
@@ -51,7 +60,7 @@ const DanhSachSanPham = (props) => {
     },
   });
   const { TblContainer, TblHead, TblPagination, recordsAfterPagingAndSorting } =
-    useTable(tableData, headCells, filterFn);
+    useTable(tableData, DSSPHeadCells, filterFn);
 
   // Fetch data from API
   useEffect(() => {
@@ -62,7 +71,7 @@ const DanhSachSanPham = (props) => {
       // Done have to use Flag
       setLoading(!loading);
     };
-    fetchData();
+    if (typeof productLoading === "undefined") fetchData();
   }, [dispatch]);
 
   // setTableData when done fetching
@@ -70,10 +79,10 @@ const DanhSachSanPham = (props) => {
     const data = Object.values(listGiay).reduce((result, value) => {
       let maHSX = value.MaHangSanXuat;
       let maMau = value.MaMau;
-      if (typeof ListHSX[maHSX] === "undefined") return [];
-      if (typeof ListMau[maMau] === "undefined") return [];
-      let { TenHangSanXuat } = ListHSX[maHSX];
-      let { TenMau } = ListMau[maMau];
+      if (typeof listHangSanXuat[maHSX] === "undefined") return [];
+      if (typeof listMau[maMau] === "undefined") return [];
+      let { TenHangSanXuat } = listHangSanXuat[maHSX];
+      let { TenMau } = listMau[maMau];
       result.push({
         TenHangSanXuat,
         TenMau,
@@ -86,6 +95,7 @@ const DanhSachSanPham = (props) => {
 
   const handleDetail = (index, data) => {
     setSelectedItem(data);
+    console.log(data);
     setOpenPopup(true);
   };
   const handleSearch = (e) => {
@@ -94,9 +104,9 @@ const DanhSachSanPham = (props) => {
       fn: (items) => {
         if (target.value === "") return items;
         else
-          return items.filter((x) =>
-            x.fullName.toLowerCase().includes(target.value)
-          );
+          return items.filter((x) => {
+            return x.TenGiay.toLowerCase().includes(target.value);
+          });
       },
     });
   };
@@ -106,23 +116,40 @@ const DanhSachSanPham = (props) => {
       <Typography component="h1" variant="h5" className={classes.title}>
         Quản lý sản phẩm
       </Typography>
-      <Paper>
-        <Toolbar className={classes.searchInput}>
-          <Input
-            label="Search"
-            style={{ marginTop: "30px" }}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <Search />
-                </InputAdornment>
-              ),
-            }}
-            onChange={handleSearch}
-          />
+      <Paper className={classes.paper}>
+        <Toolbar className={classes.toolbar}>
+          <div className={classes.searchInput}>
+            <Input
+              label="Search"
+              style={{ marginTop: "30px" }}
+              fullWidth="true"
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <Search />
+                  </InputAdornment>
+                ),
+              }}
+              onChange={handleSearch}
+            />
+          </div>
+          <div className={classes.actions}>
+            <Tooltip title="Tải file csv">
+              <CSVLink data={tableData} filename={"DS-SanPham.csv"}>
+                <IconButton className={classes.actionsButton}>
+                  <CloudDownload />
+                </IconButton>
+              </CSVLink>
+            </Tooltip>
+            <Tooltip title="In">
+              <IconButton className={classes.actionsButton}>
+                <Print />
+              </IconButton>
+            </Tooltip>
+          </div>
         </Toolbar>
         {productLoading ? (
-          <CircularProgress disableShrink style={{ margin: "0px 16px" }} />
+          <Loading />
         ) : giayError ? (
           <h1>Error</h1>
         ) : (
@@ -162,22 +189,24 @@ const DanhSachSanPham = (props) => {
                           backgroundColor:
                             //Note: Fix hardcode 100
                             (item.IsDeleted === 0 &&
-                              item.TongSoLuong > 100 &&
-                              "green") ||
+                              item.TongSoLuong > 150 &&
+                              "#08ad6c ") ||
                             (item.IsDeleted === 0 &&
-                              item.TongSoLuong <= 100 &&
-                              "blue") ||
-                            (item.IsDeleted === 1 && "red"),
+                              item.TongSoLuong <= 150 &&
+                              "#FFAF38") ||
+                            (item.IsDeleted === 1 && "#FF3D57 "),
+                          boxShadow: " 0 2px 2px 1px rgba(0,0,0,0.24)",
                         }}
                       >
-                        {item.IsDeleted === 0 ? "Avaiable" : "IsDeleted"}
+                        {item.IsDeleted === 0
+                          ? item.TongSoLuong > 150
+                            ? "Còn hàng"
+                            : "Chờ hàng"
+                          : "Hết hàng"}
                       </Typography>
                     </TableCell>
 
                     <TableCell component="th" scope="row">
-                      <IconButton color="secondary">
-                        <Edit />
-                      </IconButton>
                       <IconButton color="primary">
                         <Assignment onClick={() => handleDetail(index, item)} />
                       </IconButton>
@@ -195,7 +224,7 @@ const DanhSachSanPham = (props) => {
         openPopup={openPopup}
         setOpenPopup={setOpenPopup}
       >
-        <ProductDetail item={selectedItem} ListSize={ListSize} />
+        <ProductDetail item={selectedItem} />
       </Popup>
     </div>
   );

@@ -33,6 +33,8 @@ const useStyles = makeStyles((theme) => ({
     cursor: "pointer",
     boxSizing: "border-box",
     margin: "0 8px 8px 0",
+    minWidth: "4rem",
+    minHeight: "2.125rem",
   },
   buttonSelected: {
     color: "#ee4d2d",
@@ -43,6 +45,8 @@ const useStyles = makeStyles((theme) => ({
     cursor: "pointer",
     boxSizing: "border-box",
     margin: "0 8px 8px 0",
+    minWidth: "4rem",
+    minHeight: "2.125rem",
   },
   price: {
     display: "flex",
@@ -59,12 +63,14 @@ const ProductDetail = (props) => {
   // Props in component
   const [flag, setFlag] = useState(-1);
   const [chosenSize, setChosenSize] = useState();
-  const { item, ListSize } = props;
+  const { item } = props;
 
   // Fetch API
   const dispatch = useDispatch();
-  const listSize = useSelector((state) => state.SizeGiay);
-  const { loading: sizeLoading, error: sizeError, giaySize } = listSize;
+  const sizeGiay = useSelector((state) => state.SizeGiay);
+  const sizeList = useSelector((state) => state.ListSize);
+  const { loading: sizeLoading, error: sizeError, giaySize } = sizeGiay;
+  const { listSize } = sizeList;
 
   // Fetch data from API
   useEffect(() => {
@@ -72,7 +78,6 @@ const ProductDetail = (props) => {
       await dispatch(fetchGiaySize(id));
     };
     fetchData(item.MaGiay);
-    console.log(listSize);
   }, [dispatch, item.MaGiay]);
 
   //Choose size to see quatity
@@ -93,13 +98,13 @@ const ProductDetail = (props) => {
       {sizeLoading ? (
         <CircularProgress disableShrink />
       ) : sizeError ? (
-        <h1>Error</h1>
+        <h1>{sizeError}</h1>
       ) : (
         <Grid container spacing={4}>
           <Grid item xs={6}>
             <img src={item.Anh} alt={item.TenGiay} className={classes.image} />
             <div className={classes.price}>
-              <label style={{ margin: "8px 8px" }}>Giá nhập:</label>
+              <label style={{ margin: "8px 8px" }}>Giá Bán:</label>
               <div
                 style={{
                   margin: "4px 0px",
@@ -108,7 +113,7 @@ const ProductDetail = (props) => {
                   fontSize: 24,
                 }}
               >
-                {Number(item.DonGiaNhap).toLocaleString("it-IT") + " VNĐ"}
+                {Number(item.DonGiaBan).toLocaleString("it-IT") + " VNĐ"}
               </div>
             </div>
           </Grid>
@@ -155,7 +160,7 @@ const ProductDetail = (props) => {
                     }
                     onClick={(e) => handleChange(giaySize[key])}
                   >
-                    {ListSize[key].TenSize}{" "}
+                    {listSize[key].TenSize}{" "}
                   </button>
                 );
               })}

@@ -11,11 +11,12 @@ import {
   Button,
   IconButton,
   Typography,
+  Tooltip,
 } from "@material-ui/core";
 import { green } from "@material-ui/core/colors";
 import useTable from "../../components/useTable";
 import Input from "../../components/controls/Input";
-import { Search, Add, DeleteOutlined, Edit } from "@material-ui/icons";
+import { Search, Add, Delete, Edit } from "@material-ui/icons";
 import Popup from "../../components/controls/Popup";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -48,6 +49,13 @@ const useStyles = makeStyles((theme) => ({
     top: "50%",
     right: "10%",
     color: green[500],
+  },
+  paper: {
+    margin: theme.spacing(0, 4),
+    display: "flex",
+    flexDirection: "column",
+    textAlign: "left",
+    height: "fit-content",
   },
 }));
 
@@ -151,7 +159,7 @@ const QuanLyHangSanXuat = () => {
           <Typography component="h1" variant="h5" className={classes.title}>
             Quản lý hãng sản xuất
           </Typography>
-          <Paper>
+          <Paper className={classes.paper}>
             <Toolbar className={classes.content}>
               <Input
                 label="Search"
@@ -172,7 +180,7 @@ const QuanLyHangSanXuat = () => {
                 className={classes.newButton}
                 onClick={handleNew}
               >
-                New
+                Thêm mới
               </Button>
             </Toolbar>
             <TableContainer className={classes.table}>
@@ -195,20 +203,21 @@ const QuanLyHangSanXuat = () => {
                         {item.TenHangSanXuat}
                       </TableCell>
                       <TableCell>
-                        <IconButton
-                          color="secondary"
-                          onClick={() => {
-                            openInPopup(item);
-                          }}
-                        >
-                          <Edit fontSize="small" />
-                        </IconButton>
-                        <IconButton
-                          color="primary"
-                          onClick={() => handleDelete(item)}
-                        >
-                          <DeleteOutlined fontSize="small" />
-                        </IconButton>
+                        <Tooltip title="Sửa">
+                          <IconButton
+                            onClick={() => {
+                              openInPopup(item);
+                            }}
+                          >
+                            <Edit color="primary" />
+                          </IconButton>
+                        </Tooltip>
+
+                        <Tooltip title="Xóa">
+                          <IconButton onClick={() => handleDelete(item)}>
+                            <Delete color="secondary" />
+                          </IconButton>
+                        </Tooltip>
                       </TableCell>
                     </TableRow>
                   ))}

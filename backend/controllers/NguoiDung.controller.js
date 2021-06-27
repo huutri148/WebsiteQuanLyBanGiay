@@ -22,6 +22,34 @@ const getList = async (req, res) => {
   });
 };
 
+// @desc Fetch all customers
+// @route Get/api/customers
+// @access Public
+const getCustomers = async (req, res) => {
+  await NguoiDung.getCustomers((result) => {
+    if (result) {
+      res.send(JSON.stringify(result));
+    } else {
+      res.status(404);
+      throw new Error("User not found ");
+    }
+  });
+};
+
+// @desc Fetch all Users
+// @route Get/api/users
+// @access Public
+const getEmployees = async (req, res) => {
+  await NguoiDung.getEmployees((result) => {
+    if (result) {
+      res.send(JSON.stringify(result));
+    } else {
+      res.status(404);
+      throw new Error("User not found ");
+    }
+  });
+};
+
 // @desc Fetch all User by id
 // @route Get/api/users/id
 // @access Public
@@ -81,9 +109,16 @@ const authenUser = async (req, res) => {
   await NguoiDung.login(data, async (result) => {
     if (result) {
       try {
-        console.log(result);
         const user = result;
-
+        const userInfo = {
+          TenDangNhap: user.TenDangNhap,
+          MaChucVu: user.MaChucVu,
+          Avatar: user.Avatar,
+          MaNguoiDung: user.MaNguoiDung,
+          TenNguoiDung: user.TenNguoiDung,
+          SDT: user.SDT,
+          Email: user.Email,
+        };
         //if login success, create refresh token
         const accessToken = await jwtHelper.generateToken(
           user,
@@ -98,7 +133,7 @@ const authenUser = async (req, res) => {
         );
         tokenList[refreshToken] = { accessToken, refreshToken };
 
-        return res.status(200).json({ accessToken, refreshToken });
+        return res.status(200).json({ accessToken, refreshToken, userInfo });
       } catch (error) {
         return res.status(500).json(error);
       }
@@ -130,10 +165,22 @@ const refreshToken = async (req, res) => {
   }
 };
 
+const authenUserWithToken = async (req, res) => {
+  const data = req.jwtDecoded.data;
+  try {
+    return res.status(200).json(data);
+  } catch (error) {
+    return res.status(500).json(error);
+  }
+};
+
 module.exports = {
   getList,
   getUserByID,
   registerUser,
   authenUser,
   refreshToken,
+  authenUserWithToken,
+  getCustomers,
+  getEmployees,
 };

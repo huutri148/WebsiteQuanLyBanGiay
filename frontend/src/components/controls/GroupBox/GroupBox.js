@@ -1,85 +1,92 @@
 import { ErrorOutline } from "@material-ui/icons";
-import {React, useState} from "react";
+import { React, useState } from "react";
+import Selector from "../Selector/Selector";
 import ValidationTip from "../ValidationTip";
 import './GroupBox.css';
-export default function GroupBox (props) {
+export default function GroupBox(props) {
     //set default date
     let date = new Date().getDate();
-    if(date < 10) date = '0' + date;
+    if (date < 10) date = '0' + date;
     let month = new Date().getMonth() + 1;
-    if(month < 10) month = '0' + month;
+    if (month < 10) month = '0' + month;
     //regex
     const phoneRegex = /^[0-9\b]+$/;
-    const [numberError, setNumberError] = useState(false);   
+    const [numberError, setNumberError] = useState(false);
     const onlyNumbers = (event) => {
-        if(isNaN(event.key))
+        if (isNaN(event.key))
             setNumberError(true);
-      };
+    };
     const onInput = (e) => {
         let tmp = e.target.value;
-        if(tmp ==='' || phoneRegex.test(tmp))
+        if (tmp === '' || phoneRegex.test(tmp))
             setNumberError(false);
     }
-    return(
+    const { options, type, title, validationTip, disabled, value, required, defaultValue, onChange, error, readOnly } = props;
+    return (
         <div>
             <span style={{
-                    fontSize: 16,
-                    fontWeight: 600,}}>
-                <label>{props.title}</label>
+                fontSize: 16,
+                fontWeight: 600,
+            }}>
+                <label>{title}</label>
                 <label style={{
                     marginLeft: 5,
-                    color: 'Red'}}>{props.required ? '*' : ''}
+                    color: 'Red'
+                }}>{required ? '*' : ''}
                 </label>
-                <ValidationTip placement="top" title={props.validationTip}>
-                        <ErrorOutline style={{float: "right", margin: "5", width:"15", height:"15", display: props.error === true && numberError === false ? "block" : "none"}} color = "secondary"/>
+                <ValidationTip placement="top" title={validationTip}>
+                    <ErrorOutline style={{ float: "right", margin: "5", width: "15", height: "15", display: error === true && numberError === false ? "block" : "none" }} color="secondary" />
                 </ValidationTip>
-                <ValidationTip placement="top" title={props.title + " chỉ được nhập số"}>
-                        <ErrorOutline style={{float: "right", margin: "5", width:"15", height:"15", display: numberError === true ? "block" : "none"}} color = "secondary"/>
+                <ValidationTip placement="top" title={title + " chỉ được nhập số"}>
+                    <ErrorOutline style={{ float: "right", margin: "5", width: "15", height: "15", display: numberError === true ? "block" : "none" }} color="secondary" />
                 </ValidationTip>
             </span>
-            {props.type === 'Picker' && 
-            <input 
-                onChange = {props.onChange}
-                className={props.error === true ? "error" : ""}
-                required = {props.required}
-                disabled = {props.disabled}   
-                type="date"
-                readOnly={props.readOnly}
-                value = {props.value}
-                defaultValue={new Date().getFullYear()+"-" + month + "-" + date}/>
+            {type === 'Picker' &&
+                <input
+                    onChange={onChange}
+                    className={error === true ? "error" : ""}
+                    required={required}
+                    disabled={disabled}
+                    type="date"
+                    readOnly={readOnly}
+                    value={value}
+                    defaultValue={defaultValue === null || defaultValue === undefined ? new Date().getFullYear() + "-" + month + "-" + date : defaultValue} />
             }
-            {props.type === 'TextBox' && 
-            <input   
-                onChange = {props.onChange}
-                className={props.error === true ? "error" : ""}
-                value = {props.value}
-                disabled = {props.disabled}  
-                readOnly={props.readOnly}    
-                required = {props.required}/>
-            } 
-            {props.type === 'Number' && 
-            <input   
-                onChange = {props.onChange}
-                onKeyPress= {e => onlyNumbers(e)}
-                onInput = {e => onInput(e)}
-                className={(props.error === true || numberError === true) ? "error" : ""}
-                value = {props.value}
-                disabled = {props.disabled}  
-                readOnly={props.readOnly}    
-                required = {props.required}/>
-            } 
-            {props.type === 'Select' && 
-            <select   
-                onChange = {props.onChange}
-                className={(props.error === true) ? "error" : ""}
-                disabled = {props.disabled}  
-                readOnly={props.readOnly}    
-                required = {props.required}>
-                    {props.options.map((item) => (
-                        <option value = {item}> {item} </option> 
-                    ))}
-            </select>
-            } 
+            {type === 'TextBox' &&
+                <input
+                    onChange={onChange}
+                    className={error === true ? "error" : ""}
+                    value={value}
+                    defaultValue={defaultValue}
+                    disabled={disabled}
+                    readOnly={readOnly}
+                    required={required} />
+            }
+            {type === 'Number' &&
+                <input
+                    onChange={onChange}
+                    onKeyPress={e => onlyNumbers(e)}
+                    onInput={e => onInput(e)}
+                    className={(error === true || numberError === true) ? "error" : ""}
+                    value={value}
+                    disabled={disabled}
+                    readOnly={readOnly}
+                    defaultValue={defaultValue}
+                    required={required} />
+            }
+            {type === 'Select' &&
+                <Selector
+                    defaultValue={defaultValue}
+                    options={options}
+                    onChange={onChange} />
+            }
+            {type === 'Label' &&
+                <input
+                    value={value}
+                    disabled={disabled}
+                    defaultValue={defaultValue}
+                    readOnly={true} />
+            }
         </div>
     );
 }

@@ -5,6 +5,7 @@ const initalState = {
   listGiay: {},
   giay: {},
   giaySize: {},
+  products: [],
 };
 
 export const listGiayReducer = (state = initalState, action) => {
@@ -100,9 +101,34 @@ export const giayCreateReducer = (state = initalState, action) => {
         giay: { ...action.payload },
       };
     }
-    case giayConstant.GIAY_SIZE_LIST_FAIL: {
+    case giayConstant.GIAY_CREATE_FAIL: {
       return {
         loading: false,
+        error: action.payload,
+      };
+    }
+    default:
+      return state;
+  }
+};
+
+export const setProductsReducer = (state = initalState, action) => {
+  switch (action.type) {
+    case giayConstant.SET_PRODUCTS_REQUEST: {
+      return {
+        isCombined: false,
+        products: [],
+      };
+    }
+    case giayConstant.SET_PRODUCTS_SUCCESS: {
+      return {
+        isCombined: true,
+        products: [...action.payload],
+      };
+    }
+    case giayConstant.SET_PRODUCTS_FAIL: {
+      return {
+        isCombined: false,
         error: action.payload,
       };
     }

@@ -44,7 +44,7 @@ Giay.GetByID = (maGiay, callBack) => {
     }
     if (res[0]) {
       console.log("Found Product:".yellow.bold, res[0]);
-      callBack(res[0]);
+      callBack(res[0][0]);
       return;
     }
   });
@@ -71,12 +71,11 @@ Giay.Create = async function (data, result) {
     data.GioiTinh,
     data.Anh,
     data.MoTa,
-    data.TyLeLoiNhuan,
-    data.DonGiaNhap,
+    data.DonGiaBan,
   ];
   var dataSize = data.Size;
   var queryString = sqlString.format(
-    "CALL USP_ThemSanPham(?,?,?,?,?,?,?,?);",
+    "CALL USP_ThemSanPham(?,?,?,?,?,?,?);",
     dataGiay
   );
   conn.query(queryString, (err, res) => {
@@ -109,12 +108,11 @@ Giay.Edit = async function (data, result) {
     data.GioiTinh,
     data.Anh,
     data.MoTa,
-    data.TyLeLoiNhuan,
-    data.DonGiaNhap,
+    data.DonGiaBan,
   ];
 
   var queryString = sqlString.format(
-    "CALL USP_CapNhatThongTinGiay(?,?,?,?,?,?,?,?,?);",
+    "CALL USP_CapNhatThongTinGiay(?,?,?,?,?,?,?,?);",
     dataGiay
   );
   conn.query(queryString, (err, res) => {

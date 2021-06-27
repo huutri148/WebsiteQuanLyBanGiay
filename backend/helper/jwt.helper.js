@@ -4,7 +4,10 @@ let generateToken = (user, secretSignature, tokenLife) => {
   return new Promise((resolve, reject) => {
     const userData = {
       MaNguoiDung: user.MaNguoiDung,
+      Avatar: user.Avatar,
+      TenDangNhap: user.TenDangNhap,
       TenNguoiDung: user.TenNguoiDung,
+      MaChucVu: user.MaChucVu,
       SDT: user.SDT,
       Email: user.Email,
     };

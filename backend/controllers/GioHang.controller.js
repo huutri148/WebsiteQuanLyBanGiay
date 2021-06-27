@@ -40,6 +40,7 @@ const createCart = async (req, res) => {
 
   const cart = {
     MaNguoiDung: req.body.MaNguoiDung,
+    PhuongThucThanhToan: req.body.PhuongThucThanhToan,
     ChiTietGioHang: req.body.ChiTietGioHang,
   };
 
@@ -52,17 +53,9 @@ const createCart = async (req, res) => {
 // @route   Patch /api/carts/id
 // @access  Public
 const updateCart = async (req, res) => {
-  if (!req.body) {
-    res.status(400).send({
-      message: "Content can not be empty",
-    });
-  }
-  const cart = {
-    MaGioHang: req.body.MaGioHang,
-    ChiTietGioHang: req.body.ChiTietGioHang,
-  };
+  const gioHangID = req.params.id;
 
-  await GioHang.Edit(cart, (result) => {
+  await GioHang.Edit(gioHangID, (result) => {
     res.status(200).send({ message: "Edited successfully" });
   });
 };
@@ -71,8 +64,22 @@ const updateCart = async (req, res) => {
 // @route   Delete /api/carts
 // @access  Public
 const removeCart = async (req, res) => {
-  const cartID = req.body.MaGioHang;
+  const cartID = req.params.id;
   await GioHang.Delete(cartID, (result) => {
+    if (result) {
+      res.status(200).send({ message: "Deleted Successfully" });
+    } else {
+      res.status(404);
+    }
+  });
+};
+
+// @desc    get cart detail
+// @route   Get /api/carts/details/:id
+// @access  Public
+const getDetails = async (req, res) => {
+  const cartID = req.params.id;
+  await GioHang.GetDetails(cartID, (result) => {
     if (result) {
       res.status(200).send(JSON.stringify(result));
     } else {
@@ -81,4 +88,11 @@ const removeCart = async (req, res) => {
   });
 };
 
-module.exports = { getList, createCart, removeCart, updateCart, getByID };
+module.exports = {
+  getList,
+  createCart,
+  removeCart,
+  updateCart,
+  getByID,
+  getDetails,
+};

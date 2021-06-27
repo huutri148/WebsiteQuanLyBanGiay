@@ -18,6 +18,7 @@ import ConfirmDialog from "../../components/controls/ConfirmDialog";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import NhaCungCapTable from "./NhaCungCapTable";
+import Loading from "../../components/Loadable/Loading";
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -42,6 +43,14 @@ const useStyles = makeStyles((theme) => ({
     top: "50%",
     right: "10%",
     color: green[500],
+    textTransform: "none",
+  },
+  paper: {
+    margin: theme.spacing(0, 4),
+    display: "flex",
+    flexDirection: "column",
+    textAlign: "left",
+    height: "fit-content",
   },
 }));
 
@@ -156,13 +165,13 @@ const QuanLyNhaCungCap = () => {
   return (
     <>
       {listLoading ? (
-        <h1>Loading </h1>
+        <Loading />
       ) : (
         <div>
           <Typography component="h1" variant="h5" className={classes.title}>
             Quản lý nhà cung cấp
           </Typography>
-          <Paper>
+          <Paper className={classes.paper}>
             <Toolbar className={classes.content}>
               <Input
                 label="Search"
@@ -183,7 +192,7 @@ const QuanLyNhaCungCap = () => {
                 className={classes.newButton}
                 onClick={handleNew}
               >
-                New
+                Thêm mới
               </Button>
             </Toolbar>
             <NhaCungCapTable

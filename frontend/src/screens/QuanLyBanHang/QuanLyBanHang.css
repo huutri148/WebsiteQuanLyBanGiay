@@ -1,6 +1,9 @@
 td , th{
     padding: 0px 10px;
   }
+  table {
+    border-collapse: collapse;
+  }
   input {
     display: block;
     width: 100%;

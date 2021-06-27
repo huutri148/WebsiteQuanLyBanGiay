@@ -10,8 +10,10 @@ const bills = require("./data/PhieuBanHang");
 db.connect();
 
 const importData = async () => {
-  await users.map(async (user) => {
-    await NguoiDung.create(user, (result) => {});
+  await NguoiDung.create(users[0], (result) => {});
+  users.forEach((element,index) => {
+    if(index != 0)
+      NguoiDung.create(element, (result) => {});
   });
   //   await bills.map(async (bill) => {
   //    await PhieuBanHang.Create(bill, (result) => {});

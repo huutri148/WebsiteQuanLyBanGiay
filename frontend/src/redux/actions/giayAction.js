@@ -65,3 +65,42 @@ export const createGiay = (item) => (dispatch) => {
     toast.error("Created Failed");
   }
 };
+export const setProducts = (item) => (dispatch) => {
+  try {
+    dispatch({ type: giayConstants.SET_PRODUCTS_REQUEST });
+
+    dispatch({
+      type: giayConstants.SET_PRODUCTS_SUCCESS,
+      payload: item,
+    });
+  } catch (error) {
+    dispatch({
+      type: giayConstants.SET_PRODUCTS_FAIL,
+      payload:
+        error.response && error.response.message
+          ? error.response.data.data.message
+          : error.messagge,
+    });
+  }
+};
+
+export const fetchGiayByID = (id) => async (dispatch) => {
+  try {
+    dispatch({ type: giayConstants.GIAY_REQUEST });
+
+    const { data } = await giayAPI.getGiayByID(id);
+
+    dispatch({
+      type: giayConstants.GIAY_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: giayConstants.GIAY_FAIL,
+      payload:
+        error.response && error.response.message
+          ? error.response.data.data.message
+          : error.messagge,
+    });
+  }
+};

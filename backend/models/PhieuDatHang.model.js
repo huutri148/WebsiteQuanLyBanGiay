@@ -5,52 +5,46 @@ const PhieuDatHang = {};
 PhieuDatHang.Create = async function (data, result) {
   var conn = db.getConnection();
   var dataPhieuDatHang = [
-    data.MaNguoiDung,
     data.MaNhaCungCap,
+    data.MaNguoiDung,
     data.NgayLap,
-    data.ChiTietPhieuDatHang,
+    data.TrangThai,
   ];
 
   var queryString = sqlString.format(
     "CALL USP_ThemPhieuDatHang(?,?,?,?);",
     dataPhieuDatHang
   );
-  conn.query(queryString, (err, res) => {
-    if (err) {
-      //Todo: Handle error
-      throw err;
-    } else {
-      console.log(`Created PhieuDatHang successfully`);
-      data.ChiTietPhieuDatHang.map(function await(chiTietPhieuBanHang) {
-        let qr = sqlString.format(
-          `CALL USP_ThemChiTietPhieuDatHang();`
-        );
-        conn.query(qr, (error, response) => {
-          if (error) {
-            console.log(error);
-          } else {
-          }
+  try {
+    conn.query(queryString, (err, res) => {
+      if (err) {
+        //Todo: Handle error
+        throw err;
+      } else {
+        console.log(`Created PhieuDatHang successfully`);
+        data.ChiTietPhieuDatHang.map(function await(chiTietPhieuDatHang) {
+          let qr = sqlString.format(
+            `CALL USP_ThemChiTietPhieuDatHang(${chiTietPhieuDatHang.MaChiTietGiay},${chiTietPhieuDatHang.SoLuongDat});`
+          );
+          conn.query(qr, (error, response) => {
+            if (error) {
+              console.log(error);
+            } else {
+            }
+          });
         });
-      });
-      result(res[0]);
-    }
-  });
+        result(res[0]);
+      }
+    });
+  } catch (error) {
+    throw error;
+  }
 };
 
 PhieuDatHang.GetByID = (soPhieuDatHang, callBack) => {
   var conn = db.getConnection();
   var queryString = sqlString.format(
     `CALL USP_GetPhieuDatHangByID(${soPhieuDatHang});`
-  );
-  conn.query(queryString, (err, res) => {
-    if (err) {
-      throw err;
-    }
-    if (res[0]) {
-      console.log("Found Order:".yellow.bold, res[0]);
-  var conn = db.getConnection();
-  var queryString = sqlString.format(
-    `CALL USP_GetPhieuDatHangByMaKhachHang(${maKhachHang});`
   );
   conn.query(queryString, (err, res) => {
     if (err) {
@@ -81,12 +75,11 @@ PhieuDatHang.Edit = async function (data, result) {
     data.SoPhieuDatHang,
     data.MaNguoiDung,
     data.MaNhaCungCap,
-    data.NgayLap,
-    data.ChiTietPhieuDatHang,
+    data.TrangThai,
   ];
 
   var queryString = sqlString.format(
-    "CALL USP_CapNhatThongTinPhieuDatHang(?,?,?,?,?,?,?);",
+    "CALL USP_CapNhatThongTinPhieuDatHang(?,?,?,?);",
     dataPhieuDatHang
   );
   conn.query(queryString, (err, res) => {
@@ -99,4 +92,18 @@ PhieuDatHang.Edit = async function (data, result) {
     }
   });
 };
+
+PhieuDatHang.Delete = (soPhieu, callBack) => {
+  var conn = db.getConnection();
+  var queryString = sqlString.format(`CALL USP_XoaPhieuDatHang(${soPhieu})`);
+  conn.query(queryString, (err, res) => {
+    if (err) {
+      throw err;
+    } else {
+      console.log("Deleteted Order".yellow.bold);
+      callBack(res);
+    }
+  });
+};
+
 module.exports = PhieuDatHang;

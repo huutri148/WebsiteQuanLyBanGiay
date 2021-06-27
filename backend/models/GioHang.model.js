@@ -4,9 +4,9 @@ const GioHang = {};
 
 GioHang.Create = async function (data, result) {
   var conn = db.getConnection();
-  var dataGioHang = [data.MaNguoiDung];
+  var dataGioHang = [data.MaNguoiDung, data.PhuongThucThanhToan];
 
-  var queryString = sqlString.format("CALL USP_ThemGioHang(?);", dataGioHang);
+  var queryString = sqlString.format("CALL USP_ThemGioHang(?,?);", dataGioHang);
   conn.query(queryString, (err, res) => {
     if (err) {
       //Todo: Handle error
@@ -14,10 +14,9 @@ GioHang.Create = async function (data, result) {
     } else {
       console.log(`Create GioHang successfully`);
       data.ChiTietGioHang.map(function await(chiTietGioHang) {
-        console.log(chiTietGioHang);
         let qr = sqlString.format(
           `CALL USP_ThemChiTietGioHang(${chiTietGioHang.MaChiTietGiay},
-                            ${chiTietGioHang.SoLuongMua});`
+                            ${chiTietGioHang.SoLuongMua},${chiTietGioHang.GiaBan},${chiTietGioHang.ThanhTien});`
         );
         conn.query(qr, (error, response) => {
           if (error) {
@@ -47,15 +46,13 @@ GioHang.GetByID = (maGioHang, callBack) => {
 
 GioHang.Delete = (maGioHang, callBack) => {
   var conn = db.getConnection();
-  var queryString = sqlString.format(
-    `CALL USP_XoaTrangGioHang(${maGioHang});CALL USP_XoaGioHang(${maGioHang});`
-  );
+  var queryString = sqlString.format(`CALL USP_XoaGioHang(${maGioHang});`);
   conn.query(queryString, (err, res) => {
     if (err) {
       throw err;
     } else {
       console.log("Deleted Gio Hang: ", maGioHang);
-      callBack(res[0]);
+      callBack(res);
     }
   });
 };
@@ -72,28 +69,31 @@ GioHang.Get = function (callBack) {
     callBack(results[0]);
   });
 };
-GioHang.Edit = async function (data, result) {
+GioHang.Edit = async function (maGioHang, result) {
   var conn = db.getConnection();
-
-  if (data.ChiTietGioHang) {
-    var query1 = sqlString.format(
-      `CALL USP_XoaTrangGioHang(${data.MaGioHang});`
-    );
-    conn.query(query1, (err, res) => {
-      data.ChiTietGioHang.map(function await(chiTietGioHang) {
-        console.log(chiTietGioHang);
-        let query = sqlString.format(`CALL USP_CapNhatChiTietGioHang(
-                                            ${data.MaGioHang},
-                                            ${chiTietGioHang.MaChiTietGiay},
-                                            ${chiTietGioHang.SoLuongMua});`);
-        conn.query(query, (error, response) => {
-          if (error) {
-            console.log(error);
-          }
-        });
-      });
+  var queryString = sqlString.format(`CALL USP_CapNhatGioHang(${maGioHang});`);
+  conn.query(queryString, (err, res) => {
+    if (err) {
+      throw err;
+    } else {
+      console.log("Updated Gio Hang: ", maGioHang);
       result(res[0]);
-    });
-  }
+    }
+  });
+};
+
+GioHang.GetDetails = function (maGioHang, callBack) {
+  var conn = db.getConnection();
+  var queryString = sqlString.format(
+    `CALL USP_GetChiTietGioHangByID(${maGioHang});`
+  );
+  conn.query(queryString, (err, res) => {
+    if (err) {
+      throw err;
+    }
+    if (res[0]) {
+      callBack(res[0]);
+    }
+  });
 };
 module.exports = GioHang;
