@@ -1,5 +1,6 @@
 import { Layout } from "../../components/Layout";
 import QuanLyChi from "./QuanLyChi";
+import { QUANLYPHIEUCHI } from "../../constants/authRoleConstant";
 const quanLyChi = () => (
   <Layout>
     <QuanLyChi />
@@ -12,7 +13,7 @@ const quanLyChiRoute = [
     exact: true,
     component: quanLyChi,
     private: true,
-    role: 6,
+    role: QUANLYPHIEUCHI,
   },
 ];
 
