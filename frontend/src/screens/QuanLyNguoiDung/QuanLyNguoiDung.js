@@ -1,5 +1,6 @@
 import { CssBaseline, makeStyles, Tab, Tabs } from "@material-ui/core";
 import { React, useState } from "react";
+import DanhSachChucVu from "./DanhSachChucVu/DanhSachChucVu";
 import DanhSachKhachHang from "./DanhSachKhachHang/DanhSachKhachHang";
 import DanhSachNhanVien from "./DanhSachNhanVien/DanhSachNhanVien";
 import { QuanLyNguoiDungTab } from "./ThongTinQuanLyNguoiDung";
@@ -46,8 +47,9 @@ const QuanLyPhieuDatHang = () => {
           value={value}
           onChange={handleChange}
         >
-          <Tab className={classes.tabHeader} label="Khách hàng" />
-          <Tab className={classes.tabHeader} label="Nhân viên" />
+          <Tab className={classes.tabHeader} label="Khách Hàng" />
+          <Tab className={classes.tabHeader} label="Nhân Viên" />
+          <Tab className={classes.tabHeader} label="Chức Vụ" />
         </Tabs>
       </div>
 
@@ -56,6 +58,9 @@ const QuanLyPhieuDatHang = () => {
       </TabPanel>
       <TabPanel value={value} index={QuanLyNguoiDungTab.DanhSachNhanVien}>
         <DanhSachNhanVien />
+      </TabPanel>
+      <TabPanel value={value} index={QuanLyNguoiDungTab.ChucVu}>
+        <DanhSachChucVu />
       </TabPanel>
     </div>
   );

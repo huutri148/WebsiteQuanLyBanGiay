@@ -13,6 +13,58 @@ const getList = async (req, res) => {
     }
   });
 };
+// @desc    Register a duty
+// @route   Post /api/duties
+// @access  Public
+const registerDuty = async (req, res) => {
+  if (!req.body) {
+    res.status(400).send({
+      message: "Content can not be empty",
+    });
+  }
+
+  const duty = {
+    TenChucVu: req.body.TenChucVu,
+  };
+
+  await ChucVu.Create(duty, (result) => {
+    res.status(200).send({ message: "Created successfully" });
+  });
+};
+
+// @desc    Update  duty
+// @route   PATCH /api/duties/id
+// @access  Public
+const updateDuty = async (req, res) => {
+  if (!req.body) {
+    res.status(400).send({
+      message: "Content can not be empty",
+    });
+  }
+
+  const duty = {
+    TenChucVu: req.body.TenChucVu,
+    MaChucVu: Number(req.params.id),
+    ListPhanQuyen: req.body.ListPhanQuyen,
+  };
+  await ChucVu.Edit(duty, (result) => {
+    res.status(200).send({ message: "Updated successfully" });
+  });
+};
+
+// @desc delete duty by id
+// @route DELETE/api/duties/id
+// @access Public
+const deleteDuty = async (req, res) => {
+  const maChucVu = req.params.id;
+  await ChucVu.Delete(maChucVu, (result) => {
+    if (result) {
+      res.status(200).send({ message: "Deleted successfully" });
+    } else {
+      res.status(404);
+    }
+  });
+};
 // @desc Fetch all duty's permissions
 // @route Get/api/duties/permissions/id
 // @access Public
@@ -59,5 +111,5 @@ const addPermissions = async (req, res) => {
   });
 };
 module.exports = {
-  getList,getListPermissions,getAllPermissions,addPermissions
+  getList,getListPermissions,getAllPermissions,addPermissions, registerDuty, updateDuty, deleteDuty
 };
