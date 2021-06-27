@@ -10,7 +10,6 @@ import {
   IconButton,
   makeStyles,
   Tooltip,
-  Button,
   Typography
 } from "@material-ui/core";
 import { green } from '@material-ui/core/colors';
@@ -19,25 +18,21 @@ import {
   CloudDownload,
   FilterList,
   ViewColumn,
-  Edit,
-  Check,
   Print,
-  Assignment,
-  Delete,
 } from "@material-ui/icons";
 import Input from "../../../components/controls/Input";
 import { useDispatch, useSelector } from "react-redux";
 import useTable from "../../../components/useTable";
 import moment from 'moment'
-import Popup from "../../../components/controls/Popup";
-import { fetchListPhieuChi} from "../../../redux/actions/phieuChiAction";
+import Loading from "../../../components/Loadable/Loading";
+import { fetchListPhieuChi } from "../../../redux/actions/phieuChiAction";
 const useStyles = makeStyles((theme) => ({
-  title: {
+  titleHeader: {
     padding: theme.spacing(4, 0),
     textTransform: "none",
     fontSize: 32,
     color: "darkslateblue",
-    fontWeight: "Bold",
+    fontWeight: "500",
   },
   toolbar: {
     display: "flex",
@@ -81,9 +76,9 @@ const headCells = [
   { id: "NgayChi", label: "Ngày Lập" },
   { id: "TenNhaCungCap", label: "Tên Nhà Cung Cấp" },
   { id: "TongTien", label: "Tổng Tiền" },
-  { id: "TenNguoiDung", label: "Người lập"},
+  { id: "TenNguoiDung", label: "Người lập" },
   { id: "SoPhieuNhapKho", label: "Số phiếu nhập kho" },
-  { id: "actions", disableSorting: true  },
+  { id: "actions", disableSorting: true },
 ];
 const DanhSachPhieuChi = (props) => {
   // CSS class
@@ -104,7 +99,7 @@ const DanhSachPhieuChi = (props) => {
       return items;
     },
   });
-  
+
   const { TblContainer, TblHead, TblPagination, recordsAfterPagingAndSorting } =
     useTable(payments, headCells, filterFn);
   //handle click
@@ -145,11 +140,10 @@ const DanhSachPhieuChi = (props) => {
     popupWin.document.write('</p>')
     popupWin.document.write('</body></html>');
     popupWin.document.close();
-}
+  }
   // set payments
   useEffect(() => {
-    if (listPhieuChi != undefined) 
-    {
+    if (listPhieuChi != undefined) {
       const paymentsData = Object.values(listPhieuChi).reduce((result, value) => {
         result.push({
           ...value,
@@ -167,12 +161,16 @@ const DanhSachPhieuChi = (props) => {
     };
     fetchData();
   }, [dispatch]);
-    return (
+  return (
     <>
-      {payments === [] || payments === undefined ? (<h1>Loading</h1>) 
-        : 
-        (
+      {phieuChiLoading
+        ?
+        <Loading />
+        :
         <div>
+          <Typography component="h1" variant="h5" className={classes.titleHeader}>
+            {props.tabHeader}
+          </Typography>
           <Paper>
             <Toolbar className={classes.toolbar}>
               <div className={classes.searchInput}>
@@ -241,8 +239,8 @@ const DanhSachPhieuChi = (props) => {
                       </TableCell>
                       <TableCell component="th" scope="row">
                         <Tooltip title="In Phiếu">
-                          <IconButton onClick = {() => print(item)}>
-                            <Print style={{ color: green[500] }}/>
+                          <IconButton onClick={() => print(item)}>
+                            <Print style={{ color: green[500] }} />
                           </IconButton>
                         </Tooltip>
                       </TableCell>
@@ -253,38 +251,38 @@ const DanhSachPhieuChi = (props) => {
               <TblPagination />
             </TableContainer>
           </Paper>
-          <div style = {{display: "none"}}>
+          <div style={{ display: "none" }}>
             <div id="content">
               <div style={{ display: 'inline-block' }}>
                 <li><b>Cửa Hàng Giày SneakerLand</b></li>
                 <li>Địa chỉ: 29N1, Tân Lập, Đông Hoà, Dĩ An, Bình Dương</li>
                 <li>Số Điện Thoại: 01212801223</li>
-                </div>
-                <div>
-                  <h1 style={{ flexGrow: 1, textAlign: "center" }}>Phiếu Chi</h1>
-                  <table style={{ borderCollapse: "collapse", width: "100%" }}>
-                    <tr>
-                        <td><b>Số Phiếu Chi:&nbsp;&nbsp;</b>{payment.SoPhieuChi}</td>
-                    </tr>
-                    <tr>
-                        <td><b>Số Phiếu Nhập Kho:&nbsp;&nbsp;</b>{payment.SoPhieuNhapKho}</td>
-                        <td><b>Nhà Cung Cấp:&nbsp;&nbsp;</b>{payment.TenNhaCungCap}</td>
-                    </tr>
-                    <tr>
-                        <td><b>Tổng Tiền:&nbsp;&nbsp;</b>{Number(payment.TongTien).toLocaleString("it-IT")}</td>
-                        <td><b>Người Lập:&nbsp;&nbsp;</b>{payment.TenNguoiDung}</td>
-                    </tr>
-                    <tr>
-                        <td><b>Ngày Lập:&nbsp;&nbsp;</b>{moment(payment.NgayLap).format("DD/MM/YYYY")}</td>
-                        <td><b>Ghi Chú:&nbsp;&nbsp;</b>{payment.GhiChu}</td>
-                    </tr>
-                  </table>
-                </div>
-                <br />
               </div>
+              <div>
+                <h1 style={{ flexGrow: 1, textAlign: "center" }}>Phiếu Chi</h1>
+                <table style={{ borderCollapse: "collapse", width: "100%" }}>
+                  <tr>
+                    <td><b>Số Phiếu Chi:&nbsp;&nbsp;</b>{payment.SoPhieuChi}</td>
+                  </tr>
+                  <tr>
+                    <td><b>Số Phiếu Nhập Kho:&nbsp;&nbsp;</b>{payment.SoPhieuNhapKho}</td>
+                    <td><b>Nhà Cung Cấp:&nbsp;&nbsp;</b>{payment.TenNhaCungCap}</td>
+                  </tr>
+                  <tr>
+                    <td><b>Tổng Tiền:&nbsp;&nbsp;</b>{Number(payment.TongTien).toLocaleString("it-IT")}</td>
+                    <td><b>Người Lập:&nbsp;&nbsp;</b>{payment.TenNguoiDung}</td>
+                  </tr>
+                  <tr>
+                    <td><b>Ngày Lập:&nbsp;&nbsp;</b>{moment(payment.NgayLap).format("DD/MM/YYYY")}</td>
+                    <td><b>Ghi Chú:&nbsp;&nbsp;</b>{payment.GhiChu}</td>
+                  </tr>
+                </table>
+              </div>
+              <br />
+            </div>
           </div>
         </div>
-      )}
+      }
     </>
   );
 };

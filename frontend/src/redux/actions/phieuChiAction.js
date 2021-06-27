@@ -1,5 +1,6 @@
 import * as phieuChiAPI from "../apis/phieuChiAPI";
 import * as phieuChiConstants from "../../constants/phieuChiConstant";
+import { toast } from "react-toastify";
 export const fetchListPhieuChi = () => async (dispatch) => {
   try {
     dispatch({ type: phieuChiConstants.PHIEUCHI_LIST_REQUEST });
@@ -28,6 +29,7 @@ export const createPhieuChi = (item) => async (dispatch) => {
       type: phieuChiConstants.PHIEUCHI_CREATE_SUCCESS,
       payload: data,
     });
+    toast.success("Successfully");
   } catch (error) {
     dispatch({
       type: phieuChiConstants.PHIEUCHI_CREATE_FAIL,
@@ -36,5 +38,6 @@ export const createPhieuChi = (item) => async (dispatch) => {
           ? error.response.data.data.message
           : error.messagge,
     });
+    toast.error("Failed");
   }
 };

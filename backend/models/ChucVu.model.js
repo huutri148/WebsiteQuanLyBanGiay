@@ -17,7 +17,7 @@ ChucVu.Get = function (callBack) {
 };
 ChucVu.Create = async function (data, result) {
   var conn = db.getConnection();
-
+  console.log(data);
   var queryString = sqlString.format(
     "CALL USP_ThemChucVu(?);",
     data.TenChucVu

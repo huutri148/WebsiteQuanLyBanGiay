@@ -10,6 +10,7 @@ import {
   IconButton,
   makeStyles,
   Tooltip,
+  Typography,
 } from "@material-ui/core";
 import { green } from '@material-ui/core/colors';
 import {
@@ -25,17 +26,18 @@ import Input from "../../../components/controls/Input";
 import { useDispatch, useSelector } from "react-redux";
 import useTable from "../../../components/useTable";
 import moment from 'moment'
+import Loading from "../../../components/Loadable/Loading";
 import Popup from "../../../components/controls/Popup";
 import Detail from "../../../components/controls/Detail";
 import { fetchListPhieuBanHang , fetchListChiTietPhieuBanHang} from "../../../redux/actions/phieuBanHangAction";
 import BillToPrint from "../BillToPrint";
 const useStyles = makeStyles((theme) => ({
-  title: {
+  titleHeader: {
     padding: theme.spacing(4, 0),
     textTransform: "none",
     fontSize: 32,
     color: "darkslateblue",
-    fontWeight: "Bold",
+    fontWeight: "500",
   },
   toolbar: {
     display: "flex",
@@ -117,6 +119,19 @@ const DanhSachPhieuBanHang = (props) => {
   const { TblContainer, TblHead, TblPagination, recordsAfterPagingAndSorting } =
     useTable(bills, headCells, filterFn);
   const [groupBoxes, setGroupBoxes] = useState([]) ;
+  //handle
+  const handleSearch = (e) => {
+    let target = e.target;
+    setFilterFn({
+        fn: (items) => {
+            if (target.value == "") return items;
+            else
+                return items.filter((x) =>
+                    x.TenKhachHang.toLowerCase().includes(target.value)
+                );
+        },
+    }); 
+  };
   //handle click
   const handleDetailClick = (item) => {
     setGroupBoxes ([
@@ -190,18 +205,6 @@ const DanhSachPhieuBanHang = (props) => {
     setId(item.SoPhieuBanHang);
     setOpenPrintPopup(true);
   }
-  const handleSearch = (e) => {
-    let target = e.target;
-    setFilterFn({
-      fn: (items) => {
-        if (target.value === "") return items;
-        else
-          return items.filter((x) =>
-            x.fullName.toLowerCase().includes(target.value)
-          );
-      },
-    });
-  };
   // set Bills
   useEffect(() => {
     if (listPhieuBanHang != undefined) 
@@ -224,10 +227,13 @@ const DanhSachPhieuBanHang = (props) => {
   }, [dispatch]);
     return (
     <>
-      {bills === [] || bills === undefined ? (<h1>Loading</h1>) 
+      {phieubanhangLoading ? 
+        <Loading />
         : 
-        (
         <div>
+          <Typography component="h1" variant="h5" className={classes.titleHeader}>
+            Danh Sách Phiếu Bán Hàng
+          </Typography>
           <Paper>
             <Toolbar className={classes.toolbar}>
               <div className={classes.searchInput}>
@@ -335,7 +341,7 @@ const DanhSachPhieuBanHang = (props) => {
               />
           </Popup>
         </div>
-      )}
+      }
     </>
   );
 };

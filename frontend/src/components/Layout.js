@@ -165,7 +165,9 @@ export const Layout = withRouter((props) => {
             className={classes.title}
           >
             <Link style={{ textDecoration: "none", color: "inherit" }} to="/">
-              Sneaker Land
+              <div>
+                <img src="/images/logo2.png" style = {{ width: 120,}} alt="logo" />
+              </div>
             </Link>
           </Typography>
           <IconButton
@@ -223,7 +225,7 @@ export const Layout = withRouter((props) => {
         open={open}
       >
         <div className={classes.toolbarIcon}>
-          <img src="/images/logo.png" className={classes.ShopLogo} alt="logo" />
+          <img src="/images/logo.svg" className={classes.ShopLogo} alt="logo" />
           <IconButton onClick={handleDrawerClose}>
             <ChevronLeft />
           </IconButton>

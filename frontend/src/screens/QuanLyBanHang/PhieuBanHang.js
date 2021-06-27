@@ -8,6 +8,7 @@ import {
   TableCell,
   Table,
   IconButton,
+  Typography,
 } from "@material-ui/core";
 import { React, useState, useEffect } from "react";
 import GroupBox from "../../components/controls/GroupBox/GroupBox";
@@ -41,10 +42,11 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
   },
   titleHeader: {
+    padding: theme.spacing(4, 0),
     textTransform: "none",
     fontSize: 32,
     color: "darkslateblue",
-    fontWeight: "Bold",
+    fontWeight: "500",
   },
   td: {
     padding: "0px 10px",
@@ -60,7 +62,7 @@ const headCells = [
   { id: "DonGiaBan", label: "Đơn Giá" },
   { id: "SoLuong", label: "Số Lượng" },
   { id: "ThanhTien", label: "Thành Tiền" },
-  { id: "HanhDong" ,disableSorting: true },
+  { id: "HanhDong", disableSorting: true },
 ];
 const PhieuBanHang = (props) => {
   const [selectedProducts, setSelectedProducts] = useState([]);
@@ -69,7 +71,7 @@ const PhieuBanHang = (props) => {
   //fetch
   const dispatch = useDispatch();
   //props
-  const { products, sizes, users, isLoading } = props;
+  const { products, sizes, users, isLoading, setValue } = props;
   //variables
   const [ignored, forceUpdate] = useState(false);
   const [editing, setEditing] = useState(false);
@@ -102,8 +104,7 @@ const PhieuBanHang = (props) => {
       setAmountError(true);
       return;
     }
-    if (!editing) 
-    {
+    if (!editing) {
       if (selectedProducts.find(element => element.MaChiTietGiay === product.MaChiTietGiay))
         return;
       let tmp = sumTotal + total;
@@ -113,8 +114,7 @@ const PhieuBanHang = (props) => {
       selectedProducts.push(shoe);
       resetField();
     }
-    else 
-    {
+    else {
       let tmp = sumTotal + total - product.total;
       setSumTotal(tmp);
       groupBoxes[1].value = tmp.toLocaleString("it-IT");
@@ -138,14 +138,11 @@ const PhieuBanHang = (props) => {
     setAmount(item.amount);
     setTotal(item.total);
     setMaxAmount(item.maxAmount);
-    setOpenPopup(true);
   };
   //handle submit
-  const handleSubmitClick = () => 
-  {
+  const handleSubmitClick = () => {
     var isAbleToSubmit = false;
-    groupBoxes.forEach((element) => 
-    {
+    groupBoxes.forEach((element) => {
       element.error = element.checkValidation(element.value);
       if (element.error === true)
         isAbleToSubmit = true;
@@ -153,11 +150,9 @@ const PhieuBanHang = (props) => {
     console.log(groupBoxes);
     if (isAbleToSubmit === true)
       forceUpdate(!ignored);
-    else 
-    {
+    else {
       //set default date
-      if (groupBoxes[4].value === undefined) 
-      {
+      if (groupBoxes[4].value === undefined) {
         let date = new Date().getDate();
         if (date < 10) date = '0' + date;
         let month = new Date().getMonth() + 1;
@@ -182,7 +177,8 @@ const PhieuBanHang = (props) => {
         })
       }
       console.log(record);
-      dispatch(createPhieuBanHang(record));
+      dispatch(createPhieuBanHang(record))
+      .then(setValue(0));
       //to do: Add success later
       //item.SoPhieuBanHang === null ? dispatch(createPhieuBanHang(item)) : dispatch(updatePhieuBanHang(item.SoPhieuBanHang, item));
     }
@@ -223,12 +219,12 @@ const PhieuBanHang = (props) => {
     setAmountError(false);
     setEditing(false);
   }
-  const [groupBoxes,setGroupBoxes] = useState([
+  const [groupBoxes, setGroupBoxes] = useState([
     {
       type: "Select",
       title: "Tên Khách Hàng",
       required: true,
-      onChange: (e) => {groupBoxes[0].value = e; groupBoxes[0].error = false;},
+      onChange: (e) => { groupBoxes[0].value = e; groupBoxes[0].error = false; },
       options: users.map(element => { return { value: element.MaNguoiDung, label: element.TenNguoiDung } }),
       validationTip: "Tên Khách Hàng không được trống",
       error: false,
@@ -282,206 +278,206 @@ const PhieuBanHang = (props) => {
     },
   ]);
   return (
-    <div>
-      {groupBoxes === [] || users === [] || products === [] || sizes === [] ?
-      (<h1>Loading</h1>)
-      :
-      (
-      <Grid container spacing={0}>
-        {/* bill */}
-        <Paper className={classes.paper} style={{ width: "20%" }}>
-          <InfoField
-            GroupBoxes={groupBoxes}
-            cardHeader="Thông Tin Phiếu"
-            buttonContent="Lập Phiếu"
-            disabled={selectedProducts.length === 0 ? "disabled" : ""}
-            onClick={handleSubmitClick}
-          />
-        </Paper>
-        {/* bill details */}
-        <Paper className={classes.paper} style={{ width: "72%", margin: 0 }}>
-          <label className={classes.cardHeader}>Chi Thiết Phiếu</label>
-          <hr className={classes.hr} />
-          <ProductSelector
-            title="Hàng Hoá"
-            products={products}
-            setSelectedId={setSelectedProduct}
-          />
-          <hr className={classes.hr} style={{ marginTop: 15 }} />
-          <Table striped bordered hover>
-            <thead>
-              <tr>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td width="30%">
-                  <GroupBox
-                    key={0}
-                    value={product === null ? "" : product.TenGiay}
-                    type="TextBox"
-                    title={headCells[0].label}
-                    readOnly={true}
-                  />
-                </td>
-                <td width="12%">
-                  <GroupBox
-                    key={1}
-                    value={product === null ? "" : product.GioiTinh}
-                    type="TextBox"
-                    title={headCells[1].label}
-                    disabled="disabled"
-                  />
-                </td>
-                <td width="12%">
-                  {product === null ? (
+    <>
+      <div>
+        <Typography component="h1" variant="h5" className={classes.titleHeader}>
+          Phiếu Bán Hàng
+        </Typography>
+        <Grid container spacing={0}>
+          {/* bill */}
+          <Paper className={classes.paper} style={{ width: "20%" }}>
+            <InfoField
+              GroupBoxes={groupBoxes}
+              cardHeader="Thông Tin Phiếu"
+              buttonContent="Lập Phiếu"
+              disabled={selectedProducts.length === 0 ? "disabled" : ""}
+              onClick={handleSubmitClick}
+            />
+          </Paper>
+          {/* bill details */}
+          <Paper className={classes.paper} style={{ width: "72%", margin: 0 }}>
+            <label className={classes.cardHeader}>Chi Thiết Phiếu</label>
+            <hr className={classes.hr} />
+            <ProductSelector
+              title="Hàng Hoá"
+              products={products}
+              setSelectedId={setSelectedProduct}
+            />
+            <hr className={classes.hr} style={{ marginTop: 15 }} />
+            <Table striped bordered hover>
+              <thead>
+                <tr>
+                  <th></th>
+                  <th></th>
+                  <th></th>
+                  <th></th>
+                  <th></th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td width="30%">
                     <GroupBox
-                      key={2}
+                      key={0}
+                      value={product === null ? "" : product.TenGiay}
                       type="TextBox"
-                      title={headCells[2].label}
+                      title={headCells[0].label}
+                      readOnly={true}
+                    />
+                  </td>
+                  <td width="12%">
+                    <GroupBox
+                      key={1}
+                      value={product === null ? "" : product.GioiTinh}
+                      type="TextBox"
+                      title={headCells[1].label}
                       disabled="disabled"
                     />
-                  ) : editing ? (
-                    <GroupBox
-                      key={2}
-                      type="TextBox"
-                      title={headCells[2].label}
-                      disabled="disabled"
-                      value={sizes[product.size].TenSize}
-                    />
-                  ) : (
-                    <SizeSelector
-                      key={2}
-                      title="Size"
-                      ListSize={sizes}
-                      selectedSize={size}
-                      onSizeChange={onSizeChange}
-                      item={product}
-                    />
-                  )}
-                </td>
-                <td width="15%">
-                  <GroupBox
-                    key={3}
-                    value={
-                      product === null
-                        ? ""
-                        : Number(product.DonGiaBan).toLocaleString("it-IT")
-                    }
-                    type="TextBox"
-                    title={headCells[3].label}
-                    disabled="disabled"
-                  />
-                </td>
-                <td width="15%">
-                  <GroupBox
-                    key={4}
-                    value={amount}
-                    type="Number"
-                    title={headCells[4].label}
-                    onChange={onAmountChange}
-                    error={amountError}
-                    validationTip={
-                      "Số Lượng phải lớn hơn 0 và nhỏ hơn " + maxAmount
-                    }
-                    disabled={product === null ? "disabled" : ""}
-                  />
-                </td>
-                <td width="15%">
-                  <GroupBox
-                    key={5}
-                    value={
-                      product === null ? "" : total.toLocaleString("it-IT")
-                    }
-                    type="TextBox"
-                    title={headCells[5].label}
-                    disabled="disabled"
-                  />
-                </td>
-                <td width="10%">
-                  <IconButton
-                    key={6}
-                    style={{ marginBottom: -10 }}
-                    aria-label="Add"
-                    color="primary"
-                    size="small"
-                    disabled={product === null ? "disabled" : ""}
-                    onClick={handleAddClick}
-                  >
-                    <AddCircle />
-                  </IconButton>
-                </td>
-              </tr>
-            </tbody>
-          </Table>
-          <hr className={classes.hr} />
-          <TableContainer
-            style={{
-              display: selectedProducts.length === 0 ? "none" : "table",
-            }}
-            className={classes.table}
-          >
-            <TblContainer>
-              <TblHead />
-              <TableBody>
-                {recordsAfterPagingAndSorting().map((item, index) => (
-                  <TableRow
-                    key={item.MaChiTietGiay}
-                    style={
-                      index % 2
-                        ? { background: "#eee" }
-                        : { background: "white" }
-                    }
-                  >
-                    <TableCell component="td" width="40%" scope="row">
-                      <ProductCard
-                        imgUrl={item.Anh}
-                        PrimaryText={item.TenGiay}
+                  </td>
+                  <td width="12%">
+                    {product === null ? (
+                      <GroupBox
+                        key={2}
+                        type="TextBox"
+                        title={headCells[2].label}
+                        disabled="disabled"
                       />
-                    </TableCell>
-                    <TableCell component="td" scope="row">
-                      {item.GioiTinh}
-                    </TableCell>
-                    <TableCell component="td" scope="row">
-                      {sizes[item.size].TenSize}
-                    </TableCell>
-                    <TableCell component="td" scope="row">
-                      {Number(item.DonGiaBan).toLocaleString("it-IT")}
-                    </TableCell>
-                    <TableCell component="td" scope="row">
-                      {item.amount}
-                    </TableCell>
-                    <TableCell component="td" scope="row">
-                      {item.total.toLocaleString("it-IT")}
-                    </TableCell>
-                    <TableCell component="td" scope="row">
-                      <IconButton size="small" color="primary">
-                        <Edit onClick={() => handleEditClick(item)} />
-                      </IconButton>
-                      <IconButton
-                        size="small"
-                        color="secondary"
-                        onClick={() => handleRemoveClick(item)}
-                      >
-                        <HighlightOff />
-                      </IconButton>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </TblContainer>
-            <TblPagination />
-          </TableContainer>
-        </Paper>
-      </Grid>
-      )}
-    </div>
+                    ) : editing ? (
+                      <GroupBox
+                        key={2}
+                        type="TextBox"
+                        title={headCells[2].label}
+                        disabled="disabled"
+                        value={sizes[product.size].TenSize}
+                      />
+                    ) : (
+                      <SizeSelector
+                        key={2}
+                        title="Size"
+                        ListSize={sizes}
+                        selectedSize={size}
+                        onSizeChange={onSizeChange}
+                        item={product}
+                      />
+                    )}
+                  </td>
+                  <td width="15%">
+                    <GroupBox
+                      key={3}
+                      value={
+                        product === null
+                          ? ""
+                          : Number(product.DonGiaBan).toLocaleString("it-IT")
+                      }
+                      type="TextBox"
+                      title={headCells[3].label}
+                      disabled="disabled"
+                    />
+                  </td>
+                  <td width="15%">
+                    <GroupBox
+                      key={4}
+                      value={amount}
+                      type="Number"
+                      title={headCells[4].label}
+                      onChange={onAmountChange}
+                      error={amountError}
+                      validationTip={
+                        "Số Lượng phải lớn hơn 0 và nhỏ hơn " + maxAmount
+                      }
+                      disabled={product === null ? "disabled" : ""}
+                    />
+                  </td>
+                  <td width="15%">
+                    <GroupBox
+                      key={5}
+                      value={
+                        product === null ? "" : total.toLocaleString("it-IT")
+                      }
+                      type="TextBox"
+                      title={headCells[5].label}
+                      disabled="disabled"
+                    />
+                  </td>
+                  <td width="10%">
+                    <IconButton
+                      key={6}
+                      style={{ marginBottom: -10 }}
+                      aria-label="Add"
+                      color="primary"
+                      size="small"
+                      disabled={product === null ? "disabled" : ""}
+                      onClick={handleAddClick}
+                    >
+                      <AddCircle />
+                    </IconButton>
+                  </td>
+                </tr>
+              </tbody>
+            </Table>
+            <hr className={classes.hr} />
+            <TableContainer
+              style={{
+                display: selectedProducts.length === 0 ? "none" : "table",
+              }}
+              className={classes.table}
+            >
+              <TblContainer>
+                <TblHead />
+                <TableBody>
+                  {recordsAfterPagingAndSorting().map((item, index) => (
+                    <TableRow
+                      key={item.MaChiTietGiay}
+                      style={
+                        index % 2
+                          ? { background: "#eee" }
+                          : { background: "white" }
+                      }
+                    >
+                      <TableCell component="td" width="40%" scope="row">
+                        <ProductCard
+                          imgUrl={item.Anh}
+                          PrimaryText={item.TenGiay}
+                        />
+                      </TableCell>
+                      <TableCell component="td" scope="row">
+                        {item.GioiTinh}
+                      </TableCell>
+                      <TableCell component="td" scope="row">
+                        {sizes[item.size].TenSize}
+                      </TableCell>
+                      <TableCell component="td" scope="row">
+                        {Number(item.DonGiaBan).toLocaleString("it-IT")}
+                      </TableCell>
+                      <TableCell component="td" scope="row">
+                        {item.amount}
+                      </TableCell>
+                      <TableCell component="td" scope="row">
+                        {item.total.toLocaleString("it-IT")}
+                      </TableCell>
+                      <TableCell component="td" scope="row">
+                        <IconButton size="small" color="primary">
+                          <Edit onClick={() => handleEditClick(item)} />
+                        </IconButton>
+                        <IconButton
+                          size="small"
+                          color="secondary"
+                          onClick={() => handleRemoveClick(item)}
+                        >
+                          <HighlightOff />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </TblContainer>
+              <TblPagination />
+            </TableContainer>
+          </Paper>
+        </Grid>
+      </div>
+    </>
   );
 };
 
