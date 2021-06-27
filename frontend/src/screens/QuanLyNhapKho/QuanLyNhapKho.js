@@ -15,7 +15,6 @@ import { fetchListSize } from "../../redux/actions/sizeAction";
 import { fetchListMau } from "../../redux/actions/mauAction";
 import { fetchListNhaCungCap } from "../../redux/actions/nhaCungCapAction";
 import DanhSachPhieuNhapKho from "./DanhSachPhieuNhapKho/DanhSachPhieuNhapKho";
-import DanhSachPhieuChi from "./DanhSachPhieuChi/DanhSachPhieuChi";
 import Loading from "../../components/Loadable/Loading";
   
   function TabPanel(props) {
@@ -175,7 +174,6 @@ import Loading from "../../components/Loadable/Loading";
             >
               <Tab className={classes.tabHeader} label="Danh Sách Phiếu Nhập Kho" />
               <Tab className={classes.tabHeader} label={"Phiếu Nhập Kho"} />
-              <Tab className={classes.tabHeader} label={"Danh Sách Phiếu Chi"} />
             </Tabs>
           </div>
           <TabPanel value={value} index={0}>
@@ -197,9 +195,6 @@ import Loading from "../../components/Loadable/Loading";
               recdocket = {recdocket}
               isLoading = {!nhacungcapLoading && !sizeLoading && !giayLoading ? false : true}
             />
-          </TabPanel>
-          <TabPanel value={value} index={2}>
-            <DanhSachPhieuChi tabHeader = {tabHeader} />
           </TabPanel>
         </div>
         }

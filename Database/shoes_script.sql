@@ -1906,6 +1906,7 @@ insert into QUYEN(MaQuyen,TenQuyen) values (6,"Quản Lý Nhập Kho");
 insert into QUYEN(MaQuyen,TenQuyen) values (7,"Quản Lý Giỏ Hàng");
 insert into QUYEN(MaQuyen,TenQuyen) values (8,"Báo Cáo Lợi Nhuận");
 insert into QUYEN(MaQuyen,TenQuyen) values (9,"Báo Cáo Bán Hàng");
+insert into QUYEN(MaQuyen,TenQuyen) values (10,"Quản Lý Phiếu Chi");
 
 -- admin toan quyen
 insert into PHANQUYEN(MaChucVu,MaQuyen) values (1,1);
