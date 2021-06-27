@@ -81,11 +81,11 @@ export const deleteChucVu = (id) => async (dispatch) => {
     toast.error("Failed");
   }
 };
-export const fetchListQuyen = () => async (dispatch) => {
+export const fetchListQuyen = (id) => async (dispatch) => {
   try {
     dispatch({ type: chucVuConstants.CHUCVU_ALL_PERMISSIONS_REQUEST });
 
-    const { data } = await chucVuAPI.getPermissions();
+    const { data } = await chucVuAPI.getDutyPermissions(id);
 
     dispatch({
       type: chucVuConstants.CHUCVU_ALL_PERMISSIONS_SUCCESS,

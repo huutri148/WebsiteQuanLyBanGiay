@@ -66,6 +66,8 @@ const headCells = [
 ];
 const PhieuBanHang = (props) => {
   const [selectedProducts, setSelectedProducts] = useState([]);
+  const user = useSelector((state) => state.User);
+  const { userInfo } = user;
   //styles
   const classes = useStyles();
   //fetch
@@ -161,7 +163,7 @@ const PhieuBanHang = (props) => {
       }
       //get record
       let record = {
-        MaNguoiDung: 2,
+        MaNguoiDung: userInfo.MaNguoiDung,
         MaKhachHang: groupBoxes[0].value === undefined ? 1 : groupBoxes[0].value.value,
         TongTien: sumTotal,
         PhuongThucThanhToan: groupBoxes[2].value === undefined ? "Thanh toán trực tiếp" : groupBoxes[2].value.label,
@@ -258,6 +260,7 @@ const PhieuBanHang = (props) => {
     {
       type: "TextBox",
       title: "Người Lập",
+      value: userInfo.TenNguoiDung,
       required: true,
       disabled: "disabled",
       checkValidation: (val) => false,

@@ -92,7 +92,6 @@ const DanhSachPhieuChi = (props) => {
   const [payments, setPayments] = useState([]);
   const [payment, setPayment] = useState({});
   //hooks
-  const [openPrintPopup, setOpenPrintPopup] = useState(false);
   // Props in Screens
   const [filterFn, setFilterFn] = useState({
     fn: (items) => {
@@ -103,10 +102,6 @@ const DanhSachPhieuChi = (props) => {
   const { TblContainer, TblHead, TblPagination, recordsAfterPagingAndSorting } =
     useTable(payments, headCells, filterFn);
   //handle click
-  const handlePrintClick = (item) => {
-    setPayment(item);
-    setOpenPrintPopup(true);
-  }
   const handleSearch = (e) => {
     let target = e.target;
     setFilterFn({
@@ -114,7 +109,7 @@ const DanhSachPhieuChi = (props) => {
         if (target.value === "") return items;
         else
           return items.filter((x) =>
-            x.fullName.toLowerCase().includes(target.value)
+            x.TenNhaCungCap.toLowerCase().includes(target.value)
           );
       },
     });
@@ -160,7 +155,7 @@ const DanhSachPhieuChi = (props) => {
       await dispatch(fetchListPhieuChi());
     };
     fetchData();
-  }, [dispatch]);
+  }, [dispatch, props.value]);
   return (
     <>
       {phieuChiLoading
@@ -187,23 +182,6 @@ const DanhSachPhieuChi = (props) => {
                   }}
                   onChange={handleSearch}
                 />
-              </div>
-              <div className={classes.actions}>
-                <Tooltip title="Tải file csv">
-                  <IconButton className={classes.actionsButton}>
-                    <CloudDownload />
-                  </IconButton>
-                </Tooltip>
-                <Tooltip title="Chọn cột">
-                  <IconButton className={classes.actionsButton}>
-                    <ViewColumn />
-                  </IconButton>
-                </Tooltip>
-                <Tooltip title="Lọc">
-                  <IconButton className={classes.actionsButton}>
-                    <FilterList />
-                  </IconButton>
-                </Tooltip>
               </div>
             </Toolbar>
             <TableContainer className={classes.table}>

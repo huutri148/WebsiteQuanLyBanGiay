@@ -15,25 +15,17 @@ import {
 import { green } from '@material-ui/core/colors';
 import {
   Search,
-  CloudDownload,
-  FilterList,
-  ViewColumn,
-  Edit,
   Check,
-  Print,
   Assignment,
-  Delete,
 } from "@material-ui/icons";
 import Input from "../../../components/controls/Input";
-import ConfirmDialog from "../../../components/controls/ConfirmDialog";
 import { useDispatch, useSelector } from "react-redux";
 import useTable from "../../../components/useTable";
 import moment from 'moment'
 import Popup from "../../../components/controls/Popup";
 import XacNhanThanhToan from "../XacNhanThanhToan";
 import Detail from "../../../components/controls/Detail";
-import { fetchListPhieuNhapKho, deletePhieuNhapKho } from "../../../redux/actions/phieuNhapKhoAction";
-import RecdocketToPrint from "../RecdocketToPrint";
+import { fetchListPhieuNhapKho } from "../../../redux/actions/phieuNhapKhoAction";
 import Loading from "../../../components/Loadable/Loading";
 const useStyles = makeStyles((theme) => ({
   paper: {

@@ -363,12 +363,6 @@ const DanhSachPhieuNhapKho = (props) => {
                               </IconButton>
                             </Tooltip>}
                           {item.IsPaid === 0 &&
-                            <Tooltip title="Thanh toán">
-                              <IconButton onClick={() => handlePayClick(item)}>
-                                <Check color="primary" />
-                              </IconButton>
-                            </Tooltip>}
-                          {item.IsPaid === 0 &&
                             <Tooltip title="Xoá Phiếu">
                               <IconButton onClick={() => handleDeleteClick(item)} >
                                 <Delete color="secondary" />

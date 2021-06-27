@@ -27,6 +27,7 @@ import {
   ChevronLeft,
   Home,
   Person,
+  Payment,
   Settings,
   Dvr,
   ExitToApp,
@@ -320,6 +321,14 @@ export const Layout = withRouter((props) => {
                 <HomeIcon />
               </ListItemIcon>
               <ListItemText primary="Nhập Kho" />
+            </ListItem>
+          )}
+          {listPhanQuyen.includes(role.QUANLYPHIEUCHI) && (
+            <ListItem button component={Link} to="/admin/paymentvouchers">
+              <ListItemIcon>
+                <Payment />
+              </ListItemIcon>
+              <ListItemText primary="Phiếu Chi" />
             </ListItem>
           )}
           {listPhanQuyen.includes(role.QUANLYGIOHANG) && (

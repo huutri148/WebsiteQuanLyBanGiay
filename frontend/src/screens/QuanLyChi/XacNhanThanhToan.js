@@ -3,7 +3,7 @@ import { Button, makeStyles } from '@material-ui/core'
 import GroupBox from '../../components/controls/GroupBox/GroupBox';
 import moment from 'moment'
 import { createPhieuChi } from '../../redux/actions/phieuChiAction';
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 const useStyles = makeStyles((theme) => ({
     cardHeader: {
       fontSize: 24,
@@ -19,6 +19,8 @@ const useStyles = makeStyles((theme) => ({
 const XacNhanThanhToan = (props) => {
     const classes = useStyles();
     const dispatch = useDispatch();
+    const user = useSelector((state) => state.User);
+    const { userInfo } = user;
     // props
     const {recdocket} = props;
     // regex
@@ -49,14 +51,15 @@ const XacNhanThanhToan = (props) => {
   // submit
   const handleSubmitClick = () => {
       let record = {
-        MaNguoiDung: 2,
+        MaNguoiDung: userInfo.MaNguoiDung,
         SoPhieuNhapKho: recdocket.SoPhieuNhapKho,
         TongTien: total,
         NgayLap: date,
         GhiChu: note,
         };
       //to do: Add success later
-      dispatch(createPhieuChi(record));
+      dispatch(createPhieuChi(record))
+      .then(props.setValue(1));
   };
     return (
         <div>
@@ -87,7 +90,7 @@ const XacNhanThanhToan = (props) => {
                             key = {3}
                             type="Label"
                             title="Người Lập"
-                            value = "1"
+                            value = {userInfo.TenNguoiDung}
                             disabled="disabled"
                         />
                     </td>

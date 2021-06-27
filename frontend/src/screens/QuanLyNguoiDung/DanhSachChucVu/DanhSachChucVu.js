@@ -30,7 +30,7 @@ import Popup from "../../../components/controls/Popup";
 import useTable from "../../../components/useTable";
 import Input from "../../../components/controls/Input";
 import ConfirmDialog from "../../../components/controls/ConfirmDialog";
-import { fetchListChucVu, updateChucVu, createChucVu, deleteChucVu, fetchListPhanQuyen, addPermissions } from "../../../redux/actions/chucVuAction";
+import { fetchListChucVu, updateChucVu, createChucVu, deleteChucVu, fetchListQuyen } from "../../../redux/actions/chucVuAction";
 const useStyles = makeStyles((theme) => ({
     paper: {
         margin: theme.spacing(0, 4),
@@ -99,8 +99,8 @@ const DanhSachChucVu = () => {
     const dispatch = useDispatch();
     const dutyList = useSelector((state) => state.ListChucVu);
     const { loading: dutyLoading, listChucVu } = dutyList;
-    const permissionList = useSelector((state) => state.ListPhanQuyen);
-    const { loading: permissionLoading, listPhanQuyen } = permissionList;
+    const permissionList = useSelector((state) => state.ListQuyen);
+    const { loading: permissionLoading, listQuyen } = permissionList;
     //hooks
     const initPermissions = [
         { MaQuyen: 1, TenQuyen: "Quản Lý Sản Phẩm", IsChecked: false },
@@ -111,7 +111,8 @@ const DanhSachChucVu = () => {
         { MaQuyen: 6, TenQuyen: "Quản Lý Nhập Kho", IsChecked: false },
         { MaQuyen: 7, TenQuyen: "Quản Lý Giỏ Hàng", IsChecked: false },
         { MaQuyen: 8, TenQuyen: "Báo Cáo Lợi Nhuận", IsChecked: false },
-        { MaQuyen: 9, TenQuyen: "Báo Cáo Bán Hàng", IsChecked: false }];
+        { MaQuyen: 9, TenQuyen: "Báo Cáo Bán Hàng", IsChecked: false },
+        { MaQuyen: 10, TenQuyen: "Quản Lý Phiếu Chi", IsChecked: false}];
     const [permissions, setPermissions] = useState(initPermissions);
     const [duties, setDuties] = useState([]);
     const [openEditPopup, setOpenEditPopup] = useState(false);
@@ -187,15 +188,16 @@ const DanhSachChucVu = () => {
         }
     }, [listChucVu]);
     useEffect(() => {
-        if (listPhanQuyen != undefined) {
+        console.log(permissionList);
+        if (listQuyen != undefined) {
             const tempPermissions = initPermissions;
-            Object.values(listPhanQuyen).forEach(item => {
-                if (item.MaQuyen != 10)
-                    tempPermissions[item.MaQuyen - 1].IsChecked = true;
+            Object.values(listQuyen).forEach(item => {
+                if(item != 0)
+                    tempPermissions[item - 1].IsChecked = true;
             }, []);
             setPermissions(tempPermissions);
         }
-    }, [listPhanQuyen, duty]);
+    }, [listQuyen]);
     useEffect(() => {
         const fetchData = async () => {
             await dispatch(fetchListChucVu());
@@ -205,7 +207,7 @@ const DanhSachChucVu = () => {
     useEffect(() => {
         const fetchData = async () => {
             if (duty !== undefined) {
-                await dispatch(fetchListPhanQuyen(duty.MaChucVu));
+                await dispatch(fetchListQuyen(duty.MaChucVu));
             }
         };
         fetchData();
@@ -362,7 +364,6 @@ const DanhSachChucVu = () => {
                     <Popup
                         title="Chi Tiết Chức Vụ"
                         openPopup={openDetailPopup}
-                        ignored={listPhanQuyen}
                         setOpenPopup={setOpenDetailPopup}
                     >
                         <GroupBox

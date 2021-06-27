@@ -65,6 +65,8 @@ const headCells = [
   { id: "HanhDong", disableSorting: true },
 ];
 const PhieuNhapKho = (props) => {
+  const user = useSelector((state) => state.User);
+  const { userInfo } = user;
   //styles
   const classes = useStyles();
   //fetch
@@ -174,7 +176,7 @@ const PhieuNhapKho = (props) => {
         //get record
         record = {
           MaNhaCungCap: groupBoxes[0].value === undefined ? groupBoxes[0].options[0].value : groupBoxes[0].value.value,
-          MaNguoiDung: 2,
+          MaNguoiDung: userInfo.MaNguoiDung,
           TongTien: sumTotal,
           NgayNhapKho: groupBoxes[3].value,
           GhiChu: groupBoxes[4].value === undefined ? null : groupBoxes[4].value,
@@ -195,7 +197,7 @@ const PhieuNhapKho = (props) => {
         record = {
           SoPhieuNhapKho: recdocket.SoPhieuNhapKho,
           MaNhaCungCap: groupBoxes[0].value === undefined ? recdocket.MaNhaCungCap : groupBoxes[0].value.value,
-          MaNguoiDung: 2,
+          MaNguoiDung: userInfo.MaNguoiDung,
           TongTien: sumTotal,
           NgayNhapKho: dData[2] + "-" + dData[1] + "-" + dData[0],
           GhiChu: groupBoxes[4].value === undefined ? recdocket.GhiChu : groupBoxes[4].value,
@@ -300,7 +302,7 @@ const PhieuNhapKho = (props) => {
     {
       type: "TextBox",
       title: "Người Lập",
-      defaultValue: recdocket !== null ? recdocket.TenNguoiDung : undefined,
+      defaultValue: recdocket !== null ? recdocket.TenNguoiDung : userInfo.TenNguoiDung,
       required: true,
       disabled: "disabled",
       checkValidation: (val) => false,

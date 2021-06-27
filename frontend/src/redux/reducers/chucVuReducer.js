@@ -153,20 +153,24 @@ export const listDutyPermissionsReducer = (
   }
 };
 
-export const listPermissionsReducer = (state = { listQuyen: {} }, action) => {
+export const listPermissionsReducer = (state = {listQuyen:[]}, action) => {
   switch (action.type) {
     case chucVuConstant.CHUCVU_ALL_PERMISSIONS_REQUEST: {
       return {
         //note: add loading
         loading: true,
-        listQuyen: {},
+        listQuyen: [],
       };
     }
     case chucVuConstant.CHUCVU_ALL_PERMISSIONS_SUCCESS: {
-      const records = _.mapKeys(action.payload, "MaQuyen");
+      const records = action.payload.data.reduce((result, value) => {
+        result.push(value.MaQuyen);
+        return result;
+      }, []);
+
       return {
         loading: false,
-        listQuyen: { ...records },
+        listQuyen: [...records],
       };
     }
     case chucVuConstant.CHUCVU_ALL_PERMISSIONS_FAIL: {

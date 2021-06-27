@@ -7,7 +7,6 @@ import {
   } from "@material-ui/core";
 import { React, useState, useEffect } from "react";
 import "../QuanLyBanHang/QuanLyBanHang.css";
-import PhieuChi from "./PhieuChi"
 import { useDispatch, useSelector } from "react-redux";
 import DanhSachPhieuChi from "./DanhSachPhieuChi/DanhSachPhieuChi";
 import DanhSachPhieuNhapKho from "./DanhSachPhieuNhapKho/DanhSachPhieuNhapKho";
@@ -43,7 +42,6 @@ import DanhSachPhieuNhapKho from "./DanhSachPhieuNhapKho/DanhSachPhieuNhapKho";
     //Fetched data
     const dispatch = useDispatch();
     //variables
-    const [tabHeader, setTabHeader] = useState("Danh Sách Phiếu Nhập Kho");
     const [value,setValue] = useState(0);
     //handle change
     const handleTabChange = (event, newValue) => {
@@ -66,12 +64,14 @@ import DanhSachPhieuNhapKho from "./DanhSachPhieuNhapKho/DanhSachPhieuNhapKho";
           </div>
           <TabPanel value={value} index={0}>
             <DanhSachPhieuNhapKho 
-              tabHeader = {tabHeader}
+              tabHeader = "Danh Sách Phiếu Nhập Kho"
               setValue = {setValue} 
             />
           </TabPanel>
-          <TabPanel value={value} index={2}>
-            <DanhSachPhieuChi tabHeader = {tabHeader} />
+          <TabPanel value={value} index={1}>
+            <DanhSachPhieuChi 
+              value = {value}
+              tabHeader = "Danh Sách Phiếu Chi" />
           </TabPanel>
         </div>
       </>

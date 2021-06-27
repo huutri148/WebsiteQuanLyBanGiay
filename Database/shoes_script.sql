@@ -1918,12 +1918,14 @@ insert into PHANQUYEN(MaChucVu,MaQuyen) values (1,6);
 insert into PHANQUYEN(MaChucVu,MaQuyen) values (1,7);
 insert into PHANQUYEN(MaChucVu,MaQuyen) values (1,8);
 insert into PHANQUYEN(MaChucVu,MaQuyen) values (1,9);
+insert into PHANQUYEN(MaChucVu,MaQuyen) values (1,10);
 -- ban hang: ban hang + gio hang
 insert into PHANQUYEN(MaChucVu,MaQuyen) values (2,2);
 insert into PHANQUYEN(MaChucVu,MaQuyen) values (2,7);
 -- ke toan: bao cao loi nhuan + bao cao ban hang
 insert into PHANQUYEN(MaChucVu,MaQuyen) values (3,8);
 insert into PHANQUYEN(MaChucVu,MaQuyen) values (3,9);
+insert into PHANQUYEN(MaChucVu,MaQuyen) values (3,10);
 -- kho: dat hang, nhap kho, ton kho
 insert into PHANQUYEN(MaChucVu,MaQuyen) values (4,5);
 insert into PHANQUYEN(MaChucVu,MaQuyen) values (4,6);
