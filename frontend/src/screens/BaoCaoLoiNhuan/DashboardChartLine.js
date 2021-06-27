@@ -7,6 +7,7 @@ import { Line } from "react-chartjs-2";
 
 export default function DashboardChartLine(props) {
   const order = props.order;
+  const payment = props.payment;
   const [data, setData] = useState({});
 
   useEffect(() => {
@@ -15,62 +16,85 @@ export default function DashboardChartLine(props) {
         {
           id: 1,
           totalSale: 0,
+          totalPayment: 0,
         },
         {
           id: 2,
           totalSale: 0,
+          totalPayment: 0,
         },
         {
           id: 3,
           totalSale: 0,
+          totalPayment: 0,
         },
         {
           id: 4,
           totalSale: 0,
+          totalPayment: 0,
         },
         {
           id: 5,
           totalSale: 0,
+          totalPayment: 0,
         },
         {
           id: 6,
           totalSale: 0,
+          totalPayment: 0,
         },
         {
           id: 7,
           totalSale: 0,
+          totalPayment: 0,
         },
         {
           id: 8,
           totalSale: 0,
+          totalPayment: 0,
         },
         {
           id: 9,
           totalSale: 0,
+          totalPayment: 0,
         },
         {
           id: 10,
           totalSale: 0,
+          totalPayment: 0,
         },
         {
           id: 11,
           totalSale: 0,
+          totalPayment: 0,
         },
         {
           id: 12,
           totalSale: 0,
+          totalPayment: 0,
         },
       ];
       for (let i in order) {
         for (let j in month) {
           if (new Date(order[i].NgayBan).getMonth() + 1 === month[j].id) {
-            month[j].totalSale += 1;
+            month[j].totalSale += Number(order[i].TongTien);
+          }
+        }
+      }
+      for (let i in payment) {
+        for (let j in month) {
+          if (new Date(payment[i].NgayLap).getMonth() + 1 === month[j].id) {
+            month[j].totalPayment += Number(payment[i].TongTien);
           }
         }
       }
       const saleData = [];
+      const paymentData = [];
+      const netIncome = [];
       for (let i in month) {
         saleData.push(month[i].totalSale);
+        paymentData.push(month[i].totalPayment);
+        netIncome.push(month[i].totalSale - month[i].totalPayment);
       }
       setData({
         labels: [
@@ -89,11 +113,25 @@ export default function DashboardChartLine(props) {
         ],
         datasets: [
           {
-            label: "",
+            label: "Doanh thu",
             data: saleData,
             fill: false,
-            backgroundColor: "rgba(54, 162, 235, 0.2)",
-            borderColor: "rgba(54, 162, 235, 1)",
+            backgroundColor: "rgb(255, 99, 132)",
+            borderColor: "rgba(255, 99, 132, 0.9)",
+          },
+          {
+            label: "Chi phí",
+            data: paymentData,
+            fill: false,
+            backgroundColor: "rgb(54, 162, 235)",
+            borderColor: "rgba(54, 162, 235, 0.2)",
+          },
+          {
+            label: "Lợi nhuận",
+            data: netIncome,
+            fill: false,
+            backgroundColor: "rgba(75, 192, 192, 0.2)",
+            borderColor: "rgba(75, 192, 192, 1)",
           },
         ],
       });
@@ -129,7 +167,7 @@ export default function DashboardChartLine(props) {
       </div>
       <div className="top-location-container" style={{ height: "max-content" }}>
         <div className="headerbox-header">
-          <p>Số đơn hàng</p>
+          <p>Lợi nhuận 2021</p>
         </div>
         <div className="top-location-content flex">
           <div className="top-location-map" style={{ margin: "0" }}>

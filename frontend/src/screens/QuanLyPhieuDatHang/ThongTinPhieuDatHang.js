@@ -27,6 +27,7 @@ export const thongTinPhieu = [
 
 export const CTPHHeadCell = [
   { id: "TenGiay", label: "Tên Giày" },
+  { id: "GioiTinh", label: "Giới tính" },
   { id: "TenSize", label: "Size" },
   { id: "SoLuongDat", label: "Số Lượng Đặt" },
   { id: "Actions" },

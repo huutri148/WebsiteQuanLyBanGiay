@@ -12,7 +12,6 @@ import { useDispatch, useSelector } from "react-redux";
 import DashboardTotalCount from "./DashboardTotalCount";
 import DashboardTodoList from "./DashboardTodoList";
 import DashboardTopFive from "./DashboardTopFive";
-import { fetchListGioHang } from "../../redux/actions/gioHangAction";
 import { fetchListGiay } from "../../redux/actions/giayAction";
 import { fetchListPhieuBanHang } from "../../redux/actions/phieuBanHangAction";
 import { fetchListKhachHang } from "../../redux/actions/nguoiDungAction";
@@ -25,6 +24,7 @@ import DashboardChartLine from "./DashboardChartLine";
 const Dashboard = () => {
   const dispatch = useDispatch();
   const [bill, setBill] = useState([]);
+  const [payment, setPayment] = useState([]);
   const [user, setUser] = useState([]);
   const [topProductSales, setTopProductSales] = useState([]);
   const [totalSale, setTotalSale] = useState(0);

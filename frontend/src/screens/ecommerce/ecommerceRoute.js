@@ -106,7 +106,7 @@ const ecommerceRoute = [
     role: "NguoiDung",
   },
   {
-    path: "/airjordan",
+    path: "/jordan",
     exact: true,
     component: shop,
     private: false,

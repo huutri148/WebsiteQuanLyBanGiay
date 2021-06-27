@@ -2015,4 +2015,123 @@ CALL USP_ThemTODO("Lập phiếu nhập kho");
 CALL USP_ThemTODO("Lập phiếu chi");
 
 
+INSERT INTO ShoesStoreManagement.PHIEUBANHANG(MaKhachHang ,MaNguoiDung ,
+    NgayBan ,PhuongThucThanhToan ,
+    TongTien , GhiChu )
+VALUES (
+    9 ,21 ,
+   STR_TO_DATE('15-05-2021', '%d-%m-%Y') ,"Trả tiền mặt khi nhận hàng",
+    6375000 , " ");
+
+CALL USP_ThemChiTietPhieuBanHang(1,1,6375000,6375000);
+
+
+
+INSERT INTO ShoesStoreManagement.PHIEUBANHANG(MaKhachHang ,MaNguoiDung ,
+    NgayBan ,PhuongThucThanhToan ,
+    TongTien , GhiChu )
+VALUES (
+    10 ,21 ,
+   STR_TO_DATE('16-05-2021', '%d-%m-%Y') ,"Trả tiền mặt khi nhận hàng",
+    6375000 , " ");
+
+CALL USP_ThemChiTietPhieuBanHang(2,1,6375000,6375000);
+
+
+
+INSERT INTO ShoesStoreManagement.PHIEUBANHANG(MaKhachHang ,MaNguoiDung ,
+    NgayBan ,PhuongThucThanhToan ,
+    TongTien , GhiChu )
+VALUES (
+    10 ,21 ,
+   STR_TO_DATE('13-04-2021', '%d-%m-%Y') ,"Trả tiền mặt khi nhận hàng",
+    6375000 , " ");
+
+CALL USP_ThemChiTietPhieuBanHang(1,1,6375000,6375000);
+  
+
+
+
+INSERT INTO ShoesStoreManagement.PHIEUBANHANG(MaKhachHang ,MaNguoiDung ,
+    NgayBan ,PhuongThucThanhToan ,
+    TongTien , GhiChu )
+VALUES (
+    10 ,21 ,
+   STR_TO_DATE('14-04-2021', '%d-%m-%Y') ,"Trả tiền mặt khi nhận hàng",
+    6375000 , " ");
+
+CALL USP_ThemChiTietPhieuBanHang(1,1,6375000,6375000);
+
+
+
+
+INSERT INTO ShoesStoreManagement.PHIEUBANHANG(MaKhachHang ,MaNguoiDung ,
+    NgayBan ,PhuongThucThanhToan ,
+    TongTien , GhiChu )
+VALUES (
+    10 ,21 ,
+   STR_TO_DATE('12-04-2021', '%d-%m-%Y') ,"Trả tiền mặt khi nhận hàng",
+    6375000 , " ");
+
+CALL USP_ThemChiTietPhieuBanHang(1,1,6375000,6375000);
+
+
+
+INSERT INTO ShoesStoreManagement.PHIEUBANHANG(MaKhachHang ,MaNguoiDung ,
+    NgayBan ,PhuongThucThanhToan ,
+    TongTien , GhiChu )
+VALUES (
+    10 ,21 ,
+   STR_TO_DATE('12-03-2021', '%d-%m-%Y') ,"Trả tiền mặt khi nhận hàng",
+    6375000 , " ");
+
+CALL USP_ThemChiTietPhieuBanHang(10,1,6375000,6375000);
+
+
+INSERT INTO ShoesStoreManagement.PHIEUBANHANG(MaKhachHang ,MaNguoiDung ,
+    NgayBan ,PhuongThucThanhToan ,
+    TongTien , GhiChu )
+VALUES (
+    10 ,21 ,
+   STR_TO_DATE('12-03-2021', '%d-%m-%Y') ,"Trả tiền mặt khi nhận hàng",
+    6375000 , " ");
+
+CALL USP_ThemChiTietPhieuBanHang(10,1,6375000,6375000);
+
+
+
+
+
+
+
+INSERT INTO ShoesStoreManagement.PHIEUNHAPKHO(MaNhaCungCap,MaNguoiDung,NgayNhapKho,TongTien , GhiChu )
+VALUES (
+    1, 2,
+   STR_TO_DATE('12-04-2021', '%d-%m-%Y'),
+    63750000 , " " );
+CALL USP(1, 10, 6375000,63750000 );
+
+
+
+
+INSERT INTO ShoesStoreManagement.PHIEUNHAPKHO(MaNhaCungCap,MaNguoiDung,NgayNhapKho,TongTien , GhiChu )
+VALUES (
+    1, 2,
+   STR_TO_DATE('13-04-2021', '%d-%m-%Y'),
+    63750000 , " " );
+CALL USP_ThemChiTietPhieuNhapKho(1, 10, 6375000,63750000 );
+
+
+
+INSERT INTO ShoesStoreManagement.PHIEUNHAPKHO(MaNhaCungCap,MaNguoiDung,NgayNhapKho,TongTien , GhiChu )
+VALUES (
+    1, 2,
+   STR_TO_DATE('13-04-2021', '%d-%m-%Y'),
+    63750000 , " " );
+CALL USP_ThemChiTietPhieuNhapKho(1, 10, 6375000,63750000 );
+
+
+
+
+
 

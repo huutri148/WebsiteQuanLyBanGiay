@@ -347,7 +347,7 @@ export const Layout = withRouter((props) => {
             Báo cáo
           </ListSubheader>
           {listPhanQuyen.includes(role.BAOCAOLOINHUAN) && (
-            <ListItem button component={Link} to="/admin/products">
+            <ListItem button component={Link} to="/admin/proreport">
               <ListItemIcon>
                 <BarChartIcon />
               </ListItemIcon>
