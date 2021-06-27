@@ -1,7 +1,7 @@
 import {
     makeStyles,
     Paper,
-    Grid,
+    withStyles ,
     TableBody,
     TableContainer,
     TableRow,
@@ -82,6 +82,15 @@ const headCells = [
     { id: "TenQuyen", label: "Tên Quyền" },
     { id: "actions" },
 ];
+const GreenCheckbox = withStyles({
+    root: {
+      color: green[400],
+      '&$checked': {
+        color: green[600],
+      },
+    },
+    checked: {},
+  })((props) => <Checkbox color="default" {...props} />);
 const DanhSachChucVu = () => {
     //styles
     const classes = useStyles();
@@ -101,8 +110,7 @@ const DanhSachChucVu = () => {
         { MaQuyen: 6, TenQuyen: "Quản Lý Nhập Kho", IsChecked: false },
         { MaQuyen: 7, TenQuyen: "Quản Lý Giỏ Hàng", IsChecked: false },
         { MaQuyen: 8, TenQuyen: "Báo Cáo Lợi Nhuận", IsChecked: false },
-        { MaQuyen: 9, TenQuyen: "Báo Cáo Tồn Kho", IsChecked: false },
-        { MaQuyen: 10, TenQuyen: "Báo Cáo Bán Hàng", IsChecked: false }];
+        { MaQuyen: 9, TenQuyen: "Báo Cáo Bán Hàng", IsChecked: false }];
     const [permissions, setPermissions] = useState(initPermissions);
     const [duties, setDuties] = useState([]);
     const [openEditPopup, setOpenEditPopup] = useState(false);
@@ -162,12 +170,8 @@ const DanhSachChucVu = () => {
     useEffect(() => {
         if (listPhanQuyen != undefined) {
             const tempPermissions = initPermissions;
-            const cvdata = Object.values(listPhanQuyen).reduce((result, value) => {
-                result.push({
-                    ...value,
-                });
-                tempPermissions[value.MaQuyen - 1].IsChecked = true;
-                return result;
+            Object.values(listPhanQuyen).forEach(item => {
+                tempPermissions[item.MaQuyen - 1].IsChecked = true;
             }, []);
             setPermissions(tempPermissions);
         }
@@ -284,7 +288,7 @@ const DanhSachChucVu = () => {
                         label= {item.TenQuyen} /></tr>))
                     }
                     </table> */}
-                    <Button size="large" variant="contained" color="primary" onClick={() => {dispatch(createChucVu({TenChucVu: duty.TenChucVu})) }}>
+                    <Button size="large" variant="contained" color="primary" onClick={() => {dispatch(createChucVu({TenChucVu: duty.TenChucVu})); setOpenAddPopup(false) }}>
                         Thêm Chức Vụ
                     </Button>
                 </div>
@@ -319,8 +323,8 @@ const DanhSachChucVu = () => {
                             if(element.IsChecked === true)
                                 tmpDuty.ListPhanQuyen.push({MaQuyen: element.MaQuyen});
                         });
-                        console.log(tmpDuty);
-                        dispatch(updateChucVu(tmpDuty.MaChucVu, tmpDuty))
+                        dispatch(updateChucVu(tmpDuty.MaChucVu, tmpDuty));
+                        setOpenEditPopup(false);
                         }}>
                     Lưu Thay Đổi
                 </Button>
@@ -332,7 +336,8 @@ const DanhSachChucVu = () => {
             >
                 <div style={{ display: "block", fontSize: 24, textAlign: "center" }}>
                     <p>Bạn Có Chắc Muốn Xoá Chức Vụ Này ?</p>
-                    <Button size="large" variant="contained" color="primary" onClick={() => { }}>
+                    <Button size="large" variant="contained" color="primary" 
+                    onClick={() => {dispatch(deleteChucVu(duty.MaChucVu)).then(setOpenDeletePopup(false)) }}>
                         Xác Nhận
                     </Button>
                 </div>
@@ -349,7 +354,10 @@ const DanhSachChucVu = () => {
                     value={duty !== undefined && duty.TenChucVu}
                 />
                 <table>
-                    {permissions.map(item => (<tr><FormControlLabel disabled control={<Checkbox checked = {item.IsChecked} />} label= {item.TenQuyen} /></tr>))}
+                    {permissions.map(item => 
+                        (<tr><FormControlLabel 
+                        control={<GreenCheckbox checked = {item.IsChecked} />} 
+                        label= {item.TenQuyen} /></tr>))}
                 </table>
             </Popup>
         </div >

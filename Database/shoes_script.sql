@@ -164,39 +164,6 @@ add constraint CHITIETPHIEUBANHANG_PHIEUBANHANG_FK
 foreign key(SoPhieuBanHang) references PHIEUBANHANG(SoPhieuBanHang);
 
 
-CREATE TABLE BAOCAOTONKHO
-(
-    MaBaoCaoTonKho int auto_increment PRIMARY KEY,
-    MaNguoiDung int not null,
-    NgayLap DATETIME DEFAULT CURRENT_TIMESTAMP,
-    TongSoHangHoa int default 0,
-    IsDeleted boolean default false,
-    GhiChu nvarchar(1000)
-);
-
-
-alter table BAOCAOTONKHO
-add constraint BAOCAOTONKHO_NGUOIDUNG_FK
-foreign key(MaNguoiDung) references NGUOIDUNG(MaNguoiDung);
-
-CREATE TABLE CHITIETBAOCAOTONKHO
-(
-    MaChiTietGiay int not null,
-    MaBaoCaoTonKho int not null,
-    SoLuongTon int default 0,
-    TrangThaiHangHoa nvarchar(1000) not null,
-    CONSTRAINT PK_CHITIETBAOCAOTONKKHO PRIMARY KEY (MaBaoCaoTonKho, MaChiTietGiay)
-);
-
-alter table CHITIETBAOCAOTONKHO
-add constraint CHITIETBAOCAOTONKHO_BAOCAOTONKHO_FK
-foreign key(MaBaoCaoTonKho) references BAOCAOTONKHO(MaBaoCaoTonKho);
-
-alter table CHITIETBAOCAOTONKHO
-add constraint CHITIETBAOCAOTONKHO_CHITIETGIAY_FK
-foreign key(MaChiTietGiay) references CHITIETGIAY(MaChiTietGiay);
-
-
 CREATE TABLE BAOCAOBANHANG
 (
     MaBaoCaoBanHang int auto_increment PRIMARY KEY,
@@ -1418,17 +1385,6 @@ END; $$
 DELIMITER ;
 
 
-
-DELIMITER $$
-create procedure USP_ThemBaoCaoTonKho(p_MaNguoiDung int,p_NgayLap datetime, p_GhiChu nvarchar(1000))
-BEGIN
-INSERT INTO ShoesStoreManagement.BAOCAOTONKHO(MaNguoiDung, NgayLap, GhiChu)
-VALUES (p_MaNguoiDung, p_NgayLap, p_GhiChu);
-END; $$
-DELIMITER ;
-
-
-
 DELIMITER $$
 create procedure USP_ThemBaoCaoBanHang(p_MaNguoiDung int,p_NgayBatDau datetime, p_NgayKetThuc datetime)
 BEGIN
@@ -1949,8 +1905,7 @@ insert into QUYEN(MaQuyen,TenQuyen) values (5,"Quản Lý Đặt Hàng");
 insert into QUYEN(MaQuyen,TenQuyen) values (6,"Quản Lý Nhập Kho");
 insert into QUYEN(MaQuyen,TenQuyen) values (7,"Quản Lý Giỏ Hàng");
 insert into QUYEN(MaQuyen,TenQuyen) values (8,"Báo Cáo Lợi Nhuận");
-insert into QUYEN(MaQuyen,TenQuyen) values (9,"Báo Cáo Tồn Kho");
-insert into QUYEN(MaQuyen,TenQuyen) values (10,"Báo Cáo Bán Hàng");
+insert into QUYEN(MaQuyen,TenQuyen) values (9,"Báo Cáo Bán Hàng");
 
 -- admin toan quyen
 insert into PHANQUYEN(MaChucVu,MaQuyen) values (1,1);
@@ -1962,17 +1917,15 @@ insert into PHANQUYEN(MaChucVu,MaQuyen) values (1,6);
 insert into PHANQUYEN(MaChucVu,MaQuyen) values (1,7);
 insert into PHANQUYEN(MaChucVu,MaQuyen) values (1,8);
 insert into PHANQUYEN(MaChucVu,MaQuyen) values (1,9);
-insert into PHANQUYEN(MaChucVu,MaQuyen) values (1,10);
 -- ban hang: ban hang + gio hang
 insert into PHANQUYEN(MaChucVu,MaQuyen) values (2,2);
 insert into PHANQUYEN(MaChucVu,MaQuyen) values (2,7);
 -- ke toan: bao cao loi nhuan + bao cao ban hang
 insert into PHANQUYEN(MaChucVu,MaQuyen) values (3,8);
-insert into PHANQUYEN(MaChucVu,MaQuyen) values (3,10);
+insert into PHANQUYEN(MaChucVu,MaQuyen) values (3,9);
 -- kho: dat hang, nhap kho, ton kho
 insert into PHANQUYEN(MaChucVu,MaQuyen) values (4,5);
 insert into PHANQUYEN(MaChucVu,MaQuyen) values (4,6);
-insert into PHANQUYEN(MaChucVu,MaQuyen) values (4,9);
 
 
 CALL USP_ThemGioHang(3,"Trả tiền mặt khi nhận hàng");

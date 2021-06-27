@@ -84,12 +84,6 @@ export const secondaryListItems = (
     </ListItem>
     <ListItem button component={Link} to="/admin/products">
       <ListItemIcon>
-        <AssignmentIcon />
-      </ListItemIcon>
-      <ListItemText primary="Tồn kho" />
-    </ListItem>
-    <ListItem button component={Link} to="/admin/products">
-      <ListItemIcon>
         <MoneyIcon />
       </ListItemIcon>
       <ListItemText primary="Bán hàng" />

@@ -73,9 +73,9 @@ ChucVu.Delete = (maChucVu, callBack) => {
     `CALL USP_XoaChucVu(${maChucVu});`
   );
   conn.query(queryString, (err, res) => {
-    if (err) {
+    if (err)
       throw err;
-    } else {
+    else {
       console.log("Delete duty:".yellow.bold);
       callBack(res);
     }
