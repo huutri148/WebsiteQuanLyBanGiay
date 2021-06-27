@@ -31,7 +31,7 @@ function ProductQuickView(props) {
       await dispatch(fetchGiaySize(id));
     };
     fetchData(product.MaGiay);
-  }, [dispatch]);
+  }, [dispatch, product.MaGiay]);
 
   const settings = {
     infinite: true,
@@ -62,7 +62,7 @@ function ProductQuickView(props) {
   };
   const redirect = () => {
     window.scrollTo(0, 0);
-    props.history.push(`/products/${props.product._id}`);
+    props.history.push(`/products/${props.MaGiay}`);
   };
 
   return (
@@ -137,7 +137,7 @@ function ProductQuickView(props) {
                       }
                       onClick={() => handleChange(giaySize[key])}
                     >
-                      {listSize[key].TenSize}{" "}
+                      {giaySize[key].MaSize}{" "}
                     </div>
                   );
                 })}

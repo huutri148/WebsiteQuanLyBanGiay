@@ -12,7 +12,7 @@ const quanLyGioHangRoute = [
     exact: true,
     component: quanLyGioHang,
     private: true,
-    role: "Admin",
+    role: 7,
   },
 ];
 

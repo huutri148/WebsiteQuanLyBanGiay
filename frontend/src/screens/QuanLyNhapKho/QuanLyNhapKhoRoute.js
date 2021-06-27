@@ -12,7 +12,7 @@ const quanLyNhapKhoRoute = [
     exact: true,
     component: quanLyNhapKho,
     private: true,
-    role: "NhanVienKho",
+    role: 6,
   },
 ];
 

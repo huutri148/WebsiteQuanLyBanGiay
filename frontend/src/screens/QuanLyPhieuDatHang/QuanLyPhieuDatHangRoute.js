@@ -12,7 +12,7 @@ const quanLyPhieuDatHangRoute = [
     exact: true,
     component: quanLyPhieuDatHang,
     private: true,
-    role: "Admin",
+    role: 5,
   },
 ];
 

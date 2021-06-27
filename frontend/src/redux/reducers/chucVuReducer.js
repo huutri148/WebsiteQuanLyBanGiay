@@ -32,20 +32,36 @@ export const listChucVuReducer = (state = initalState, action) => {
   }
 };
 
-export const listDutyPermissionsReducer = (state = {listDutyPermssions:{}}, action) => {
+export const listDutyPermissionsReducer = (
+  state = { listPhanQuyen: [] },
+  action
+) => {
   switch (action.type) {
     case chucVuConstant.CHUCVU_PERMISSIONS_REQUEST: {
       return {
         //note: add loading
         loading: true,
-        listDutyPermssions: {},
+        listPhanQuyen: [],
       };
     }
     case chucVuConstant.CHUCVU_PERMISSIONS_SUCCESS: {
-      const records = _.mapKeys(action.payload, "MaQuyen");
+      const records = action.payload.data.reduce((result, value) => {
+        result.push(value.MaQuyen);
+        return result;
+      }, []);
+      if (records.length > 0) {
+        records.push(10);
+      }
+
       return {
         loading: false,
-        listDutyPermssions: { ...records },
+        listPhanQuyen: [...records],
+      };
+    }
+    case chucVuConstant.DELETE_CHUCVU_PERMISSIONS: {
+      return {
+        loading: false,
+        listPhanQuyen: [],
       };
     }
     case chucVuConstant.CHUCVU_PERMISSIONS_FAIL: {
@@ -59,7 +75,10 @@ export const listDutyPermissionsReducer = (state = {listDutyPermssions:{}}, acti
   }
 };
 
-export const listPermissionsReducer = (state = {listPermssions:{}}, action) => {
+export const listPermissionsReducer = (
+  state = { listPermssions: {} },
+  action
+) => {
   switch (action.type) {
     case chucVuConstant.CHUCVU_ALL_PERMISSIONS_REQUEST: {
       return {
@@ -86,7 +105,10 @@ export const listPermissionsReducer = (state = {listPermssions:{}}, action) => {
   }
 };
 
-export const addDutyPermissionsReducer = (state = {listPermssions:{}}, action) => {
+export const addDutyPermissionsReducer = (
+  state = { listPermssions: {} },
+  action
+) => {
   switch (action.type) {
     case chucVuConstant.CHUCVU_ADD_PERMISSIONS_REQUEST: {
       return {

@@ -102,7 +102,7 @@ const ecommerceRoute = [
     path: "/products/:id",
     exact: true,
     component: detail,
-    private: true,
+    private: false,
     role: "NguoiDung",
   },
   {
