@@ -1409,10 +1409,10 @@ BEGIN
         DAY(p_Ngay) = Day(A.NgayBan) and 
         MONTH(p_Ngay) = MONTH(A.NgayBan) and    
         YEAR(p_Ngay) = YEAR(A.NgayBan) );
-        set  doanhThu = (select sum(A.ThanhTien) from PHIEUBANHANG  A where 
-        DAY(p_Ngay) = Day(A.NgayBan) and 
-        MONTH(p_Ngay) = MONTH(A.NgayBan) and    
-        YEAR(p_Ngay) = YEAR(A.NgayBan) );
+        set  doanhThu = (select sum(TongTien) from PHIEUBANHANG D where 
+        DAY(p_Ngay) = Day(D.NgayBan) and 
+        MONTH(p_Ngay) = MONTH(D.NgayBan) and    
+        YEAR(p_Ngay) = YEAR(D.NgayBan) );
     else 
         set soPhieu = 0;
         set doanhThu = 0;
@@ -1420,7 +1420,7 @@ BEGIN
 
     UPDATE BAOCAOBANHANG  B
     SET  B.TongDoanhThu = B.TongDoanhThu + doanhThu,
-         B.SoLuongPhieuBanHang = B.SoLuongPhieuBan + soPhieu        
+         B.SoLuongPhieuBanHang = B.SoLuongPhieuBanHang + soPhieu        
     WHERE B.MaBaoCaoBanHang = baoCaoID;
     INSERT INTO ShoesStoreManagement.CHITIETBAOCAOBANHANG(MaBaoCaoBanHang,Ngay,
     SoLuongPhieuBan, DoanhThu)
@@ -1428,7 +1428,21 @@ BEGIN
 END; $$
 DELIMITER ;
 
+DELIMITER $$
+create procedure USP_ListChiTietBaoCaoBanHang(p_MaBaoCaoBanHang int)
+BEGIN
+    SELECT * from CHITIETBAOCAOBANHANG where CHITIETBAOCAOBANHANG.MaBaoCaoBanHang = p_MaBaoCaoBanHang;
+END; $$
+DELIMITER ;
 
+DELIMITER $$
+create procedure USP_ListBaoCaoBanHang()
+BEGIN
+    SELECT A.MaBaoCaoBanHang, A.NgayBatDau, A.NgayKetThuc, A.SoLuongPhieuBanHang, A.TongDoanhThu, B.TenNguoiDung
+    from BAOCAOBANHANG A join NGUOIDUNG B using (MaNguoiDung)
+    where A.IsDeleted = 0;
+END; $$
+DELIMITER ;
 
 
 insert into CHUCVU(TenChucVu, IsDeleted)values ("Quản Lý", false);

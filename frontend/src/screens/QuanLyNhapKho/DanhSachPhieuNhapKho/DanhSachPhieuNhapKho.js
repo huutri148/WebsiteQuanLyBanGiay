@@ -284,23 +284,6 @@ const DanhSachPhieuNhapKho = (props) => {
                     onChange={handleSearch}
                   />
                 </div>
-                <div className={classes.actions}>
-                  <Tooltip title="Tải file csv">
-                    <IconButton className={classes.actionsButton}>
-                      <CloudDownload />
-                    </IconButton>
-                  </Tooltip>
-                  <Tooltip title="Chọn cột">
-                    <IconButton className={classes.actionsButton}>
-                      <ViewColumn />
-                    </IconButton>
-                  </Tooltip>
-                  <Tooltip title="Lọc">
-                    <IconButton className={classes.actionsButton}>
-                      <FilterList />
-                    </IconButton>
-                  </Tooltip>
-                </div>
               </Toolbar>
               <TableContainer className={classes.table}>
                 <TblContainer>
