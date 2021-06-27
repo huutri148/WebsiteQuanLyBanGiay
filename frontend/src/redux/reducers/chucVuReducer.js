@@ -1,4 +1,5 @@
 import * as chucVuConstant from "../../constants/chucVuConstant";
+import * as role from "../../constants/authRoleConstant";
 import * as _ from "lodash";
 
 const initalState = {
@@ -127,7 +128,7 @@ export const listDutyPermissionsReducer = (
         return result;
       }, []);
       if (records.length > 0) {
-        records.push(10);
+        records.push(role.DASHBOARD);
       }
 
       return {

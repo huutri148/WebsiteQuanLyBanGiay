@@ -1,5 +1,6 @@
 import QuanLyHangSanXuat from "./QuanLyHangSanXuat";
 import { Layout } from "../../components/Layout";
+import { QUANLYSANPHAM } from "../../constants/authRoleConstant";
 const quanLyHangSanXuat = () => (
   <Layout>
     <QuanLyHangSanXuat />
@@ -12,7 +13,7 @@ const quanLyHangSanXuatRoute = [
     exact: true,
     component: quanLyHangSanXuat,
     private: true,
-    role: 1,
+    role: QUANLYSANPHAM,
   },
 ];
 
