@@ -1,8 +1,11 @@
 const express = require("express");
 const router = express.Router();
 const {
-createReport
+createReport,
+getList,
+getDetails,
 } = require("../controllers/BaoCaoBanHang.controller");
 
-router.route("/").post(createReport);
+router.route("/").get(getList).post(createReport);
+router.route("/details/:id").get(getDetails);
 module.exports = router;

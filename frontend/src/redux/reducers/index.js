@@ -11,6 +11,7 @@ import * as phieuChiReducer from "./phieuChiReducer";
 import * as phieuDatHangReducer from "./phieuDatHangReducer";
 import * as chucVuReducer from "./chucVuReducer";
 import * as gioHangReducer from "./gioHangReducer";
+import * as baoCaoBanHangReducer from "./baoCaoBanHangReducer";
 import mauReducer from "./mauReducer";
 import * as chatReducer from "./chatReducer";
 const rootReducer = combineReducers({
@@ -73,7 +74,10 @@ const rootReducer = combineReducers({
   ListChiTietGioHang: gioHangReducer.cartDetailListReducer,
   Cart: gioHangReducer.cartReducer,
   CreateGioHang: gioHangReducer.cartCreateReducer,
-
+  //bao cao ban hang
+  ListBaoCaoBanHang: baoCaoBanHangReducer.reportListReducer,
+  CreateBaoCaoBanHang: baoCaoBanHangReducer.reportCreateReducer,
+  ListChiTietBaoCaoBanHang: baoCaoBanHangReducer.reportDetailListReducer,
   //todo
   ListTodo: TodoReducer.todoListReducer,
   CreateTodo: TodoReducer.todoCreateReducer,

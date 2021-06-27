@@ -66,6 +66,14 @@ const useStyles = makeStyles((theme) => ({
   cancelButton: {
     color: "#FF3D57",
   },
+  paper: {
+    margin: theme.spacing(0, 4),
+    padding: theme.spacing(2),
+    display: "flex",
+    flexDirection: "column",
+    textAlign: "left",
+    height: "fit-content",
+  },
   actions: {
     flex: "1 1 auto",
     textAlign: "right",
@@ -247,7 +255,7 @@ const DanhSachPhieuBanHang = (props) => {
           >
             Danh Sách Phiếu Bán Hàng
           </Typography>
-          <Paper>
+          <Paper className={classes.paper}>
             <Toolbar className={classes.toolbar}>
               <div className={classes.searchInput}>
                 <Input
@@ -263,13 +271,6 @@ const DanhSachPhieuBanHang = (props) => {
                   }}
                   onChange={handleSearch}
                 />
-              </div>
-              <div className={classes.actions}>
-                <Tooltip title="Tải file csv">
-                  <IconButton className={classes.actionsButton}>
-                    <CloudDownload />
-                  </IconButton>
-                </Tooltip>
               </div>
             </Toolbar>
             <TableContainer className={classes.table}>
@@ -298,7 +299,7 @@ const DanhSachPhieuBanHang = (props) => {
                         {item.TenKhachHang}
                       </TableCell>
                       <TableCell component="th" scope="row">
-                        {item.TongTien.toLocaleString("it-IT")}
+                        {Number(item.TongTien).toLocaleString("it-IT")}
                       </TableCell>
                       <TableCell component="th" scope="row">
                         {item.PhuongThucThanhToan}

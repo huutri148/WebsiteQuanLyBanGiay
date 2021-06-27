@@ -12,6 +12,7 @@ import quanLyNguoiDungRoute from "./QuanLyNguoiDung/QuanLyNguoiDungRoute";
 import quanLyGioHangRoute from "./QuanLyGioHang/QuanLyGioHangRoute";
 import ecommerceRoute from "./ecommerce/ecommerceRoute";
 import inboxRoute from "./Inbox/InboxRoute";
+import baoCaoBanHangRoute from "./BaoCaoBanHang/BaoCaoBanHangRoute";
 const routes = [
   ...quanLySanPhamRoute,
   ...loginRoute,
@@ -27,6 +28,7 @@ const routes = [
   ...ecommerceRoute,
   ...inboxRoute,
   ...quanLyChiRoute,
+  ...baoCaoBanHangRoute
 ];
 
 export default routes;
