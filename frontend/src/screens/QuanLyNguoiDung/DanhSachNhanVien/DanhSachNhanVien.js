@@ -183,16 +183,6 @@ const DanhSachNhanVien = (props) => {
                     <Print />
                   </IconButton>
                 </Tooltip>
-                <Tooltip title="Chọn cột">
-                  <IconButton className={classes.actionsButton}>
-                    <ViewColumn />
-                  </IconButton>
-                </Tooltip>
-                <Tooltip title="Lọc">
-                  <IconButton className={classes.actionsButton}>
-                    <FilterList />
-                  </IconButton>
-                </Tooltip>
               </div>
             </Toolbar>
             <TableContainer className={classes.table}>
