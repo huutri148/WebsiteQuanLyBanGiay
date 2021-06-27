@@ -20,7 +20,7 @@ import { fetchListKhachHang } from "../../redux/actions/nguoiDungAction";
 //import DashboardChart from './DashboardChart'
 
 //import DashboardChartPie from './DashboardChartPie'
-//import DashboardChartLine from './DashboardChartLine'
+import DashboardChartLine from "./DashboardChartLine";
 
 const Dashboard = () => {
   const dispatch = useDispatch();
@@ -168,11 +168,7 @@ const Dashboard = () => {
                 /> */}
       </div>
       <div className="row flex">
-        {/* <DashboardChartLine
-                    icon = {faTasks}
-                    order = {order}
-                    color = "pink"
-                /> */}
+        <DashboardChartLine icon={faTasks} order={bill} color="pink" />
       </div>
     </div>
   );
