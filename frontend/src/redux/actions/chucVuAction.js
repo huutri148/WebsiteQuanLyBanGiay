@@ -1,5 +1,6 @@
 import * as chucVuAPI from "../apis/chucVuAPI";
 import * as chucVuConstants from "../../constants/chucVuConstant";
+import { toast } from "react-toastify";
 export const fetchListChucVu = () => async (dispatch) => {
   try {
     dispatch({ type: chucVuConstants.CHUCVU_LIST_REQUEST });
@@ -28,6 +29,7 @@ export const createChucVu = (item) => async (dispatch) => {
       type: chucVuConstants.CHUCVU_CREATE_SUCCESS,
       payload: data,
     });
+    toast.success("Successfully");
   } catch (error) {
     dispatch({
       type: chucVuConstants.CHUCVU_CREATE_FAIL,
@@ -36,6 +38,7 @@ export const createChucVu = (item) => async (dispatch) => {
           ? error.response.data.data.message
           : error.messagge,
     });
+    toast.error("Failed");
   }
 };
 export const updateChucVu = (id, item) => async (dispatch) => {
@@ -46,6 +49,7 @@ export const updateChucVu = (id, item) => async (dispatch) => {
       type: chucVuConstants.CHUCVU_UPDATE_SUCCESS,
       payload: data,
     });
+    toast.success("Successfully");
   } catch (error) {
     dispatch({
       type: chucVuConstants.CHUCVU_UPDATE_FAIL,
@@ -54,6 +58,7 @@ export const updateChucVu = (id, item) => async (dispatch) => {
           ? error.response.data.data.message
           : error.messagge,
     });
+    toast.error("Failed");
   }
 };
 export const deleteChucVu = (id) => async (dispatch) => {
@@ -64,6 +69,7 @@ export const deleteChucVu = (id) => async (dispatch) => {
       type: chucVuConstants.CHUCVU_DELETE_SUCCESS,
       payload: data,
     });
+    toast.success("Successfully");
   } catch (error) {
     dispatch({
       type: chucVuConstants.CHUCVU_DELETE_FAIL,
@@ -72,6 +78,7 @@ export const deleteChucVu = (id) => async (dispatch) => {
           ? error.response.data.data.message
           : error.messagge,
     });
+    toast.error("Failed");
   }
 };
 export const fetchListQuyen = () => async (dispatch) => {

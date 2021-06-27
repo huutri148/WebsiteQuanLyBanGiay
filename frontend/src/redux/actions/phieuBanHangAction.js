@@ -1,5 +1,6 @@
 import * as phieuBanHangAPI from "../apis/phieuBanHangAPI";
 import * as phieuBanHangConstants from "../../constants/phieuBanHangConstant";
+import { toast } from "react-toastify";
 export const fetchListPhieuBanHang = () => async (dispatch) => {
   try {
     dispatch({ type: phieuBanHangConstants.PHIEUBANHANG_LIST_REQUEST });
@@ -28,6 +29,7 @@ export const createPhieuBanHang = (item) => async (dispatch) => {
       type: phieuBanHangConstants.PHIEUBANHANG_CREATE_SUCCESS,
       payload: data,
     });
+    toast.success("Successfully");
   } catch (error) {
     dispatch({
       type: phieuBanHangConstants.PHIEUBANHANG_CREATE_FAIL,
@@ -36,6 +38,7 @@ export const createPhieuBanHang = (item) => async (dispatch) => {
           ? error.response.data.data.message
           : error.messagge,
     });
+    toast.error("Failed");
   }
 };
 export const updatePhieuBanHang = (id, item) => async (dispatch) => {
@@ -46,6 +49,7 @@ export const updatePhieuBanHang = (id, item) => async (dispatch) => {
       type: phieuBanHangConstants.PHIEUBANHANG_UPDATE_SUCCESS,
       payload: data,
     });
+    toast.success("Successfully");
   } catch (error) {
     dispatch({
       type: phieuBanHangConstants.PHIEUBANHANG_UPDATE_FAIL,
@@ -54,6 +58,7 @@ export const updatePhieuBanHang = (id, item) => async (dispatch) => {
           ? error.response.data.data.message
           : error.messagge,
     });
+    toast.error("Failed");
   }
 };
 
@@ -65,6 +70,7 @@ export const deletePhieuBanHang = (id) => async (dispatch) => {
       type: phieuBanHangConstants.PHIEUBANHANG_DELETE_SUCCESS,
       payload: data,
     });
+    toast.success("Successfully");
   } catch (error) {
     dispatch({
       type: phieuBanHangConstants.PHIEUBANHANG_DELETE_FAIL,
@@ -73,6 +79,7 @@ export const deletePhieuBanHang = (id) => async (dispatch) => {
           ? error.response.data.data.message
           : error.messagge,
     });
+    toast.error("Failed");
   }
 };
 export const fetchListChiTietPhieuBanHang = (id) => async (dispatch) => {

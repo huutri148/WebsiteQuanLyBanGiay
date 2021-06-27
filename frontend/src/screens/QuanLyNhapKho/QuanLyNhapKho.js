@@ -2,19 +2,21 @@ import {
     CssBaseline,
     makeStyles,
     Tab,
+    Typography,
     Tabs,
   } from "@material-ui/core";
-  import { React, useState, useEffect } from "react";
-  import "../QuanLyBanHang/QuanLyBanHang.css";
-  import PhieuNhapKho from "./PhieuNhapKho"
-  import { useDispatch, useSelector } from "react-redux";
-  import { fetchListGiay } from "../../redux/actions/giayAction";
-  import { fetchListHangSanXuat } from "../../redux/actions/hangSanXuatAction";
-  import { fetchListSize } from "../../redux/actions/sizeAction";
-  import { fetchListMau } from "../../redux/actions/mauAction";
-  import { fetchListNhaCungCap } from "../../redux/actions/nhaCungCapAction";
-  import DanhSachPhieuNhapKho from "./DanhSachPhieuNhapKho/DanhSachPhieuNhapKho";
+import { React, useState, useEffect } from "react";
+import "../QuanLyBanHang/QuanLyBanHang.css";
+import PhieuNhapKho from "./PhieuNhapKho"
+import { useDispatch, useSelector } from "react-redux";
+import { fetchListGiay } from "../../redux/actions/giayAction";
+import { fetchListHangSanXuat } from "../../redux/actions/hangSanXuatAction";
+import { fetchListSize } from "../../redux/actions/sizeAction";
+import { fetchListMau } from "../../redux/actions/mauAction";
+import { fetchListNhaCungCap } from "../../redux/actions/nhaCungCapAction";
+import DanhSachPhieuNhapKho from "./DanhSachPhieuNhapKho/DanhSachPhieuNhapKho";
 import DanhSachPhieuChi from "./DanhSachPhieuChi/DanhSachPhieuChi";
+import Loading from "../../components/Loadable/Loading";
   
   function TabPanel(props) {
     const classes = useStyles();
@@ -34,6 +36,7 @@ import DanhSachPhieuChi from "./DanhSachPhieuChi/DanhSachPhieuChi";
       textTransform: "none",
     },
     titleHeader: {
+      padding: theme.spacing(4, 0),
       textTransform: "none",
       fontSize: 32,
       color: "darkslateblue",
@@ -157,45 +160,50 @@ import DanhSachPhieuChi from "./DanhSachPhieuChi/DanhSachPhieuChi";
       fetchData();
     }, []);
     return (
-      <div className={classes.root}>
-        <CssBaseline />
-        <div>
-          <Tabs
-            indicatorColor="primary"
-            textColor="primary"
-            value={value}
-            onChange={handleTabChange}
-          >
-            <Tab className={classes.tabHeader} label="Danh Sách Phiếu Nhập Kho" />
-            <Tab className={classes.tabHeader} label={"Phiếu Nhập Kho"} />
-            <Tab className={classes.tabHeader} label={"Danh Sách Phiếu Chi"} />
-          </Tabs>
-        </div>
-        <label className={classes.titleHeader}>
-          {tabHeader}
-        </label>
-        <TabPanel value={value} index={0}>
-          <DanhSachPhieuNhapKho 
-            setValue = {setValue} 
-            setRecdocket = {setRecdocket}
+      <>
+        {sizeLoading || hangSanXuatLoading || mauLoading ||giayLoading || nhacungcapLoading ? 
+        <Loading />
+        :
+        <div className={classes.root}>
+          <CssBaseline />
+          <div>
+            <Tabs
+              indicatorColor="primary"
+              textColor="primary"
+              value={value}
+              onChange={handleTabChange}
+            >
+              <Tab className={classes.tabHeader} label="Danh Sách Phiếu Nhập Kho" />
+              <Tab className={classes.tabHeader} label={"Phiếu Nhập Kho"} />
+              <Tab className={classes.tabHeader} label={"Danh Sách Phiếu Chi"} />
+            </Tabs>
+          </div>
+          <TabPanel value={value} index={0}>
+            <DanhSachPhieuNhapKho 
+              tabHeader = {tabHeader}
+              setValue = {setValue} 
+              setRecdocket = {setRecdocket}
+              />
+          </TabPanel>
+          <TabPanel value={value} index={1}>
+            <PhieuNhapKho 
+              key={"PhieuNhapKho"}
+              tabHeader = {tabHeader}
+              setValue = {setValue}
+              index={0}
+              suppliers = {suppliers}
+              sizes = {sizes}
+              products = {products}
+              recdocket = {recdocket}
+              isLoading = {!nhacungcapLoading && !sizeLoading && !giayLoading ? false : true}
             />
-        </TabPanel>
-        <TabPanel value={value} index={1}>
-          <PhieuNhapKho 
-            key={"PhieuNhapKho"}
-            setValue = {setValue}
-            index={0}
-            suppliers = {suppliers}
-            sizes = {sizes}
-            products = {products}
-            recdocket = {recdocket}
-            isLoading = {!nhacungcapLoading && !sizeLoading && !giayLoading ? false : true}
-          />
-        </TabPanel>
-        <TabPanel value={value} index={2}>
-          <DanhSachPhieuChi />
-        </TabPanel>
-      </div>
+          </TabPanel>
+          <TabPanel value={value} index={2}>
+            <DanhSachPhieuChi tabHeader = {tabHeader} />
+          </TabPanel>
+        </div>
+        }
+      </>
     );
   };
   
