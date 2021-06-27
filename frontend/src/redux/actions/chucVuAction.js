@@ -86,7 +86,6 @@ export const fetchListQuyen = (id) => async (dispatch) => {
     dispatch({ type: chucVuConstants.CHUCVU_ALL_PERMISSIONS_REQUEST });
 
     const { data } = await chucVuAPI.getDutyPermissions(id);
-
     dispatch({
       type: chucVuConstants.CHUCVU_ALL_PERMISSIONS_SUCCESS,
       payload: data,

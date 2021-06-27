@@ -163,8 +163,9 @@ export const listPermissionsReducer = (state = {listQuyen:[]}, action) => {
       };
     }
     case chucVuConstant.CHUCVU_ALL_PERMISSIONS_SUCCESS: {
-      const records = action.payload.data.reduce((result, value) => {
+      const records = action.payload.reduce((result, value) => {
         result.push(value.MaQuyen);
+        console.log(result);
         return result;
       }, []);
 
