@@ -2,18 +2,17 @@ import React, { useEffect, useState } from "react";
 import "../../../styles/bannerV4.css";
 import axios from "axios";
 import { withRouter } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 //import socketIOClient from "socket.io-client"
 //import { ZaloPay } from './ZaloPay/zalopay';
-//import QRCode from "qrcode.react";
+import QRCode from "qrcode.react";
+import { createCart as taoGioHang } from "../../../redux/actions/gioHangAction";
 //import { APIs } from "./ZaloPay/common";
 //import $ from "jquery";
 
-const ENDPOINT = "http://pe.heromc.net:4000";
-
 function CheckoutBody(props) {
-  //const { userInfo } = useContext(UserContext);
   //const socket = socketIOClient(ENDPOINT)
+  const dispatch = useDispatch();
   const { userInfo } = useSelector((state) => state.User);
   const { cartItems } = useSelector((state) => state.Cart);
   const [nameInput, setNameInput] = useState("");
@@ -62,49 +61,31 @@ function CheckoutBody(props) {
   const placeAnOrder = () => {
     let orderPaymentMethod2 = "";
     if (methodPayment === 1) {
-      orderPaymentMethod2 = "cash on delivery";
+      orderPaymentMethod2 = "Trả tiền mặt khi nhận hàng";
     } else if (methodPayment === 2) {
-      orderPaymentMethod2 = "zalopay";
+      orderPaymentMethod2 = "Thanh toán qua Momo";
     } else {
       orderPaymentMethod2 = "";
     }
-    var cartId = [];
-    for (let i in cartList) {
-      cartId.push({
-        id: cartList[i]._id,
-        amount: cartList[i].count,
-      });
-    }
-
-    const data = {
-      orderName: nameInput,
-      orderAvatar: userAvt,
-      orderEmail: emailInput,
-      orderPhone: phoneInput,
-      orderAddress: addressInput,
-      orderList: cartId,
-      orderTotal: total,
-      orderPaymentMethod: orderPaymentMethod2,
-      orderDate: new Date(),
-    };
 
     if (orderPaymentMethod2 === "") {
       alert("Fill in all infomation please");
-    } else if (orderPaymentMethod2 === "zalopay") {
-      if (isPaid === false) {
-        alert("Your payment not yet confirmed!");
-        return;
-      } else {
-        axios.post("http://pe.heromc.net:4000/order", data);
-        setTimeout(() => {
-          setConfirm(true);
-          document.body.style.overflow = "hidden";
-          window.scrollTo(0, 0);
-          //socket.emit('placeAnOrder', data)
-        }, 1000);
-      }
     } else {
-      axios.post("http://pe.heromc.net:4000/order", data);
+      const chiTiet = cartItems.reduce((result, item) => {
+        result.push({
+          MaChiTietGiay: item.MaChiTietGiay,
+          SoLuongMua: item.SoLuongMua,
+          GiaBan: item.DonGiaBan,
+          ThanhTien: item.ThanhTien,
+        });
+        return result;
+      }, []);
+      const cart = {
+        MaNguoiDung: userInfo.MaNguoiDung,
+        ChiTietGioHang: chiTiet,
+        PhuongThucThanhToan: orderPaymentMethod2,
+      };
+      dispatch(taoGioHang(cart));
       setTimeout(() => {
         setConfirm(true);
         document.body.style.overflow = "hidden";
@@ -124,7 +105,7 @@ function CheckoutBody(props) {
           <p style={{ fontSize: "18px", color: "green", marginBottom: "30px" }}>
             Thank you. Your order has been received.
           </p>
-          <div className="billing-detail-title">Order details</div>
+          <div className="billing-detail-title">Đơn hàng</div>
           <div>
             <div className="billing-detail-list comfirm-list">
               {cartList &&
@@ -158,7 +139,7 @@ function CheckoutBody(props) {
                   );
                 })}
               <div className="billing-detail-item flex">
-                <div className="billing-confirm-left">SUBTOTAL</div>
+                <div className="billing-confirm-left">Tổng cộng</div>
                 <div className="billing-detail-mobile">
                   <div className="billing-detail-name"></div>
                   <div
@@ -195,7 +176,7 @@ function CheckoutBody(props) {
                 </div>
               </div>
               <div className="billing-detail-item flex">
-                <div className="billing-confirm-left">SHIPPING FEE</div>
+                <div className="billing-confirm-left">Phí giao hàng</div>
                 <div className="billing-detail-mobile">
                   <div className="billing-detail-name"></div>
                   <div
@@ -211,7 +192,7 @@ function CheckoutBody(props) {
                 </div>
               </div>
               <div className="billing-detail-item flex">
-                <div className="billing-confirm-left">TOTAL</div>
+                <div className="billing-confirm-left">Tổng số tiền</div>
                 <div className="billing-detail-mobile">
                   <div className="billing-detail-name"></div>
                   <div
@@ -227,7 +208,9 @@ function CheckoutBody(props) {
                 </div>
               </div>
               <div className="billing-detail-item flex">
-                <div className="billing-confirm-left">PAYMENT METHOD</div>
+                <div className="billing-confirm-left">
+                  Phương thức thanh toán
+                </div>
                 <div className="billing-detail-mobile">
                   <div className="billing-detail-name"></div>
                   <div
@@ -252,19 +235,19 @@ function CheckoutBody(props) {
                   window.location.reload(false);
                 }}
               >
-                CONFIRM
+                Trở về
               </div>
             </div>
           </div>
         </div>
       )}
       <div className="billing-detail">
-        <div className="billing-detail-title">Billing details</div>
+        <div className="billing-detail-title">Chi tiết đơn hàng</div>
         <form className="billing-detail-form">
           <table className="billing-detail-table">
             <tbody>
               <tr>
-                <td>Name</td>
+                <td>Tên</td>
                 <td>
                   <input
                     type="text"
@@ -278,7 +261,7 @@ function CheckoutBody(props) {
                 </td>
               </tr>
               <tr>
-                <td>Phone number</td>
+                <td>Số điện thoại</td>
                 <td>
                   <input
                     type="text"
@@ -306,7 +289,7 @@ function CheckoutBody(props) {
                 </td>
               </tr>
               <tr>
-                <td>Address</td>
+                <td>Địa chỉ</td>
                 <td>
                   <input
                     type="text"
@@ -324,7 +307,7 @@ function CheckoutBody(props) {
         </form>
       </div>
       <div className="billing-detail">
-        <div className="billing-detail-title">Your order</div>
+        <div className="billing-detail-title">Đơn hàng</div>
         <div className="billing-detail-form">
           <div className="billing-detail-list">
             {cartList &&
@@ -357,7 +340,7 @@ function CheckoutBody(props) {
                   fontSize: "18px",
                 }}
               >
-                SUBTOTAL
+                Tổng
               </div>
               <div className="billing-detail-mobile">
                 <div className="billing-detail-name"></div>
@@ -385,7 +368,7 @@ function CheckoutBody(props) {
                   fontSize: "18px",
                 }}
               >
-                SHIPPING
+                Phí
               </div>
               <div className="billing-detail-shipping">
                 <select
@@ -393,8 +376,8 @@ function CheckoutBody(props) {
                     setShipping(event.target.value);
                   }}
                 >
-                  <option value="0">FREESHIP - 0đ</option>
-                  <option value="30000">FAST SHIPPING - 30000đ</option>
+                  <option value="0">Giao miễn phí - 0đ</option>
+                  <option value="30000">Giao hàng nhanh - 30000đ</option>
                 </select>
               </div>
             </div>
@@ -424,7 +407,7 @@ function CheckoutBody(props) {
               </div>
             </div>
             <div className="billing-detail-payment">
-              <div style={{ fontSize: "18px" }}>PAYMENT METHOD</div>
+              <div style={{ fontSize: "18px" }}>Phương thức thanh toán</div>
               <div className="billing-detail-mobile">
                 <div className="payment-method-list">
                   <div
@@ -443,7 +426,7 @@ function CheckoutBody(props) {
                           : "size-check"
                       }
                     ></div>
-                    <p id="1">CASH ON DELIVERY</p>
+                    <p id="1">Trả tiền mặt khi nhận hàng</p>
                   </div>
                   <div
                     id="2"
@@ -455,6 +438,8 @@ function CheckoutBody(props) {
                         description: description,
                         amount: total,
                       };
+                      showQR("https://nhantien.momo.vn/0866074947");
+                      setIsPaid(true);
                       //     ZaloPay.qr(order, res => {
                       //         showQR(res.orderurl);
                       //         const check = setInterval(()=>{
@@ -478,14 +463,14 @@ function CheckoutBody(props) {
                           : "size-check"
                       }
                     ></div>
-                    <p id="2">ZALOPAY</p>
+                    <p id="2">Thanh toán qua Momo bằng QRcode</p>
                   </div>
                 </div>
               </div>
             </div>
             <div className={isShowQR ? "qr-box flex-col" : "d-none"}>
               <div className="qr-code-box flex-center">
-                {/* <QRCode value={qrValue}></QRCode> */}
+                <QRCode value={qrValue}></QRCode>
               </div>
               {!isPaid && (
                 <div className="qr-status" style={{ color: "red" }}>
@@ -493,7 +478,9 @@ function CheckoutBody(props) {
                 </div>
               )}
               {isPaid && (
-                <div className="qr-status">Thanh toán thành công!</div>
+                <div className="qr-status">
+                  Thanh toán giúp mình bằng Momo nhé!
+                </div>
               )}
               {!isPaid && (
                 <div className="qr-help">
@@ -516,7 +503,7 @@ function CheckoutBody(props) {
               )}
             </div>
             <div className="order-btn btn" onClick={placeAnOrder}>
-              PLACE AN ORDER
+              Đặt hàng
             </div>
           </div>
         </div>

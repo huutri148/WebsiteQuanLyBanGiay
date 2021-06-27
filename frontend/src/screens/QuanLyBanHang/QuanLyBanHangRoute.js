@@ -12,7 +12,7 @@ const quanLyBanHangRoute = [
     exact: true,
     component: quanLyBanHang,
     private: true,
-    role: "NhanVienBanHang",
+    role: 2,
   },
 ];
 

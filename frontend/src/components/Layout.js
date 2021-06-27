@@ -13,11 +13,11 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
+  ListSubheader,
 } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import MenuIcon from "@material-ui/icons/Menu";
 import clsx from "clsx";
-import { mainListItems, secondaryListItems } from "./Sidebar/listMenu";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../redux/actions/nguoiDungAction";
 import { withRouter } from "react-router-dom";
@@ -26,9 +26,19 @@ import {
   Home,
   Person,
   Settings,
+  Dvr,
   ExitToApp,
 } from "@material-ui/icons";
 import { StyledMenu } from "./TMenu";
+import HomeIcon from "@material-ui/icons/Home";
+import DashboardIcon from "@material-ui/icons/Dashboard";
+import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
+import ReceiptIcon from "@material-ui/icons/Receipt";
+import PeopleIcon from "@material-ui/icons/People";
+import BarChartIcon from "@material-ui/icons/BarChart";
+import FolderIcon from "@material-ui/icons/Folder";
+import MoneyIcon from "@material-ui/icons/Money";
+import QuestionAnswerIcon from "@material-ui/icons/QuestionAnswer";
 const drawerWidth = 260;
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -116,6 +126,7 @@ export const Layout = withRouter((props) => {
   const [open, setOpen] = React.useState(true);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const userLogin = useSelector((state) => state.User);
+  const { listPhanQuyen } = useSelector((state) => state.ListPhanQuyen);
   const { userInfo } = userLogin;
 
   const handleDrawerOpen = () => {
@@ -134,7 +145,11 @@ export const Layout = withRouter((props) => {
   };
   const handleLogout = () => {
     dispatch(logout());
-    props.history.push("/admin/login");
+    props.history.push("/");
+  };
+  const handleHome = () => {
+    props.history.push("/");
+    window.location.reload(false);
   };
 
   return (
@@ -190,7 +205,7 @@ export const Layout = withRouter((props) => {
             onClose={handleCloseMenu}
             className={classes.menu}
           >
-            <ListItem button component={Link} to="/admin/dashboard">
+            <ListItem button onClick={handleHome}>
               <ListItemIcon>
                 <Home fontSize="small" color="primary" />
               </ListItemIcon>
@@ -231,9 +246,107 @@ export const Layout = withRouter((props) => {
           </IconButton>
         </div>
         <Divider />
-        <List>{mainListItems}</List>
+        <List>
+          {" "}
+          <ListSubheader style={{ marginRight: 60 }} inset>
+            Quản lý
+          </ListSubheader>
+          {listPhanQuyen.includes(10) && (
+            <ListItem button component={Link} to="/admin/dashboard">
+              <ListItemIcon>
+                <Dvr />
+              </ListItemIcon>
+              <ListItemText primary="Dashboard" />
+            </ListItem>
+          )}
+          {listPhanQuyen.includes(1) && (
+            <ListItem button component={Link} to="/admin/products">
+              <ListItemIcon>
+                <DashboardIcon />
+              </ListItemIcon>
+              <ListItemText primary="Sản Phẩm" />
+            </ListItem>
+          )}
+          {listPhanQuyen.includes(2) && (
+            <ListItem button component={Link} to="/admin/bills">
+              <ListItemIcon>
+                <ReceiptIcon />
+              </ListItemIcon>
+              <ListItemText primary="Bán Hàng" />
+            </ListItem>
+          )}
+          {listPhanQuyen.includes(3) && (
+            <ListItem button component={Link} to="/admin/users">
+              <ListItemIcon>
+                <PeopleIcon />
+              </ListItemIcon>
+              <ListItemText primary="Người Dùng" />
+            </ListItem>
+          )}
+          {listPhanQuyen.includes(4) && (
+            <ListItem button component={Link} to="/admin/suppliers">
+              <ListItemIcon>
+                <HomeIcon />
+              </ListItemIcon>
+              <ListItemText primary="Nhà Cung Cấp" />
+            </ListItem>
+          )}
+          {listPhanQuyen.includes(5) && (
+            <ListItem button component={Link} to="/admin/orders">
+              <ListItemIcon>
+                <FolderIcon />
+              </ListItemIcon>
+              <ListItemText primary="Đặt hàng" />
+            </ListItem>
+          )}
+          {listPhanQuyen.includes(2) && (
+            <ListItem button component={Link} to="/admin/inbox">
+              <ListItemIcon>
+                <QuestionAnswerIcon />
+              </ListItemIcon>
+              <ListItemText primary="Tư vấn" />
+            </ListItem>
+          )}
+          {listPhanQuyen.includes(6) && (
+            <ListItem button component={Link} to="/admin/recdockets">
+              <ListItemIcon>
+                <HomeIcon />
+              </ListItemIcon>
+              <ListItemText primary="Nhập Kho" />
+            </ListItem>
+          )}
+          {listPhanQuyen.includes(7) && (
+            <ListItem button component={Link} to="/admin/carts">
+              <ListItemIcon>
+                <ShoppingCartIcon />
+              </ListItemIcon>
+              <ListItemText primary="Giỏ Hàng" />
+            </ListItem>
+          )}
+        </List>
         <Divider />
-        <List>{secondaryListItems}</List>
+        <List>
+          {" "}
+          <ListSubheader style={{ marginRight: 60 }} inset>
+            Báo cáo
+          </ListSubheader>
+          {listPhanQuyen.includes(8) && (
+            <ListItem button component={Link} to="/admin/products">
+              <ListItemIcon>
+                <BarChartIcon />
+              </ListItemIcon>
+              <ListItemText primary="Lợi nhuận" />
+            </ListItem>
+          )}
+          {listPhanQuyen.includes(9) && (
+            <ListItem button component={Link} to="/admin/products">
+              <ListItemIcon>
+                <MoneyIcon />
+              </ListItemIcon>
+              <ListItemText primary="Bán hàng" />
+            </ListItem>
+          )}
+        </List>
       </Drawer>
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />

@@ -12,7 +12,7 @@ const quanLyNhaCungCapRoute = [
     exact: true,
     component: quanLyNhaCungCap,
     private: true,
-    role: "Admin",
+    role: 4,
   },
 ];
 

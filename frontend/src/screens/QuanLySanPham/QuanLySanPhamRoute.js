@@ -12,7 +12,7 @@ const quanLySanPhamRoutes = [
     exact: true,
     component: quanLySanPham,
     private: true,
-    role: "NhanVienBanHang",
+    role: 1,
   },
 ];
 

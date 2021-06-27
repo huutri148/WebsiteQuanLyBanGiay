@@ -1,6 +1,8 @@
 import * as nguoiDungAPI from "../apis/nguoiDungAPI";
 import * as nguoiDungConstants from "../../constants/nguoiDungConstant";
 import localStorageService from "../../services/localStorageService";
+import * as chucVuAPI from "../apis/chucVuAPI";
+import * as chucVuConstants from "../../constants/chucVuConstant";
 export const fetchListNguoiDung = () => async (dispatch) => {
   try {
     dispatch({ type: nguoiDungConstants.NGUOIDUNG_LIST_REQUEST });
@@ -47,7 +49,10 @@ export const login = (item) => async (dispatch) => {
 };
 
 export const logout = () => async (dispatch) => {
-  localStorageService.removeItem("access_token");
+  try {
+    localStorageService.removeItem("access_token");
+    //dispatch({ type: chucVuConstants.DELETE_CHUCVU_PERMISSIONS });
+  } catch (error) {}
 };
 export const register = (item) => async (dispatch) => {
   try {
@@ -75,17 +80,32 @@ export const register = (item) => async (dispatch) => {
   }
 };
 
-export const setUser = (item) => (dispatch) => {
+export const setUser = (item) => async (dispatch) => {
   try {
     dispatch({ type: nguoiDungConstants.NGUOIDUNG_INFO_REQUEST });
+    dispatch({ type: chucVuConstants.CHUCVU_PERMISSIONS_REQUEST });
+
+    const data = await chucVuAPI.getDutyPermissions(item.MaChucVu);
 
     dispatch({
       type: nguoiDungConstants.NGUOIDUNG_INFO_SUCCESS,
       payload: item,
     });
+
+    dispatch({
+      type: chucVuConstants.CHUCVU_PERMISSIONS_SUCCESS,
+      payload: data,
+    });
   } catch (error) {
     dispatch({
       type: nguoiDungConstants.NGUOIDUNG_INFO_FAIL,
+      payload:
+        error.response && error.response.message
+          ? error.response.data.data.message
+          : error.messagge,
+    });
+    dispatch({
+      type: chucVuConstants.CHUCVU_ALL_PERMISSIONS_FAIL,
       payload:
         error.response && error.response.message
           ? error.response.data.data.message

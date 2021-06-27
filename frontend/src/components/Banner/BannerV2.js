@@ -27,22 +27,18 @@ function BannerV2(props) {
         }}
       >
         <div className="newsbanner-overlay flex-center another-overlay">
-          <div className="newsbanner-title">{locationText}</div>
           <div className="newsbanner-breadcrumb flex-center">
             <div
               style={{ cursor: "pointer" }}
               onClick={() => {
                 props.history.push("/");
               }}
-            >
-              Home
-            </div>
+            ></div>
             <FontAwesomeIcon
               icon={faAngleRight}
               className="cart-icon"
               style={{ margin: "0 10px" }}
             />
-            <div>{locationText}</div>
           </div>
         </div>
       </div>

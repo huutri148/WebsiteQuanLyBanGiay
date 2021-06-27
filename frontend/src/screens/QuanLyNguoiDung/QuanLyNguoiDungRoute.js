@@ -12,7 +12,7 @@ const quanLyNguoiDungRoute = [
     exact: true,
     component: quanLyNguoiDung,
     private: true,
-    role: "Admin",
+    role: 3,
   },
 ];
 

@@ -12,7 +12,7 @@ const quanLyHangSanXuatRoute = [
     exact: true,
     component: quanLyHangSanXuat,
     private: true,
-    role: "Admin",
+    role: 1,
   },
 ];
 

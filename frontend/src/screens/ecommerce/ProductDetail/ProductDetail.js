@@ -17,12 +17,11 @@ function ProductDetail(props) {
   const dispatch = useDispatch();
   const [product, setProduct] = useState();
   const [tabId, setTabId] = useState(0);
-  const bRef = useRef(null);
 
   const sanpham = useSelector((state) => state.Giay);
-  const { listSize, loading } = useSelector((state) => state.ListSize);
+  const { loading } = useSelector((state) => state.ListSize);
 
-  const { loading: productLoading, error: giayError, giay } = sanpham;
+  const { giay } = sanpham;
 
   const handleClick = () => {
     smoothScroll.scrollTo("review");

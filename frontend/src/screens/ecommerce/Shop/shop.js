@@ -5,10 +5,11 @@ import Footer from "../../../components/Footer/Footer.js";
 import BannerV2 from "../../../components/Banner/BannerV2.js";
 import Header from "../../../components/Header/Header.js";
 import ShopBody from "./shopBody";
-import bg from "../../../assets/S3.jpg";
+import bg from "../../../assets/jordan-2.jpg";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchListGiay } from "../../../redux/actions/giayAction";
 import { withRouter } from "react-router-dom";
+import { fetchListSize } from "../../../redux/actions/sizeAction";
 
 const Shop = (props) => {
   const dispatch = useDispatch();
@@ -17,7 +18,8 @@ const Shop = (props) => {
   let sex = props.location.pathname.split("/")[1];
   let cate = props.location.pathname.split("/")[2];
   const productList = useSelector((state) => state.ListGiay);
-  const { loading: productLoading, error: giayError, listGiay } = productList;
+  const { loading: productLoading, listGiay } = productList;
+  const { loading } = useSelector((state) => state.ListSize);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -96,8 +98,12 @@ const Shop = (props) => {
     const fetchData = async () => {
       await dispatch(fetchListGiay());
     };
+    const fetchSizeData = async () => {
+      await dispatch(fetchListSize());
+    };
     if (typeof productLoading === "undefined") fetchData();
-  }, [sex, cate]);
+    if (typeof productLoading === "undefined") fetchSizeData();
+  }, []);
 
   useEffect(() => {
     const data = Object.values(listGiay).reduce((result, value) => {

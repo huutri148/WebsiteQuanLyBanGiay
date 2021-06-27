@@ -3,7 +3,6 @@ import "../../../styles/product.css";
 import "../../../components/App/App.css";
 import {
   faCartPlus,
-  faCheckCircle,
   faHeart,
   faMinus,
   faPlus,
@@ -20,7 +19,6 @@ import { addToCart } from "../../../redux/actions/gioHangAction";
 function ProductQuickView(props) {
   const dispatch = useDispatch();
   const [countCart, setCountCart] = useState(1);
-  const [toast, setToast] = useState(false);
   const product = props.product;
   const [flag, setFlag] = useState(-1);
   const [chosenSize, setChosenSize] = useState();
@@ -33,7 +31,7 @@ function ProductQuickView(props) {
       await dispatch(fetchGiaySize(id));
     };
     fetchData(product.MaGiay);
-  }, []);
+  }, [dispatch, product.MaGiay]);
 
   const settings = {
     infinite: true,
@@ -60,15 +58,11 @@ function ProductQuickView(props) {
       ...chosenSize,
       ...product,
     };
-    dispatch(addToCart(props.product, countCart));
-    setToast(true);
-    setTimeout(() => {
-      setToast(false);
-    }, 2000);
+    dispatch(addToCart(chiTiet, countCart));
   };
   const redirect = () => {
     window.scrollTo(0, 0);
-    props.history.push(`/products/${props.product._id}`);
+    props.history.push(`/products/${props.MaGiay}`);
   };
 
   return (
@@ -143,7 +137,7 @@ function ProductQuickView(props) {
                       }
                       onClick={() => handleChange(giaySize[key])}
                     >
-                      {listSize[key].TenSize}{" "}
+                      {giaySize[key].MaSize}{" "}
                     </div>
                   );
                 })}

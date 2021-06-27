@@ -19,28 +19,6 @@ function Account(props) {
 
   const total = cartItems.reduce((result, item) => result + item.ThanhTien, 0);
 
-  const createCart = () => {
-    if (total > 0) {
-      const chiTiet = cartItems.reduce((result, item) => {
-        result.push({
-          MaChiTietGiay: item.MaChiTietGiay,
-          SoLuongMua: item.SoLuongMua,
-          GiaBan: item.DonGiaBan,
-          ThanhTien: item.ThanhTien,
-          PhuongThucThanhToan: "Trả tiền mặt khi nhận hàng",
-        });
-        return result;
-      }, []);
-      const cart = {
-        MaNguoiDung: userInfo.MaNguoiDung,
-        ChiTietGioHang: chiTiet,
-      };
-      dispatch(taoGioHang(cart));
-      window.location.reload(false);
-    } else {
-      toast.warning("Giỏ hàng hiện tại rỗng");
-    }
-  };
   return (
     <div className={props.cartOpen === false ? "Cart displayNone" : "Cart"}>
       <div className="search-header flex">
@@ -88,12 +66,11 @@ function Account(props) {
           </div>
           <div
             className="cart-checkout-btn btn"
-            onClick={
-              //props.history.push(`/checkout`);
-              createCart
-            }
+            onClick={() => {
+              props.history.push(`/checkout`);
+            }}
           >
-            Buy
+            Mua hàng
           </div>
         </div>
       )}
