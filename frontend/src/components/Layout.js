@@ -146,6 +146,7 @@ export const Layout = withRouter((props) => {
   const handleLogout = () => {
     dispatch(logout());
     props.history.push("/");
+    window.location.reload(false);
   };
   const handleHome = () => {
     props.history.push("/");

@@ -73,6 +73,13 @@ const useStyles = makeStyles((theme) => ({
   actionsButton: {
     "&:hover, &.Mui-focusVisible": { color: "#1976d2" },
   },
+  paper: {
+    margin: theme.spacing(0, 4),
+    display: "flex",
+    flexDirection: "column",
+    textAlign: "left",
+    height: "fit-content",
+  },
 }));
 
 const DanhSachNhanVien = (props) => {
@@ -88,7 +95,6 @@ const DanhSachNhanVien = (props) => {
 
   // Props in Screens
   const [tableData, setTableData] = useState([]);
-  const [loading, setLoading] = useState(false);
   const [filterFn, setFilterFn] = useState({
     fn: (items) => {
       return items;
@@ -149,7 +155,7 @@ const DanhSachNhanVien = (props) => {
           <Typography component="h1" variant="h5" className={classes.title}>
             Danh sách nhân viên
           </Typography>
-          <Paper>
+          <Paper className={classes.paper}>
             <Toolbar className={classes.toolbar}>
               <div className={classes.searchInput}>
                 <Input
