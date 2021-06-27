@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Route, BrowserRouter as Router } from "react-router-dom";
-import { useSelector } from "react-redux";
 import { history } from "../../helper/history";
 import "./App.css";
 import { PrivateRoute } from "../../services/auth/auth";
@@ -9,15 +8,9 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const App = (props) => {
-  const [reload, setReload] = useState(false);
   history.listen((location, action) => {
     // clear alert on location change
   });
-  const { userInfo } = useSelector((state) => state.User);
-  useEffect(() => {
-    setReload(!reload);
-  }, [userInfo]);
-
   return (
     <div className="App">
       <Router history={history}>

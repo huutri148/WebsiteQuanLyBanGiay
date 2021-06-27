@@ -116,7 +116,7 @@ const DanhSachSanPham = (props) => {
       <Typography component="h1" variant="h5" className={classes.title}>
         Quản lý sản phẩm
       </Typography>
-      <Paper>
+      <Paper className={classes.paper}>
         <Toolbar className={classes.toolbar}>
           <div className={classes.searchInput}>
             <Input
@@ -217,9 +217,6 @@ const DanhSachSanPham = (props) => {
                     </TableCell>
 
                     <TableCell component="th" scope="row">
-                      <IconButton color="secondary">
-                        <Edit />
-                      </IconButton>
                       <IconButton color="primary">
                         <Assignment onClick={() => handleDetail(index, item)} />
                       </IconButton>

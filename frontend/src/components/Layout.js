@@ -20,6 +20,8 @@ import MenuIcon from "@material-ui/icons/Menu";
 import clsx from "clsx";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../redux/actions/nguoiDungAction";
+import * as role from "../constants/authRoleConstant";
+
 import { withRouter } from "react-router-dom";
 import {
   ChevronLeft,
@@ -146,6 +148,7 @@ export const Layout = withRouter((props) => {
   const handleLogout = () => {
     dispatch(logout());
     props.history.push("/");
+    window.location.reload(false);
   };
   const handleHome = () => {
     props.history.push("/");
@@ -181,7 +184,11 @@ export const Layout = withRouter((props) => {
           >
             <Link style={{ textDecoration: "none", color: "inherit" }} to="/">
               <div>
-                <img src="/images/logo2.png" style = {{ width: 120,}} alt="logo" />
+                <img
+                  src="/images/logo2.png"
+                  style={{ width: 120 }}
+                  alt="logo"
+                />
               </div>
             </Link>
           </Typography>
@@ -251,7 +258,7 @@ export const Layout = withRouter((props) => {
           <ListSubheader style={{ marginRight: 60 }} inset>
             Quản lý
           </ListSubheader>
-          {listPhanQuyen.includes(10) && (
+          {listPhanQuyen.includes(role.DASHBOARD) && (
             <ListItem button component={Link} to="/admin/dashboard">
               <ListItemIcon>
                 <Dvr />
@@ -259,7 +266,7 @@ export const Layout = withRouter((props) => {
               <ListItemText primary="Dashboard" />
             </ListItem>
           )}
-          {listPhanQuyen.includes(1) && (
+          {listPhanQuyen.includes(role.QUANLYSANPHAM) && (
             <ListItem button component={Link} to="/admin/products">
               <ListItemIcon>
                 <DashboardIcon />
@@ -267,7 +274,7 @@ export const Layout = withRouter((props) => {
               <ListItemText primary="Sản Phẩm" />
             </ListItem>
           )}
-          {listPhanQuyen.includes(2) && (
+          {listPhanQuyen.includes(role.QUANLYBANHANG) && (
             <ListItem button component={Link} to="/admin/bills">
               <ListItemIcon>
                 <ReceiptIcon />
@@ -275,7 +282,7 @@ export const Layout = withRouter((props) => {
               <ListItemText primary="Bán Hàng" />
             </ListItem>
           )}
-          {listPhanQuyen.includes(3) && (
+          {listPhanQuyen.includes(role.QUANLYNGUOIDUNG) && (
             <ListItem button component={Link} to="/admin/users">
               <ListItemIcon>
                 <PeopleIcon />
@@ -283,7 +290,7 @@ export const Layout = withRouter((props) => {
               <ListItemText primary="Người Dùng" />
             </ListItem>
           )}
-          {listPhanQuyen.includes(4) && (
+          {listPhanQuyen.includes(role.QUANLYNHACUNGCAP) && (
             <ListItem button component={Link} to="/admin/suppliers">
               <ListItemIcon>
                 <HomeIcon />
@@ -291,7 +298,7 @@ export const Layout = withRouter((props) => {
               <ListItemText primary="Nhà Cung Cấp" />
             </ListItem>
           )}
-          {listPhanQuyen.includes(5) && (
+          {listPhanQuyen.includes(role.QUANLYDATHANG) && (
             <ListItem button component={Link} to="/admin/orders">
               <ListItemIcon>
                 <FolderIcon />
@@ -299,7 +306,7 @@ export const Layout = withRouter((props) => {
               <ListItemText primary="Đặt hàng" />
             </ListItem>
           )}
-          {listPhanQuyen.includes(2) && (
+          {listPhanQuyen.includes(role.QUANLYBANHANG) && (
             <ListItem button component={Link} to="/admin/inbox">
               <ListItemIcon>
                 <QuestionAnswerIcon />
@@ -307,7 +314,7 @@ export const Layout = withRouter((props) => {
               <ListItemText primary="Tư vấn" />
             </ListItem>
           )}
-          {listPhanQuyen.includes(6) && (
+          {listPhanQuyen.includes(role.QUANLYNHAPKHO) && (
             <ListItem button component={Link} to="/admin/recdockets">
               <ListItemIcon>
                 <HomeIcon />
@@ -315,7 +322,7 @@ export const Layout = withRouter((props) => {
               <ListItemText primary="Nhập Kho" />
             </ListItem>
           )}
-          {listPhanQuyen.includes(7) && (
+          {listPhanQuyen.includes(role.QUANLYGIOHANG) && (
             <ListItem button component={Link} to="/admin/carts">
               <ListItemIcon>
                 <ShoppingCartIcon />
@@ -330,7 +337,7 @@ export const Layout = withRouter((props) => {
           <ListSubheader style={{ marginRight: 60 }} inset>
             Báo cáo
           </ListSubheader>
-          {listPhanQuyen.includes(8) && (
+          {listPhanQuyen.includes(role.BAOCAOLOINHUAN) && (
             <ListItem button component={Link} to="/admin/products">
               <ListItemIcon>
                 <BarChartIcon />
@@ -338,7 +345,7 @@ export const Layout = withRouter((props) => {
               <ListItemText primary="Lợi nhuận" />
             </ListItem>
           )}
-          {listPhanQuyen.includes(9) && (
+          {listPhanQuyen.includes(role.BAOCAOBANHANG) && (
             <ListItem button component={Link} to="/admin/products">
               <ListItemIcon>
                 <MoneyIcon />

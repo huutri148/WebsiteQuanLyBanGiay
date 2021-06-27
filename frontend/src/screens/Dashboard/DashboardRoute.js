@@ -1,5 +1,6 @@
 import Dashboard from "./Dashboard";
 import { Layout } from "../../components/Layout";
+import { DASHBOARD } from "../../constants/authRoleConstant";
 const dashboard = () => (
   <Layout>
     <Dashboard />
@@ -12,7 +13,7 @@ const dashBoardRoute = [
     exact: true,
     component: dashboard,
     private: true,
-    role: 10,
+    role: DASHBOARD,
   },
 ];
 

@@ -1,5 +1,6 @@
 import QuanLyNguoiDung from "./QuanLyNguoiDung";
 import { Layout } from "../../components/Layout";
+import { QUANLYNGUOIDUNG } from "../../constants/authRoleConstant";
 const quanLyNguoiDung = () => (
   <Layout>
     <QuanLyNguoiDung />
@@ -12,7 +13,7 @@ const quanLyNguoiDungRoute = [
     exact: true,
     component: quanLyNguoiDung,
     private: true,
-    role: 3,
+    role: QUANLYNGUOIDUNG,
   },
 ];
 

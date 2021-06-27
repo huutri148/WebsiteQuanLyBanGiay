@@ -33,6 +33,8 @@ const useStyles = makeStyles((theme) => ({
     cursor: "pointer",
     boxSizing: "border-box",
     margin: "0 8px 8px 0",
+    minWidth: "4rem",
+    minHeight: "2.125rem",
   },
   buttonSelected: {
     color: "#ee4d2d",
@@ -43,6 +45,8 @@ const useStyles = makeStyles((theme) => ({
     cursor: "pointer",
     boxSizing: "border-box",
     margin: "0 8px 8px 0",
+    minWidth: "4rem",
+    minHeight: "2.125rem",
   },
   price: {
     display: "flex",

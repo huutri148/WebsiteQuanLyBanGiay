@@ -16,7 +16,7 @@ import {
 import Select from "react-select";
 import Groupbox from "../../../components/controls/GroupBox/GroupBox";
 import { Person } from "@material-ui/icons";
-import { useHistory } from "react-router-dom";
+import { withRouter } from "react-router-dom";
 import ImageUpload from "../../../components/controls/ImageUpload";
 import { createGiay } from "../../../redux/actions/giayAction";
 import { useDispatch, useSelector } from "react-redux";
@@ -84,7 +84,6 @@ const ThemSanPham = (props) => {
   //hooks
   const classes = useStyles();
   const dispatch = useDispatch();
-  const history = useHistory();
 
   // State of component
   const [values, setValues] = useState(initialSanPham);
@@ -107,7 +106,7 @@ const ThemSanPham = (props) => {
   //Function to handle
 
   const handleQuanLyHangSanXuat = () => {
-    history.push("/brands");
+    props.history.push("/admin/brands");
   };
   const handleSelect = (e, name) => {
     setValues({
@@ -413,4 +412,4 @@ const ThemSanPham = (props) => {
   );
 };
 
-export default ThemSanPham;
+export default withRouter(ThemSanPham);

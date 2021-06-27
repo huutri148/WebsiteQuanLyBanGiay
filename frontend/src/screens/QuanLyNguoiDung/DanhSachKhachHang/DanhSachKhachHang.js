@@ -73,6 +73,13 @@ const useStyles = makeStyles((theme) => ({
   actionsButton: {
     "&:hover, &.Mui-focusVisible": { color: "#1976d2" },
   },
+  paper: {
+    margin: theme.spacing(0, 4),
+    display: "flex",
+    flexDirection: "column",
+    textAlign: "left",
+    height: "fit-content",
+  },
 }));
 
 const DanhSachKhachHang = (props) => {
@@ -136,7 +143,7 @@ const DanhSachKhachHang = (props) => {
           <Typography component="h1" variant="h5" className={classes.title}>
             Danh sách khách hàng
           </Typography>
-          <Paper>
+          <Paper className={classes.paper}>
             <Toolbar className={classes.toolbar}>
               <div className={classes.searchInput}>
                 <Input
