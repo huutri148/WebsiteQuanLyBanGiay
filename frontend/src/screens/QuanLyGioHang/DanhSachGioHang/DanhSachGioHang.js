@@ -182,6 +182,7 @@ const DanhSachGioHang = (props) => {
           NgayBan: moment(cart.NgayLap).format("YYYY-MM-DD") + "",
           GhiChu: null,
         };
+        console.log(PBH);
         dispatch(createPhieuBanHang(PBH));
         setSelectedForCreate(null);
         setUpdateData(!updateData);

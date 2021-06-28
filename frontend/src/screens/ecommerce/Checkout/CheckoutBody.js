@@ -103,7 +103,7 @@ function CheckoutBody(props) {
       {confirm && (
         <div className="billing-detail confirmPage">
           <p style={{ fontSize: "18px", color: "green", marginBottom: "30px" }}>
-            Thank you. Your order has been received.
+            Cảm ơn bạn đã đặt hàng của shop.
           </p>
           <div className="billing-detail-title">Đơn hàng</div>
           <div>

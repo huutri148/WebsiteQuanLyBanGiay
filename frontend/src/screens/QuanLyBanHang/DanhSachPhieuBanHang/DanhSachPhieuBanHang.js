@@ -89,9 +89,9 @@ const useStyles = makeStyles((theme) => ({
 
 const headCells = [
   { id: "SoPhieuBanHang", label: "Số phiếu" },
-  { id: "TenKhachHang", label: "Người mua", disableSorting: true },
+  { id: "TenKhachHang", label: "Người lập", disableSorting: true },
   { id: "NgayBan", label: "Ngày lập" },
-  { id: "TenNguoiDung", label: "Người lập", disableSorting: true },
+  { id: "TenNguoiDung", label: "Người mua", disableSorting: true },
   { id: "TongTien", label: "Tổng Tiền" },
   { id: "PhuongThucThanhToan", label: "Phương Thức Thanh Toán" },
   { id: "actions", disableSorting: true },
