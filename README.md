@@ -4,9 +4,9 @@
 
 Project là sản phẩm môn Đồ án 1, lớp SE121.L21, HK2 năm 2021
 
-![](./uploads/sample1.png)
-![](./uploads/sample2.png)
-![](./uploads/sample3.png)
+![](./uploads/sample1.jpg)
+![](./uploads/sample2.jpg)
+![](./uploads/sample3.jpg)
 
 ## Tính năng
 
