@@ -5,8 +5,9 @@ import {
   TableRow,
   TableCell,
   IconButton,
+  Tooltip,
 } from "@material-ui/core";
-import { DeleteOutlined, Edit } from "@material-ui/icons";
+import { Delete, Edit } from "@material-ui/icons";
 import useTable from "../../components/useTable";
 
 const headCells = [
@@ -64,17 +65,25 @@ const NhaCungCapTable = (props) => {
                 {item.Email}
               </TableCell>
               <TableCell>
-                <IconButton
-                  color="secondary"
-                  onClick={() => {
-                    HandleEdit(item);
-                  }}
-                >
-                  <Edit fontSize="small" />
-                </IconButton>
-                <IconButton color="primary" onClick={() => HandleDelete(item)}>
-                  <DeleteOutlined fontSize="small" />
-                </IconButton>
+                <Tooltip title="Sửa">
+                  <IconButton
+                    color="secondary"
+                    onClick={() => {
+                      HandleEdit(item);
+                    }}
+                  >
+                    <Edit fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+
+                <Tooltip title="Xóa">
+                  <IconButton
+                    color="primary"
+                    onClick={() => HandleDelete(item)}
+                  >
+                    <Delete fontSize="small" />
+                  </IconButton>
+                </Tooltip>
               </TableCell>
             </TableRow>
           ))}

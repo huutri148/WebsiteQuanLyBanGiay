@@ -13,11 +13,18 @@ export default function SizeSelector(props) {
   const sendData = (index) => {
     if (giaySize !== undefined)
       if (giaySize[index] !== undefined)
-        if (giaySize[index].SoLuong !== undefined && giaySize[index].MaGiay === item.MaGiay) 
-          props.onSizeChange(giaySize[index].SoLuong, index - 1 ,giaySize[index].MaChiTietGiay);
+        if (
+          giaySize[index].SoLuong !== undefined &&
+          giaySize[index].MaGiay === item.MaGiay
+        )
+          props.onSizeChange(
+            giaySize[index].SoLuong,
+            index - 1,
+            giaySize[index].MaChiTietGiay
+          );
   };
   // Props in component
-  const {item, ListSize } = props;
+  const { item, ListSize } = props;
   const [listAvailableSize, setListAvailableSize] = useState(ListSize);
   const [loading, setLoading] = useState();
   // Fetch API
@@ -27,24 +34,22 @@ export default function SizeSelector(props) {
   useEffect(() => {
     setSelectedValue(0);
     var tmp = [];
-    if(ListSize != undefined)
-      ListSize.forEach(element => {
+    if (ListSize != undefined)
+      ListSize.forEach((element) => {
         if (giaySize[element.MaSize] !== undefined)
-            if (giaySize[element.MaSize].SoLuong !== undefined)
-              if(giaySize[element.MaSize].SoLuong > 0)
-                {
-                  if(tmp.length == 0)
-                    sendData(element.MaSize);
-                  tmp.push(element);
-                }
-        });
+          if (giaySize[element.MaSize].SoLuong !== undefined)
+            if (giaySize[element.MaSize].SoLuong >= 0) {
+              if (tmp.length == 0) sendData(element.MaSize);
+              tmp.push(element);
+            }
+      });
     setListAvailableSize(tmp);
   }, [loading]);
   // Fetch data from API
   useEffect(() => {
     const fetchData = async (id) => {
-    await dispatch(fetchGiaySize(id));
-    setLoading(!loading);
+      await dispatch(fetchGiaySize(id));
+      setLoading(!loading);
     };
     fetchData(item.MaGiay);
   }, [dispatch, item]);
@@ -60,7 +65,9 @@ export default function SizeSelector(props) {
       </label>
       <select value={selectedValue} onChange={(e) => handleChange(e)}>
         {listAvailableSize.map((item) => (
-          <option key = {item.MaSize} value={item.MaSize}>{item.TenSize}</option>
+          <option key={item.MaSize} value={item.MaSize}>
+            {item.TenSize}
+          </option>
         ))}
       </select>
     </div>

@@ -21,12 +21,10 @@ function Product(props) {
   }
 
   const redirect = (target) => {
-    window.scrollTo(0, 0);
-    props.history.push(`/products/${product._id}`);
+    //window.scrollTo(0, 0);
+    console.log(product.MaGiay);
+    //props.history.push(`/products/${product.MaGiay}`);
   };
-
-  // let productDate = new Date(product.productDate);
-  // let today = new Date();
 
   return (
     <div
@@ -50,15 +48,7 @@ function Product(props) {
         }}
       >
         <div className="product-tag">
-          {/* {product.productSale > 0 && (
-            <div className="product-tag-item sale">{product.productSale}%</div>
-          )}
-          {product.productSold > 40 && (
-            <div className="product-tag-item hot">HOT</div>
-          )}
-          {(today - productDate) / (1000 * 3600 * 24) < 10 && ( */}
           <div className="product-tag-item new">NEW</div>
-          {/* )} */}
         </div>
         <div className="product-img-bg" onClick={redirect}>
           <img
@@ -67,12 +57,6 @@ function Product(props) {
             style={{ objectFit: "scale-down" }}
             alt=""
           ></img>
-
-          {/* <img
-            className={hover === false ? "img-defalt hide" : "img-defalt"}
-            src={product.Anh}
-            alt=""
-          ></img> */}
         </div>
         <ProductOverlay
           product={product}
@@ -82,28 +66,6 @@ function Product(props) {
         />
       </div>
       <div className="product-title">{product.TenGiay}</div>
-      {/* {product.productFinalPrice < product.productPrice && (
-        <div className="product-price flex-center">
-          <p
-            style={{
-              textDecoration: "line-through",
-              color: "#777",
-              marginRight: "10px",
-            }}
-          >
-            {product.productPrice
-              .toString()
-              .replace(/\B(?=(\d{3})+(?!\d))/g, ".")}{" "}
-            Đ
-          </p>
-          <p>
-            {product.productFinalPrice
-              .toString()
-              .replace(/\B(?=(\d{3})+(?!\d))/g, ".")}{" "}
-            Đ
-          </p>
-        </div>
-      )} */}
       {product.DonGiaBan && (
         <div className="product-price">
           <p>

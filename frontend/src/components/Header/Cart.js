@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import "../App/App.css";
 import "../../styles/product.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -8,7 +8,7 @@ import WishListItem from "./WishListItem";
 import { withRouter } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { createCart as taoGioHang } from "../../redux/actions/gioHangAction";
-
+import { toast } from "react-toastify";
 function Account(props) {
   const dispatch = useDispatch();
   const [tabID, setTabID] = useState(0);
@@ -19,23 +19,6 @@ function Account(props) {
 
   const total = cartItems.reduce((result, item) => result + item.ThanhTien, 0);
 
-  const createCart = () => {
-    const chiTiet = cartItems.reduce((result, item) => {
-      result.push({
-        MaChiTietGiay: item.MaChiTietGiay,
-        SoLuongMua: item.SoLuongMua,
-        GiaBan: item.DonGiaBan,
-        ThanhTien: item.ThanhTien,
-      });
-      return result;
-    }, []);
-    const cart = {
-      MaNguoiDung: userInfo.MaNguoiDung,
-      ChiTietGioHang: chiTiet,
-    };
-    dispatch(taoGioHang(cart));
-    window.location.reload(false);
-  };
   return (
     <div className={props.cartOpen === false ? "Cart displayNone" : "Cart"}>
       <div className="search-header flex">
@@ -83,12 +66,11 @@ function Account(props) {
           </div>
           <div
             className="cart-checkout-btn btn"
-            onClick={
-              //props.history.push(`/checkout`);
-              createCart
-            }
+            onClick={() => {
+              props.history.push(`/checkout`);
+            }}
           >
-            Buy
+            Mua hàng
           </div>
         </div>
       )}

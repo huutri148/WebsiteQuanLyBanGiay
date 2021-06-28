@@ -15,6 +15,7 @@ import Account from "./Account.js";
 import Cart from "./Cart.js";
 import MenuItemDropdown from "./MenuItemDropdown";
 import Div100vh from "react-div-100vh";
+import { useSelector } from "react-redux";
 import axios from "axios";
 
 function HeaderV2(props) {
@@ -28,6 +29,7 @@ function HeaderV2(props) {
   const [dropdownHover, setDropdownHover] = useState(false);
   const [totalCart, setTotalCart] = useState(0);
   const [openSubMenu, setOpenSubMenu] = useState(null);
+  const { cartItems } = useSelector((state) => state.Cart);
 
   const location = props.history.location.pathname;
 
@@ -87,77 +89,7 @@ function HeaderV2(props) {
       },
     ];
     setNavBar(navBar);
-    axios.get(`http://pe.heromc.net:4000/products`).then((res) => {
-      let virtualNavBar = [...navBar];
-      const menProduct = [];
-      const womenProduct = [];
-      for (let i in res.data) {
-        if (res.data[i].productSex === "Man") {
-          menProduct.push(res.data[i].productGroupCate);
-        }
-        if (res.data[i].productSex === "Woman") {
-          womenProduct.push(res.data[i].productGroupCate);
-        }
-      }
-      let groupCateMen = menProduct.filter(function (elem, index, self) {
-        return index === self.indexOf(elem);
-      });
-      let groupCateWomen = womenProduct.filter(function (elem, index, self) {
-        return index === self.indexOf(elem);
-      });
-      const menDropdownContent = [];
-      for (let i in groupCateMen) {
-        let menData = {};
-        let cateList = [];
-        for (let j in res.data) {
-          if (
-            res.data[j].productGroupCate === groupCateMen[i] &&
-            res.data[j].productSex === "Man"
-          ) {
-            cateList.push(res.data[j].productCate);
-          }
-        }
-        let cateList2 = cateList.filter(function (elem, index, self) {
-          return index === self.indexOf(elem);
-        });
-        // console.log(cateList)
-        menData = {
-          dropdownTitle: groupCateMen[i],
-          dropdownList: cateList2,
-        };
-        menDropdownContent.push(menData);
-      }
-      const womenDropdownContent = [];
-      for (let i in groupCateWomen) {
-        let womenData = {};
-        let cateList = [];
-        for (let j in res.data) {
-          if (
-            res.data[j].productGroupCate === groupCateWomen[i] &&
-            res.data[j].productSex === "Woman"
-          ) {
-            cateList.push(res.data[j].productCate);
-          }
-        }
-        let cateList2 = cateList.filter(function (elem, index, self) {
-          return index === self.indexOf(elem);
-        });
-        womenData = {
-          dropdownTitle: groupCateWomen[i],
-          dropdownList: cateList2,
-        };
-        womenDropdownContent.push(womenData);
-      }
-      for (let i in virtualNavBar) {
-        if (virtualNavBar[i].label === "Men") {
-          virtualNavBar[i].dropdownContent = menDropdownContent;
-        }
-        if (virtualNavBar[i].label === "Women") {
-          virtualNavBar[i].dropdownContent = womenDropdownContent;
-        }
-      }
-      setNavBar(virtualNavBar);
-    });
+
     setWhiteText(false);
     setDisableBox(false);
     setScrolled(false);
@@ -188,15 +120,15 @@ function HeaderV2(props) {
     }
 
     let totalCartVirtual = 0;
-    // for (let i in cartItems) {
-    //     totalCartVirtual += cartItems[i].count
-    // }
+    for (let i in cartItems) {
+      totalCartVirtual += cartItems[i].SoLuongMua;
+    }
     setTotalCart(totalCartVirtual);
     window.addEventListener("scroll", onScroll);
     return () => {
       window.removeEventListener("scroll", onScroll);
     };
-  }, [location, dropdownHover, props.match.params.cate]);
+  }, [cartItems, location, dropdownHover, props.match.params.cate]);
 
   if (searchOpen || accountOpen || cartOpen) {
     document.body.style.overflow = "hidden";

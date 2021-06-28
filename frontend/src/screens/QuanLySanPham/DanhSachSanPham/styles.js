@@ -35,5 +35,12 @@ const styles = (theme) => ({
     alignItems: "center",
     padding: theme.spacing(0, 8),
   },
+  paper: {
+    margin: theme.spacing(0, 4),
+    display: "flex",
+    flexDirection: "column",
+    textAlign: "left",
+    height: "fit-content",
+  },
 });
 export default styles;

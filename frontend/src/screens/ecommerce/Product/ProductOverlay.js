@@ -28,7 +28,7 @@ function ProductOverlay(props) {
   const redirect = (event) => {
     if (event.target.id === "overlay") {
       // window.scrollTo(0,0);
-      props.history.push(`/products/${props.product._id}`);
+      props.history.push(`/products/${props.product.MaGiay}`);
     }
   };
 

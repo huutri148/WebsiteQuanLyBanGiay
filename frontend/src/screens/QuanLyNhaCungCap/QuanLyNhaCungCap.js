@@ -43,6 +43,14 @@ const useStyles = makeStyles((theme) => ({
     top: "50%",
     right: "10%",
     color: green[500],
+    textTransform: "none",
+  },
+  paper: {
+    margin: theme.spacing(0, 4),
+    display: "flex",
+    flexDirection: "column",
+    textAlign: "left",
+    height: "fit-content",
   },
 }));
 
@@ -163,7 +171,7 @@ const QuanLyNhaCungCap = () => {
           <Typography component="h1" variant="h5" className={classes.title}>
             Quản lý nhà cung cấp
           </Typography>
-          <Paper>
+          <Paper className={classes.paper}>
             <Toolbar className={classes.content}>
               <Input
                 label="Search"
@@ -184,7 +192,7 @@ const QuanLyNhaCungCap = () => {
                 className={classes.newButton}
                 onClick={handleNew}
               >
-                New
+                Thêm mới
               </Button>
             </Toolbar>
             <NhaCungCapTable

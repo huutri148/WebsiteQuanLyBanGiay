@@ -98,9 +98,6 @@ export const addToCart = (item, qty) => async (dispatch, getState) => {
   });
 
   localStorage.setItem("cartItems", JSON.stringify(getState().Cart.cartItems));
-  if (qty === 1) {
-    toast.success("Đã thêm vào giỏ hàng");
-  }
 };
 
 export const removeFromCart = (id) => (dispatch, getState) => {
@@ -122,7 +119,7 @@ export const createCart = (item) => (dispatch) => {
       type: gioHangConstants.GIOHANG_CREATE_SUCCESS,
       payload: data,
     });
-    toast.success("Created Successfully");
+    toast.success("Đã gửi yêu cầu mua hàng!");
     localStorage.removeItem("cartItems");
   } catch (error) {
     dispatch({

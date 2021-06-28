@@ -14,7 +14,7 @@ import { fetchListSize } from "../../redux/actions/sizeAction";
 import { fetchListMau } from "../../redux/actions/mauAction";
 import { fetchListNguoiDung } from "../../redux/actions/nguoiDungAction";
 import DanhSachPhieuBanHang from "./DanhSachPhieuBanHang/DanhSachPhieuBanHang";
-
+import Loading from "../../components/Loadable/Loading";
 function TabPanel(props) {
   const classes = useStyles();
   const { children, value, index, ...other } = props;
@@ -60,7 +60,7 @@ const QuanLyBanHang = () => {
   const [sizes, setSizes] = useState([]);
   const [users, setUsers] = useState([]);
   //variables
-  const [value,setValue] = useState(0);
+  const [value, setValue] = useState(0);
   //handle change
   const handleTabChange = (event, newValue) => {
     setValue(newValue);
@@ -116,50 +116,59 @@ const QuanLyBanHang = () => {
       }, []);
       setProducts(productsData);
     }
-  }, [listGiay,listHangSanXuat,listMau]);
+  }, [listGiay, listHangSanXuat, listMau]);
   //fetch data
   useEffect(() => {
     const fetchData = async () => {
-      await dispatch(fetchListGiay());
       await dispatch(fetchListMau());
       await dispatch(fetchListHangSanXuat());
       await dispatch(fetchListSize());
     };
     fetchData();
   }, []);
+  useEffect(() => {
+    const fetchData = async () => {
+      await dispatch(fetchListGiay());
+    };
+    fetchData();
+  }, [value]);
   return (
-    <div className={classes.root}>
-      <CssBaseline />
-      <div>
-        <Tabs
-          indicatorColor="primary"
-          textColor="primary"
-          value={value}
-          onChange={handleTabChange}
-        >
-          <Tab className={classes.tabHeader} label="Danh Sách Phiếu Bán Hàng" />
-          <Tab className={classes.tabHeader} label="Lập Phiếu Bán Hàng" />
-        </Tabs>
-      </div>
-      <label className={classes.titleHeader}>
-        {value === 1 ? "Lập Phiếu Bán Hàng" : "Danh Sách Phiếu Bán Hàng"}
-      </label>
-      <TabPanel value={value} index={0}>
-        <DanhSachPhieuBanHang />
-      </TabPanel>
-      <TabPanel value={value} index={1}>
-        <PhieuBanHang 
-          key={"PhieuBanHang"}
-          index={0}
-          users = {users}
-          sizes = {sizes}
-          products = {products}
-          isLoading = {!nguoidungLoading && !sizeLoading && !giayLoading ? false : true}
-        />
-      </TabPanel>
-      <TabPanel value={value} index={2}>
-      </TabPanel>
-    </div>
+    <>
+      {sizeLoading || hangSanXuatLoading || mauLoading ||giayLoading || nguoidungLoading ? 
+        <Loading />
+        :
+        <div className={classes.root}>
+          <CssBaseline />
+          <div>
+            <Tabs
+              indicatorColor="primary"
+              textColor="primary"
+              value={value}
+              onChange={handleTabChange}
+            >
+              <Tab className={classes.tabHeader} label="Danh Sách Phiếu Bán Hàng" />
+              <Tab className={classes.tabHeader} label="Lập Phiếu Bán Hàng" />
+            </Tabs>
+          </div>
+          <TabPanel value={value} index={0}>
+            <DanhSachPhieuBanHang />
+          </TabPanel>
+          <TabPanel value={value} index={1}>
+            <PhieuBanHang
+              key={"PhieuBanHang"}
+              index={0}
+              users={users}
+              sizes={sizes}
+              setValue = {setValue}
+              products={products}
+              isLoading={!nguoidungLoading && !sizeLoading && !giayLoading ? false : true}
+            />
+          </TabPanel>
+          <TabPanel value={value} index={2}>
+          </TabPanel>
+        </div>
+      }
+    </>
   );
 };
 

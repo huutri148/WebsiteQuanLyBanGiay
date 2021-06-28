@@ -1,5 +1,6 @@
 import QuanLyPhieuDatHang from "./QuanLyPhieuDatHang";
 import { Layout } from "../../components/Layout";
+import { QUANLYDATHANG } from "../../constants/authRoleConstant";
 const quanLyPhieuDatHang = () => (
   <Layout>
     <QuanLyPhieuDatHang />
@@ -12,7 +13,7 @@ const quanLyPhieuDatHangRoute = [
     exact: true,
     component: quanLyPhieuDatHang,
     private: true,
-    role: "Admin",
+    role: QUANLYDATHANG,
   },
 ];
 

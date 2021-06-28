@@ -35,6 +35,7 @@ CREATE TABLE GIAY
     MoTa NVARCHAR(1000),
     DonGiaBan DECIMAL(17,0) DEFAULT 0,
     TongSoLuong int default 0,
+    DaBan INT default 0,
     IsDeleted BOOLEAN DEFAULT false
 );
 
@@ -163,39 +164,6 @@ add constraint CHITIETPHIEUBANHANG_PHIEUBANHANG_FK
 foreign key(SoPhieuBanHang) references PHIEUBANHANG(SoPhieuBanHang);
 
 
-CREATE TABLE BAOCAOTONKHO
-(
-    MaBaoCaoTonKho int auto_increment PRIMARY KEY,
-    MaNguoiDung int not null,
-    NgayLap DATETIME DEFAULT CURRENT_TIMESTAMP,
-    TongSoHangHoa int default 0,
-    IsDeleted boolean default false,
-    GhiChu nvarchar(1000)
-);
-
-
-alter table BAOCAOTONKHO
-add constraint BAOCAOTONKHO_NGUOIDUNG_FK
-foreign key(MaNguoiDung) references NGUOIDUNG(MaNguoiDung);
-
-CREATE TABLE CHITIETBAOCAOTONKHO
-(
-    MaChiTietGiay int not null,
-    MaBaoCaoTonKho int not null,
-    SoLuongTon int default 0,
-    TrangThaiHangHoa nvarchar(1000) not null,
-    CONSTRAINT PK_CHITIETBAOCAOTONKKHO PRIMARY KEY (MaBaoCaoTonKho, MaChiTietGiay)
-);
-
-alter table CHITIETBAOCAOTONKHO
-add constraint CHITIETBAOCAOTONKHO_BAOCAOTONKHO_FK
-foreign key(MaBaoCaoTonKho) references BAOCAOTONKHO(MaBaoCaoTonKho);
-
-alter table CHITIETBAOCAOTONKHO
-add constraint CHITIETBAOCAOTONKHO_CHITIETGIAY_FK
-foreign key(MaChiTietGiay) references CHITIETGIAY(MaChiTietGiay);
-
-
 CREATE TABLE BAOCAOBANHANG
 (
     MaBaoCaoBanHang int auto_increment PRIMARY KEY,
@@ -230,6 +198,7 @@ CREATE TABLE GIOHANG
     MaGioHang int auto_increment PRIMARY KEY,
     MaNguoiDung int not null,
     NgayLap DATETIME default CURRENT_TIMESTAMP,
+    PhuongThucThanhToan NVARCHAR(100),
     TongTien DECIMAL(17,0) default 0,
     TrangThai varchar(100),
     IsDeleted BOOLEAN DEFAULT false
@@ -343,6 +312,7 @@ CREATE TABLE PHIEUNHAPKHO
     NgayNhapKho DATETIME DEFAULT CURRENT_TIMESTAMP,
     GhiChu nvarchar(1000),
     TongTien Decimal(17,0) default 0,
+    IsPaid boolean  default false,
     IsDeleted boolean  default false
 );
 alter table PHIEUNHAPKHO 
@@ -390,6 +360,143 @@ foreign key(MaNguoiDung) references NGUOIDUNG(MaNguoiDung);
 alter table PHIEUCHI
 add constraint PHIEUCHI_PHIEUNHAPKHO_FK
 foreign key(SoPhieuNhapKho) references PHIEUNHAPKHO(SoPhieuNhapKho);
+
+
+CREATE TABLE TODO
+(
+    MaTODO int auto_increment PRIMARY KEY,
+    NoiDung nvarchar(1000),
+    NgayLap DATETIME DEFAULT CURRENT_TIMESTAMP,
+    isDone boolean default false,
+    IsDeleted BOOLEAN DEFAULT false
+);
+
+
+
+CREATE TABLE CHATROOM
+(
+    MaPhong int auto_increment PRIMARY key,
+    MaNguoiDung int,
+    ChatText nvarchar(1000),
+    ChatTime DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+alter table CHATROOM
+add constraint CHATROOM_NGUOIDUNG_FK
+foreign key(MaNguoiDung) references NGUOIDUNG(MaNguoiDung);
+
+
+CREATE TABLE NOIDUNGCHAT
+(
+    MessageID int auto_increment PRIMARY Key,
+    MessageTime DATETIME DEFAULT CURRENT_TIMESTAMP,
+    MessageContent nvarchar(1000),
+    IsFromAdmin BOOLEAN default false,
+    MaPhong int
+);
+
+
+alter table NOIDUNGCHAT
+add constraint NOIDUNGCHAT_CHATROOM_FK
+foreign key(MaPhong) references CHATROOM(MaPhong);
+
+
+
+DELIMITER $$
+create procedure USP_GetListChatRoom()
+BEGIN
+select * from ShoesStoreManagement.CHATROOM;
+END; $$
+DELIMITER ;
+
+
+DELIMITER $$
+create procedure USP_GetListDetailRoom()
+BEGIN
+select * from ShoesStoreManagement.NOIDUNGCHAT;
+END; $$
+DELIMITER ;
+
+
+
+DELIMITER $$
+create procedure USP_GetNoiDungChatRoom(p_RoomID int)
+BEGIN
+select * from ShoesStoreManagement.NOIDUNGCHAT where NOIDUNGCHAT.MaPhong = p_RoomID;
+END; $$
+DELIMITER ;
+
+
+
+DELIMITER $$
+create procedure USP_ThemChatRoom(p_MaNguoiDung int, p_ChatTime datetime, p_ChatText nvarchar(1000))
+BEGIN
+    Insert Into ShoesStoreManagement.CHATROOM(
+        MaNguoiDung, ChatTime, ChatText
+    ) VALUES (
+        p_MaNguoiDung, p_ChatTime, p_ChatText
+    );
+END; $$
+DELIMITER ;
+
+
+DELIMITER $$
+create procedure USP_ThemNoiDungChatRoom(p_RoomID int, p_time nvarchar(1000), p_NoiDung nvarchar(1000), p_IsFromAdmin boolean)
+BEGIN
+    insert into ShoesStoreManagement.NOIDUNGCHAT(
+        MaPhong, MessageTime, MessageContent, IsFromAdmin
+    ) values(
+        p_RoomID, STR_TO_DATE( p_time, '%d-%m-%Y %h:%i:%s'), p_NoiDung, p_IsFromAdmin
+    );
+END; $$
+DELIMITER ;
+
+
+
+
+DELIMITER $$
+create procedure USP_GetListTODO()
+BEGIN
+select * from ShoesStoreManagement.TODO where TODO.IsDeleted = false;
+END; $$
+DELIMITER ;
+
+
+DELIMITER $$
+create procedure USP_GetTODOByID(p_MaTODO int)
+BEGIN
+select * from ShoesStoreManagement.TODO where TODO.MaTODO = p_MaTODO and TODO.IsDeleted = false;
+END; $$
+DELIMITER ; 
+
+DELIMITER $$
+create procedure USP_ThemTODO(p_NoiDung NVARCHAR(1000))
+BEGIN
+INSERT INTO ShoesStoreManagement.TODO (NoiDung)
+VALUES (p_NoiDung );
+END; $$
+DELIMITER ;
+
+
+DELIMITER $$
+create procedure USP_CapNhatTODO(p_MaTODO int, p_NoiDung NVARCHAR(1000), p_isDone boolean)
+BEGIN
+ UPDATE TODO 
+ SET TODO.NoiDung=p_NoiDung,
+ TODO.isDone=p_isDone
+WHERE TODO.MaTODO=p_MaTODO;
+end; $$
+DELIMITER ;
+
+
+DELIMITER $$
+create procedure USP_XoaTODO(p_MaTODO int)
+BEGIN
+ UPDATE TODO 
+ SET TODO.IsDeleted=true
+WHERE TODO.MaTODO=p_MaTODO;
+end; $$
+DELIMITER ;
 
 
 
@@ -463,19 +570,66 @@ WHERE NGUOIDUNG.TenDangNhap=p_TenDangNhap;
 end; $$
 DELIMITER ;
 
+DELIMITER $$
+create procedure USP_XoaChucVu(p_MaChucVu int)
+BEGIN
+    UPDATE ShoesStoreManagement.CHUCVU 
+    SET CHUCVU.IsDeleted = true
+    WHERE CHUCVU.MaChucVu=p_MaChucVu;
+END; $$
+DELIMITER ;
 
--- DELIMITER $$
--- create procedure USP_GetListGiay()
--- BEGIN
--- Select E.TenGiay, F.TenHangSanXuat, E.TenMau, E.GioiTinh, E.SoLuong from (
--- Select C.TenGiay, C.MaHangSanXuat, C.GioiTinh, C.SoLuong, D.TenMau from (
--- Select A.TenGiay, A.MaMau, A.MaHangSanXuat, A.GioiTinh, B.SoLuong
--- from (Select MaGiay, Sum(SoLuong) as SoLuong from ShoesStoreManagement.CHITIETGIAY GROUP BY MaGiay) B
--- LEFT JOIN ShoesStoreManagement.GIAY A USING (MaGiay)) C left join ShoesStoreManagement.MAU D using (MaMau)) E 
--- LEFT JOIN ShoesStoreManagement.HANGSANXUAT F using (MaHangSanXuat);
--- END; $$
--- DELIMITER ;
 
+DELIMITER $$
+create procedure USP_ThemChucVu(p_TenChucVu VARCHAR(255))
+BEGIN
+INSERT INTO ShoesStoreManagement.CHUCVU(TenChucVu) values (p_TenChucVu);
+END; $$
+DELIMITER ;
+
+DELIMITER $$
+create procedure USP_SuaChucVu(p_MaChucVu int, p_TenChucVu VARCHAR(255))
+BEGIN
+    UPDATE ShoesStoreManagement.CHUCVU 
+    SET CHUCVU.TenChucVu = p_TenChucVu
+    WHERE CHUCVU.MaChucVu=p_MaChucVu;
+END; $$
+DELIMITER ;
+
+DELIMITER $$
+create procedure USP_GetListQuyen()
+BEGIN
+SELECT * from ShoesStoreManagement.QUYEN;
+END; $$
+DELIMITER ;
+
+DELIMITER $$
+create procedure USP_GetListPhanQuyen()
+BEGIN
+SELECT * from ShoesStoreManagement.PHANQUYEN;
+END; $$
+DELIMITER ;
+
+DELIMITER $$
+create procedure USP_GetListPhanQuyenById(p_MaChucVu int)
+BEGIN
+SELECT MaQuyen from ShoesStoreManagement.PHANQUYEN where PHANQUYEN.MaChucVu = p_MaChucVu;
+END; $$
+DELIMITER ;
+
+DELIMITER $$
+create procedure USP_ThemPhanQuyen(p_MaChucVu int, p_MaQuyen int)
+BEGIN
+INSERT INTO ShoesStoreManagement.PHANQUYEN(MaChucVu,MaQuyen) values (p_MaChucVu,p_MaQuyen);
+END; $$
+DELIMITER ;
+
+DELIMITER $$
+create procedure USP_XoaTrangPhanQuyen(p_MaChucVu int)
+BEGIN
+DELETE from ShoesStoreManagement.PHANQUYEN where PHANQUYEN.MaChucVu = p_MaChucVu;
+END; $$
+DELIMITER ;
 
 
 DELIMITER $$
@@ -562,7 +716,7 @@ DELIMITER ;
 DELIMITER $$
 create procedure USP_GetListChucVu()
 BEGIN
-    Select * from ShoesStoreManagement.CHUCVU;
+    Select * from ShoesStoreManagement.CHUCVU where CHUCVU.IsDeleted = false ;
 END; $$
 DELIMITER ;
 
@@ -620,10 +774,11 @@ DELIMITER ;
 DELIMITER $$
 create procedure USP_GetListPhieuNhapKho()
 BEGIN
-Select C.SoPhieuNhapKho,C.TenNguoiDung, C.NgayNhapKho, C.TongTien, D.TenNhaCungCap from (
-Select A.SoPhieuNhapKho, A.TongTien, A.NgayNhapKho, B.TenNguoiDung, A.MaNhaCungCap
-from (Select *  from ShoesStoreManagement.PHIEUNHAPKHO) A 
-left join  ShoesStoreManagement.NGUOIDUNG B USING (MaNguoiDung)) C
+Select C.SoPhieuNhapKho,C.TenNguoiDung, C.NgayNhapKho, C.TongTien, C.GhiChu, D.TenNhaCungCap, C.MaNhaCungCap, C.IsPaid 
+from (
+    Select A.SoPhieuNhapKho, A.TongTien, A.NgayNhapKho, B.TenNguoiDung, A.MaNhaCungCap, A.GhiChu, A.IsPaid
+    from (Select *  from ShoesStoreManagement.PHIEUNHAPKHO where IsDeleted = false) A 
+    left join  ShoesStoreManagement.NGUOIDUNG B USING (MaNguoiDung)) C
 left join ShoesStoreManagement.NHACUNGCAP D on 
 D.MaNhaCungCap= C.MaNhaCungCap;
 END; $$
@@ -634,7 +789,7 @@ DELIMITER ;
 DELIMITER $$
 create procedure USP_GetPhieuNhapKhoByID(p_SoPhieuNhapKho int)
 BEGIN
-Select C.SoPhieuNhapKho,C.TenNguoiDung, C.NgayNhapKho, C.TongTien, D.TenNhaCungCap from (
+Select C.SoPhieuNhapKho,C.TenNguoiDung, C.NgayNhapKho, C.TongTien, C.MaNhaCungCap, D.TenNhaCungCap from (
 Select A.SoPhieuNhapKho, A.TongTien, A.NgayNhapKho, B.TenNguoiDung, A.MaNhaCungCap
 from (Select *  from ShoesStoreManagement.PHIEUNHAPKHO where PHIEUNHAPKHO.SoPhieuNhapKho = p_SoPhieuNhapKho) A 
 left join  ShoesStoreManagement.NGUOIDUNG B USING (MaNguoiDung)) C
@@ -663,22 +818,73 @@ DELIMITER $$
 create procedure USP_ThemChiTietPhieuNhapKho(p_MaChiTietGiay int,
         p_SoLuongNhap int, p_GiaNhap Decimal(17,0), p_ThanhTien Decimal(17,0))
 BEGIN
-    declare giayID int;
     declare phieuNhapKhoID int;
     set phieuNhapKhoID = (select max(SoPhieuNhapKho) from ShoesStoreManagement.PHIEUNHAPKHO);
-    set giayID = (select MaGiay 
-                  from ShoesStoreManagement.CHITIETGIAY 
-                  where CHITIETGIAY.MaChiTietGiay = p_MaChiTietGiay);
     INSERT INTO ShoesStoreManagement.CHITIETPHIEUNHAPKHO(MaChiTietGiay ,SoPhieuNhapKho, 
         SoLuongNhap, GiaNhap, ThanhTien)
     VALUES ( p_MaChiTietGiay ,phieuNhapKhoID,
         p_SoLuongNhap, p_GiaNhap, p_ThanhTien);
+END; $$
+DELIMITER ;
+
+DELIMITER $$
+create procedure USP_ThemChiTietPhieuNhapKhoByID(p_SoPhieuNhapKho int, p_MaChiTietGiay int,
+        p_SoLuongNhap int, p_GiaNhap Decimal(17,0), p_ThanhTien Decimal(17,0))
+BEGIN
+    INSERT INTO ShoesStoreManagement.CHITIETPHIEUNHAPKHO(MaChiTietGiay ,SoPhieuNhapKho, 
+        SoLuongNhap, GiaNhap, ThanhTien)
+    VALUES ( p_MaChiTietGiay ,p_SoPhieuNhapKho,
+        p_SoLuongNhap, p_GiaNhap, p_ThanhTien);
+END; $$
+DELIMITER ;
+
+
+DELIMITER $$
+create procedure USP_CapNhatChiTietPhieuNhapKho(p_SoPhieuNhapKho int, p_MaChiTietGiay int,
+        p_SoLuongNhap int, p_GiaNhap Decimal(17,0), p_ThanhTien Decimal(17,0))
+BEGIN
+    declare giayID int;
+    set giayID = (select MaGiay 
+                  from ShoesStoreManagement.CHITIETGIAY 
+                  where CHITIETGIAY.MaChiTietGiay = p_MaChiTietGiay);
+
+    INSERT INTO ShoesStoreManagement.CHITIETPHIEUNHAPKHO(MaChiTietGiay ,SoPhieuNhapKho, SoLuongNhap, GiaNhap, ThanhTien)
+    VALUES ( p_MaChiTietGiay ,p_SoPhieuNhapKho, p_SoLuongNhap, p_GiaNhap, p_ThanhTien);
+END; $$
+DELIMITER ;
+
+DELIMITER $$
+create procedure USP_CapNhatSanPhamNhapKho(p_SoPhieuNhapKho int, p_MaChiTietGiay int,
+        p_SoLuongNhap int)
+BEGIN
+    declare giayID int;
+    set giayID = (select MaGiay 
+                  from ShoesStoreManagement.CHITIETGIAY 
+                  where CHITIETGIAY.MaChiTietGiay = p_MaChiTietGiay);
+
     Update ShoesStoreManagement.CHITIETGIAY 
-    set CHITIETGIAY.SoLuong = CHITIETGIAY.SoLuong +  p_SoLuongNhap
-    where CHITIETGIAY.MaChiTietGiay = p_MaChiTietGiay;
+        set CHITIETGIAY.SoLuong = CHITIETGIAY.SoLuong +  p_SoLuongNhap
+        where CHITIETGIAY.MaChiTietGiay = p_MaChiTietGiay;
+
     Update ShoesStoreManagement.GIAY 
-    set GIAY.TongSoLuong = GIAY.TongSoLuong + p_SoLuongNhap 
-    where GIAY.MaGiay = giayID;
+        set GIAY.TongSoLuong = GIAY.TongSoLuong + p_SoLuongNhap 
+        where GIAY.MaGiay = giayID;
+END; $$
+DELIMITER ;
+
+
+DELIMITER $$
+create procedure USP_GetChiTietPhieuNhapKhoByID(p_SoPhieuNhapKho int)
+BEGIN
+    Select C.Anh, C.TenGiay, C.GioiTinh, D.TenSize, D.MaSize, A.GiaNhap, A.SoLuongNhap, A.ThanhTien, A.SoPhieuNhapKho, A.MaChiTietGiay
+    from ShoesStoreManagement.CHITIETPHIEUNHAPKHO A 
+    left join ShoesStoreManagement.CHITIETGIAY B 
+    on A.MaChiTietGiay = B.MaChiTietGiay
+    left join ShoesStoreManagement.GIAY C
+    on C.MaGiay = B.MaGiay
+    left join ShoesStoreManagement.SIZE D
+    on D.MaSize = B.MaSize 
+    where A.SoPhieuNhapKho = p_SoPhieuNhapKho;
 END; $$
 DELIMITER ;
 
@@ -707,26 +913,6 @@ BEGIN
 END; $$
 DELIMITER ;
 
-
-
-DELIMITER $$
-create procedure USP_CapNhatChiTietPhieuNhapKho(
-        p_SoPhieuNhapKho int,p_MaChiTietGiay int,
-        p_SoLuongNhap int, p_GiaNhap Decimal(17,0), p_ThanhTien Decimal(17,0)
-)
-BEGIN
-    INSERT INTO ShoesStoreManagement.CHITIETPHIEUNHAPKHO(
-        SoPhieuNhapKho ,MaChiTietGiay ,
-        SoLuongNhap , GiaNhap , ThanhTien 
-    )
-    VALUES (
-        p_SoPhieuNhapKho ,p_MaChiTietGiay ,
-        p_SoLuongNhap , p_GiaNhap , p_ThanhTien 
-    );
-END; $$
-DELIMITER ;
-
-
 DELIMITER $$
 create procedure USP_XoaPhieuNhapKho(
         p_SoPhieuNhapKho int)
@@ -741,12 +927,13 @@ DELIMITER ;
 DELIMITER $$
 create procedure USP_GetListPhieuChi()
 BEGIN
-Select C.SoPhieuNhapKho,C.TenNguoiDung, C.NgayLap,C.SoPhieuChi, C.TongTien, D.TenNhaCungCap from (
-Select A.SoPhieuChi, A.TongTien, A.NgayNhapKho, B.TenNguoiDung, A.MaNhaCungCap, A.SoPhieuNhapKho
-from (Select *  from ShoesStoreManagement.PHIEUCHI) A 
-left join  ShoesStoreManagement.NGUOIDUNG B USING (MaNguoiDung)) C
-left join ShoesStoreManagement.NHACUNGCAP on 
-D.MaNhaCungCap= C.MaNhaCungCap;
+Select C.SoPhieuNhapKho,C.TenNguoiDung, C.NgayLap,C.SoPhieuChi, C.TongTien, E.TenNhaCungCap
+from (
+    Select A.SoPhieuChi, A.TongTien, A.NgayLap, B.TenNguoiDung, D.MaNhaCungCap, A.SoPhieuNhapKho
+    from (Select *  from ShoesStoreManagement.PHIEUCHI where IsDeleted = false) A 
+    left join  ShoesStoreManagement.NGUOIDUNG B USING (MaNguoiDung)
+    left join ShoesStoreManagement.PHIEUNHAPKHO D USING (SoPhieuNhapKho)) C
+left join ShoesStoreManagement.NHACUNGCAP E USING (MaNhaCungCap) ;
 END; $$
 DELIMITER ;
 
@@ -754,12 +941,13 @@ DELIMITER ;
 DELIMITER $$
 create procedure USP_GetPhieuChiByID(p_SoPhieuChi int)
 BEGIN
-Select C.SoPhieuNhapKho,C.TenNguoiDung, C.NgayLap,C.SoPhieuChi, C.TongTien, D.TenNhaCungCap from (
-Select A.SoPhieuChi, A.TongTien, A.NgayNhapKho, B.TenNguoiDung, A.MaNhaCungCap, A.SoPhieuNhapKho
-from (Select *  from ShoesStoreManagement.PHIEUCHI where SoPhieuChi = p_SoPhieuChi) A 
-left join  ShoesStoreManagement.NGUOIDUNG B USING (MaNguoiDung)) C
-left join ShoesStoreManagement.NHACUNGCAP on 
-D.MaNhaCungCap= C.MaNhaCungCap;
+Select C.SoPhieuNhapKho,C.TenNguoiDung, C.NgayLap,C.SoPhieuChi, C.TongTien, E.TenNhaCungCap
+from (
+    Select A.SoPhieuChi, A.TongTien, A.NgayLap, B.TenNguoiDung, D.MaNhaCungCap, A.SoPhieuNhapKho
+    from (Select *  from ShoesStoreManagement.PHIEUCHI where IsDeleted = false and SoPhieuChi = p_SoPhieuChi) A 
+    left join  ShoesStoreManagement.NGUOIDUNG B USING (MaNguoiDung)
+    left join ShoesStoreManagement.PHIEUNHAPKHO D USING (SoPhieuNhapKho)) C
+left join ShoesStoreManagement.NHACUNGCAP E USING (MaNhaCungCap) ;
 END; $$
 DELIMITER ;
 
@@ -769,17 +957,20 @@ create procedure USP_ThemPhieuChi(
     p_NgayLap DATETIME, 
     p_TongTien DECIMAL(17,0), p_GhiChu NVARCHAR(1000))
 BEGIN
-    INSERT INTO ShoesStoreManagement.PHIEUNHAPKHO(
+    INSERT INTO ShoesStoreManagement.PHIEUCHI(
     SoPhieuNhapKho,MaNguoiDung ,
     NgayLap , 
     TongTien , GhiChu )
-VALUES (
+    VALUES (
     p_SoPhieuNhapKho,
     p_MaNguoiDung ,
     p_NgayLap , 
     p_TongTien , 
     p_GhiChu 
-);
+    );
+    Update ShoesStoreManagement.PHIEUNHAPKHO 
+    set PHIEUNHAPKHO.IsPaid = true
+    where PHIEUNHAPKHO.SoPhieuNhapKho = p_SoPhieuNhapKho;
 END; $$
 DELIMITER ;
 
@@ -902,10 +1093,11 @@ DELIMITER ;
 DELIMITER $$
 create procedure USP_GetListPhieuBanHang()
 BEGIN
-Select C.SoPhieuBanHang,C.TenNguoiDung, C.NgayBan, C.PhuongThucThanhToan, C.TongTien, D.TenNguoiDung as TenKhachHang, D.SDT from (
-Select A.SoPhieuBanHang, A.TongTien, A.NgayBan, B.TenNguoiDung, A.MaKhachHang, A.PhuongThucThanhToan
-from (Select *  from ShoesStoreManagement.PHIEUBANHANG ) A 
-left join  ShoesStoreManagement.NGUOIDUNG B USING (MaNguoiDung)) C
+Select C.SoPhieuBanHang,C.TenNguoiDung, C.NgayBan, C.PhuongThucThanhToan, C.TongTien, C.GhiChu, D.TenNguoiDung as TenKhachHang, D.SDT, C.MaKhachHang
+from (
+    Select A.SoPhieuBanHang, A.TongTien, A.NgayBan, B.TenNguoiDung, A.MaKhachHang, A.PhuongThucThanhToan, A.GhiChu
+    from (Select *  from ShoesStoreManagement.PHIEUBANHANG ) A 
+    left join  ShoesStoreManagement.NGUOIDUNG B USING (MaNguoiDung)) C
 left join ShoesStoreManagement.NGUOIDUNG D on 
 D.MaNguoiDung = C.MaKhachHang;
 END; $$
@@ -986,7 +1178,8 @@ BEGIN
     set CHITIETGIAY.SoLuong = CHITIETGIAY.SoLuong - p_SoLuongMua 
     where CHITIETGIAY.MaChiTietGiay = p_MaChiTietGiay;
     Update ShoesStoreManagement.GIAY 
-    set GIAY.TongSoLuong = GIAY.TongSoLuong - p_SoLuongMua 
+    set GIAY.TongSoLuong = GIAY.TongSoLuong - p_SoLuongMua,
+        GIAY.DaBan = GIAY.DaBan + p_SoLuongMua 
     where GIAY.MaGiay = giayID;
 END; $$
 DELIMITER ;
@@ -994,7 +1187,7 @@ DELIMITER ;
 DELIMITER $$
 create procedure USP_GetChiTietPhieuBanHangByID(p_SoPhieuBanHang int)
 BEGIN
-    Select C.Anh, C.TenGiay, C.GioiTinh, D.TenSize, A.GiaBan, A.SoLuongMua, A.ThanhTien, A.SoPhieuBanHang
+    Select C.Anh, C.TenGiay, C.GioiTinh, D.TenSize, A.GiaBan, A.SoLuongMua, A.ThanhTien, A.SoPhieuBanHang, A.MaChiTietGiay
     from ShoesStoreManagement.CHITIETPHIEUBANHANG A 
     left join ShoesStoreManagement.CHITIETGIAY B 
     on A.MaChiTietGiay = B.MaChiTietGiay
@@ -1114,10 +1307,10 @@ DELIMITER ;
 
 DELIMITER $$
 create procedure USP_ThemGioHang(
-    p_MaKhachHang int)
+    p_MaKhachHang int, p_PhuongThucThanhToan nvarchar(1000))
 BEGIN
-INSERT INTO ShoesStoreManagement.GIOHANG(MaNguoiDung,TrangThai)
-VALUES (p_MaKhachHang,"Đang xử lý");
+INSERT INTO ShoesStoreManagement.GIOHANG(MaNguoiDung,TrangThai,PhuongThucThanhToan)
+VALUES (p_MaKhachHang,"Đang xử lý",p_PhuongThucThanhToan);
 END; $$
 DELIMITER ;
 
@@ -1133,7 +1326,7 @@ BEGIN
         p_SoLuongMua,p_GiaBan,p_ThanhTien);
     UPDATE GIOHANG
     SET GIOHANG.TongTien = GIOHANG.TongTien + p_ThanhTien
-    WHERE GIOHANG.MaGioHang = gioHangID;
+    WHERE GIOHANG.MaGioHang = gioHangID;    
 END; $$
 DELIMITER ;
 
@@ -1179,7 +1372,7 @@ DELIMITER ;
 DELIMITER $$
 create procedure USP_GetChiTietGioHangByID(p_MaGioHang int)
 BEGIN
-    Select C.Anh, C.TenGiay, C.GioiTinh, A.GiaBan , D.TenSize, A.SoLuongMua, A.ThanhTien, A.MaGioHang
+    Select C.Anh, C.TenGiay, C.GioiTinh, A.GiaBan , D.TenSize, A.SoLuongMua, A.ThanhTien, A.MaGioHang , A.MaChiTietGiay
     from ShoesStoreManagement.CHITIETGIOHANG A 
     left join ShoesStoreManagement.CHITIETGIAY B 
     on A.MaChiTietGiay = B.MaChiTietGiay
@@ -1190,17 +1383,6 @@ BEGIN
     where A.MaGioHang = p_MaGioHang;
 END; $$
 DELIMITER ;
-
-
-
-DELIMITER $$
-create procedure USP_ThemBaoCaoTonKho(p_MaNguoiDung int,p_NgayLap datetime, p_GhiChu nvarchar(1000))
-BEGIN
-INSERT INTO ShoesStoreManagement.BAOCAOTONKHO(MaNguoiDung, NgayLap, GhiChu)
-VALUES (p_MaNguoiDung, p_NgayLap, p_GhiChu);
-END; $$
-DELIMITER ;
-
 
 
 DELIMITER $$
@@ -1227,10 +1409,10 @@ BEGIN
         DAY(p_Ngay) = Day(A.NgayBan) and 
         MONTH(p_Ngay) = MONTH(A.NgayBan) and    
         YEAR(p_Ngay) = YEAR(A.NgayBan) );
-        set  doanhThu = (select sum(A.ThanhTien) from PHIEUBANHANG  A where 
-        DAY(p_Ngay) = Day(A.NgayBan) and 
-        MONTH(p_Ngay) = MONTH(A.NgayBan) and    
-        YEAR(p_Ngay) = YEAR(A.NgayBan) );
+        set  doanhThu = (select sum(TongTien) from PHIEUBANHANG D where 
+        DAY(p_Ngay) = Day(D.NgayBan) and 
+        MONTH(p_Ngay) = MONTH(D.NgayBan) and    
+        YEAR(p_Ngay) = YEAR(D.NgayBan) );
     else 
         set soPhieu = 0;
         set doanhThu = 0;
@@ -1238,7 +1420,7 @@ BEGIN
 
     UPDATE BAOCAOBANHANG  B
     SET  B.TongDoanhThu = B.TongDoanhThu + doanhThu,
-         B.SoLuongPhieuBanHang = B.SoLuongPhieuBan + soPhieu        
+         B.SoLuongPhieuBanHang = B.SoLuongPhieuBanHang + soPhieu        
     WHERE B.MaBaoCaoBanHang = baoCaoID;
     INSERT INTO ShoesStoreManagement.CHITIETBAOCAOBANHANG(MaBaoCaoBanHang,Ngay,
     SoLuongPhieuBan, DoanhThu)
@@ -1246,14 +1428,28 @@ BEGIN
 END; $$
 DELIMITER ;
 
+DELIMITER $$
+create procedure USP_ListChiTietBaoCaoBanHang(p_MaBaoCaoBanHang int)
+BEGIN
+    SELECT * from CHITIETBAOCAOBANHANG where CHITIETBAOCAOBANHANG.MaBaoCaoBanHang = p_MaBaoCaoBanHang;
+END; $$
+DELIMITER ;
+
+DELIMITER $$
+create procedure USP_ListBaoCaoBanHang()
+BEGIN
+    SELECT A.MaBaoCaoBanHang, A.NgayBatDau, A.NgayKetThuc, A.SoLuongPhieuBanHang, A.TongDoanhThu, B.TenNguoiDung
+    from BAOCAOBANHANG A join NGUOIDUNG B using (MaNguoiDung)
+    where A.IsDeleted = 0;
+END; $$
+DELIMITER ;
 
 
-
-insert into CHUCVU(TenChucVu, IsDeleted)values ("Admin", false);
-insert into CHUCVU (TenChucVu, IsDeleted)values ("NhanVienBanHang", false );
-insert into CHUCVU (TenChucVu, IsDeleted)values ("NhanVienKeToan", false);
-insert into CHUCVU (TenChucVu, IsDeleted)values ("NhanVienKho", false);
-insert into CHUCVU (TenChucVu, IsDeleted)values ("KhachHang", false);
+insert into CHUCVU(TenChucVu, IsDeleted)values ("Quản Lý", false);
+insert into CHUCVU (TenChucVu, IsDeleted)values ("Nhân Viên Bán Hàng", false );
+insert into CHUCVU (TenChucVu, IsDeleted)values ("Nhân Viên Kế Toán", false);
+insert into CHUCVU (TenChucVu, IsDeleted)values ("Nhân Viên Kho", false);
+insert into CHUCVU (TenChucVu, IsDeleted)values ("Khách Hàng", false);
 
 
 
@@ -1715,11 +1911,41 @@ insert into NGUOIDUNG(MaChucVu,TenNguoiDung,TenDangNhap,MatKhau,SDT,DiaChi,Email
 insert into NGUOIDUNG(MaChucVu,TenNguoiDung,TenDangNhap,MatKhau,SDT,DiaChi,Email,Avatar,IsDeleted) values (3,"Trần Duy Khánh","nhanvienketoan","$2b$10$djNGrIGniLagvoO7hVF71OLwHWeljTGAiaWrEsPNe54EKR0Q.Ypz6","01212801223","SG","duykhanh@duykhanh","https://firebasestorage.googleapis.com/v0/b/shoesstoremanagement.appspot.com/o/images%2F101851419_1624396714409946_119877887734633891_n.jpg?alt=media&token=6571513c-4935-4acb-8c05-f26d6a70a9b4",false);
 insert into NGUOIDUNG(MaChucVu,TenNguoiDung,TenDangNhap,MatKhau,SDT,DiaChi,Email,Avatar,IsDeleted) values (4,"PapaSuke","nhanvienkho","$2b$10$djNGrIGniLagvoO7hVF71OLwHWeljTGAiaWrEsPNe54EKR0Q.Ypz6","01212801223","SG","duykhanh@duykhanh","https://firebasestorage.googleapis.com/v0/b/shoesstoremanagement.appspot.com/o/images%2F190160691_1194075634366693_3734862780601815562_n.jpg?alt=media&token=eef14f76-f939-4e87-8e29-1ddbe38ec07a",false);
 
+insert into QUYEN(MaQuyen,TenQuyen) values (1,"Quản Lý Sản Phẩm");
+insert into QUYEN(MaQuyen,TenQuyen) values (2,"Quản Lý Bán Hàng");
+insert into QUYEN(MaQuyen,TenQuyen) values (3,"Quản Lý Người Dùng");
+insert into QUYEN(MaQuyen,TenQuyen) values (4,"Quản Lý Nhà Cung Cấp");
+insert into QUYEN(MaQuyen,TenQuyen) values (5,"Quản Lý Đặt Hàng");
+insert into QUYEN(MaQuyen,TenQuyen) values (6,"Quản Lý Nhập Kho");
+insert into QUYEN(MaQuyen,TenQuyen) values (7,"Quản Lý Giỏ Hàng");
+insert into QUYEN(MaQuyen,TenQuyen) values (8,"Báo Cáo Lợi Nhuận");
+insert into QUYEN(MaQuyen,TenQuyen) values (9,"Báo Cáo Bán Hàng");
+insert into QUYEN(MaQuyen,TenQuyen) values (10,"Quản Lý Phiếu Chi");
+
+-- admin toan quyen
+insert into PHANQUYEN(MaChucVu,MaQuyen) values (1,1);
+insert into PHANQUYEN(MaChucVu,MaQuyen) values (1,2);
+insert into PHANQUYEN(MaChucVu,MaQuyen) values (1,3);
+insert into PHANQUYEN(MaChucVu,MaQuyen) values (1,4);
+insert into PHANQUYEN(MaChucVu,MaQuyen) values (1,5);
+insert into PHANQUYEN(MaChucVu,MaQuyen) values (1,6);
+insert into PHANQUYEN(MaChucVu,MaQuyen) values (1,7);
+insert into PHANQUYEN(MaChucVu,MaQuyen) values (1,8);
+insert into PHANQUYEN(MaChucVu,MaQuyen) values (1,9);
+insert into PHANQUYEN(MaChucVu,MaQuyen) values (1,10);
+-- ban hang: ban hang + gio hang
+insert into PHANQUYEN(MaChucVu,MaQuyen) values (2,2);
+insert into PHANQUYEN(MaChucVu,MaQuyen) values (2,7);
+-- ke toan: bao cao loi nhuan + bao cao ban hang
+insert into PHANQUYEN(MaChucVu,MaQuyen) values (3,8);
+insert into PHANQUYEN(MaChucVu,MaQuyen) values (3,9);
+insert into PHANQUYEN(MaChucVu,MaQuyen) values (3,10);
+-- kho: dat hang, nhap kho, ton kho
+insert into PHANQUYEN(MaChucVu,MaQuyen) values (4,5);
+insert into PHANQUYEN(MaChucVu,MaQuyen) values (4,6);
 
 
-
-
-CALL USP_ThemGioHang(3);
+CALL USP_ThemGioHang(3,"Trả tiền mặt khi nhận hàng");
 CALL USP_ThemChiTietGioHang(1,10,6375000,63750000);
 CALL USP_ThemChiTietGioHang(2,10,6375000,63750000);
 CALL USP_ThemChiTietGioHang(3,10,6375000,63750000);
@@ -1727,19 +1953,19 @@ CALL USP_ThemChiTietGioHang(4,10,6375000,63750000);
 
 
 
-CALL USP_ThemGioHang(4);
+CALL USP_ThemGioHang(4, "Thanh toán qua MOMO");
 CALL USP_ThemChiTietGioHang(1,10,6375000,63750000);
 CALL USP_ThemChiTietGioHang(2,10,6375000,63750000);
 CALL USP_ThemChiTietGioHang(3,10,6375000,63750000);
 CALL USP_ThemChiTietGioHang(4,10,6375000,63750000);
 
-CALL USP_ThemGioHang(5);
+CALL USP_ThemGioHang(5, "Trả tiền mặt khi nhận hàng");
 CALL USP_ThemChiTietGioHang(1,10,6375000,63750000);
 CALL USP_ThemChiTietGioHang(2,10,6375000,63750000);
 CALL USP_ThemChiTietGioHang(3,10,6375000,63750000);
 CALL USP_ThemChiTietGioHang(4,10,6375000,63750000);
 
-CALL USP_ThemGioHang(6);
+CALL USP_ThemGioHang(6,"Trả tiền mặt khi nhận hàng");
 CALL USP_ThemChiTietGioHang(1,10,6375000,63750000);
 CALL USP_ThemChiTietGioHang(2,10,6375000,63750000);
 CALL USP_ThemChiTietGioHang(3,10,6375000,63750000);
@@ -1780,4 +2006,132 @@ CALL USP_ThemChiTietPhieuDatHang(10,10);
 CALL USP_ThemChiTietPhieuDatHang(20,10);
 CALL USP_ThemChiTietPhieuDatHang(30,10);
 CALL USP_ThemChiTietPhieuDatHang(40,10);
+
+
+CALL USP_ThemTODO("Check giỏ hàng");
+CALL USP_ThemTODO("Đặt hàng từ DuyKhanh");
+CALL USP_ThemTODO("Giao hàng");
+CALL USP_ThemTODO("Lập phiếu nhập kho");
+CALL USP_ThemTODO("Lập phiếu chi");
+
+
+INSERT INTO ShoesStoreManagement.PHIEUBANHANG(MaKhachHang ,MaNguoiDung ,
+    NgayBan ,PhuongThucThanhToan ,
+    TongTien , GhiChu )
+VALUES (
+    9 ,21 ,
+   STR_TO_DATE('15-05-2021', '%d-%m-%Y') ,"Trả tiền mặt khi nhận hàng",
+    6375000 , " ");
+
+CALL USP_ThemChiTietPhieuBanHang(1,1,6375000,6375000);
+
+
+
+INSERT INTO ShoesStoreManagement.PHIEUBANHANG(MaKhachHang ,MaNguoiDung ,
+    NgayBan ,PhuongThucThanhToan ,
+    TongTien , GhiChu )
+VALUES (
+    10 ,21 ,
+   STR_TO_DATE('16-05-2021', '%d-%m-%Y') ,"Trả tiền mặt khi nhận hàng",
+    6375000 , " ");
+
+CALL USP_ThemChiTietPhieuBanHang(2,1,6375000,6375000);
+
+
+
+INSERT INTO ShoesStoreManagement.PHIEUBANHANG(MaKhachHang ,MaNguoiDung ,
+    NgayBan ,PhuongThucThanhToan ,
+    TongTien , GhiChu )
+VALUES (
+    10 ,21 ,
+   STR_TO_DATE('13-04-2021', '%d-%m-%Y') ,"Trả tiền mặt khi nhận hàng",
+    6375000 , " ");
+
+CALL USP_ThemChiTietPhieuBanHang(1,1,6375000,6375000);
+  
+
+
+
+INSERT INTO ShoesStoreManagement.PHIEUBANHANG(MaKhachHang ,MaNguoiDung ,
+    NgayBan ,PhuongThucThanhToan ,
+    TongTien , GhiChu )
+VALUES (
+    10 ,21 ,
+   STR_TO_DATE('14-04-2021', '%d-%m-%Y') ,"Trả tiền mặt khi nhận hàng",
+    6375000 , " ");
+
+CALL USP_ThemChiTietPhieuBanHang(1,1,6375000,6375000);
+
+
+
+
+INSERT INTO ShoesStoreManagement.PHIEUBANHANG(MaKhachHang ,MaNguoiDung ,
+    NgayBan ,PhuongThucThanhToan ,
+    TongTien , GhiChu )
+VALUES (
+    10 ,21 ,
+   STR_TO_DATE('12-04-2021', '%d-%m-%Y') ,"Trả tiền mặt khi nhận hàng",
+    6375000 , " ");
+
+CALL USP_ThemChiTietPhieuBanHang(1,1,6375000,6375000);
+
+
+
+INSERT INTO ShoesStoreManagement.PHIEUBANHANG(MaKhachHang ,MaNguoiDung ,
+    NgayBan ,PhuongThucThanhToan ,
+    TongTien , GhiChu )
+VALUES (
+    10 ,21 ,
+   STR_TO_DATE('12-03-2021', '%d-%m-%Y') ,"Trả tiền mặt khi nhận hàng",
+    6375000 , " ");
+
+CALL USP_ThemChiTietPhieuBanHang(10,1,6375000,6375000);
+
+
+INSERT INTO ShoesStoreManagement.PHIEUBANHANG(MaKhachHang ,MaNguoiDung ,
+    NgayBan ,PhuongThucThanhToan ,
+    TongTien , GhiChu )
+VALUES (
+    10 ,21 ,
+   STR_TO_DATE('12-03-2021', '%d-%m-%Y') ,"Trả tiền mặt khi nhận hàng",
+    6375000 , " ");
+
+CALL USP_ThemChiTietPhieuBanHang(10,1,6375000,6375000);
+
+
+
+
+
+
+
+INSERT INTO ShoesStoreManagement.PHIEUNHAPKHO(MaNhaCungCap,MaNguoiDung,NgayNhapKho,TongTien , GhiChu )
+VALUES (
+    1, 2,
+   STR_TO_DATE('12-04-2021', '%d-%m-%Y'),
+    63750000 , " " );
+CALL USP(1, 10, 6375000,63750000 );
+
+
+
+
+INSERT INTO ShoesStoreManagement.PHIEUNHAPKHO(MaNhaCungCap,MaNguoiDung,NgayNhapKho,TongTien , GhiChu )
+VALUES (
+    1, 2,
+   STR_TO_DATE('13-04-2021', '%d-%m-%Y'),
+    63750000 , " " );
+CALL USP_ThemChiTietPhieuNhapKho(1, 10, 6375000,63750000 );
+
+
+
+INSERT INTO ShoesStoreManagement.PHIEUNHAPKHO(MaNhaCungCap,MaNguoiDung,NgayNhapKho,TongTien , GhiChu )
+VALUES (
+    1, 2,
+   STR_TO_DATE('13-04-2021', '%d-%m-%Y'),
+    63750000 , " " );
+CALL USP_ThemChiTietPhieuNhapKho(1, 10, 6375000,63750000 );
+
+
+
+
+
 

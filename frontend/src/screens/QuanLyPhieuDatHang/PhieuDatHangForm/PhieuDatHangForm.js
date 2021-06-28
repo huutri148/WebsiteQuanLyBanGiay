@@ -397,7 +397,7 @@ const PhieuDatHangForm = (props) => {
                     <GroupBox
                       value={amount}
                       type="Number"
-                      title={CTPHHeadCell[2].label}
+                      title={CTPHHeadCell[3].label}
                       onChange={onAmountChange}
                       error={amountError}
                       validationTip={"Số Lượng phải lớn hơn 0  "}

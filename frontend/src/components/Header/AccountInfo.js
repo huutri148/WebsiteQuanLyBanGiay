@@ -130,6 +130,7 @@ function AccountInfo(props) {
                 }
                 onClick={() => {
                   props.history.push("/admin/dashboard");
+                  //window.location.reload();
                 }}
               >
                 Manager

@@ -27,7 +27,19 @@ const getByID = async (req, res) => {
     }
   });
 };
-
+// @desc Fetch all Details by id
+// @route Get/api/recdockets/details/id
+// @access Public
+const getDetails = async (req, res) => {
+  const phieuNhapKhoID = req.params.id;
+  await PhieuNhapKho.GetDetails(phieuNhapKhoID, (result) => {
+    if (result) {
+      res.status(200).send(JSON.stringify(result));
+    } else {
+      res.status(404);
+    }
+  });
+};
 // @desc    Add a docket
 // @route   Post /api/recdockets
 // @access  Public
@@ -89,4 +101,4 @@ const deleteDocket = async (req, res) => {
     }
   });
 };
-module.exports = { getList, createDocket, updateDocket, deleteDocket, getByID };
+module.exports = { getList, createDocket, updateDocket, deleteDocket, getByID, getDetails };

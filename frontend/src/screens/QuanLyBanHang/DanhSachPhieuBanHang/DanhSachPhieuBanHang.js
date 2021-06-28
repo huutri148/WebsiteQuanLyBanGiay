@@ -10,8 +10,9 @@ import {
   IconButton,
   makeStyles,
   Tooltip,
+  Typography,
 } from "@material-ui/core";
-import { green } from '@material-ui/core/colors';
+import { green } from "@material-ui/core/colors";
 import {
   Search,
   CloudDownload,
@@ -24,18 +25,22 @@ import {
 import Input from "../../../components/controls/Input";
 import { useDispatch, useSelector } from "react-redux";
 import useTable from "../../../components/useTable";
-import moment from 'moment'
+import moment from "moment";
+import Loading from "../../../components/Loadable/Loading";
 import Popup from "../../../components/controls/Popup";
 import Detail from "../../../components/controls/Detail";
-import { fetchListPhieuBanHang , fetchListChiTietPhieuBanHang} from "../../../redux/actions/phieuBanHangAction";
+import {
+  fetchListPhieuBanHang,
+  fetchListChiTietPhieuBanHang,
+} from "../../../redux/actions/phieuBanHangAction";
 import BillToPrint from "../BillToPrint";
 const useStyles = makeStyles((theme) => ({
-  title: {
+  titleHeader: {
     padding: theme.spacing(4, 0),
     textTransform: "none",
     fontSize: 32,
     color: "darkslateblue",
-    fontWeight: "Bold",
+    fontWeight: "500",
   },
   toolbar: {
     display: "flex",
@@ -61,6 +66,14 @@ const useStyles = makeStyles((theme) => ({
   cancelButton: {
     color: "#FF3D57",
   },
+  paper: {
+    margin: theme.spacing(0, 4),
+    padding: theme.spacing(2),
+    display: "flex",
+    flexDirection: "column",
+    textAlign: "left",
+    height: "fit-content",
+  },
   actions: {
     flex: "1 1 auto",
     textAlign: "right",
@@ -81,7 +94,7 @@ const headCells = [
   { id: "TenNguoiDung", label: "Người lập", disableSorting: true },
   { id: "TongTien", label: "Tổng Tiền" },
   { id: "PhuongThucThanhToan", label: "Phương Thức Thanh Toán" },
-  { id: "actions", disableSorting: true  },
+  { id: "actions", disableSorting: true },
 ];
 const detailsHeadCells = [
   { id: "TenGiay", label: "Tên Giày" },
@@ -90,7 +103,7 @@ const detailsHeadCells = [
   { id: "DonGia", label: "Đơn Giá" },
   { id: "SoLuong", label: "Số Lượng" },
   { id: "ThanhTien", label: "Thành Tiền" },
-  { id: "HanhDong", disableSorting: true  },
+  { id: "HanhDong", disableSorting: true },
 ];
 const DanhSachPhieuBanHang = (props) => {
   // CSS class
@@ -99,7 +112,11 @@ const DanhSachPhieuBanHang = (props) => {
   const dispatch = useDispatch();
   const billList = useSelector((state) => state.ListPhieuBanHang);
   //passing value
-  const { loading: phieubanhangLoading, error: phieubanhangError, listPhieuBanHang } = billList;
+  const {
+    loading: phieubanhangLoading,
+    error: phieubanhangError,
+    listPhieuBanHang,
+  } = billList;
   //data
   const [bills, setBills] = useState([]);
   const [bill, setBill] = useState({});
@@ -113,13 +130,26 @@ const DanhSachPhieuBanHang = (props) => {
       return items;
     },
   });
-  
+
   const { TblContainer, TblHead, TblPagination, recordsAfterPagingAndSorting } =
     useTable(bills, headCells, filterFn);
-  const [groupBoxes, setGroupBoxes] = useState([]) ;
+  const [groupBoxes, setGroupBoxes] = useState([]);
+  //handle
+  const handleSearch = (e) => {
+    let target = e.target;
+    setFilterFn({
+      fn: (items) => {
+        if (target.value == "") return items;
+        else
+          return items.filter((x) =>
+            x.TenKhachHang.toLowerCase().includes(target.value)
+          );
+      },
+    });
+  };
   //handle click
   const handleDetailClick = (item) => {
-    setGroupBoxes ([
+    setGroupBoxes([
       {
         type: "Label",
         title: "Tên Khách Hàng",
@@ -128,7 +158,7 @@ const DanhSachPhieuBanHang = (props) => {
       {
         type: "Label",
         title: "Tổng Tiền",
-        value: item.TongTien.toLocaleString("it-IT"),
+        value: Number(item.TongTien).toLocaleString("it-IT"),
       },
       {
         type: "Label",
@@ -153,9 +183,9 @@ const DanhSachPhieuBanHang = (props) => {
     ]);
     setId(item.SoPhieuBanHang);
     setOpenDetailPopup(true);
-  }
+  };
   const handlePrintClick = (item) => {
-    setGroupBoxes ([
+    setGroupBoxes([
       {
         type: "Label",
         title: "Tên Khách Hàng",
@@ -189,29 +219,19 @@ const DanhSachPhieuBanHang = (props) => {
     ]);
     setId(item.SoPhieuBanHang);
     setOpenPrintPopup(true);
-  }
-  const handleSearch = (e) => {
-    let target = e.target;
-    setFilterFn({
-      fn: (items) => {
-        if (target.value === "") return items;
-        else
-          return items.filter((x) =>
-            x.fullName.toLowerCase().includes(target.value)
-          );
-      },
-    });
   };
   // set Bills
   useEffect(() => {
-    if (listPhieuBanHang != undefined) 
-    {
-      const billsData = Object.values(listPhieuBanHang).reduce((result, value) => {
-        result.push({
-          ...value,
-        });
-        return result;
-      }, []);
+    if (listPhieuBanHang != undefined) {
+      const billsData = Object.values(listPhieuBanHang).reduce(
+        (result, value) => {
+          result.push({
+            ...value,
+          });
+          return result;
+        },
+        []
+      );
       setBills(billsData);
     }
   }, [listPhieuBanHang]);
@@ -222,13 +242,20 @@ const DanhSachPhieuBanHang = (props) => {
     };
     fetchData();
   }, [dispatch]);
-    return (
+  return (
     <>
-      {bills === [] || bills === undefined ? (<h1>Loading</h1>) 
-        : 
-        (
+      {phieubanhangLoading ? (
+        <Loading />
+      ) : (
         <div>
-          <Paper>
+          <Typography
+            component="h1"
+            variant="h5"
+            className={classes.titleHeader}
+          >
+            Danh Sách Phiếu Bán Hàng
+          </Typography>
+          <Paper className={classes.paper}>
             <Toolbar className={classes.toolbar}>
               <div className={classes.searchInput}>
                 <Input
@@ -244,23 +271,6 @@ const DanhSachPhieuBanHang = (props) => {
                   }}
                   onChange={handleSearch}
                 />
-              </div>
-              <div className={classes.actions}>
-                <Tooltip title="Tải file csv">
-                  <IconButton className={classes.actionsButton}>
-                    <CloudDownload />
-                  </IconButton>
-                </Tooltip>
-                <Tooltip title="Chọn cột">
-                  <IconButton className={classes.actionsButton}>
-                    <ViewColumn />
-                  </IconButton>
-                </Tooltip>
-                <Tooltip title="Lọc">
-                  <IconButton className={classes.actionsButton}>
-                    <FilterList />
-                  </IconButton>
-                </Tooltip>
               </div>
             </Toolbar>
             <TableContainer className={classes.table}>
@@ -289,20 +299,20 @@ const DanhSachPhieuBanHang = (props) => {
                         {item.TenKhachHang}
                       </TableCell>
                       <TableCell component="th" scope="row">
-                        {item.TongTien.toLocaleString("it-IT")}
+                        {Number(item.TongTien).toLocaleString("it-IT")}
                       </TableCell>
                       <TableCell component="th" scope="row">
                         {item.PhuongThucThanhToan}
                       </TableCell>
                       <TableCell component="th" scope="row">
                         <Tooltip title="Xem chi tiết">
-                          <IconButton onClick = {() => handleDetailClick(item)}>
-                            <Assignment color="primary"/>
+                          <IconButton onClick={() => handleDetailClick(item)}>
+                            <Assignment color="primary" />
                           </IconButton>
                         </Tooltip>
                         <Tooltip title="In Phiếu">
-                          <IconButton onClick = {() => handlePrintClick(item)}>
-                            <Print style={{ color: green[500] }}/>
+                          <IconButton onClick={() => handlePrintClick(item)}>
+                            <Print style={{ color: green[500] }} />
                           </IconButton>
                         </Tooltip>
                       </TableCell>
@@ -316,22 +326,23 @@ const DanhSachPhieuBanHang = (props) => {
           <Popup
             title="Thông Tin Phiếu Bán Hàng"
             openPopup={openDetailPopup}
-            setOpenPopup={setOpenDetailPopup}>
-            <Detail 
-              type = "bill" 
-              id = {id}
-              header = "Phiếu Bán Hàng"
-              headCells = {detailsHeadCells}
-              groupBoxes = {groupBoxes}/>
+            setOpenPopup={setOpenDetailPopup}
+          >
+            <Detail
+              type="bill"
+              id={id}
+              header="Phiếu Bán Hàng"
+              detailHeader="Chi Tiết Phiếu Bán Hàng"
+              headCells={detailsHeadCells}
+              groupBoxes={groupBoxes}
+            />
           </Popup>
           <Popup
             title="In Phiếu Bán Hàng"
             openPopup={openPrintPopup}
-            setOpenPopup={setOpenPrintPopup}>
-              <BillToPrint 
-                 id = {id}
-                 groupBoxes = {groupBoxes}
-              />
+            setOpenPopup={setOpenPrintPopup}
+          >
+            <BillToPrint id={id} groupBoxes={groupBoxes} />
           </Popup>
         </div>
       )}

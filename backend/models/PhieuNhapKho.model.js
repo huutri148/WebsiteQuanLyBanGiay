@@ -112,7 +112,7 @@ PhieuNhapKho.Edit = async function (data, result) {
             console.log(err);
           } else {
             data.ChiTietPhieuNhapKho.map(function await(chiTietPhieuNhapKho) {
-              let qr = sqlString.format(`CALL USP_CapNhatChiTietPhieuNhapKho(
+              let qr = sqlString.format(`CALL USP_ThemChiTietPhieuNhapKhoByID(
                                               ${data.SoPhieuNhapKho},
                                               ${chiTietPhieuNhapKho.MaChiTietGiay},
                                               ${chiTietPhieuNhapKho.SoLuongNhap}, 
@@ -129,6 +129,21 @@ PhieuNhapKho.Edit = async function (data, result) {
         });
       }
       result(res[0]);
+    }
+  });
+};
+PhieuNhapKho.GetDetails = function (soPhieuNhapKho,callBack) {
+  var conn = db.getConnection();
+  var queryString = sqlString.format(
+    `CALL USP_GetChiTietPhieuNhapKhoByID(${soPhieuNhapKho});`
+  );
+  conn.query(queryString, (err, res) => {
+    if (err) {
+      throw err;
+    }
+    if (res[0]) {
+      console.log("Found Details:".yellow.bold, res[0]);
+      callBack(res[0]);
     }
   });
 };

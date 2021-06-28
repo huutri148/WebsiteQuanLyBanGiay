@@ -48,7 +48,7 @@ const detail = () => {
     </div>
   );
 };
-const dashBoardRoute = [
+const ecommerceRoute = [
   {
     path: "/home",
     exact: true,
@@ -98,13 +98,41 @@ const dashBoardRoute = [
     private: false,
     role: "NguoiDung",
   },
-  // {
-  //   path: "/products/:id",
-  //   exact: true,
-  //   component: detail,
-  //   private: true,
-  //   role: "NguoiDung",
-  // },
+  {
+    path: "/products/:id",
+    exact: true,
+    component: detail,
+    private: false,
+    role: "NguoiDung",
+  },
+  {
+    path: "/jordan",
+    exact: true,
+    component: shop,
+    private: false,
+    role: "NguoiDung",
+  },
+  {
+    path: "/nike",
+    exact: true,
+    component: shop,
+    private: false,
+    role: "NguoiDung",
+  },
+  {
+    path: "/news",
+    exact: true,
+    component: shop,
+    private: false,
+    role: "NguoiDung",
+  },
+  {
+    path: "/adidas",
+    exact: true,
+    component: shop,
+    private: false,
+    role: "NguoiDung",
+  },
 ];
 
-export default dashBoardRoute;
+export default ecommerceRoute;

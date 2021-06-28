@@ -74,8 +74,8 @@ export const Login = withRouter((props) => {
     });
   };
   const handleLogin = (event) => {
-    dispatch(login(loginParams));
     event.preventDefault();
+    dispatch(login(loginParams));
   };
 
   return (

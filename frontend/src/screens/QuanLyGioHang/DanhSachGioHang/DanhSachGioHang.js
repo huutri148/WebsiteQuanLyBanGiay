@@ -31,8 +31,10 @@ import {
   fetchListGioHang,
   updateGioHang,
   deleteGioHang,
+  fetchListChiTietGioHang,
 } from "../../../redux/actions/gioHangAction";
 import { fetchListNguoiDung } from "../../../redux/actions/nguoiDungAction";
+import { createPhieuBanHang } from "../../../redux/actions/phieuBanHangAction";
 import { DSGHHeadCell, DSGHHeaderCSV } from "../ThongTinQuanLyGioHang";
 import ConfirmDialog from "../../../components/controls/ConfirmDialog";
 import Popup from "../../../components/controls/Popup";
@@ -40,7 +42,6 @@ import Detail from "../../../components/controls/Detail";
 import { detailsHeadCells } from "../ThongTinQuanLyGioHang";
 import Loading from "../../../components/Loadable/Loading";
 import BillToPrint from "../BillToPrint";
-import { CSVLink } from "react-csv";
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -85,6 +86,13 @@ const useStyles = makeStyles((theme) => ({
   actionsButton: {
     "&:hover, &.Mui-focusVisible": { color: "#1976d2" },
   },
+  paper: {
+    margin: theme.spacing(0, 4),
+    display: "flex",
+    flexDirection: "column",
+    textAlign: "left",
+    height: "fit-content",
+  },
 }));
 
 const DanhSachGioHang = (props) => {
@@ -94,6 +102,11 @@ const DanhSachGioHang = (props) => {
 
   const userList = useSelector((state) => state.ListNguoiDung);
   const cartList = useSelector((state) => state.ListGioHang);
+  const { listChiTietGioHang } = useSelector(
+    (state) => state.ListChiTietGioHang
+  );
+
+  const { userInfo } = useSelector((state) => state.User);
   const { loading: userLoading, listNguoiDung } = userList;
   const { loading: cartLoading, listGioHang } = cartList;
 
@@ -111,7 +124,8 @@ const DanhSachGioHang = (props) => {
     subTitle: "",
   });
   const [groupBoxes, setGroupBoxes] = useState([]);
-  const [selectedItem, setSelectedItem] = useState();
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [selectedForCreate, setSelectedForCreate] = useState(null);
   const [openDetailPopup, setOpenDetailPopup] = useState(false);
   const [openPrintPopup, setOpenPrintPopup] = useState(false);
   const { TblContainer, TblHead, TblPagination, recordsAfterPagingAndSorting } =
@@ -149,6 +163,31 @@ const DanhSachGioHang = (props) => {
     };
     if (typeof userLoading === "undefined") fetchUserData();
   }, []);
+  useEffect(() => {
+    if (selectedForCreate !== null) {
+      const data = Object.values(listChiTietGioHang).reduce((result, value) => {
+        result.push({
+          ...value,
+        });
+        return result;
+      }, []);
+      if (data.length !== 0) {
+        const cart = listGioHang[selectedForCreate];
+        const PBH = {
+          MaNguoiDung: userInfo.MaNguoiDung,
+          MaKhachHang: cart.MaNguoiDung,
+          TongTien: cart.TongTien,
+          PhuongThucThanhToan: cart.PhuongThucThanhToan,
+          ChiTietPhieuBanHang: data,
+          NgayBan: moment(cart.NgayLap).format("YYYY-MM-DD") + "",
+          GhiChu: null,
+        };
+        dispatch(createPhieuBanHang(PBH));
+        setSelectedForCreate(null);
+        setUpdateData(!updateData);
+      }
+    }
+  }, [listChiTietGioHang]);
 
   const handleDetail = (item) => {
     setGroupBoxes([
@@ -218,7 +257,8 @@ const DanhSachGioHang = (props) => {
       isOpen: false,
     });
     dispatch(updateGioHang(item.MaGioHang));
-    setUpdateData(!updateData);
+    setSelectedForCreate(item.MaGioHang);
+    dispatch(fetchListChiTietGioHang(item.MaGioHang));
   };
 
   const handlePrintClick = (item) => {
@@ -234,7 +274,7 @@ const DanhSachGioHang = (props) => {
           <Typography component="h1" variant="h5" className={classes.title}>
             Quản lý giỏ hàng
           </Typography>
-          <Paper>
+          <Paper className={classes.paper}>
             <Toolbar className={classes.toolbar}>
               <div className={classes.searchInput}>
                 <Input
@@ -253,29 +293,13 @@ const DanhSachGioHang = (props) => {
               </div>
               <div className={classes.actions}>
                 <Tooltip title="Tải file csv">
-                  <CSVLink
-                    data={tableData}
-                    filename={"DS-GioHang.csv"}
-                    headers={DSGHHeaderCSV}
-                  >
-                    <IconButton className={classes.actionsButton}>
-                      <CloudDownload />
-                    </IconButton>
-                  </CSVLink>
+                  <IconButton className={classes.actionsButton}>
+                    <CloudDownload />
+                  </IconButton>
                 </Tooltip>
                 <Tooltip title="In">
                   <IconButton className={classes.actionsButton}>
                     <Print />
-                  </IconButton>
-                </Tooltip>
-                <Tooltip title="Chọn cột">
-                  <IconButton className={classes.actionsButton}>
-                    <ViewColumn />
-                  </IconButton>
-                </Tooltip>
-                <Tooltip title="Lọc">
-                  <IconButton className={classes.actionsButton}>
-                    <FilterList />
                   </IconButton>
                 </Tooltip>
               </div>
@@ -318,7 +342,11 @@ const DanhSachGioHang = (props) => {
                         </Typography>
                       </TableCell>
                       <TableCell component="th" scope="row">
-                        {item.TongTien.toLocaleString("it-IT")}
+                        {item.TongTien.toString().replace(
+                          /\B(?=(\d{3})+(?!\d))/g,
+                          "."
+                        )}{" "}
+                        VNĐ
                       </TableCell>
                       <TableCell component="th" scope="row">
                         <Tooltip title="Xác nhận">

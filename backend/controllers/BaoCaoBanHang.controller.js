@@ -20,5 +20,24 @@ const createReport = async (req, res) => {
     res.status(200).send({ message: "Created successfully" });
   });
 };
-
-module.exports = { createReport };
+const getList = async (req, res) => {
+  await BaoCaoBanHang.Get((result) => {
+    if (result) {
+      res.send(JSON.stringify(result));
+    } else {
+      res.status(404);
+      throw new Error("Reports not found ");
+    }
+  });
+};
+const getDetails = async (req, res) => {
+  const id = req.params.id;
+  await BaoCaoBanHang.GetDetails(id, (result) => {
+    if (result) {
+      res.status(200).send(JSON.stringify(result));
+    } else {
+      res.status(404);
+    }
+  });
+};
+module.exports = { createReport, getList, getDetails };
